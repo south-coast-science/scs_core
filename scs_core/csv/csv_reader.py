@@ -7,8 +7,8 @@ Created on 4 Aug 2016
 import _csv
 import sys
 
-from scs_core.data.json import JSONify
 from scs_core.csv.csv_dict import CSVDict
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------

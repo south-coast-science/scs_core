@@ -7,11 +7,10 @@ Created on 21 Sep 2016
 '''
 
 import json
-
 from collections import OrderedDict
 
-from scs_core.data.json import JSONify
 from scs_core.csv.csv_dict import CSVDict
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
