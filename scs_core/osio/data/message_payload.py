@@ -1,11 +1,11 @@
-'''
+"""
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
 {"encoding": "utf-8", "content-type": "application/json", "text": "{\"rec\": \"2016-11-19T20:31:23.882+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}}
-'''
+"""
 
 from collections import OrderedDict
 
@@ -16,9 +16,9 @@ from scs_core.data.path_dict import PathDict
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessagePayload(JSONable):
-    '''
+    """
     classdocs
-   '''
+   """
 
     __TYPE_JSON =       'application/json'
     __TYPE_TEXT =       'text/plain'
@@ -43,9 +43,9 @@ class MessagePayload(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, encoding, content_type, payload):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__encoding = encoding              # string			utf-8
         self.__content_type = content_type      # string			application/json
 

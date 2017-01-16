@@ -1,4 +1,4 @@
-'''
+"""
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -10,7 +10,7 @@ pass: vXy5G44P
 name: test
 client: 5402
 pass: cPhbitmp
-'''
+"""
 
 from collections import OrderedDict
 
@@ -21,9 +21,9 @@ from scs_core.osio.data.location import Location
 # --------------------------------------------------------------------------------------------------------------------
 
 class Device(JSONable):
-    '''
+    """
     classdocs
-   '''
+   """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -67,9 +67,9 @@ class Device(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, client_id, name, description, password, password_is_locked, location, device_type, batch, org_id, owner_id, tags):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__client_id = client_id                        # int
         self.__name = name                                  # string
         self.__description = description                    # string

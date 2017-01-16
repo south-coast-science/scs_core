@@ -1,4 +1,4 @@
-'''
+"""
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,7 +8,7 @@ deliver-change
 
 south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
-'''
+"""
 
 from collections import OrderedDict
 
@@ -19,9 +19,9 @@ from scs_core.osio.data.topic_info import TopicInfo
 # --------------------------------------------------------------------------------------------------------------------
 
 class Topic(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -56,9 +56,9 @@ class Topic(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, path, name, description, is_public, rollups_enabled, topic_info, schema_id):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__path = path                          # string
         self.__name = name                          # string
         self.__description = description            # string

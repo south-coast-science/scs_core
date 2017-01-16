@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import _csv
 import json
@@ -19,16 +19,16 @@ from scs_core.csv.csv_logger import CSVLogger
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVWriter(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename = None):
-        '''
+    def __init__(self, filename=None):
+        """
         Constructor
-        '''
+        """
         self.__filename = filename
         self.__has_header = False
 

@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,15 +8,15 @@ $xxVTG,cogt,T,cogm,M,knots,N,kph,K,pos_mode*cs
 
 example:
 $GPVTG,77.52,T,,M,0.004,N,0.008,K,A*06
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPVTG(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPVTG"
 
@@ -42,9 +42,9 @@ class GPVTG(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, cogt, cogm, knots, kph, pos_mode):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__cogt = cogt
         self.__cogm = cogm
         self.__knots = knots

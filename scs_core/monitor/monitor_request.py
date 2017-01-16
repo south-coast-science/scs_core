@@ -1,16 +1,16 @@
-'''
+"""
 Created on 5 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class MonitorRequest(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -29,9 +29,9 @@ class MonitorRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, group, command, params):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__group = group
         self.__command = command
         self.__params = params

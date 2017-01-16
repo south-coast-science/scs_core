@@ -1,8 +1,8 @@
-'''
+"""
 Created on 9 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import sys
 import traceback
@@ -19,9 +19,9 @@ from scs_core.sys.trace_entry import TraceEntry
 # --------------------------------------------------------------------------------------------------------------------
 
 class ExceptionReport(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -50,9 +50,9 @@ class ExceptionReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, cls, args, trace, summary):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__cls = cls
         self.__args = args
         self.__trace = trace

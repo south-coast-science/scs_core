@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 31 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.location.gpgga import GPGGA
 from scs_core.location.gpgll import GPGLL

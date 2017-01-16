@@ -1,4 +1,4 @@
-'''
+"""
 Created on 20 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,7 +6,7 @@ Created on 20 Nov 2016
 example:
 event: message
 data: {"topic":"/users/southcoastscience-dev/test/json","date":1479655521714,"message":"{\"rec\": \"2016-11-20T15:25:29.605+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}
-'''
+"""
 
 import datetime
 
@@ -16,9 +16,9 @@ from scs_core.data.path_dict import PathDict
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageEvent(object):
-    '''
+    """
     classdocs
-   '''
+   """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,9 +39,9 @@ class MessageEvent(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic, date, message):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__topic = topic            # string
         self.__date = date              # datetime
 

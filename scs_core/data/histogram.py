@@ -1,8 +1,8 @@
-'''
+"""
 Created on 9 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import _csv
 import sys
@@ -11,9 +11,9 @@ import sys
 # --------------------------------------------------------------------------------------------------------------------
 
 class Histogram(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     __HEADER_BIN = ".bin"
     __HEADER_COUNT = ".count"
@@ -22,9 +22,9 @@ class Histogram(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, minimum, maximum, bin_count, path):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__minimum = minimum
         self.__maximum = maximum
         self.__bin_count = bin_count
@@ -61,7 +61,7 @@ class Histogram(object):
         return index, self.__counts[index]
 
 
-    def to_csv(self, filename = None):
+    def to_csv(self, filename=None):
         file = sys.stdout if filename is None else open(filename, "w")
         writer = _csv.writer(file)
 

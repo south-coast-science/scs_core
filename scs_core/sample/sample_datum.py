@@ -1,8 +1,8 @@
-'''
+"""
 Created on 22 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -12,16 +12,16 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class SampleDatum(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, rec, *values):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__rec = rec                        # LocalizedDatetime
         self.__val = OrderedDict(values)        # OrderedDict of (src, JSONable)
 

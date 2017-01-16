@@ -1,8 +1,8 @@
-'''
+"""
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -12,9 +12,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class Location(JSONable):
-    '''
+    """
     classdocs
-   '''
+   """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -37,9 +37,9 @@ class Location(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, lat, lng, elevation, zip, postcode):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__lat = lat                    # float
         self.__lng = lng                    # float
 

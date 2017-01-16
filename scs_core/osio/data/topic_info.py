@@ -1,8 +1,8 @@
-'''
+"""
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -12,9 +12,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicInfo(JSONable):
-    '''
+    """
     classdocs
-   '''
+   """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -34,9 +34,9 @@ class TopicInfo(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, format, type, schema, graph_path):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__format = format              # string
         self.__type = type                  # string
         self.__schema = schema              # string

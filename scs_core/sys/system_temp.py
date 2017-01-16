@@ -1,8 +1,8 @@
-'''
+"""
 Created on 10 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -12,9 +12,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class SystemTemp(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -29,9 +29,9 @@ class SystemTemp(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, board, host):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__board = board
         self.__host = host
 

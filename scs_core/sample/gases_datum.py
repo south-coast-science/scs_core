@@ -1,8 +1,8 @@
-'''
+"""
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.sample.sample_datum import SampleDatum
 
@@ -10,16 +10,16 @@ from scs_core.sample.sample_datum import SampleDatum
 # --------------------------------------------------------------------------------------------------------------------
 
 class GasesDatum(SampleDatum):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, rec, afe_sample, sht_sample):
-        '''
+        """
         Constructor
-        '''
+        """
         val = []
 
         for key in afe_sample.sns:

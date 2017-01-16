@@ -1,8 +1,8 @@
-'''
+"""
 Created on 20 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import re
 
@@ -10,9 +10,9 @@ import re
 # --------------------------------------------------------------------------------------------------------------------
 
 class RealtimeClient(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     __HOST = "realtime.opensensors.io"
 
@@ -20,9 +20,9 @@ class RealtimeClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, streaming_client, listener, auth):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__streaming_client = streaming_client
         self.__listener = listener
         self.__auth = auth

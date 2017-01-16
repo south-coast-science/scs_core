@@ -1,8 +1,8 @@
-'''
+"""
 Created on 18 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from abc import abstractmethod
 
@@ -12,16 +12,16 @@ from scs_core.sync.interval_timer import IntervalTimer
 # --------------------------------------------------------------------------------------------------------------------
 
 class Sampler(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count = 0):
-        '''
+    def __init__(self, interval, sample_count=0):
+        """
         Constructor
-        '''
+        """
         self.__timer = IntervalTimer(interval)
         self.__sample_count = sample_count
 

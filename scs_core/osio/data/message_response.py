@@ -1,16 +1,16 @@
-'''
+"""
 Created on 7 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageResponse(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     __SEND_SUCCESS =      'Message sent'
 
@@ -30,9 +30,9 @@ class MessageResponse(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, message):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__message = message                # string
 
 

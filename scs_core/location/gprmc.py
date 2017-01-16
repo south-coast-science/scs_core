@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,7 +8,7 @@ $xxRMC,datetime,status,lat,NS,long,EW,spd,cog,date,mv,mv_ew,pos_mode*cs
 
 example:
 $GPRMC,083559.00,A,4717.11437,N,00833.91522,E,0.004,77.52,091202,,,A*57
-'''
+"""
 
 from scs_core.location.gpdatetime import GPDateTime
 from scs_core.location.gploc import GPLoc
@@ -17,9 +17,9 @@ from scs_core.location.gploc import GPLoc
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPRMC(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPRMC"
 
@@ -59,9 +59,9 @@ class GPRMC(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__datetime = datetime
 
         self.__status = status

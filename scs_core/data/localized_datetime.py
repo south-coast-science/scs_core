@@ -1,8 +1,8 @@
-'''
+"""
 Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import re
 
@@ -18,9 +18,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class LocalizedDatetime(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     @classmethod
     def now(cls):
@@ -117,9 +117,9 @@ class LocalizedDatetime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, localized):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__localized = localized            # datetime
 
 
@@ -136,9 +136,9 @@ class LocalizedDatetime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_iso8601(self):
-        '''
+        """
         example: 2016-08-13T00:38:05.210+00:00
-        '''
+        """
         date = self.__localized.strftime("%Y-%m-%d")
         time = self.__localized.strftime("%H:%M:%S")
 

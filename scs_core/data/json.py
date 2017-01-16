@@ -1,19 +1,20 @@
-'''
+"""
 Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import json
 
 from abc import abstractmethod
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class JSONable(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -25,9 +26,9 @@ class JSONable(object):
 # --------------------------------------------------------------------------------------------------------------------
 
 class PersistentJSONable(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -55,9 +56,9 @@ class PersistentJSONable(JSONable):
 # --------------------------------------------------------------------------------------------------------------------
 
 class JSONify(json.JSONEncoder):
-    '''
+    """
     classdocs
-    '''
+    """
 
     @staticmethod
     def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None,

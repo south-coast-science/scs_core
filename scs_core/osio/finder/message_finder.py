@@ -1,4 +1,4 @@
-'''
+"""
 Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,7 +8,7 @@ deliver-change
 
 south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
-'''
+"""
 
 import urllib.parse
 
@@ -20,16 +20,16 @@ from scs_core.osio.data.message import Message
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageFinder(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, api_key):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__rest_client = RESTClient(http_client, api_key)
 
 
@@ -53,7 +53,7 @@ class MessageFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __get(self, path, start_date, end_date):
-        params = { 'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601() }
+        params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}
 
         while True:
             # request...
@@ -85,12 +85,12 @@ class MessageFinder(object):
 # --------------------------------------------------------------------------------------------------------------------
 
 class NextMessageQuery(object):
-    '''
+    """
     classdocs
 
     example query:
     /v1/messages/topic//users/southcoastscience-dev/test/json?start-date=2016-11-13T07:11:14.779Z&end-date=2016-11-13T08:48:08.901+00:00
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ class NextMessageQuery(object):
         parse = urllib.parse.urlparse(urllib.parse.unquote(uri))
         params = urllib.parse.parse_qs(parse[4])
 
-        if not 'start-date' in params or not 'end-date' in params:
+        if 'start-date' not in params or 'end-date' not in params:
             return None
 
         # construct...
@@ -119,9 +119,9 @@ class NextMessageQuery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, start_date, end_date):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__start_date = start_date          # LocalizedDatetime
         self.__end_date = end_date              # LocalizedDatetime
 

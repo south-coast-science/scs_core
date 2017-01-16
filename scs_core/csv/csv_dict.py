@@ -1,8 +1,8 @@
-'''
+"""
 Created on 21 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -38,14 +38,14 @@ class CSVDict(object):
 
         # list...
         if cls.__is_list_path(nodes):
-            if not key in dictionary:
+            if key not in dictionary:
                 dictionary[key] = []
 
             dictionary[key].append(cell)
             return
 
         # object...
-        if not key in dictionary:
+        if key not in dictionary:
             dictionary[key] = OrderedDict()
 
         cls.__as_dict(nodes[1:], cell, dictionary[key])
@@ -66,9 +66,9 @@ class CSVDict(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, dictionary):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__dictionary = dictionary
 
 

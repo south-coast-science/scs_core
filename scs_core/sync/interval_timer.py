@@ -1,8 +1,8 @@
-'''
+"""
 Created on 11 Jul 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import time
 
@@ -10,9 +10,9 @@ import time
 # --------------------------------------------------------------------------------------------------------------------
 
 class IntervalTimer(object):
-    '''
+    """
     generate indices at pre-set intervals
-    '''
+    """
 
     def __init__(self, interval):
         self.__interval = interval

@@ -1,28 +1,28 @@
-'''
+"""
 Created on 1 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPLoc(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, lat, ns, lng, ew):
-        '''
+        """
         Constructor
-        '''
-        self.__lat = lat                #   ddmm.mmmmm
-        self.__ns = ns                  #   { N | S}
+        """
+        self.__lat = lat                # ddmm.mmmmm
+        self.__ns = ns                  # { N | S}
 
-        self.__lng = lng                #   dddmm.mmmmm
-        self.__ew = ew                  #   { E | W }
+        self.__lng = lng                # dddmm.mmmmm
+        self.__ew = ew                  # { E | W }
 
 
     # ----------------------------------------------------------------------------------------------------------------

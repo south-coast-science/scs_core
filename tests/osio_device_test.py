@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 7 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,7 +8,7 @@ Created on 7 Nov 2016
 examples:
 {"msg": null, "err": {"code": "UNKNOWN_CMD", "value": "hello"}}
 {"msg": {"op": "scs-rpi-006", "spec": "scs-rpi-006"}, "err": null}
-'''
+"""
 
 import json
 

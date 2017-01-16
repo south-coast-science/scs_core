@@ -1,4 +1,4 @@
-'''
+"""
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -9,7 +9,7 @@ New device password:QMicOCZw
 
 
 CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key ' . AOC_OPENSENSORS_API_KEY),
-'''
+"""
 
 import json
 
@@ -21,9 +21,9 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 
 class RESTClient(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     __HOST = "api.opensensors.io"
 
@@ -34,9 +34,9 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, api_key):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__http_client = http_client
         self.__api_key = api_key
 
@@ -53,7 +53,7 @@ class RESTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def get(self, path, params = None):
+    def get(self, path, params=None):
         response_jstr = self.__http_client.get(path, params, self.__headers)
         response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 

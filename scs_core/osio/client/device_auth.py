@@ -1,11 +1,11 @@
-'''
+"""
 Created on 17 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
 
-'''
+"""
 
 from collections import OrderedDict
 
@@ -15,9 +15,9 @@ from scs_core.data.json import PersistentJSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceAuth(PersistentJSONable):
-    '''
+    """
     classdocs
-   '''
+    """
 
     __FILENAME = "topic_client_auth.json"
 
@@ -44,9 +44,9 @@ class DeviceAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, username, device_id, device_password):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__username = username                      # String
 
         self.__device_id = device_id                    # String

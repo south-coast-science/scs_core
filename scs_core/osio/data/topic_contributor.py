@@ -1,16 +1,16 @@
-'''
+"""
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicContributor(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -29,9 +29,9 @@ class TopicContributor(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, name, id, gravatar_hash):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__name = name                      # string
         self.__id = id                          # string
         self.__gravatar_hash = gravatar_hash    # string

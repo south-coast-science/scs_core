@@ -1,8 +1,8 @@
-'''
+"""
 Created on 10 Jul 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from _csv import writer
 
@@ -10,9 +10,9 @@ from _csv import writer
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogger(object):
-    '''
+    """
     heap memory storage of CSV data
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 

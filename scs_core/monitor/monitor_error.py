@@ -1,8 +1,8 @@
-'''
+"""
 Created on 5 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from collections import OrderedDict
 
@@ -12,9 +12,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class MonitorError(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     CODE_UNKNOWN_GRP =          'UNKNOWN_GRP'
     CODE_UNKNOWN_CMD =          'UNKNOWN_CMD'
@@ -25,10 +25,10 @@ class MonitorError(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, value = None):
-        '''
+    def __init__(self, code, value=None):
+        """
         Constructor
-        '''
+        """
         self.__code = code
         self.__value = value
 

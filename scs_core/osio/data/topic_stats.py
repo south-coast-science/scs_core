@@ -1,8 +1,8 @@
-'''
+"""
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.osio.data.topic_contributor import TopicContributor
 from scs_core.osio.data.location import Location
@@ -11,9 +11,9 @@ from scs_core.osio.data.location import Location
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicStats(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,9 +39,9 @@ class TopicStats(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, period, last_reading, average_frequency, total, contributors, last_location):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__period = period                          # int
         self.__last_reading = last_reading              # string
         self.__average_frequency = average_frequency    # string

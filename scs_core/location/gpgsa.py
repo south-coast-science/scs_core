@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,15 +8,15 @@ $xxGSA,opMode,navMode{,sv},PDOP,HDOP,VDOP*cs
 
 example:
 $GPGSA,A,3,23,29,07,08,09,18,26,28,,,,,1.94,1.18,1.54*0D
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGSA(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPGSA"
 
@@ -46,9 +46,9 @@ class GPGSA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, op_mode, nav_mode, sv, pdop, hdop, vdop):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__op_mode = op_mode
         self.__nav_mode = nav_mode
         

@@ -1,4 +1,4 @@
-'''
+"""
 Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -8,7 +8,7 @@ deliver-change
 
 south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
-'''
+"""
 
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.topic import Topic
@@ -17,16 +17,16 @@ from scs_core.osio.data.topic import Topic
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicFinder(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, api_key):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__rest_client = RESTClient(http_client, api_key)
 
 

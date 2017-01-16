@@ -1,8 +1,8 @@
-'''
+"""
 Created on 4 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import _csv
 import sys
@@ -14,9 +14,9 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVReader(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,10 +39,10 @@ class CSVReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename = None):
-        '''
+    def __init__(self, filename=None):
+        """
         Constructor
-        '''
+        """
         self.__filename = filename
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 

@@ -1,8 +1,8 @@
-'''
+"""
 Created on 14 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
@@ -10,16 +10,16 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 # --------------------------------------------------------------------------------------------------------------------
 
 class LinearRegression(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__data = []
 
 
@@ -70,29 +70,29 @@ class LinearRegression(object):
             return None, None
 
         # init...
-        sumX = 0
-        sumY = 0
+        sum_x = 0
+        sum_y = 0
 
-        sumXX = 0
-        sumXY = 0
+        sum_xx = 0
+        sum_xy = 0
 
         # sum....
         for x, y in self.__data:
-            sumX += x
-            sumY += y
+            sum_x += x
+            sum_y += y
 
-            sumXX += x * x
-            sumXY += x * y
+            sum_xx += x * x
+            sum_xy += x * y
 
         # compute...
-        avgX = sumX / n
-        avgY = sumY / n
+        avg_x = sum_x / n
+        avg_y = sum_y / n
 
-        dX = (sumXX * n) - (sumX * sumX)
-        dY = (sumXY * n) - (sumX * sumY)
+        dX = (sum_xx * n) - (sum_x * sum_x)
+        dY = (sum_xy * n) - (sum_x * sum_y)
 
         slope = dY / dX
-        intercept = avgY - (slope * avgX)
+        intercept = avg_y - (slope * avg_x)
 
         return slope, intercept
 

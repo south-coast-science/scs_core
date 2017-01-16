@@ -1,8 +1,8 @@
-'''
+"""
 Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import json
 
@@ -15,9 +15,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class PathDict(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -55,10 +55,10 @@ class PathDict(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, dict = None):
-        '''
+    def __init__(self, dict=None):
+        """
         Constructor
-        '''
+        """
         self.__dict = dict if dict else OrderedDict()
 
 
@@ -99,7 +99,7 @@ class PathDict(JSONable):
     def __has_path(self, dictionary, nodes):
         key = nodes[0]
 
-        if not key in dictionary:
+        if key not in dictionary:
             return False
 
         # scalar...
@@ -144,14 +144,14 @@ class PathDict(JSONable):
 
         # list...
         elif PathDict.__is_list_path(nodes):
-            if not key in dictionary:
+            if key not in dictionary:
                 dictionary[key] = []
 
             dictionary[key].append(value)
 
         # object...
         else:
-            if not key in dictionary:
+            if key not in dictionary:
                 dictionary[key] = OrderedDict()
 
             self.__append(dictionary[key], nodes[1:], value)

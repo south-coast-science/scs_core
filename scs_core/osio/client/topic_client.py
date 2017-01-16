@@ -1,8 +1,8 @@
-'''
+"""
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
@@ -11,9 +11,9 @@ from scs_core.data.path_dict import PathDict
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicClient(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     __HOST = "mqtt.opensensors.io"
 
@@ -21,9 +21,9 @@ class TopicClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, message_client, auth):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__message_client = message_client
         self.__message_client.connect(TopicClient.__HOST, auth.device_id, auth.username, auth.device_password)
 

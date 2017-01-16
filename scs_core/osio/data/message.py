@@ -1,4 +1,4 @@
-'''
+"""
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,7 +6,7 @@ Created on 10 Nov 2016
 example:
 {"date": "2016-11-19T20:31:16.563+00:00", "payload": {"encoding": "utf-8", "content-type": "application/json", "text": "{\"rec\": \"2016-11-19T20:31:23.882+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}}
 
-'''
+"""
 
 from collections import OrderedDict
 
@@ -20,9 +20,9 @@ from scs_core.osio.data.message_payload import MessagePayload
 # --------------------------------------------------------------------------------------------------------------------
 
 class Message(JSONable):
-    '''
+    """
     classdocs
-   '''
+   """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -49,9 +49,9 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, date, payload):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__date = date                    # LocalizedDatetime
         self.__payload = payload              # MessagePayload
 
