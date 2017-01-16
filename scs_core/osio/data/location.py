@@ -28,15 +28,15 @@ class Location(JSONable):
 
         elevation = jdict.get('elevation')
 
-        zip = jdict.get('zip')
+        zipcode = jdict.get('zip')
         postcode = jdict.get('postcode')
 
-        return Location(lat, lng, elevation, zip, postcode)
+        return Location(lat, lng, elevation, zipcode, postcode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lat, lng, elevation, zip, postcode):
+    def __init__(self, lat, lng, elevation, zipcode, postcode):
         """
         Constructor
         """
@@ -45,7 +45,7 @@ class Location(JSONable):
 
         self.__elevation = elevation        # int
 
-        self.__zip = zip                    # string
+        self.__zip = zipcode                # string
         self.__postcode = postcode          # string
 
 

@@ -23,22 +23,22 @@ class TopicInfo(JSONable):
         if not jdict:
             return None
 
-        format = jdict.get('format')
-        type = jdict.get('type')
+        topic_format = jdict.get('format')
+        topic_type = jdict.get('type')
         schema = jdict.get('schema')
         graph_path = jdict.get('graph-path')
 
-        return TopicInfo(format, type, schema, graph_path)
+        return TopicInfo(topic_format, topic_type, schema, graph_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, format, type, schema, graph_path):
+    def __init__(self, topic_format, topic_type, schema, graph_path):
         """
         Constructor
         """
-        self.__format = format              # string
-        self.__type = type                  # string
+        self.__format = topic_format        # string
+        self.__type = topic_type            # string
         self.__schema = schema              # string
         self.__graph_path = graph_path      # string
 

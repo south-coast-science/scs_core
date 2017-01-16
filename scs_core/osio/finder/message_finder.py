@@ -67,13 +67,13 @@ class MessageFinder(object):
 
             # next...
             next_jdict = jdict.get('next')
-            next = NextMessageQuery.construct_from_uri(next_jdict)
+            next_query = NextMessageQuery.construct_from_uri(next_jdict)
 
-            if not next:
+            if not next_query:
                 return
 
-            params['start-date'] = next.start_date.as_iso8601()
-            params['end-date'] = next.end_date.as_iso8601()
+            params['start-date'] = next_query.start_date.as_iso8601()
+            params['end-date'] = next_query.end_date.as_iso8601()
 
 
     # ----------------------------------------------------------------------------------------------------------------
