@@ -12,9 +12,8 @@ import json
 
 from collections import OrderedDict
 
-from scs_core.osio.data.message_event import MessageEvent
-
 from scs_core.osio.client.realtime_client import RealtimeClient
+from scs_core.osio.data.message_event import MessageEvent
 
 
 

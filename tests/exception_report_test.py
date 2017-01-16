@@ -12,7 +12,6 @@ command line example:
 import sys
 
 from scs_core.common.json import JSONify
-
 from scs_core.sys.exception_report import ExceptionReport
 
 

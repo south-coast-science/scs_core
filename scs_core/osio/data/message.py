@@ -12,7 +12,6 @@ from collections import OrderedDict
 
 from scs_core.common.json import JSONable
 from scs_core.common.localized_datetime import LocalizedDatetime
-
 from scs_core.osio.data.message_payload import MessagePayload
 
 

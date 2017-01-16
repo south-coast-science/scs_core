@@ -4,9 +4,9 @@ Created on 2 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 '''
 
+import _csv
 import json
 import sys
-import _csv
 
 from collections import OrderedDict
 

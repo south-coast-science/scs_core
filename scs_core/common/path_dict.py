@@ -7,7 +7,6 @@ Created on 27 Sep 2016
 import json
 
 from collections import OrderedDict
-
 from copy import deepcopy
 
 from scs_core.common.json import JSONable

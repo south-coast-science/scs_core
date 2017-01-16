@@ -10,7 +10,6 @@ import traceback
 from collections import OrderedDict
 
 from scs_core.common.json import JSONable
-
 from scs_core.sys.trace_entry import TraceEntry
 
 

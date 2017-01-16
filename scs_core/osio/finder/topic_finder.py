@@ -11,7 +11,6 @@ south-coast-science-dev
 '''
 
 from scs_core.osio.client.rest_client import RESTClient
-
 from scs_core.osio.data.topic import Topic
 
 

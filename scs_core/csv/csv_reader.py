@@ -4,12 +4,11 @@ Created on 4 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 '''
 
-import sys
 import _csv
-
-from scs_core.csv.csv_dict import CSVDict
+import sys
 
 from scs_core.common.json import JSONify
+from scs_core.csv.csv_dict import CSVDict
 
 
 # --------------------------------------------------------------------------------------------------------------------

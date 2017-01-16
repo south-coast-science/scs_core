@@ -5,11 +5,12 @@ Created on 13 Aug 2016
 '''
 
 import re
-import tzlocal
 
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+
+import tzlocal
 
 from scs_core.common.json import JSONable
 
