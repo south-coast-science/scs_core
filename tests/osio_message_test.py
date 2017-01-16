@@ -19,7 +19,6 @@ from scs_core.osio.data.message_response import MessageResponse
 from scs_core.sample.sample_datum import SampleDatum
 
 
-
 # --------------------------------------------------------------------------------------------------------------------
 
 now = LocalizedDatetime.now()

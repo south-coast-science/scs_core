@@ -91,7 +91,7 @@ class CSVDict(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __header(self, dictionary, prefix = None):
+    def __header(self, dictionary, prefix=None):
         lprefix = prefix + '.' if prefix else ''
 
         header = []

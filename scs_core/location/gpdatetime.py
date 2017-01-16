@@ -18,8 +18,8 @@ class GPDateTime(object):
         """
         Constructor
         """
-        self.__date = date                #   ddmmyy
-        self.__time = time                #   hhmmss.ss
+        self.__date = date                # ddmmyy
+        self.__time = time                # hhmmss.ss
 
 
     # ----------------------------------------------------------------------------------------------------------------
