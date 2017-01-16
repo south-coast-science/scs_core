@@ -66,8 +66,8 @@ class MessageEventSubscriber(object):
 
 # ----------------------------------------------------------------------------------------------------------------
 
-def __str__(self, *args, **kwargs):
-    return "MessageEventSubscriber:{streaming_client:%s}" % self.__streaming_client
+    def __str__(self, *args, **kwargs):
+        return "MessageEventSubscriber:{streaming_client:%s}" % self.__streaming_client
 
 
 
