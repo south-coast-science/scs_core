@@ -25,13 +25,13 @@ class CSVReader(object):
         try:
             recast = int(value)
             return recast
-        except:
+        except RuntimeError:
             pass
 
         try:
             recast = float(value)
             return recast
-        except:
+        except RuntimeError:
             pass
 
         return value

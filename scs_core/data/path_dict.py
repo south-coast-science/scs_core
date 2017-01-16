@@ -25,7 +25,7 @@ class PathDict(JSONable):
     def construct_from_jstr(cls, jstr):
         try:
             jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        except:
+        except RuntimeError:
             return None
 
         return PathDict(jdict)
@@ -49,7 +49,7 @@ class PathDict(JSONable):
         try:
             leaf_node = float(nodes[1])
             return leaf_node.is_integer()
-        except:
+        except RuntimeError:
             return False
 
 

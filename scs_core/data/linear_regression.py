@@ -88,10 +88,10 @@ class LinearRegression(object):
         avg_x = sum_x / n
         avg_y = sum_y / n
 
-        dX = (sum_xx * n) - (sum_x * sum_x)
-        dY = (sum_xy * n) - (sum_x * sum_y)
+        d_x = (sum_xx * n) - (sum_x * sum_x)
+        d_y = (sum_xy * n) - (sum_x * sum_y)
 
-        slope = dY / dX
+        slope = d_y / d_x
         intercept = avg_y - (slope * avg_x)
 
         return slope, intercept
