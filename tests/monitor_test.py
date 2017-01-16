@@ -12,7 +12,7 @@ examples:
 
 import json
 
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 from scs_core.monitor.monitor_error import MonitorError
 from scs_core.monitor.monitor_request import MonitorRequest
 from scs_core.monitor.monitor_response import MonitorResponse

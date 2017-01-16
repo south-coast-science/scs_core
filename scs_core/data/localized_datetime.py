@@ -12,7 +12,7 @@ from datetime import timezone
 
 import tzlocal
 
-from scs_core.common.json import JSONable
+from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------

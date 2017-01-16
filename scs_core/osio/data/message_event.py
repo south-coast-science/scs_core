@@ -10,7 +10,7 @@ data: {"topic":"/users/southcoastscience-dev/test/json","date":1479655521714,"me
 
 import datetime
 
-from scs_core.common.path_dict import PathDict
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------

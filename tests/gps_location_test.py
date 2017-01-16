@@ -9,7 +9,7 @@ command line example:
 ./test/exception_report_test.py 2>> ex.log
 '''
 
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 
 from scs_core.location.gpgga import GPGGA
 from scs_core.location.gps_location import GPSLocation
