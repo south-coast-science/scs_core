@@ -45,12 +45,33 @@ class PersistentJSONable(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    @abstractmethod
+    def filename(cls, name):
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, jdict):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def save(self, host):
         jstr = JSONify.dumps(self)
 
         f = open(self.__class__.filename(host), "w")
         f.write(jstr)
         f.close()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def as_json(self):
+        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------

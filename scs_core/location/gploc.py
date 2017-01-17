@@ -14,6 +14,18 @@ class GPLoc(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def __deg(cls, composite):
+        whole_deg = float(composite[:2])
+        mins = float(composite[2:])
+
+        deg = whole_deg + (mins / 60)
+
+        return round(deg, 7)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, lat, ns, lng, ew):
         """
         Constructor
@@ -71,17 +83,6 @@ class GPLoc(object):
     @property
     def ew(self):
         return self.__ew
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __deg(self, composite):
-        whole_deg = float(composite[:2])
-        mins = float(composite[2:])
-
-        deg = whole_deg + (mins / 60)
-
-        return round(deg, 7)
 
 
     # ----------------------------------------------------------------------------------------------------------------
