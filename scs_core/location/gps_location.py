@@ -10,7 +10,7 @@ example use:
 
 from collections import OrderedDict
 
-from data.json import JSONable
+from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
