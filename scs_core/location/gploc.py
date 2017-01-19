@@ -1,40 +1,28 @@
-"""
+'''
 Created on 1 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-"""
+'''
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPLoc(object):
-    """
+    '''
     classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def __deg(cls, composite):
-        whole_deg = float(composite[:2])
-        mins = float(composite[2:])
-
-        deg = whole_deg + (mins / 60)
-
-        return round(deg, 7)
-
+    '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, lat, ns, lng, ew):
-        """
+        '''
         Constructor
-        """
-        self.__lat = lat                # ddmm.mmmmm
-        self.__ns = ns                  # { N | S}
+        '''
+        self.__lat = lat                #   string - ddmm.mmmmm
+        self.__ns = ns                  #   string - { N | S}
 
-        self.__lng = lng                # dddmm.mmmmm
-        self.__ew = ew                  # { E | W }
+        self.__lng = lng                #   string - dddmm.mmmmm
+        self.__ew = ew                  #   string - { E | W }
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -83,6 +71,17 @@ class GPLoc(object):
     @property
     def ew(self):
         return self.__ew
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __deg(self, composite):
+        whole_deg = float(composite[:2])
+        mins = float(composite[2:])
+
+        deg = whole_deg + (mins / 60)
+
+        return round(deg, 7)
 
 
     # ----------------------------------------------------------------------------------------------------------------

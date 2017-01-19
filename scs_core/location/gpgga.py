@@ -1,4 +1,4 @@
-"""
+'''
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,9 +6,13 @@ Created on 30 Dec 2016
 Global positioning system fix data
 $xxGGA,time,lat,NS,long,EW,quality,numSV,HDOP,alt,M,sep,M,diffAge,diffStation*cs
 
-example:
+example sentence:
 $GPGGA,092725.00,4717.11399,N,00833.91590,E,1,08,1.01,499.6,M,48.0,M,,*5B
-"""
+
+example values:
+GPGGA:{time:GPTime:{time:141058.00}, loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, quality:2, num_sv:06, hdop:3.10, alt:37.5, sep:45.4, diff_age:None, diff_station:0000}
+GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, quality:0, num_sv:00, hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
+'''
 
 from scs_core.location.gploc import GPLoc
 from scs_core.location.gptime import GPTime
@@ -17,9 +21,9 @@ from scs_core.location.gptime import GPTime
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGGA(object):
-    """
+    '''
     classdocs
-    """
+    '''
 
     MESSAGE_ID = "$GPGGA"
 
@@ -33,29 +37,27 @@ class GPGGA(object):
 
     @classmethod
     def construct(cls, s):
-        # TODO cast to float / int as appropriate
-
-        if s.field(0) != cls.MESSAGE_ID:
+        if s.str(0) != cls.MESSAGE_ID:
             raise TypeError("invalid sentence:%s" % s)
 
-        time = GPTime(s.field(1))
+        time = GPTime(s.str(1))
 
-        lat = s.field(2)
-        ns = s.field(3)
+        lat = s.str(2)
+        ns = s.str(3)
 
-        lng = s.field(4)
-        ew = s.field(5)
+        lng = s.str(4)
+        ew = s.str(5)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        quality = s.field(6)
-        num_sv = s.field(7)
-        hdop = s.field(8)
-        alt = s.field(9)
-        sep = s.field(11)
+        quality = s.int(6)
+        num_sv = s.int(7)
+        hdop = s.float(8, 3)
+        alt = s.float(9, 2)
+        sep = s.float(11, 2)
 
-        diff_age = s.field(13)
-        diff_station = s.field(14)
+        diff_age = s.float(13, 3)
+        diff_station = s.str(14)
 
         return GPGGA(time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station)
 
@@ -63,20 +65,20 @@ class GPGGA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station):
-        """
+        '''
         Constructor
-        """
-        self.__time = time
-        self.__loc = loc
+        '''
+        self.__time = time                          # GPTime
+        self.__loc = loc                            # GPLoc
 
-        self.__quality = quality
-        self.__num_sv = num_sv
-        self.__hdop = hdop
-        self.__alt = alt
-        self.__sep = sep
+        self.__quality = quality                    # int
+        self.__num_sv = num_sv                      # int
+        self.__hdop = hdop                          # float(2)
+        self.__alt = alt                            # float(1) - altitude (metres)
+        self.__sep = sep                            # float(1) - geoid separation (metres)
 
-        self.__diff_age = diff_age
-        self.__diff_station = diff_station
+        self.__diff_age = diff_age                  # float(3) - age of differential corrections (seconds)
+        self.__diff_station = diff_station          # string - ID of station providing differential corrections
 
 
     # ----------------------------------------------------------------------------------------------------------------

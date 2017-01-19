@@ -1,4 +1,4 @@
-"""
+'''
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,9 +6,13 @@ Created on 30 Dec 2016
 Latitude and longitude, with time of position fix and status
 $xxGLL,lat,NS,long,EW,time,status,posMode*cs
 
-example:
+example sentence:
 $GPGLL,5049.37823,N,00007.37872,W,103228.00,A,D*7F
-"""
+
+example values:
+GPGLL:{loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, time:GPTime:{time:141058.00}, status:A, pos_mode:D}
+GPGLL:{loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, time:GPTime:{time:140047.00}, status:V, pos_mode:N}
+'''
 
 from scs_core.location.gploc import GPLoc
 from scs_core.location.gptime import GPTime
@@ -17,9 +21,9 @@ from scs_core.location.gptime import GPTime
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGLL(object):
-    """
+    '''
     classdocs
-    """
+    '''
 
     MESSAGE_ID = "$GPGLL"
 
@@ -27,21 +31,21 @@ class GPGLL(object):
 
     @classmethod
     def construct(cls, s):
-        if s.field(0) != cls.MESSAGE_ID:
+        if s.str(0) != cls.MESSAGE_ID:
             raise TypeError("invalid sentence:%s" % s)
 
-        lat = s.field(1)
-        ns = s.field(2)
+        lat = s.str(1)
+        ns = s.str(2)
 
-        lng = s.field(3)
-        ew = s.field(4)
+        lng = s.str(3)
+        ew = s.str(4)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        time = GPTime(s.field(5))
+        time = GPTime(s.str(5))
 
-        status = s.field(6)
-        pos_mode = s.field(7)
+        status = s.str(6)
+        pos_mode = s.str(7)
 
         return GPGLL(loc, time, status, pos_mode)
 
@@ -49,14 +53,14 @@ class GPGLL(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, loc, time, status, pos_mode):
-        """
+        '''
         Constructor
-        """
-        self.__loc = loc
-        self.__time = time
+        '''
+        self.__loc = loc                    # GPLoc
+        self.__time = time                  # GPTime
 
-        self.__status = status
-        self.__pos_mode = pos_mode
+        self.__status = status              # string
+        self.__pos_mode = pos_mode          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------

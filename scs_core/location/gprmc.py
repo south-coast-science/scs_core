@@ -1,4 +1,4 @@
-"""
+'''
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,9 +6,13 @@ Created on 30 Dec 2016
 Recommended Minimum data
 $xxRMC,datetime,status,lat,NS,long,EW,spd,cog,date,mv,mv_ew,pos_mode*cs
 
-example:
+example sentence:
 $GPRMC,083559.00,A,4717.11437,N,00833.91522,E,0.004,77.52,091202,,,A*57
-"""
+
+example values:
+GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A, loc:GPLoc:{lat:5049.38464, ns:N, lng:00007.37785, ew:W}, spd:0.005, cog:None, mv:None, mv_ew:None, pos_mode:D}
+GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
+'''
 
 from scs_core.location.gpdatetime import GPDateTime
 from scs_core.location.gploc import GPLoc
@@ -17,9 +21,9 @@ from scs_core.location.gploc import GPLoc
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPRMC(object):
-    """
+    '''
     classdocs
-    """
+    '''
 
     MESSAGE_ID = "$GPRMC"
 
@@ -27,29 +31,27 @@ class GPRMC(object):
 
     @classmethod
     def construct(cls, s):
-        # TODO cast to float / int as appropriate
-
-        if s.field(0) != cls.MESSAGE_ID:
+        if s.str(0) != cls.MESSAGE_ID:
             raise TypeError("invalid sentence:%s" % s)
 
-        time = s.field(1)
-        status = s.field(2)
+        time = s.str(1)
+        status = s.str(2)
 
-        lat = s.field(3)
-        ns = s.field(4)
+        lat = s.str(3)
+        ns = s.str(4)
 
-        lng = s.field(5)
-        ew = s.field(6)
+        lng = s.str(5)
+        ew = s.str(6)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        spd = s.field(7)
-        cog = s.field(8)
-        date = s.field(9)
-        mv = s.field(10)
-        mv_ew = s.field(11)
+        spd = s.float(7, 3)
+        cog = s.float(8, 2)
+        date = s.str(9)
+        mv = s.float(10, 2)
+        mv_ew = s.str(11)
 
-        pos_mode = s.field(12)
+        pos_mode = s.str(12)
 
         datetime = GPDateTime(date, time)
 
@@ -59,20 +61,20 @@ class GPRMC(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode):
-        """
+        '''
         Constructor
-        """
-        self.__datetime = datetime
+        '''
+        self.__datetime = datetime          # GPDateTime
 
-        self.__status = status
-        self.__loc = loc
+        self.__status = status              # string
+        self.__loc = loc                    # GPLoc
 
-        self.__spd = spd
-        self.__cog = cog
-        self.__mv = mv
-        self.__mv_ew = mv_ew
+        self.__spd = spd                    # float(3) - speed over gound (knots)
+        self.__cog = cog                    # float(2) - degrees course over ground
+        self.__mv = mv                      # float(2) - degrees magnetic variation
+        self.__mv_ew = mv_ew                # string - magnetic variation indicator
 
-        self.__pos_mode = pos_mode
+        self.__pos_mode = pos_mode          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------

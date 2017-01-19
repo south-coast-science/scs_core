@@ -1,18 +1,18 @@
-"""
+'''
 Created on 31 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://en.wikipedia.org/wiki/NMEA_0183
-"""
+'''
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class NMEASentence(object):
-    """
+    '''
     classdocs
-    """
+    '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -46,9 +46,9 @@ class NMEASentence(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, fields):
-        """
+        '''
         Constructor
-        """
+        '''
         self.__fields = fields
 
 
@@ -58,11 +58,28 @@ class NMEASentence(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def field(self, index):
+    def int(self, index):
+        str = self.str(index)
+        number = None if str is None else int(str)
+
+        return number
+
+
+    def float(self, index, precision):
+        str = self.str(index)
+        number = None if str is None else float(str)
+
+        if number is None:
+            return None
+
+        return round(number, precision)
+
+
+    def str(self, index):
         return self.__fields[index] if len(self.__fields[index]) > 0 else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NMEASentence:{fields:%s}" % self.__fields
+        return "NMEASentence:{fields:%s}" % (self.__fields)
