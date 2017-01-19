@@ -1,5 +1,5 @@
 # scs-data
-The root of all South Coast Science environmental monitoring software systems.
+The root of all South Coast Science environmental monitoring applications.
 
 Required libraries: 
 
