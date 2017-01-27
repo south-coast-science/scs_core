@@ -77,7 +77,7 @@ class EEPROMImage(object):
             hexs = ' '.join(["%02x" % value for value in values])
             hexs = hexs.ljust(width * 3)
 
-            chrs = ''.join(chr(value) if 31 < value < 129 else '.' for value in values)         # non-printable codes are '.'
+            chrs = ''.join(chr(value) if 31 < value < 128 else '.' for value in values)         # non-printable codes are '.'
 
             print("0x%04x: %s        %s" % (addr, hexs, chrs))
 
