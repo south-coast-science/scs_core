@@ -12,6 +12,8 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
+# TODO: throughout, replace host-as-a-parameter with an abstract Host class?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceAuth(PersistentJSONable):
