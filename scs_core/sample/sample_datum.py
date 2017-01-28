@@ -52,6 +52,6 @@ class SampleDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        vals = '[' + ', '.join([str(key) + ': ' + str(self.val[key]) for key in self.val]) + ']'
+        vals = '[' + ', '.join(str(key) + ': ' + str(self.val[key]) for key in self.val) + ']'
 
         return self.__class__.__name__ + ":{rec:%s, val:%s}" % (self.rec, vals)

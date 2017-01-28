@@ -97,8 +97,8 @@ class ExceptionReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        args = '[' + ', '.join([str(arg) for arg in self.args]) + ']'
-        trace = '[' + ', '.join([str(entry) for entry in self.trace]) + ']'
+        args = '[' + ', '.join(str(arg) for arg in self.args) + ']'
+        trace = '[' + ', '.join(str(entry) for entry in self.trace) + ']'
 
         return "ExceptionReport:{cls:%s, args:%s, trace:%s, summary:%s}" % \
                     (self.cls.__name__, args, trace, self.summary)

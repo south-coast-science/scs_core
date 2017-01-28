@@ -96,7 +96,7 @@ class GPGSA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        svs = '[' + ', '.join([str(sv) for sv in self.__sv]) + ']'
+        svs = '[' + ', '.join(str(sv) for sv in self.__sv) + ']'
 
         return "GPGSA:{op_mode:%s, nav_mode:%s, sv:%s, pdop:%s, hdop:%s, vdop:%s}" % \
                     (self.op_mode, self.nav_mode, svs, self.pdop, self.hdop, self.vdop)

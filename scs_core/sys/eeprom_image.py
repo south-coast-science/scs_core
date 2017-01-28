@@ -74,7 +74,7 @@ class EEPROMImage(object):
         while addr < len(self.__content):
             values = self.__content[addr: addr + width]
 
-            hexs = ' '.join(["%02x" % value for value in values])
+            hexs = ' '.join("%02x" % value for value in values)
             hexs = hexs.ljust(width * 3)
 
             chrs = ''.join(chr(value) if 31 < value < 128 else '.' for value in values)         # non-printable codes are '.'

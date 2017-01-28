@@ -81,7 +81,7 @@ class GPGSV(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        sats = '[' + ', '.join([str(sat) for sat in self.__sats]) + ']'
+        sats = '[' + ', '.join(str(sat) for sat in self.__sats) + ']'
 
         return "GPGSV:{num_msg:%s, msg_num:%s, num_sv:%s, sats:%s}" % \
                     (self.num_msg, self.msg_num, self.num_sv, sats)

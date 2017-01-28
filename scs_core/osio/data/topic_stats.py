@@ -86,7 +86,7 @@ class TopicStats(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        contributors = '[' + ', '.join([str(contributor) for contributor in self.contributors]) + ']'
+        contributors = '[' + ', '.join(str(contributor) for contributor in self.contributors) + ']'
 
         return "TopicStats:{period:%s, last_reading:%s, average_frequency:%s, total:%s, contributors:%s, last_location:%s}" % \
                     (self.period, self.last_reading, self.average_frequency, self.total, contributors, self.last_location)
