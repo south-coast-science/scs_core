@@ -6,6 +6,7 @@ Created on 2 Aug 2016
 
 import _csv
 import json
+import os
 import sys
 
 from collections import OrderedDict
@@ -25,7 +26,7 @@ class CSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, append=False):
         """
         Constructor
         """
@@ -33,10 +34,14 @@ class CSVWriter(object):
         self.__has_header = False
 
         if self.__filename is None:
+            self.__append = False
+
             self.__file = sys.stdout
             self.__writer = _csv.writer(self.__file)
         else:
-            self.__file = open(self.__filename, "w")
+            self.__append = append and os.path.exists(self.__filename)
+
+            self.__file = open(self.__filename, "a" if self.__append else "w")
             self.__writer = CSVLogger(self.__file)
 
 
@@ -49,7 +54,7 @@ class CSVWriter(object):
         jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
         datum = CSVDict(jdict)
 
-        if not self.__has_header:
+        if not self.__has_header and not self.__append:
             self.__writer.writerow(datum.header)
             self.__has_header = True
 
@@ -57,8 +62,6 @@ class CSVWriter(object):
 
         if self.__filename is None:
             sys.stdout.flush()
-
-
 
 
     def close(self):
@@ -77,6 +80,11 @@ class CSVWriter(object):
 
 
     @property
+    def append(self):
+        return self.__append
+
+
+    @property
     def has_header(self):
         return self.__has_header
 
@@ -84,4 +92,4 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, has_header:%s}" % (self.filename, self.has_header)
+        return "CSVWriter:{filename:%s, append:%s, has_header:%s}" % (self.filename, self.append, self.has_header)
