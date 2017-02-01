@@ -43,4 +43,4 @@ class GPTime(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPTime:{time:%s}" % (self.time)
+        return "GPTime:{time:%s}" % self.time

@@ -82,4 +82,4 @@ class NMEASentence(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NMEASentence:{fields:%s}" % (self.__fields)
+        return "NMEASentence:{fields:%s}" % self.__fields
