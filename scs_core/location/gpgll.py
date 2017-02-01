@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -12,7 +12,7 @@ $GPGLL,5049.37823,N,00007.37872,W,103228.00,A,D*7F
 example values:
 GPGLL:{loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, time:GPTime:{time:141058.00}, status:A, pos_mode:D}
 GPGLL:{loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, time:GPTime:{time:140047.00}, status:V, pos_mode:N}
-'''
+"""
 
 from scs_core.location.gploc import GPLoc
 from scs_core.location.gptime import GPTime
@@ -21,9 +21,9 @@ from scs_core.location.gptime import GPTime
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGLL(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPGLL"
 
@@ -53,9 +53,9 @@ class GPGLL(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, loc, time, status, pos_mode):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__loc = loc                    # GPLoc
         self.__time = time                  # GPTime
 

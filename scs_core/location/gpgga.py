@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -12,7 +12,7 @@ $GPGGA,092725.00,4717.11399,N,00833.91590,E,1,08,1.01,499.6,M,48.0,M,,*5B
 example values:
 GPGGA:{time:GPTime:{time:141058.00}, loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, quality:2, num_sv:06, hdop:3.10, alt:37.5, sep:45.4, diff_age:None, diff_station:0000}
 GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, quality:0, num_sv:00, hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
-'''
+"""
 
 from scs_core.location.gploc import GPLoc
 from scs_core.location.gptime import GPTime
@@ -21,9 +21,9 @@ from scs_core.location.gptime import GPTime
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGGA(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPGGA"
 
@@ -65,9 +65,9 @@ class GPGGA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__time = time                          # GPTime
         self.__loc = loc                            # GPLoc
 

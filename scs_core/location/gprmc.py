@@ -1,4 +1,4 @@
-'''
+"""
 Created on 30 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -12,7 +12,7 @@ $GPRMC,083559.00,A,4717.11437,N,00833.91522,E,0.004,77.52,091202,,,A*57
 example values:
 GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A, loc:GPLoc:{lat:5049.38464, ns:N, lng:00007.37785, ew:W}, spd:0.005, cog:None, mv:None, mv_ew:None, pos_mode:D}
 GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
-'''
+"""
 
 from scs_core.location.gpdatetime import GPDateTime
 from scs_core.location.gploc import GPLoc
@@ -21,9 +21,9 @@ from scs_core.location.gploc import GPLoc
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPRMC(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPRMC"
 
@@ -61,15 +61,15 @@ class GPRMC(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__datetime = datetime          # GPDateTime
 
         self.__status = status              # string
         self.__loc = loc                    # GPLoc
 
-        self.__spd = spd                    # float(3) - speed over gound (knots)
+        self.__spd = spd                    # float(3) - speed over ground (knots)
         self.__cog = cog                    # float(2) - degrees course over ground
         self.__mv = mv                      # float(2) - degrees magnetic variation
         self.__mv_ew = mv_ew                # string - magnetic variation indicator

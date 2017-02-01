@@ -1,4 +1,4 @@
-'''
+"""
 Created on 31 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -12,15 +12,15 @@ $GPGSV,3,1,10,  23,38,230,44,  29,71,156,47,  07,29,116,41,  08,09,081,36  *7F
 example values:
 GPGSV:{num_msg:3, msg_num:1, num_sv:12, sats:[GPSAT:{sv:02, elv:09, az:214, cno:28}, GPSAT:{sv:05, elv:70, az:230, cno:39}, GPSAT:{sv:07, elv:38, az:057, cno:None}, GPSAT:{sv:08, elv:00, az:060, cno:None}]}
 GPGSV:{num_msg:1, msg_num:1, num_sv:01, sats:[GPSAT:{sv:02, elv:None, az:None, cno:26}]}
-'''
+"""
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPGSV(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     MESSAGE_ID = "$GPGSV"
 
@@ -46,9 +46,9 @@ class GPGSV(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, num_msg, msg_num, num_sv, sats):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__num_msg = num_msg            # int
         self.__msg_num = msg_num            # int
         self.__num_sv = num_sv              # int
@@ -90,16 +90,16 @@ class GPGSV(object):
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPSAT(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, sv, elv, az, cno):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__sv = sv              # int
 
         self.__elv = elv            # int

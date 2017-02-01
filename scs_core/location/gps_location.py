@@ -1,4 +1,4 @@
-'''
+"""
 Created on 10 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
@@ -6,7 +6,7 @@ Created on 10 Jan 2017
 example use:
 ./socket_receiver.py | ./csv_writer.py status.csv -e | ./histo_chart.py val.loc.lat -v -e -o lat.csv -x 50.8228 50.8232
 ./socket_receiver.py | ./csv_writer.py status.csv -e | ./histo_chart.py val.loc.lng -v -e -o lng.csv -x -0.1233 -0.1227
-'''
+"""
 
 from collections import OrderedDict
 
@@ -16,9 +16,9 @@ from scs_core.data.json import JSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPSLocation(JSONable):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -43,9 +43,9 @@ class GPSLocation(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, lat, lng, quality):
-        '''
+        """
         Constructor
-        '''
+        """
         self.__lat = lat
         self.__lng = lng
         self.__quality = quality
