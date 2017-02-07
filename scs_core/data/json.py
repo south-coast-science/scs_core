@@ -34,8 +34,6 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def load_from_file(cls, filename):
-        print("loading:%s" % filename)
-
         try:
             f = open(filename, "r")                 # cls.filename(host)
         except FileNotFoundError:
@@ -44,10 +42,7 @@ class PersistentJSONable(JSONable):
         jstr = f.read().strip()
         f.close()
 
-        print("got:%s" % jstr)
-
         jdict = json.loads(jstr)
-        print("jdict:%s" % jdict)
 
         return cls.construct_from_jdict(jdict)
 
