@@ -33,16 +33,21 @@ class PersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, host):
+    def load_from_file(cls, filename):
+        print("loading:%s" % filename)
+
         try:
-            f = open(cls.filename(host), "r")
+            f = open(filename, "r")                 # cls.filename(host)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
 
         jstr = f.read().strip()
         f.close()
 
+        print("got:%s" % jstr)
+
         jdict = json.loads(jstr)
+        print("jdict:%s" % jdict)
 
         return cls.construct_from_jdict(jdict)
 
@@ -63,10 +68,10 @@ class PersistentJSONable(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, filename):
         jstr = JSONify.dumps(self)
 
-        f = open(self.__class__.filename(host), "w")
+        f = open(filename, "w")                     # self.__class__.filename(host)
         f.write(jstr)
         f.close()
 

@@ -28,6 +28,11 @@ class DeviceAuth(PersistentJSONable):
         return host.SCS_OSIO + cls.__FILENAME
 
 
+    @classmethod
+    def load_from_host(cls, host):
+        return cls.load_from_file(cls.filename(host))
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -53,6 +58,12 @@ class DeviceAuth(PersistentJSONable):
 
         self.__device_id = device_id                    # String
         self.__device_password = device_password        # String
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, host):
+        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
