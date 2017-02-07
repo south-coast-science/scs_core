@@ -51,12 +51,6 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def filename(cls, name):
-        pass
-
-
-    @classmethod
-    @abstractmethod
     def construct_from_jdict(cls, jdict):
         pass
 
