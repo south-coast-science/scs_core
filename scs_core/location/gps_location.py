@@ -82,5 +82,5 @@ class GPSLocation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __str__(self, *lng, **kwlng):
+    def __str__(self, *args, **kwargs):
         return "GPSLocation:{lat:%s, lng:%s, quality:%s}" % (self.lat, self.lng, self.quality)
