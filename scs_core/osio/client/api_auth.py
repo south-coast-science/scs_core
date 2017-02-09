@@ -2,9 +2,6 @@
 Created on 17 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
-
 """
 
 from collections import OrderedDict
