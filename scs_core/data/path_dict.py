@@ -24,11 +24,11 @@ class PathDict(JSONable):
     @classmethod
     def construct_from_jstr(cls, jstr):
         try:
-            jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+            jdictionary = json.loads(jstr, object_pairs_hook=OrderedDict)
         except RuntimeError:
             return None
 
-        return PathDict(jdict)
+        return PathDict(jdictionary)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -55,25 +55,25 @@ class PathDict(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, dict=None):
+    def __init__(self, dictionary=None):
         """
         Constructor
         """
-        self.__dict = dict if dict else OrderedDict()
+        self.__dictionary = dictionary if dictionary else OrderedDict()
 
 
     # -----------------------------------------------------------------------------------------------------------------
     # source...
 
     def has_path(self, path):
-        return self.__has_path(self.__dict, path.split("."))
+        return self.__has_path(self.__dictionary, path.split("."))
 
 
     def node(self, *paths):
         if not paths:
-            return self.__dict
+            return self.__dictionary
 
-        values = tuple([self.__node(self.__dict, path.split(".")) for path in paths])
+        values = tuple([self.__node(self.__dictionary, path.split(".")) for path in paths])
 
         return values[0] if len(values) == 1 else values
 
@@ -83,15 +83,15 @@ class PathDict(JSONable):
 
     def copy(self, other, *paths):
         if not paths:
-            self.__dict = deepcopy(other.__dict)
+            self.__dictionary = deepcopy(other.__dictionary)
             return
 
         for path in paths:
-            self.__append(self.__dict, path.split("."), other.node(path))
+            self.__append(self.__dictionary, path.split("."), other.node(path))
 
 
     def append(self, path, value):
-        self.__append(self.__dict, path.split("."), value)
+        self.__append(self.__dictionary, path.split("."), value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -160,10 +160,10 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return self.__dict
+        return self.__dictionary
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PathDict:{dict:%s}" % (self.node())
+        return "PathDict:{dictionary:%s}" % (self.node())

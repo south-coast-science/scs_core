@@ -61,5 +61,5 @@ class SystemTemp(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __str__(self, *host, **kwhost):
+    def __str__(self, *args, **kwargs):
         return "SystemTemp:{board:%s, host:%s}" % (self.board, self.host)

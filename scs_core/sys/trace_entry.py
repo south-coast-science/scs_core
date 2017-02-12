@@ -63,5 +63,5 @@ class TraceEntry(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __str__(self, *statement, **kwstatement):
+    def __str__(self, *args, **kwargs):
         return "TraceEntry:{location:%s, statement:%s}" % (self.location, self.statement)

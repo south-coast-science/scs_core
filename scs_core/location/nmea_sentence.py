@@ -59,8 +59,8 @@ class NMEASentence(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def int(self, index):
-        str = self.str(index)
-        number = None if str is None else int(str)
+        number_str = self.str(index)
+        number = None if number_str is None else int(number_str)
 
         return number
 
