@@ -13,6 +13,7 @@ examples:
 import json
 
 from scs_core.data.json import JSONify
+
 from scs_core.osio.data.device import Device
 from scs_core.osio.data.location import Location
 
