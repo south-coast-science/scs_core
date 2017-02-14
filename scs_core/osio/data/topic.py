@@ -37,7 +37,7 @@ class Topic(JSONable):
         is_public = jdict.get('public')
         rollups_enabled = jdict.get('rollups-enabled')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic_info'))
+        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         schema_id = jdict.get('schema-id', 0)
 
@@ -73,7 +73,7 @@ class Topic(JSONable):
         jdict['public'] = self.is_public
         jdict['rollups-enabled'] = self.is_public
 
-        jdict['topic-info'] = self.topic_info.as_json()
+        jdict['topic-info'] = self.topic_info
         jdict['schema-id'] = self.schema_id
 
         return jdict

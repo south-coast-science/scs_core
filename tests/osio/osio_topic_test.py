@@ -12,6 +12,7 @@ examples:
 
 import json
 
+from scs_core.data.json import JSONify
 from scs_core.osio.data.topic import Topic
 
 
@@ -56,3 +57,5 @@ topic = Topic.construct_from_jdict(topic_jdict)
 print(topic)
 print("-")
 
+print(JSONify.dumps(topic))
+print("-")
