@@ -1,19 +1,22 @@
 """
-Created on 14 Feb 2017
+Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+deliver-change
+870725f3-e692-4538-aa81-bfa8b51d44e7
 
 south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
 from scs_core.osio.client.rest_client import RESTClient
-from scs_core.osio.data.schema import Schema
+from scs_core.osio.data.topic import Topic
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SchemaFinder(object):
+class TopicManager(object):
     """
     classdocs
     """
@@ -29,8 +32,8 @@ class SchemaFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_all(self):
-        path = '/v2/schemas'
+    def find_for_org(self, org_id):
+        path = '/v2/orgs/' + org_id + '/topics'
 
         # request...
         self.__rest_client.connect()
@@ -39,12 +42,13 @@ class SchemaFinder(object):
 
         self.__rest_client.close()
 
-        schemas = [Schema.construct_from_jdict(schema_jdict) for schema_jdict in response_jdict]
+        topics_jdict = response_jdict.get('topics')
+        topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
 
-        return schemas
+        return topics
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SchemaFinder:{rest_client:%s}" % self.__rest_client
+        return "TopicManager:{rest_client:%s}" % self.__rest_client

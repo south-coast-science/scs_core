@@ -21,7 +21,7 @@ from scs_core.osio.data.message import Message
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageFinder(object):
+class MessageManager(object):
     """
     classdocs
     """
@@ -81,7 +81,7 @@ class MessageFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageFinder:{rest_client:%s}" % self.__rest_client
+        return "MessageManager:{rest_client:%s}" % self.__rest_client
 
 
 # --------------------------------------------------------------------------------------------------------------------
