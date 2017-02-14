@@ -17,6 +17,8 @@ from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.message import Message
 
 
+# TODO: how should we distinguish between HTTP and MQTT topic clients? unification here?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageFinder(object):

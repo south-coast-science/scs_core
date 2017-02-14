@@ -15,8 +15,6 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.osio.data.message_payload import MessagePayload
 
 
-# TODO: how should we distinguish between HTTP and MQTT topic clients? unification here?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Message(JSONable):
@@ -27,8 +25,8 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def find_for_topic(cls, http_client, api_key, topic, start_date, end_date):     # TODO: use auth, not api_key
-        finder = MessageFinder(http_client, api_key)
+    def find_for_topic(cls, http_client, api_key, topic, start_date, end_date):         # TODO: remove finder method
+        finder = MessageFinder(http_client, api_key)                                    # TODO: use auth, not api_key
 
         return finder.find_for_topic(topic, start_date, end_date)
 

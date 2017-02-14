@@ -26,7 +26,7 @@ class Topic(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def find_for_org(cls, http_client, api_key, org_id):
+    def find_for_org(cls, http_client, api_key, org_id):        # TODO: remove finder method
         finder = TopicFinder(http_client, api_key)
 
         return finder.find_for_org(org_id)
