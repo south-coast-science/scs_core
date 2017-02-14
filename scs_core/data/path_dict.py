@@ -23,6 +23,8 @@ class PathDict(JSONable):
 
     @classmethod
     def construct_from_jstr(cls, jstr):
+        # print("*** PathDict.construct_from_jstr: %s" % jstr)
+
         try:
             jdictionary = json.loads(jstr, object_pairs_hook=OrderedDict)
         except RuntimeError:

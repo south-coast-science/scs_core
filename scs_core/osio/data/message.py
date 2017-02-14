@@ -25,15 +25,6 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def find_for_topic(cls, http_client, api_key, topic, start_date, end_date):         # TODO: remove finder method
-        finder = MessageFinder(http_client, api_key)                                    # TODO: use auth, not api_key
-
-        return finder.find_for_topic(topic, start_date, end_date)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -81,8 +72,3 @@ class Message(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "Message:{date:%s, payload:%s}" % (self.date, self.payload)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-from scs_core.osio.finder.message_finder import MessageFinder

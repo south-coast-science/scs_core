@@ -26,15 +26,6 @@ class Topic(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def find_for_org(cls, http_client, api_key, org_id):        # TODO: remove finder method
-        finder = TopicFinder(http_client, api_key)
-
-        return finder.find_for_org(org_id)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -130,8 +121,3 @@ class Topic(JSONable):
     def __str__(self, *args, **kwargs):
         return "Topic:{path:%s, name:%s, description:%s, is_public:%s, rollups_enabled:%s, topic_info:%s, schema_id:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.rollups_enabled, self.topic_info, self.schema_id)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-from scs_core.osio.finder.topic_finder import TopicFinder
