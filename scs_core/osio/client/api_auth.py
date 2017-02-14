@@ -16,7 +16,7 @@ class APIAuth(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "rest_client_auth.json"
+    __FILENAME = "osio_api_auth.json"
 
     @classmethod
     def filename(cls, host):
