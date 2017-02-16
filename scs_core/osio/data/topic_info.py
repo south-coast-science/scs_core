@@ -16,6 +16,10 @@ class TopicInfo(JSONable):
     classdocs
    """
 
+    FORMAT_JSON = "application/json"
+    FORMAT_TEXT = "text"
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -51,13 +55,13 @@ class TopicInfo(JSONable):
         if self.format:
             jdict['format'] = self.format
 
-        if self.format:
+        if self.type:
             jdict['type'] = self.type
 
-        if self.format:
+        if self.schema:
             jdict['schema'] = self.schema
 
-        if self.format:
+        if self.graph_path:
             jdict['graph-path'] = self.graph_path
 
         return jdict

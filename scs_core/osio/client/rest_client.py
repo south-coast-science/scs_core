@@ -64,9 +64,13 @@ class RESTClient(object):
         payload_jstr = JSONify.dumps(payload_jdict)
 
         response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
-        response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 
-        return response_jdict
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = response_jstr
+
+        return response
 
 
     def put(self, path, payload_jdict):                # TODO: make the jdict here?

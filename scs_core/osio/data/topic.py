@@ -66,7 +66,7 @@ class Topic(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['path'] = self.path
+        jdict['topic'] = self.path
         jdict['name'] = self.name
         jdict['description'] = self.description
 
@@ -74,7 +74,9 @@ class Topic(JSONable):
         jdict['rollups-enabled'] = self.is_public
 
         jdict['topic-info'] = self.topic_info
-        jdict['schema-id'] = self.schema_id
+
+        if self.schema_id:
+            jdict['schema-id'] = self.schema_id
 
         return jdict
 

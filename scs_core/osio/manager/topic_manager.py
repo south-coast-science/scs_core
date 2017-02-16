@@ -48,6 +48,21 @@ class TopicManager(object):
         return topics
 
 
+    def create(self, topic):
+        path = '/v2/topics'
+
+        # request...
+        self.__rest_client.connect()
+
+        response = self.__rest_client.post(path, topic.as_json())
+
+        self.__rest_client.close()
+
+        success = response == topic.path        # TODO: handle error document otherwise
+
+        return success
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
