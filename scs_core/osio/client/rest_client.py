@@ -84,9 +84,13 @@ class RESTClient(object):
 
     def delete(self, path):
         response_jstr = self.__http_client.delete(path, self.__headers)
-        response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 
-        return response_jdict
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = response_jstr
+
+        return response
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -10,6 +10,8 @@ south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
+import urllib.parse
+
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.topic import Topic
 
@@ -58,7 +60,22 @@ class TopicManager(object):
 
         self.__rest_client.close()
 
-        success = response == topic.path        # TODO: handle error document otherwise
+        success = response == topic.path
+
+        return success
+
+
+    def delete(self, topic_path):
+        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
+
+        # request...
+        self.__rest_client.connect()
+
+        response = self.__rest_client.delete(path)
+
+        self.__rest_client.close()
+
+        success = response == ''
 
         return success
 
