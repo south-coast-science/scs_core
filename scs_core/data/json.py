@@ -23,7 +23,6 @@ class JSONable(object):
         pass
 
 
-
 # TODO: maybe give this class a host field?
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ class JSONify(json.JSONEncoder):
 
     @staticmethod
     def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None,
-                indent=None, separators=None, default=None, sort_keys=False, **kw):
+              indent=None, separators=None, default=None, sort_keys=False, **kw):
 
         handler = JSONify if cls is None else cls
 
