@@ -10,8 +10,11 @@ example sentence:
 $GPRMC,083559.00,A,4717.11437,N,00833.91522,E,0.004,77.52,091202,,,A*57
 
 example values:
-GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A, loc:GPLoc:{lat:5049.38464, ns:N, lng:00007.37785, ew:W}, spd:0.005, cog:None, mv:None, mv_ew:None, pos_mode:D}
-GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
+GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A,
+        loc:GPLoc:{lat:5049.38464, ns:N, lng:00007.37785, ew:W}, spd:0.005, cog:None, mv:None, mv_ew:None, pos_mode:D}
+
+GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V,
+        loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
 """
 
 from scs_core.location.gpdatetime import GPDateTime
@@ -75,6 +78,12 @@ class GPRMC(object):
         self.__mv_ew = mv_ew                # string - magnetic variation indicator
 
         self.__pos_mode = pos_mode          # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def has_position(self):
+        return self.__loc is not None and self.__loc.has_position()
 
 
     # ----------------------------------------------------------------------------------------------------------------

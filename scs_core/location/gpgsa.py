@@ -61,6 +61,37 @@ class GPGSA(object):
         self.__vdop = vdop                  # float(2)
 
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.__dict__ == other.__dict__
+
+        # if self.op_mode != other.op_mode:
+        #     return False
+        #
+        # if self.nav_mode != other.nav_mode:
+        #     return False
+        #
+        # if self.pdop != other.pdop:
+        #     return False
+        #
+        # if self.hdop != other.hdop:
+        #     return False
+        #
+        # if self.vdop != other.vdop:
+        #     return False
+        #
+        # return True
+
+
+    def __ne__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return not self == other
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

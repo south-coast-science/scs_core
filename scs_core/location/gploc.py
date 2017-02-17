@@ -30,11 +30,17 @@ class GPLoc(object):
         """
         Constructor
         """
-        self.__lat = lat                #   string - ddmm.mmmmm
-        self.__ns = ns                  #   string - { N | S}
+        self.__lat = lat                # string - ddmm.mmmmm
+        self.__ns = ns                  # string - { N | S}
 
-        self.__lng = lng                #   string - dddmm.mmmmm
-        self.__ew = ew                  #   string - { E | W }
+        self.__lng = lng                # string - dddmm.mmmmm
+        self.__ew = ew                  # string - { E | W }
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def has_position(self):
+        return self.deg_lat() is not None and self.deg_lng() is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
