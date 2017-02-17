@@ -23,6 +23,9 @@ class JSONable(object):
         pass
 
 
+
+# TODO: maybe give this class a host field?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PersistentJSONable(JSONable):
