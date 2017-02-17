@@ -38,7 +38,7 @@ topic_jstr = '''  {
     "unit": "degrees, degrees, 0-3, -, -, decibels (dB), decibels (dB)",
     "name": "GPS @ Air / 2015205",
     "public": true,
-    "topic": "/orgs/deliver-change/air-te-v2/2015205/location",
+    "topic": "/orgs/south-coast-science-dev/air-te-v2/2015205/location",
     "bookmark-count": 0,
     "topic-info": {
       "format": "application/json",

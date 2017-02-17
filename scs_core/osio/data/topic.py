@@ -3,9 +3,6 @@ Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-deliver-change
-870725f3-e692-4538-aa81-bfa8b51d44e7
-
 south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
