@@ -23,7 +23,7 @@ class JSONable(object):
         pass
 
 
-# TODO: maybe give this class a host field?
+# TODO: move PersistentJSONable to host.data
 
 # --------------------------------------------------------------------------------------------------------------------
 
