@@ -35,20 +35,20 @@ class Publication(PersistentJSONable):
         if not jdict:
             return None
 
-        location_path_root = jdict.get('location-path-root')
-        device_path_root = jdict.get('device-path-root')
+        location_path = jdict.get('location-path')
+        device_path = jdict.get('device-path')
 
-        return Publication(location_path_root, device_path_root)
+        return Publication(location_path, device_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, location_path_root, device_path_root):
+    def __init__(self, location_path, device_path):
         """
         Constructor
         """
-        self.__location_path_root = location_path_root          # string
-        self.__device_path_root = device_path_root              # string
+        self.__location_path = location_path          # string
+        self.__device_path = device_path              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,36 +62,43 @@ class Publication(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['location-path-root'] = self.__location_path_root
-        jdict['device-path-root'] = self.__device_path_root
+        jdict['location-path'] = self.__location_path
+        jdict['device-path'] = self.__device_path
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
     def gasses_topic(self):
-        return self.__location_path_root + '/gasses'
+        return self.__location_path + '/gasses'
 
 
-    @property
     def particulates_topic(self):
-        return self.__location_path_root + '/particulates'
+        return self.__location_path + '/particulates'
 
 
-    @property
     def climate_topic(self):
-        return self.__location_path_root + '/climate'
+        return self.__location_path + '/climate'
+
+
+    def status_topic(self, device_id):
+        return self.__device_path + '/' + device_id.topic_label() + '/status'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def location_path(self):
+        return self.__location_path
 
 
     @property
-    def status_topic(self):
-        return self.__device_path_root + '/status'             # TODO: need to get the device ID!
+    def device_path(self):
+        return self.__device_path
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Publication:{location_path_root:%s, device_path_root:%s}" % \
-               (self.__location_path_root, self.__device_path_root)
+        return "Publication:{location_path:%s, device_path:%s}" % (self.location_path, self.device_path)
