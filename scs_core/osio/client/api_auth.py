@@ -2,6 +2,9 @@
 Created on 17 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"org-id": "south-coast-science-dev", "api-key": "43308b72-ad41-4555-b075-b4245c1971db"}
 """
 
 from collections import OrderedDict

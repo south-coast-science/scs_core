@@ -3,8 +3,8 @@ Created on 17 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
-
+example document:
+{"username": "southcoastscience-dev", "client-id": "5406", "client-password": "jtxSrK2e"}
 """
 
 from collections import OrderedDict
