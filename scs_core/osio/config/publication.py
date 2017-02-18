@@ -9,6 +9,8 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
+# TODO: we need to map AFE configs to OSIO schemas
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Publication(PersistentJSONable):
@@ -16,7 +18,26 @@ class Publication(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "osio_publication.json"
+    CLIMATE_NAME =                  "Climate"
+    CLIMATE_DESCRIPTION =           "temperature (Centigrade), relative humidity (%)"
+    CLIMATE_SCHEMA =                None                                            # TODO: needs a schema
+
+    GASES_NAME =                    "Gas concentrations"
+    GASES_DESCRIPTION =             "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT"
+    GASES_SCHEMA =                  28                                              # TODO: should come from AFEConfig
+
+    PARTICULATES_NAME =             "Particulate densities"
+    PARTICULATES_DESCRIPTION =      "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7"
+    PARTICULATES_SCHEMA =           29
+
+    STATUS_NAME =                   "Device status"
+    STATUS_DESCRIPTION =            "lat (deg), lng (deg), DFE temp (Centigrade), host temp (Centigrade), errors"
+    STATUS_SCHEMA =                 None                                            # TODO: needs a schema
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __FILENAME =                    "osio_publication.json"
 
     @classmethod
     def filename(cls, host):
@@ -70,16 +91,16 @@ class Publication(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def climate_topic(self):
+        return self.__location_path + '/climate'
+
+
     def gasses_topic(self):
         return self.__location_path + '/gasses'
 
 
     def particulates_topic(self):
         return self.__location_path + '/particulates'
-
-
-    def climate_topic(self):
-        return self.__location_path + '/climate'
 
 
     def status_topic(self, device_id):

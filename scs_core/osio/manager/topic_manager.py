@@ -31,6 +31,26 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def find(self, topic_path):
+        path = '/v1/topics' + urllib.parse.quote(topic_path, '')
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            response_jdict = self.__rest_client.get(path)
+        except RuntimeError:
+            response_jdict = None
+
+        self.__rest_client.close()
+
+        print("response: %s" % response_jdict)
+
+        topic = Topic.construct_from_jdict(response_jdict)
+
+        return topic
+
+
     def find_for_org(self, org_id):
         path = '/v2/orgs/' + org_id + '/topics'
 
