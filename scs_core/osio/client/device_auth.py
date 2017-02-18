@@ -21,7 +21,7 @@ class DeviceAuth(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "osio_device_auth.json"
+    __FILENAME = "osio_client_auth.json"
 
     @classmethod
     def filename(cls, host):
@@ -42,22 +42,22 @@ class DeviceAuth(PersistentJSONable):
 
         username = jdict.get('username')
 
-        device_id = jdict.get('device-id')
-        device_password = jdict.get('device-password')
+        client_id = jdict.get('client-id')
+        client_password = jdict.get('client-password')
 
-        return DeviceAuth(username, device_id, device_password)
+        return DeviceAuth(username, client_id, client_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, device_id, device_password):
+    def __init__(self, username, client_id, client_password):
         """
         Constructor
         """
         self.__username = username                      # String
 
-        self.__device_id = device_id                    # String
-        self.__device_password = device_password        # String
+        self.__client_id = client_id                    # String
+        self.__client_password = client_password        # String
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -73,8 +73,8 @@ class DeviceAuth(PersistentJSONable):
 
         jdict['username'] = self.username
 
-        jdict['device-id'] = self.device_id
-        jdict['device-password'] = self.device_password
+        jdict['client-id'] = self.client_id
+        jdict['client-password'] = self.client_password
 
         return jdict
 
@@ -87,17 +87,17 @@ class DeviceAuth(PersistentJSONable):
 
 
     @property
-    def device_id(self):
-        return self.__device_id
+    def client_id(self):
+        return self.__client_id
 
 
     @property
-    def device_password(self):
-        return self.__device_password
+    def client_password(self):
+        return self.__client_password
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceAuth:{username:%s, device_id:%s, device_password:%s}" % \
-                    (self.username, self.device_id, self.device_password)
+        return "DeviceAuth:{username:%s, client_id:%s, client_password:%s}" % \
+                    (self.username, self.client_id, self.client_password)

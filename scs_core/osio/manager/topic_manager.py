@@ -44,8 +44,6 @@ class TopicManager(object):
 
         self.__rest_client.close()
 
-        print("response: %s" % response_jdict)
-
         topic = Topic.construct_from_jdict(response_jdict)
 
         return topic

@@ -61,12 +61,16 @@ class Device(JSONable):
 
         tags = jdict.get('tags')
 
-        return Device(client_id, name, description, password, password_is_locked, location, device_type, batch, org_id, owner_id, tags)
+        device = Device(client_id, name, description, password, password_is_locked, location,
+                        device_type, batch, org_id, owner_id, tags)
+
+        return device
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, client_id, name, description, password, password_is_locked, location, device_type, batch, org_id, owner_id, tags):
+    def __init__(self, client_id, name, description, password, password_is_locked, location,
+                 device_type, batch, org_id, owner_id, tags):
         """
         Constructor
         """
@@ -180,5 +184,7 @@ class Device(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Device:{client_id:%s, name:%s, description:%s, password:%s, password_is_locked:%s, location:%s, device_type:%s, batch:%s, org_id:%s, owner_id:%s, tags:%s}" % \
-                    (self.client_id, self.name, self.description, self.password, self.password_is_locked, self.location, self.device_type, self.batch, self.org_id, self.owner_id, self.tags)
+        return "Device:{client_id:%s, name:%s, description:%s, password:%s, password_is_locked:%s, \
+        location:%s, device_type:%s, batch:%s, org_id:%s, owner_id:%s, tags:%s}" % \
+                    (self.client_id, self.name, self.description, self.password, self.password_is_locked,
+                     self.location, self.device_type, self.batch, self.org_id, self.owner_id, self.tags)
