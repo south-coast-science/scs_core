@@ -10,13 +10,9 @@ device auth:
 {"username": "southcoastscience-dev", "device-id": "5406", "device-password": "jtxSrK2e"}
 """
 
-import urllib.parse
-
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.device import Device
 
-
-# TODO: device_id should be client_id
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -36,26 +32,8 @@ class DeviceManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_for_user(self, user_id, device_id):
-        path = '/v1/users/' + user_id + '/devices/' + str(device_id)
-
-        # request...
-        self.__rest_client.connect()
-
-        try:
-            response_jdict = self.__rest_client.get(path)
-        except RuntimeError:
-            response_jdict = None
-
-        self.__rest_client.close()
-
-        device = Device.construct_from_jdict(response_jdict)
-
-        return device
-
-
-    def find_for_org(self, org_id, device_id):
-        path = '/v1/orgs/' + org_id + '/devices/' + str(device_id)
+    def find(self, user_id, client_id):
+        path = '/v1/users/' + user_id + '/devices/' + client_id
 
         # request...
         self.__rest_client.connect()
@@ -82,7 +60,7 @@ class DeviceManager(object):
 
         self.__rest_client.close()
 
-        devices = [Device.construct_from_jdict(device_jdict) for device_jdict in response_jdict] if response_jdict else []
+        devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
@@ -97,7 +75,7 @@ class DeviceManager(object):
 
         self.__rest_client.close()
 
-        devices = [Device.construct_from_jdict(device_jdict) for device_jdict in response_jdict] if response_jdict else []
+        devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
@@ -112,6 +90,8 @@ class DeviceManager(object):
 
         self.__rest_client.close()
 
+        print("response: %s" % response)
+
         # TODO: returns something?
 
 
@@ -119,8 +99,8 @@ class DeviceManager(object):
         pass
 
 
-    def delete(self, device_id):
-        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
+    def delete(self, user_id, client_id):
+        path = '/v1/users/' + user_id + '/devices/' + client_id
 
         # request...
         self.__rest_client.connect()

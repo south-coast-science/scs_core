@@ -21,7 +21,7 @@ class DeviceAuth(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "osio_client_auth.json"
+    __FILENAME = "osio_device_auth.json"
 
     @classmethod
     def filename(cls, host):
