@@ -18,26 +18,26 @@ class Publication(PersistentJSONable):
     classdocs
     """
 
-    CLIMATE_NAME =                  "Climate"
-    CLIMATE_DESCRIPTION =           "temperature (Centigrade), relative humidity (%)"
-    CLIMATE_SCHEMA =                None                                            # TODO: needs a schema
+    CLIMATE_NAME =              "Climate"
+    CLIMATE_DESCRIPTION =       "temperature (Centigrade), relative humidity (%)"
+    CLIMATE_SCHEMA =            None                                            # TODO: needs a schema
 
-    GASES_NAME =                    "Gas concentrations"
-    GASES_DESCRIPTION =             "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT"
-    GASES_SCHEMA =                  28                                              # TODO: should come from AFEConfig
+    GASES_NAME =                "Gas concentrations"
+    GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT"
+    GASES_SCHEMA =              28                                              # TODO: should come from AFEConfig
 
-    PARTICULATES_NAME =             "Particulate densities"
-    PARTICULATES_DESCRIPTION =      "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7"
-    PARTICULATES_SCHEMA =           29
+    PARTICULATES_NAME =         "Particulate densities"
+    PARTICULATES_DESCRIPTION =  "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7"
+    PARTICULATES_SCHEMA =       29
 
-    STATUS_NAME =                   "Device status"
-    STATUS_DESCRIPTION =            "lat (deg), lng (deg), DFE temp (Centigrade), host temp (Centigrade), errors"
-    STATUS_SCHEMA =                 None                                            # TODO: needs a schema
+    STATUS_NAME =               "Device status"
+    STATUS_DESCRIPTION =        "lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), errors"
+    STATUS_SCHEMA =             None                                            # TODO: needs a schema
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                    "osio_publication.json"
+    __FILENAME =                "osio_publication.json"
 
     @classmethod
     def filename(cls, host):
