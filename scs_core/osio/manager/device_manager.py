@@ -90,7 +90,7 @@ class DeviceManager(object):
 
         self.__rest_client.close()
 
-        print("response_jdict: %s" % response_jdict)
+        # print("response_jdict: %s" % response_jdict)
 
         device = Device.construct_from_jdict(response_jdict)
 
