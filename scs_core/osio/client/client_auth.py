@@ -16,12 +16,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceAuth(PersistentJSONable):
+class ClientAuth(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "osio_device_auth.json"
+    __FILENAME = "osio_client_auth.json"
 
     @classmethod
     def filename(cls, host):
@@ -45,7 +45,7 @@ class DeviceAuth(PersistentJSONable):
         client_id = jdict.get('client-id')
         client_password = jdict.get('client-password')
 
-        return DeviceAuth(username, client_id, client_password)
+        return ClientAuth(username, client_id, client_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,5 +99,5 @@ class DeviceAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceAuth:{username:%s, client_id:%s, client_password:%s}" % \
+        return "ClientAuth:{username:%s, client_id:%s, client_password:%s}" % \
                     (self.username, self.client_id, self.client_password)

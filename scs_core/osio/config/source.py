@@ -24,7 +24,7 @@ class Source(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def device(cls, device_id, device_auth, api_auth, lat, lng, postcode):
+    def device(cls, device_id, client_auth, api_auth, lat, lng, postcode):
         client_id = None
         name = device_id.box_label()
         description = cls.DESCRIPTION
@@ -34,7 +34,7 @@ class Source(object):
         device_type = device_id.type_label()
         batch = None
         org_id = api_auth.org_id
-        owner_id = device_auth.client_id
+        owner_id = client_auth.client_id
         tags = cls.TAGS
 
         device = Device(client_id, name, description, password, password_is_locked, location,
