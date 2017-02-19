@@ -37,6 +37,10 @@ class Publication(PersistentJSONable):
     STATUS_DESCRIPTION =        "lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), errors"
     STATUS_SCHEMA =             None                                            # TODO: needs a schema
 
+    CONTROL_NAME =              "Device control"
+    CONTROL_DESCRIPTION =       "this topic is subscribed to by the device"
+    CONTROL_SCHEMA =            None
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -108,6 +112,10 @@ class Publication(PersistentJSONable):
 
     def status_topic(self, device_id):
         return self.__device_path + '/' + device_id.topic_label() + '/status'
+
+
+    def control_topic(self, device_id):
+        return self.__device_path + '/' + device_id.topic_label() + '/control'
 
 
     # ----------------------------------------------------------------------------------------------------------------
