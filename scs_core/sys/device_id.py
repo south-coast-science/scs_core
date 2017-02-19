@@ -61,6 +61,10 @@ class DeviceID(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def type_label(self):
+        return self.model + '/' + self.configuration
+
+
     def box_label(self):
         return self.model + '/' + self.configuration + ' ' + str(self.serial_number).zfill(6)
 
