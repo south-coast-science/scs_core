@@ -7,7 +7,7 @@ api auth:
 {"org-id": "south-coast-science-dev", "api-key": "43308b72-ad41-4555-b075-b4245c1971db"}
 
 device auth:
-{"username": "southcoastscience-dev", "device-id": "5406", "device-password": "jtxSrK2e"}
+{"user-id": "southcoastscience-dev", "client-id": "5873", "client-password": "d4MctQFa"}
 """
 
 from scs_core.osio.client.rest_client import RESTClient
@@ -86,13 +86,15 @@ class DeviceManager(object):
         # request...
         self.__rest_client.connect()
 
-        response = self.__rest_client.post(path, device.as_json())
+        response_jdict = self.__rest_client.post(path, device.as_json())
 
         self.__rest_client.close()
 
-        print("response: %s" % response)
+        print("response_jdict: %s" % response_jdict)
 
-        # TODO: returns something?
+        device = Device.construct_from_jdict(response_jdict)
+
+        return device
 
 
     def update(self):

@@ -24,20 +24,20 @@ class Source(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def device(cls, device_id, client_auth, api_auth, lat, lng, postcode):
+    def device(cls, device_id, api_auth, lat, lng, postcode, description):
         client_id = None
         name = device_id.box_label()
-        description = cls.DESCRIPTION
+        desc = cls.DESCRIPTION if description is None else description
         password = None
         password_is_locked = False
         location = Location(lat, lng, None, None, postcode)
         device_type = device_id.type_label()
         batch = None
         org_id = api_auth.org_id
-        owner_id = client_auth.client_id
+        owner_id = None
         tags = cls.TAGS
 
-        device = Device(client_id, name, description, password, password_is_locked, location,
+        device = Device(client_id, name, desc, password, password_is_locked, location,
                         device_type, batch, org_id, owner_id, tags)
 
         return device

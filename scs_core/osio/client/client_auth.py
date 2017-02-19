@@ -4,7 +4,7 @@ Created on 17 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"username": "southcoastscience-dev", "client-id": "5406", "client-password": "jtxSrK2e"}
+{"user_id": "southcoastscience-dev", "client-id": "5406", "client-password": "jtxSrK2e"}
 """
 
 from collections import OrderedDict
@@ -40,24 +40,24 @@ class ClientAuth(PersistentJSONable):
         if not jdict:
             return None
 
-        username = jdict.get('username')
+        user_id = jdict.get('user-id')
 
         client_id = jdict.get('client-id')
         client_password = jdict.get('client-password')
 
-        return ClientAuth(username, client_id, client_password)
+        return ClientAuth(user_id, client_id, client_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, client_id, client_password):
+    def __init__(self, user_id, client_id, client_password):
         """
         Constructor
         """
-        self.__username = username                      # String
+        self.__user_id = user_id                        # string
 
-        self.__client_id = client_id                    # String
-        self.__client_password = client_password        # String
+        self.__client_id = client_id                    # string
+        self.__client_password = client_password        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ class ClientAuth(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['username'] = self.username
+        jdict['user-id'] = self.user_id
 
         jdict['client-id'] = self.client_id
         jdict['client-password'] = self.client_password
@@ -82,8 +82,8 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def username(self):
-        return self.__username
+    def user_id(self):
+        return self.__user_id
 
 
     @property
@@ -99,5 +99,5 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientAuth:{username:%s, client_id:%s, client_password:%s}" % \
-                    (self.username, self.client_id, self.client_password)
+        return "ClientAuth:{user_id:%s, client_id:%s, client_password:%s}" % \
+                    (self.user_id, self.client_id, self.client_password)

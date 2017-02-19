@@ -25,7 +25,7 @@ class TopicClient(object):
         Constructor
         """
         self.__message_client = message_client
-        self.__message_client.connect(TopicClient.__HOST, auth.device_id, auth.username, auth.device_password)
+        self.__message_client.connect(TopicClient.__HOST, auth.client_id, auth.user_id, auth.client_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------

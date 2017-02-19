@@ -112,12 +112,15 @@ class Device(JSONable):
         jdict['location'] = self.location
 
         jdict['device-type'] = self.device_type
-        jdict['batch'] = self.batch
+
+        if self.batch:
+            jdict['batch'] = self.batch
 
         if self.org_id:
             jdict['org-id'] = self.org_id
 
-        jdict['owner-id'] = self.owner_id
+        if self.owner_id:
+            jdict['owner-id'] = self.owner_id
 
         jdict['tags'] = self.tags
 
@@ -184,7 +187,6 @@ class Device(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Device:{client_id:%s, name:%s, description:%s, password:%s, password_is_locked:%s, \
-        location:%s, device_type:%s, batch:%s, org_id:%s, owner_id:%s, tags:%s}" % \
+        return "Device:{client_id:%s, name:%s, description:%s, password:%s, password_is_locked:%s, location:%s, device_type:%s, batch:%s, org_id:%s, owner_id:%s, tags:%s}" % \
                     (self.client_id, self.name, self.description, self.password, self.password_is_locked,
                      self.location, self.device_type, self.batch, self.org_id, self.owner_id, self.tags)

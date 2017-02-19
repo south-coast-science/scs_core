@@ -57,9 +57,12 @@ class Location(JSONable):
         jdict['lat'] = self.lat
         jdict['lon'] = self.lng
 
-        jdict['elevation'] = self.elevation
+        if self.elevation is not None:
+            jdict['elevation'] = self.elevation
 
-        jdict['zip'] = self.zip
+        if self.zip:
+            jdict['zip'] = self.zip
+
         jdict['postcode'] = self.postcode
 
         return jdict
