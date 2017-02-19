@@ -59,6 +59,13 @@ class Publication(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct(cls, org_id, location_path, device_path):
+        path_root = '/orgs/' + org_id + '/'
+
+        return Publication(path_root + location_path, path_root + device_path)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
