@@ -17,7 +17,7 @@ class Source(object):
     classdocs
     """
 
-    DESCRIPTION =       "South Coast Science air quality monitoring device."
+    DESCRIPTION =       "South Coast Science air quality monitoring device"
     TAGS =              ('pm1', 'pm2.5', 'pm10', 'co', 'no', 'no2', 'o3', 'temperature', 'humidity')
 
 

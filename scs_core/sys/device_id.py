@@ -70,7 +70,7 @@ class DeviceID(PersistentJSONable):
 
 
     def topic_label(self):
-        return self.model.lower() + '-' + str(self.serial_number).zfill(6)
+        return self.model.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).zfill(6)
 
 
     # ----------------------------------------------------------------------------------------------------------------
