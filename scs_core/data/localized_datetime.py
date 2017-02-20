@@ -135,6 +135,15 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def timedelta(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+        td = timedelta(days=days, seconds=seconds, microseconds=microseconds, milliseconds=milliseconds,
+                       minutes=minutes, hours=hours, weeks=weeks)
+
+        return LocalizedDatetime(self.__localized + td)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_iso8601(self):
         """
         example: 2016-08-13T00:38:05.210+00:00
@@ -143,13 +152,13 @@ class LocalizedDatetime(JSONable):
         time = self.__localized.strftime("%H:%M:%S")
 
         micros = float(self.__localized.strftime("%f"))
-        frac = "%03d" % (micros // 1000)
+        millis = "%03d" % (micros // 1000)
 
         zone = self.__localized.strftime("%z")
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
-        return "%sT%s.%s%s:%s" % (date, time, frac, zone_hours, zone_mins)
+        return "%sT%s.%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
 
 
     def as_json(self):
