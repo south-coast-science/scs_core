@@ -6,8 +6,8 @@ Created on 14 Feb 2017
 example:
 {
     "id": 28,
-    "name": "south-coast-science-gasses-Ox-NO2-NO-CO",
-    "description": "South Coast Science Air Quality Sensor; concentration of gasses"
+    "name": "south-coast-science-gases-Ox-NO2-NO-CO",
+    "description": "South Coast Science Air Quality Sensor; concentration of gases"
 }
 """
 

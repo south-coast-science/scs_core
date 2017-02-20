@@ -109,8 +109,8 @@ class Publication(PersistentJSONable):
         return self.__location_path + '/climate'
 
 
-    def gasses_topic(self):
-        return self.__location_path + '/gasses'
+    def gases_topic(self):
+        return self.__location_path + '/gases'
 
 
     def particulates_topic(self):
