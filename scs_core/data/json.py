@@ -4,6 +4,8 @@ Created on 13 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from collections import OrderedDict
+
 import json
 
 from abc import abstractmethod
@@ -44,7 +46,7 @@ class PersistentJSONable(JSONable):
         jstr = f.read().strip()
         f.close()
 
-        jdict = json.loads(jstr)
+        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
 
         return cls.construct_from_jdict(jdict)
 
