@@ -7,6 +7,8 @@ Created on 20 Oct 2016
 from scs_core.sample.sample_datum import SampleDatum
 
 
+# TODO: rename "sht" to "int" - requires clearance from OpenSensors.io
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GasesDatum(SampleDatum):
