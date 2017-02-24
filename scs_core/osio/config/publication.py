@@ -59,10 +59,13 @@ class Publication(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, org_id, location_path, device_path):
+    def construct(cls, org_id, group, location_id):
         path_root = '/orgs/' + org_id + '/'
 
-        return Publication(path_root + location_path, path_root + device_path)
+        location_path = path_root + group + '/loc/' + str(location_id)
+        device_path = path_root + group + '/device'
+
+        return Publication(location_path, device_path)
 
 
     @classmethod
@@ -105,23 +108,23 @@ class Publication(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def climate_topic(self):
+    def climate_topic_path(self):
         return self.__location_path + '/climate'
 
 
-    def gases_topic(self):
+    def gases_topic_path(self):
         return self.__location_path + '/gases'
 
 
-    def particulates_topic(self):
+    def particulates_topic_path(self):
         return self.__location_path + '/particulates'
 
 
-    def status_topic(self, device_id):
+    def status_topic_path(self, device_id):
         return self.__device_path + '/' + device_id.topic_label() + '/status'
 
 
-    def control_topic(self, device_id):
+    def control_topic_path(self, device_id):
         return self.__device_path + '/' + device_id.topic_label() + '/control'
 
 
