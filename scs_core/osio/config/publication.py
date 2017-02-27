@@ -27,7 +27,7 @@ class Publication(PersistentJSONable):
 
     GASES_NAME =                "Gas concentrations"
     GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT"
-    GASES_SCHEMA =              28                                              # TODO: should come from AFEConfig
+    GASES_SCHEMA =              28                                              # TODO: should come from AFECalib
 
     PARTICULATES_NAME =         "Particulate densities"
     PARTICULATES_DESCRIPTION =  "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7"
