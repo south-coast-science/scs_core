@@ -66,7 +66,7 @@ class TopicManager(object):
 
 
     def create(self, topic):
-        path = '/v2/topics'
+        path = '/v1/topics'
 
         # request...
         self.__rest_client.connect()
