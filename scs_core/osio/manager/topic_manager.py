@@ -19,6 +19,7 @@ class TopicManager(object):
     """
     classdocs
     """
+    __FINDER_BATCH_SIZE = 100
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -50,17 +51,21 @@ class TopicManager(object):
 
 
     def find_for_org(self, org_id):
-        path = '/v2/orgs/' + org_id + '/topics'
+        offset = 0
+        topics = []
 
-        # request...
         self.__rest_client.connect()
 
-        response_jdict = self.__rest_client.get(path)
+        while True:
+            batch = self.__get(org_id, offset, self.__FINDER_BATCH_SIZE)
+
+            if len(batch) == 0:
+                break
+
+            topics.extend(batch)
+            offset += len(batch)
 
         self.__rest_client.close()
-
-        topics_jdict = response_jdict.get('topics')
-        topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
 
         return topics
 
@@ -93,6 +98,21 @@ class TopicManager(object):
         success = response == ''
 
         return success
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __get(self, org_id, offset, count):
+        path = '/v2/orgs/' + org_id + '/topics'
+        params = {'offset': offset, 'count': count}
+
+        # request...
+        response_jdict = self.__rest_client.get(path, params)
+
+        topics_jdict = response_jdict.get('topics')
+        topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
+
+        return topics
 
 
     # ----------------------------------------------------------------------------------------------------------------
