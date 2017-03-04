@@ -109,6 +109,7 @@ class TopicManager(object):
             # request...
             response_jdict = self.__rest_client.get(path, params)
 
+            # topics...
             topics_jdict = response_jdict.get('topics')
             topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
 
@@ -117,6 +118,7 @@ class TopicManager(object):
             if len(topics) == 0:
                 break
 
+            # next...
             params['offset'] = len(topics)
 
 
