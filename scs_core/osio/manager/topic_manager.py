@@ -109,7 +109,7 @@ class TopicManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __get(self, org_id, offset, count):
-        path = '/v2/org/' + org_id + '/topics'
+        path = '/v2/orgs/' + org_id + '/topics'
         params = {'offset': offset, 'count': count}
 
         # request...
