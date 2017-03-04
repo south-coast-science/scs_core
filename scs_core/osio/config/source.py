@@ -2,6 +2,9 @@
 Created on 19 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+ "SO2": {"weV": 0.294567, "aeV": 0.297067, "weC": -4.929433, "cnc": -14084.1}, "pt1": {"v": 0.325224, "tmp": 24.6}, "sht": {"hmd": 60.9, "tmp": 25.9}}}
+{"rec": "2017-03-04T12:07:22.627+00:00", "val": "CO": {"weV": 0.350568, "aeV": 0.275629, "weC": 0.052055, "cnc": 188.6}, "SO2": {"weV": 0.294379, "aeV": 0.296942, "weC": -4.929621, "cnc": -14084.6}, "pt1": {"v": 0.325208, "tmp": 24.5}, "sht": {"hmd": 60.9, "tmp": 25.9}}}
 """
 
 from scs_core.osio.data.device import Device
@@ -18,7 +21,10 @@ class Source(object):
     """
 
     DESCRIPTION =       "South Coast Science air quality monitoring device"
-    TAGS =              ('pm1', 'pm2.5', 'pm10', 'co', 'no', 'no2', 'o3', 'temperature', 'humidity')
+
+    TAGS = {28: ('pm1', 'pm2.5', 'pm10', 'no2', 'o3', 'no', 'co', 'temperature', 'humidity'),
+            98: ('pm1', 'pm2.5', 'pm10', 'no2', 'o3', 'co', 'so2', 'temperature', 'humidity'),
+            99: ('pm1', 'pm2.5', 'pm10', 'no2', 'co', 'so2', 'h2s', 'temperature', 'humidity')}
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,7 +41,7 @@ class Source(object):
         batch = None
         org_id = api_auth.org_id
         owner_id = None
-        tags = cls.TAGS
+        tags = cls.TAGS[28]
 
         device = Device(client_id, name, desc, password, password_is_locked, location,
                         device_type, batch, org_id, owner_id, tags)
