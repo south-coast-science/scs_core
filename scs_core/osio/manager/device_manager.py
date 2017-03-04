@@ -56,9 +56,11 @@ class DeviceManager(object):
         # request...
         self.__rest_client.connect()
 
-        response_jdict = self.__rest_client.get(path, {'user-id': user_id})
+        try:
+            response_jdict = self.__rest_client.get(path, {'user-id': user_id})
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
@@ -71,9 +73,11 @@ class DeviceManager(object):
         # request...
         self.__rest_client.connect()
 
-        response_jdict = self.__rest_client.get(path)
+        try:
+            response_jdict = self.__rest_client.get(path)
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
@@ -86,11 +90,11 @@ class DeviceManager(object):
         # request...
         self.__rest_client.connect()
 
-        response_jdict = self.__rest_client.post(path, device.as_json())
+        try:
+            response_jdict = self.__rest_client.post(path, device.as_json())
 
-        self.__rest_client.close()
-
-        # print("response_jdict: %s" % response_jdict)
+        finally:
+            self.__rest_client.close()
 
         device = Device.construct_from_jdict(response_jdict)
 
@@ -107,9 +111,11 @@ class DeviceManager(object):
         # request...
         self.__rest_client.connect()
 
-        response = self.__rest_client.delete(path)
+        try:
+            response = self.__rest_client.delete(path)
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         success = response == ''
 

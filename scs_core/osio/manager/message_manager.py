@@ -37,14 +37,16 @@ class MessageManager(object):
     def find_for_topic(self, topic, start_date, end_date):
         path = '/v1/messages/topic/' + topic
 
-        self.__rest_client.connect()
-
         collection = []
 
-        for messages in self.__get(path, start_date, end_date):
-            collection.extend(messages)
+        self.__rest_client.connect()
 
-        self.__rest_client.close()
+        try:
+            for messages in self.__get(path, start_date, end_date):
+                collection.extend(messages)
+
+        finally:
+            self.__rest_client.close()
 
         return collection
 

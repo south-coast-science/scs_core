@@ -56,16 +56,18 @@ class TopicManager(object):
 
         self.__rest_client.connect()
 
-        while True:
-            batch = self.__get(org_id, offset, self.__FINDER_BATCH_SIZE)
+        try:
+            while True:
+                batch = self.__get(org_id, offset, self.__FINDER_BATCH_SIZE)
 
-            if len(batch) == 0:
-                break
+                if len(batch) == 0:
+                    break
 
-            topics.extend(batch)
-            offset += len(batch)
+                topics.extend(batch)
+                offset += len(batch)
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         return topics
 
@@ -76,9 +78,11 @@ class TopicManager(object):
         # request...
         self.__rest_client.connect()
 
-        response = self.__rest_client.post(path, topic.as_json())
+        try:
+            response = self.__rest_client.post(path, topic.as_json())
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         success = response == topic.path
 
@@ -91,9 +95,11 @@ class TopicManager(object):
         # request...
         self.__rest_client.connect()
 
-        response = self.__rest_client.delete(path)
+        try:
+            response = self.__rest_client.delete(path)
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         success = response == ''
 
@@ -103,7 +109,7 @@ class TopicManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __get(self, org_id, offset, count):
-        path = '/v2/orgs/' + org_id + '/topics'
+        path = '/v2/org/' + org_id + '/topics'
         params = {'offset': offset, 'count': count}
 
         # request...

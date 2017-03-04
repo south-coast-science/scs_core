@@ -35,9 +35,11 @@ class SchemaManager(object):
         # request...
         self.__rest_client.connect()
 
-        response_jdict = self.__rest_client.get(path)
+        try:
+            response_jdict = self.__rest_client.get(path)
 
-        self.__rest_client.close()
+        finally:
+            self.__rest_client.close()
 
         schemas = [Schema.construct_from_jdict(schema_jdict) for schema_jdict in response_jdict]
 
