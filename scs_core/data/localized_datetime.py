@@ -84,7 +84,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([+\-]?)(\d{2}):(\d{2})', datetime_str)
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([ +\-]?)(\d{2}):(\d{2})', datetime_str)
 
         if match is None:
             return None
@@ -101,7 +101,7 @@ class LocalizedDatetime(JSONable):
         secs = int(fields[5])
         micros = int(fields[6]) * 1000
 
-        zone_sign = 1 if fields[7] == '+' else -1
+        zone_sign = -1 if fields[7] == '-' else 1
         zone_hours = int(fields[8])
         zone_mins = int(fields[9])
 
