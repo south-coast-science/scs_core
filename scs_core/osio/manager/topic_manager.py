@@ -51,20 +51,13 @@ class TopicManager(object):
 
 
     def find_for_org(self, org_id):
-        offset = 0
         topics = []
 
         self.__rest_client.connect()
 
         try:
-            while True:
-                batch = self.__get(org_id, offset, self.__FINDER_BATCH_SIZE)
-
-                if len(batch) == 0:
-                    break
-
+            for batch in self.__get(org_id):
                 topics.extend(batch)
-                offset += len(batch)
 
         finally:
             self.__rest_client.close()
@@ -108,17 +101,23 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __get(self, org_id, offset, count):
+    def __get(self, org_id):
         path = '/v2/orgs/' + org_id + '/topics'
-        params = {'offset': offset, 'count': count}
+        params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
-        # request...
-        response_jdict = self.__rest_client.get(path, params)
+        while True:
+            # request...
+            response_jdict = self.__rest_client.get(path, params)
 
-        topics_jdict = response_jdict.get('topics')
-        topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
+            topics_jdict = response_jdict.get('topics')
+            topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
 
-        return topics
+            yield topics
+
+            if len(topics) == 0:
+                break
+
+            params['offset'] = len(topics)
 
 
     # ----------------------------------------------------------------------------------------------------------------

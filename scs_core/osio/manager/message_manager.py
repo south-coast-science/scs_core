@@ -42,8 +42,8 @@ class MessageManager(object):
         self.__rest_client.connect()
 
         try:
-            for messages in self.__get(path, start_date, end_date):
-                collection.extend(messages)
+            for batch in self.__get(path, start_date, end_date):
+                collection.extend(batch)
 
         finally:
             self.__rest_client.close()
@@ -64,7 +64,7 @@ class MessageManager(object):
             msg_jdict = jdict.get('messages')
             messages = [Message.construct_from_jdict(msg_jdict) for msg_jdict in msg_jdict] if msg_jdict else []
 
-            yield (messages)
+            yield messages
 
             # next...
             next_jdict = jdict.get('next')
