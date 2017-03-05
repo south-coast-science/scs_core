@@ -22,9 +22,9 @@ class Source(object):
 
     DESCRIPTION =       "South Coast Science air quality monitoring device"
 
-    TAGS = {28: ('pm1', 'pm2.5', 'pm10', 'no2', 'o3', 'no', 'co', 'temperature', 'humidity'),
-            98: ('pm1', 'pm2.5', 'pm10', 'no2', 'o3', 'co', 'so2', 'temperature', 'humidity'),
-            99: ('pm1', 'pm2.5', 'pm10', 'no2', 'co', 'so2', 'h2s', 'temperature', 'humidity')}
+    TAGS = {28: ('no2', 'o3', 'no', 'co', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
+            98: ('no2', 'o3', 'co', 'so2', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
+            99: ('no2', 'co', 'so2', 'h2s', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity')}
 
 
     # ----------------------------------------------------------------------------------------------------------------
