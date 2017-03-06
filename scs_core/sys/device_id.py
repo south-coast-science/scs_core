@@ -80,7 +80,7 @@ class DeviceID(PersistentJSONable):
 
 
     def message_tag(self):    # TODO: add signature
-        return self.vendor_id.upper() + '-' + self.model_id.upper() + '-' + str(self.serial_number)
+        return self.vendor_id.upper() + '-' + self.model_id.upper() + '-' + str(self.serial_number) + '-' # signature
 
 
     # ----------------------------------------------------------------------------------------------------------------
