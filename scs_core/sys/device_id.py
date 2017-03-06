@@ -35,22 +35,28 @@ class DeviceID(PersistentJSONable):
         if not jdict:
             return None
 
-        model = jdict.get('model')
+        vendor_id = jdict.get('vendor-id')
+        model_id = jdict.get('model-id')
+
+        model_name = jdict.get('model')
         configuration = jdict.get('config')
         serial_number = int(jdict.get('serial'))
 
-        return DeviceID(model, configuration, serial_number)
+        return DeviceID(vendor_id, model_id, model_name, configuration, serial_number)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, configuration, serial_number):
+    def __init__(self, vendor_id, model_id, model_name, configuration, serial_number):
         """
         Constructor
         """
-        self.__model = model                    # string
-        self.__configuration = configuration    # string
-        self.__serial_number = serial_number    # int
+        self.__vendor_id = vendor_id                # string (3 chars)
+        self.__model_id = model_id                  # string (3 chars)
+
+        self.__model_name = model_name              # string
+        self.__configuration = configuration        # string
+        self.__serial_number = serial_number        # int
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,15 +68,19 @@ class DeviceID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def type_label(self):
-        return self.model + '/' + self.configuration
+        return self.model_name + '/' + self.configuration
 
 
     def box_label(self):
-        return self.model + '/' + self.configuration + ' ' + str(self.serial_number).zfill(6)
+        return self.model_name + '/' + self.configuration + ' ' + str(self.serial_number).zfill(6)
 
 
     def topic_label(self):
-        return self.model.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).zfill(6)
+        return self.model_name.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).zfill(6)
+
+
+    def message_tag(self):    # TODO: add signature
+        return self.vendor_id.upper() + '-' + self.model_id.upper() + '-' + str(self.serial_number)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,7 +88,10 @@ class DeviceID(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['model'] = self.model
+        jdict['vendor-id'] = self.vendor_id
+        jdict['model-id'] = self.model_id
+
+        jdict['model'] = self.model_name
         jdict['config'] = self.configuration
         jdict['serial'] = self.serial_number
 
@@ -88,8 +101,18 @@ class DeviceID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def model(self):
-        return self.__model
+    def vendor_id(self):
+        return self.__vendor_id
+
+
+    @property
+    def model_id(self):
+        return self.__model_id
+
+
+    @property
+    def model_name(self):
+        return self.__model_name
 
 
     @property
@@ -105,5 +128,5 @@ class DeviceID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceID:{model:%s, configuration:%s, serial_number:%s}" % \
-               (self.model, self.configuration, self.serial_number)
+        return "DeviceID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s, serial_number:%s}" % \
+               (self.vendor_id, self.model_id, self.model_name, self.configuration, self.serial_number)
