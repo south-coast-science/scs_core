@@ -3,7 +3,7 @@ Created on 6 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Based on scs_core.sys.DeviceID
+co-ordinated with scs_core.sys.DeviceID message_tag() method
 
 example:
 SCS-PFA-3-wXyZ
