@@ -2,9 +2,6 @@
 Created on 8 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-south-coast-science-test-user
-9fdfb841-3433-45b8-b223-3f5a283ceb8e
 """
 
 import urllib.parse
@@ -77,11 +74,9 @@ class OrganisationManager(object):
         finally:
             self.__rest_client.close()
 
-        print("create - response: %s" % response)
+        device = Organisation.construct_from_jdict(response)
 
-        success = len(response) > 0
-
-        return success
+        return device
 
 
     # ----------------------------------------------------------------------------------------------------------------
