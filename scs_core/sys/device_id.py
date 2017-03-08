@@ -56,7 +56,7 @@ class DeviceID(PersistentJSONable):
 
         self.__model_name = model_name              # string
         self.__configuration = configuration        # string
-        self.__serial_number = serial_number        # int
+        self.__serial_number = serial_number        # string (by convention, int)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,14 +78,14 @@ class DeviceID(PersistentJSONable):
         if self.model_name is None or self.configuration is None or self.serial_number is None:
             return None
 
-        return self.model_name + '/' + self.configuration + ' ' + str(self.serial_number).zfill(6)
+        return self.model_name + '/' + self.configuration + ' ' + str(self.serial_number).rjust(6, '0')
 
 
     def topic_label(self):
         if self.model_name is None or self.serial_number is None:
             return None
 
-        return self.model_name.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).zfill(6)
+        return self.model_name.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).rjust(6, '0')
 
 
     def message_tag(self):    # TODO: add signature
