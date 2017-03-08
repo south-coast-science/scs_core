@@ -1,23 +1,21 @@
 """
-Created on 13 Nov 2016
+Created on 8 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-south-coast-science-dev
-43308b72-ad41-4555-b075-b4245c1971db
+south-coast-science-test-user
+9fdfb841-3433-45b8-b223-3f5a283ceb8e
 """
 
 import urllib.parse
 
 from scs_core.osio.client.rest_client import RESTClient
-from scs_core.osio.data.topic import Topic
+from scs_core.osio.data.organisation import Organisation
 
-
-# TODO: remove references to south-coast-science-dev
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicManager(object):
+class OrganisationManager(object):
     """
     classdocs
     """
@@ -34,8 +32,8 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, topic_path):
-        path = '/v1/topics' + urllib.parse.quote(topic_path, '')
+    def find(self, org_id):
+        path = '/v1/orgs' + urllib.parse.quote(org_id, '')
 
         # request...
         self.__rest_client.connect()
@@ -47,64 +45,49 @@ class TopicManager(object):
 
         self.__rest_client.close()
 
-        topic = Topic.construct_from_jdict(response_jdict)
+        topic = Organisation.construct_from_jdict(response_jdict)
 
         return topic
 
 
-    def find_for_org(self, org_id):
-        topics = []
+    def find_owned_by_user(self, org_id):
+        orgs = []
 
         self.__rest_client.connect()
 
         try:
             for batch in self.__get(org_id):
-                topics.extend(batch)
+                orgs.extend(batch)
 
         finally:
             self.__rest_client.close()
 
-        return topics
+        return orgs
 
 
-    def create(self, topic):
-        path = '/v2/topics'
+    def create(self, org):
+        path = '/v1/orgs'
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response = self.__rest_client.post(path, topic.as_json())
+            response = self.__rest_client.post(path, org.as_json())
 
         finally:
             self.__rest_client.close()
 
-        success = response == topic.path
+        print("create - response: %s" % response)
 
-        return success
-
-
-    def delete(self, topic_path):
-        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
-
-        # request...
-        self.__rest_client.connect()
-
-        try:
-            response = self.__rest_client.delete(path)
-
-        finally:
-            self.__rest_client.close()
-
-        success = response == ''
+        success = len(response) > 0
 
         return success
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __get(self, org_id):
-        path = '/v2/orgs/' + org_id + '/topics'
+    def __get(self, user_id):
+        path = '/v12/users/' + user_id + '/owned-orgs'
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
         while True:
@@ -112,19 +95,19 @@ class TopicManager(object):
             response_jdict = self.__rest_client.get(path, params)
 
             # topics...
-            topics_jdict = response_jdict.get('topics')
-            topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
+            orgs = [Organisation.construct_from_jdict(topic_jdict) for topic_jdict in response_jdict] \
+                if response_jdict else []
 
-            yield topics
+            yield orgs
 
-            if len(topics) == 0:
+            if len(orgs) == 0:
                 break
 
             # next...
-            params['offset'] = len(topics)
+            params['offset'] = len(orgs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicManager:{rest_client:%s}" % self.__rest_client
+        return "OrganisationManager:{rest_client:%s}" % self.__rest_client
