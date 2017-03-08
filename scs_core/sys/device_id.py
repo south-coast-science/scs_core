@@ -68,18 +68,30 @@ class DeviceID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def type_label(self):
+        if self.model_name is None or self.configuration is None:
+            return None
+
         return self.model_name + '/' + self.configuration
 
 
     def box_label(self):
+        if self.model_name is None or self.configuration is None or self.serial_number is None:
+            return None
+
         return self.model_name + '/' + self.configuration + ' ' + str(self.serial_number).zfill(6)
 
 
     def topic_label(self):
+        if self.model_name is None or self.serial_number is None:
+            return None
+
         return self.model_name.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).zfill(6)
 
 
     def message_tag(self):    # TODO: add signature
+        if self.vendor_id is None or self.model_id is None or self.serial_number is None:
+            return None
+
         return self.vendor_id.upper() + '-' + self.model_id.upper() + '-' + str(self.serial_number) + '-' # signature
 
 
