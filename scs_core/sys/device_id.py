@@ -40,7 +40,7 @@ class DeviceID(PersistentJSONable):
 
         model_name = jdict.get('model')
         configuration = jdict.get('config')
-        serial_number = int(jdict.get('serial'))
+        serial_number = jdict.get('serial')
 
         return DeviceID(vendor_id, model_id, model_name, configuration, serial_number)
 
