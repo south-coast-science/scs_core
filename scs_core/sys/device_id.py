@@ -9,6 +9,8 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
+# TODO: add signature
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceID(PersistentJSONable):
@@ -88,11 +90,11 @@ class DeviceID(PersistentJSONable):
         return self.model_name.replace(' ', '-').replace('.', '').lower() + '-' + str(self.serial_number).rjust(6, '0')
 
 
-    def message_tag(self):    # TODO: add signature
+    def message_tag(self):
         if self.vendor_id is None or self.model_id is None or self.serial_number is None:
             return None
 
-        return self.vendor_id.upper() + '-' + self.model_id.upper() + '-' + str(self.serial_number) + '-' # signature
+        return self.vendor_id.lower() + '-' + self.model_id.lower() + '-' + str(self.serial_number)
 
 
     # ----------------------------------------------------------------------------------------------------------------
