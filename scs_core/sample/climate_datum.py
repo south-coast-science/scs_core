@@ -16,8 +16,8 @@ class ClimateDatum(SampleDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, sample):
+    def __init__(self, tag, rec, sample):
         """
         Constructor
         """
-        super().__init__(rec, ('hmd', sample.humid), ('tmp', sample.temp))
+        super().__init__(tag, rec, ('hmd', sample.humid), ('tmp', sample.temp))

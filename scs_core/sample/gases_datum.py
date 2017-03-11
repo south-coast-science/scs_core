@@ -18,7 +18,7 @@ class GasesDatum(SampleDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, afe_datum, sht_datum):
+    def __init__(self, tag, rec, afe_datum, sht_datum):
         """
         Constructor
         """
@@ -30,4 +30,4 @@ class GasesDatum(SampleDatum):
         val.append(('pt1', afe_datum.pt1000))
         val.append(('sht', sht_datum))
 
-        super().__init__(rec, *val)
+        super().__init__(tag, rec, *val)

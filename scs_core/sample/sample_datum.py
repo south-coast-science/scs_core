@@ -11,8 +11,6 @@ from scs_core.data.json import JSONable
 
 # TODO: add forged message datetime for OSIO compatibility
 
-# TODO: add device tag
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class SampleDatum(JSONable):
@@ -22,10 +20,11 @@ class SampleDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, *values):
+    def __init__(self, tag, rec, *values):
         """
         Constructor
         """
+        self.__tag = tag                        # string
         self.__rec = rec                        # LocalizedDatetime
         self.__val = OrderedDict(values)        # OrderedDict of (src, JSONable)
 
@@ -35,6 +34,7 @@ class SampleDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['tag'] = self.tag
         jdict['rec'] = self.rec
         jdict['val'] = self.val
 
@@ -42,6 +42,11 @@ class SampleDatum(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def tag(self):
+        return self.__tag
+
 
     @property
     def rec(self):
@@ -58,4 +63,4 @@ class SampleDatum(JSONable):
     def __str__(self, *args, **kwargs):
         vals = '[' + ', '.join(str(key) + ': ' + str(self.val[key]) for key in self.val) + ']'
 
-        return self.__class__.__name__ + ":{rec:%s, val:%s}" % (self.rec, vals)
+        return self.__class__.__name__ + ":{tag:%s, rec:%s, val:%s}" % (self.tag, self.rec, vals)

@@ -21,6 +21,10 @@ from scs_core.sample.sample_datum import SampleDatum
 
 # --------------------------------------------------------------------------------------------------------------------
 
+tag = "scs-ap1-0"
+print(tag)
+print("-")
+
 now = LocalizedDatetime.now()
 print(now)
 print("-")
@@ -29,7 +33,7 @@ value = "hello"
 print(value)
 print("-")
 
-datum = SampleDatum(now, ("greeting", "hello"))
+datum = SampleDatum(tag, now, ("greeting", "hello"))
 print(datum)
 print("-")
 
