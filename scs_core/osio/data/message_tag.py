@@ -33,7 +33,7 @@ class MessageTag(JSONable):
         vendor_id = fields[0]
         model_id = fields[1]
         serial_number = int(fields[2])
-        signature = fields[3]
+        signature = None                    # fields[3]
 
         return MessageTag(vendor_id, model_id, serial_number, signature)
 
