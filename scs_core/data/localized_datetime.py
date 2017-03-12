@@ -40,13 +40,13 @@ class LocalizedDatetime(JSONable):
 
     @classmethod
     def construct_from_iso8601(cls, datetime_str):
-        # numeric timezone offset...
+        # Z timezone offset...
         localized = cls.__construct_from_iso8601_z(datetime_str)
 
         if localized:
             return localized
 
-        # Z timezone offset...
+        # numeric timezone offset...
         return cls.__construct_from_iso8601_numeric(datetime_str)
 
 
