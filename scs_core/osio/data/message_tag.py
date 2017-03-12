@@ -6,13 +6,11 @@ Created on 6 Mar 2017
 co-ordinated with scs_core.sys.DeviceID message_tag() method
 
 example:
-SCS-PFA-3-wXyZ
+scs-pfa-3
 """
 
 from scs_core.data.json import JSONable
 
-
-# TODO: make use of MessageTag class
 
 # --------------------------------------------------------------------------------------------------------------------
 
