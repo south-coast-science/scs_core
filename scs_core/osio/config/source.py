@@ -11,6 +11,8 @@ from scs_core.osio.data.device import Device
 from scs_core.osio.data.location import Location
 
 
+# TODO: add device id message_tag to source
+
 # TODO: we need to map AFE configs to device tags
 
 # --------------------------------------------------------------------------------------------------------------------
