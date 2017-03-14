@@ -35,7 +35,9 @@ class TopicManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, topic_path):
-        path = '/v1/topics' + urllib.parse.quote(topic_path, '')
+        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
+
+        print("path: %s" % path)
 
         # request...
         self.__rest_client.connect()
