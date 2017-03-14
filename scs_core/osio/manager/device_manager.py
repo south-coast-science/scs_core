@@ -50,6 +50,16 @@ class DeviceManager(object):
         return device
 
 
+    def find_for_name(self, org_id, name):
+        devices = self.find_all_for_org(org_id)
+
+        for device in devices:
+            if device.name == name:
+                return device
+
+        return None
+
+
     def find_all_for_user(self, user_id):
         path = '/v1/users/southcoastscience-dev/devices'
 
