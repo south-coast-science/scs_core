@@ -84,7 +84,8 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([ +\-]?)(\d{2}):(\d{2})', datetime_str)
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([ +\-]?)(\d{2}):(\d{2})',
+                         datetime_str)
 
         if match is None:
             return None

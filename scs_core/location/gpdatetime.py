@@ -18,8 +18,8 @@ class GPDateTime(object):
         """
         Constructor
         """
-        self.__date = date                #   ddmmyy
-        self.__time = time                #   hhmmss.ss
+        self.__date = date                # ddmmyy
+        self.__time = time                # hhmmss.ss
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ class GPDateTime(object):
             return None
 
         return "20%s-%s-%sT%s:%s:%s0Z" % \
-                    (self.__date[4:], self.__date[2:4], self.__date[:2], self.__time[:2], self.__time[2:4], self.__time[4:])
+               (self.__date[4:], self.__date[2:4], self.__date[:2], self.__time[:2], self.__time[2:4], self.__time[4:])
 
 
     # ----------------------------------------------------------------------------------------------------------------

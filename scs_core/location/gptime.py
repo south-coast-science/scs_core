@@ -18,7 +18,7 @@ class GPTime(object):
         """
         Constructor
         """
-        self.__time = time                #   string - hhmmss.ss
+        self.__time = time                # string - hhmmss.ss
 
 
     # ----------------------------------------------------------------------------------------------------------------

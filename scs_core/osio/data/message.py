@@ -4,7 +4,8 @@ Created on 10 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"date": "2016-11-19T20:31:16.563+00:00", "payload": {"encoding": "utf-8", "content-type": "application/json", "text": "{\"rec\": \"2016-11-19T20:31:23.882+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}}
+{"date": "2016-11-19T20:31:16.563+00:00", "payload": {"encoding": "utf-8", "content-type": "application/json",
+"text": "{\"rec\": \"2016-11-19T20:31:23.882+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}}
 
 """
 

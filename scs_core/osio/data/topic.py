@@ -118,5 +118,7 @@ class Topic(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, rollups_enabled:%s, topic_info:%s, schema_id:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.rollups_enabled, self.topic_info, self.schema_id)
+        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, rollups_enabled:%s, topic_info:%s, " \
+               "schema_id:%s}" % \
+               (self.path, self.name, self.description, self.is_public, self.rollups_enabled, self.topic_info,
+                self.schema_id)

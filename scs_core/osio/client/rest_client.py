@@ -97,7 +97,8 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": RESTClient.__HEADER_ACCEPT, "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
+        return {"Accept": RESTClient.__HEADER_ACCEPT,
+                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
 
 
     # ----------------------------------------------------------------------------------------------------------------
