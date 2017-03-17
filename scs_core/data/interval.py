@@ -19,8 +19,8 @@ class Interval(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, prev_time, time):
-        diff = None if prev_time is None else round(time.timestamp() - prev_time.timestamp(), 3)
+    def construct(cls, prev_time, time, precision=3):
+        diff = None if prev_time is None else round(time.timestamp() - prev_time.timestamp(), precision)
 
         return Interval(time, diff)
 
