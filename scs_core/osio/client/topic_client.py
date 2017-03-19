@@ -17,7 +17,7 @@ class TopicClient(object):
 
     __HOST =        "mqtt.opensensors.io"          # hard-coded URL
 
-    __TIMEOUT =     10.0
+    __TIMEOUT =     30.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
