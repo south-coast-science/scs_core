@@ -15,7 +15,7 @@ class TopicClient(object):
     classdocs
     """
 
-    __HOST =        "mqtt.opensensors.io"          # hard-coded URL
+    __HOST =        "mqtt.opensensors.io"          # hard-coded URL     # TODO: put on client auth
 
     __TIMEOUT =     30.0
 
