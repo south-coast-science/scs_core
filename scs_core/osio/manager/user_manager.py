@@ -5,7 +5,7 @@ Created on 21 Mar 2017
 """
 
 from scs_core.osio.client.rest_client import RESTClient
-from scs_core.osio.data.device import Device
+from scs_core.osio.data.user import User
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -26,8 +26,8 @@ class UserManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, user_id, client_id):
-        path = '/v1/users/' + user_id + '/devices/' + client_id
+    def find(self, user_id):
+        path = '/v1/users/' + user_id
 
         # request...
         self.__rest_client.connect()
@@ -39,9 +39,9 @@ class UserManager(object):
 
         self.__rest_client.close()
 
-        device = Device.construct_from_jdict(response_jdict)
+        user = User.construct_from_jdict(response_jdict)
 
-        return device
+        return user
 
 
     def find_members_of_org(self, org_id):
