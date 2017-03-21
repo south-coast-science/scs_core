@@ -30,7 +30,7 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, org_id):
-        path = '/v1/orgs' + urllib.parse.quote(org_id, '')
+        path = '/v1/orgs/' + urllib.parse.quote(org_id, '')
 
         # request...
         self.__rest_client.connect()
