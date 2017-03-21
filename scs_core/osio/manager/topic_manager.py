@@ -37,8 +37,6 @@ class TopicManager(object):
     def find(self, topic_path):
         path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
 
-        print("path: %s" % path)
-
         # request...
         self.__rest_client.connect()
 
@@ -57,6 +55,7 @@ class TopicManager(object):
     def find_for_org(self, org_id):
         topics = []
 
+        # request...
         self.__rest_client.connect()
 
         try:
@@ -68,6 +67,8 @@ class TopicManager(object):
 
         return topics
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, topic):
         path = '/v2/topics'
@@ -84,6 +85,10 @@ class TopicManager(object):
         success = response == topic.path
 
         return success
+
+
+    def update(self, topic):
+        pass                    # TODO: implement update(..)
 
 
     def delete(self, topic_path):

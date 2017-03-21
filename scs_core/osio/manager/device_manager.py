@@ -94,6 +94,8 @@ class DeviceManager(object):
         return devices
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def create(self, user_id, device):
         path = '/v1/users/' + user_id + '/devices'
 
@@ -111,8 +113,8 @@ class DeviceManager(object):
         return device
 
 
-    def update(self):
-        pass
+    def update(self, device):
+        pass                    # TODO: implement update(..)
 
 
     def delete(self, user_id, client_id):
