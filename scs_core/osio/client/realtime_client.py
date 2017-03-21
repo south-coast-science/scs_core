@@ -14,7 +14,7 @@ class RealtimeClient(object):
     classdocs
     """
 
-    __HOST = "realtime.opensensors.io"
+    __HOST = "realtime.opensensors.io"          # hard-coded URL
 
 
     # ----------------------------------------------------------------------------------------------------------------

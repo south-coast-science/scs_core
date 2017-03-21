@@ -25,7 +25,7 @@ class RESTClient(object):
     classdocs
     """
 
-    __HOST = "api.opensensors.io"
+    __HOST = "api.opensensors.io"          # hard-coded URL
 
     __HEADER_ACCEPT = "application/json"
     __HEADER_AUTHORIZATION = "api-key "
