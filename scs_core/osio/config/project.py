@@ -44,7 +44,7 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                "osio_publication.json"
+    __FILENAME =                "osio_project.json"
 
     @classmethod
     def filename(cls, host):
