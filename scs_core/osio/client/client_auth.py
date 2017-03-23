@@ -19,6 +19,13 @@ class ClientAuth(PersistentJSONable):
     classdocs
     """
 
+    MQTT_HOST =        "mqtt.opensensors.io"          # hard-coded URL
+
+    MQTT_TIMEOUT =     30.0
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     __FILENAME = "osio_client_auth.json"
 
     @classmethod

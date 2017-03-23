@@ -15,9 +15,9 @@ class TopicClient(object):
     classdocs
     """
 
-    __HOST =        "mqtt.opensensors.io"          # hard-coded URL
+    HOST =        "mqtt.opensensors.io"          # hard-coded URL
 
-    __TIMEOUT =     30.0
+    TIMEOUT =     30.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ class TopicClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__message_client.connect(TopicClient.__HOST,
+        self.__message_client.connect(TopicClient.HOST,
                                       self.__auth.client_id, self.__auth.user_id, self.__auth.client_password)
 
 
@@ -44,7 +44,7 @@ class TopicClient(object):
 
     def publish(self, topic, datum):
         datum_jstr = JSONify.dumps(datum)
-        success = self.__message_client.publish(topic, datum_jstr, TopicClient.__TIMEOUT)
+        success = self.__message_client.publish(topic, datum_jstr, TopicClient.TIMEOUT)
 
         return success
 
