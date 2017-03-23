@@ -16,7 +16,7 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Publication(PersistentJSONable):
+class Project(PersistentJSONable):
     """
     classdocs
     """
@@ -65,7 +65,7 @@ class Publication(PersistentJSONable):
         location_path = path_root + group + '/loc/' + str(location_id)
         device_path = path_root + group + '/device'
 
-        return Publication(location_path, device_path)
+        return Project(location_path, device_path)
 
 
     @classmethod
@@ -76,7 +76,7 @@ class Publication(PersistentJSONable):
         location_path = jdict.get('location-path')
         device_path = jdict.get('device-path')
 
-        return Publication(location_path, device_path)
+        return Project(location_path, device_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -143,4 +143,4 @@ class Publication(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Publication:{location_path:%s, device_path:%s}" % (self.location_path, self.device_path)
+        return "Project:{location_path:%s, device_path:%s}" % (self.location_path, self.device_path)
