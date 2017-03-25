@@ -10,7 +10,10 @@ example sentence:
 $GPGSV,3,1,10,  23,38,230,44,  29,71,156,47,  07,29,116,41,  08,09,081,36  *7F
 
 example values:
-GPGSV:{num_msg:3, msg_num:1, num_sv:12, sats:[GPSAT:{sv:02, elv:09, az:214, cno:28}, GPSAT:{sv:05, elv:70, az:230, cno:39}, GPSAT:{sv:07, elv:38, az:057, cno:None}, GPSAT:{sv:08, elv:00, az:060, cno:None}]}
+GPGSV:{num_msg:3, msg_num:1, num_sv:12, sats:[GPSAT:{sv:02, elv:09, az:214, cno:28},
+GPSAT:{sv:05, elv:70, az:230, cno:39}, GPSAT:{sv:07, elv:38, az:057, cno:None},
+GPSAT:{sv:08, elv:00, az:060, cno:None}]}
+
 GPGSV:{num_msg:1, msg_num:1, num_sv:01, sats:[GPSAT:{sv:02, elv:None, az:None, cno:26}]}
 """
 
@@ -84,7 +87,7 @@ class GPGSV(object):
         sats = '[' + ', '.join(str(sat) for sat in self.__sats) + ']'
 
         return "GPGSV:{num_msg:%s, msg_num:%s, num_sv:%s, sats:%s}" % \
-                    (self.num_msg, self.msg_num, self.num_sv, sats)
+               (self.num_msg, self.msg_num, self.num_sv, sats)
 
 
 # --------------------------------------------------------------------------------------------------------------------

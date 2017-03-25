@@ -42,7 +42,8 @@ tags = ["temperature", "humidity", "NO", "NO2", "CO", "O3", "PM1", "PM2.5", "PM1
 print(location)
 print("-")
 
-device = Device(None, name, description, password, password_is_locked, location, device_type, batch, org_id, owner_id, tags)
+device = Device(None, name, description, password, password_is_locked, location, device_type, batch, org_id, owner_id,
+                tags)
 print(device)
 print("-")
 

@@ -125,5 +125,7 @@ class Histogram(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Histogram:{minimum:%0.6f, maximum:%0.6f, bin_count:%d, delta:%0.6f, max_count:%d, counts:%s, path:%s}" % \
-                    (self.minimum, self.maximum, self.bin_count, self.delta, self.max_count, self.counts, self.path)
+        return "Histogram:{minimum:%0.6f, maximum:%0.6f, bin_count:%d, delta:%0.6f, max_count:%d, counts:%s, " \
+               "path:%s}" % \
+                    (self.minimum, self.maximum, self.bin_count, self.delta, self.max_count, self.counts,
+                     self.path)

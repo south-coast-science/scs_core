@@ -39,6 +39,7 @@ class MessageManager(object):
 
         collection = []
 
+        # request...
         self.__rest_client.connect()
 
         try:

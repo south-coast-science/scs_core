@@ -1,24 +1,17 @@
 """
-Created on 10 Nov 2016
+Created on 16 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
-{"date": "2016-11-19T20:31:16.563+00:00", "payload": {"encoding": "utf-8", "content-type": "application/json",
-"text": "{\"rec\": \"2016-11-19T20:31:23.882+00:00\", \"val\": {\"host\": {\"tmp\": 46.2}}}"}}
-
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.osio.data.message_payload import MessagePayload
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Message(JSONable):
+class Interval(JSONable):
     """
     classdocs
    """
@@ -26,24 +19,20 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
+    def construct(cls, prev_time, time, precision=3):
+        diff = None if prev_time is None else round(time.timestamp() - prev_time.timestamp(), precision)
 
-        date = LocalizedDatetime.construct_from_iso8601(jdict.get('date'))
-        payload = MessagePayload.construct_from_jdict(jdict.get('payload'))
-
-        return Message(date, payload)
+        return Interval(time, diff)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, date, payload):
+    def __init__(self, time, diff):
         """
         Constructor
         """
-        self.__date = date                    # LocalizedDatetime
-        self.__payload = payload              # MessagePayload
+        self.__time = time              # LocalizedDatetime
+        self.__diff = diff              # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -51,8 +40,8 @@ class Message(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['date'] = self.date
-        jdict['payload'] = self.payload
+        jdict['time'] = self.time
+        jdict['diff'] = self.diff
 
         return jdict
 
@@ -60,16 +49,16 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def date(self):
-        return self.__date
+    def time(self):
+        return self.__time
 
 
     @property
-    def payload(self):
-        return self.__payload
+    def diff(self):
+        return self.__diff
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Message:{date:%s, payload:%s}" % (self.date, self.payload)
+        return "Interval:{time:%s, diff:%s}" % (self.time, self.diff)

@@ -15,8 +15,9 @@ class TopicClient(object):
     classdocs
     """
 
-    __HOST = "mqtt.opensensors.io"
+    HOST =        "mqtt.opensensors.io"          # hard-coded URL
 
+    TIMEOUT =     30.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -25,14 +26,27 @@ class TopicClient(object):
         Constructor
         """
         self.__message_client = message_client
-        self.__message_client.connect(TopicClient.__HOST, auth.client_id, auth.user_id, auth.client_password)
+        self.__auth = auth
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def connect(self):
+        self.__message_client.connect(TopicClient.HOST,
+                                      self.__auth.client_id, self.__auth.user_id, self.__auth.client_password)
+
+
+    def disconnect(self):
+        self.__message_client.disconnect()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def publish(self, topic, datum):
         datum_jstr = JSONify.dumps(datum)
-        self.__message_client.publish(topic, datum_jstr)
+        success = self.__message_client.publish(topic, datum_jstr, TopicClient.TIMEOUT)
+
+        return success
 
 
     def subscribe(self, topic):
@@ -45,4 +59,4 @@ class TopicClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-            return "TopicClient:{message_client:%s}" % self.__message_client
+            return "TopicClient:{message_client:%s, auth:%s}" % (self.__message_client, self.__auth)

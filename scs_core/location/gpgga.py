@@ -10,8 +10,11 @@ example sentence:
 $GPGGA,092725.00,4717.11399,N,00833.91590,E,1,08,1.01,499.6,M,48.0,M,,*5B
 
 example values:
-GPGGA:{time:GPTime:{time:141058.00}, loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, quality:2, num_sv:06, hdop:3.10, alt:37.5, sep:45.4, diff_age:None, diff_station:0000}
-GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, quality:0, num_sv:00, hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
+GPGGA:{time:GPTime:{time:141058.00}, loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, quality:2, num_sv:06,
+hdop:3.10, alt:37.5, sep:45.4, diff_age:None, diff_station:0000}
+
+GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, quality:0, num_sv:00,
+hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
 """
 
 from scs_core.location.gploc import GPLoc
@@ -131,5 +134,7 @@ class GPGGA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPGGA:{time:%s, loc:%s, quality:%s, num_sv:%s, hdop:%s, alt:%s, sep:%s, diff_age:%s, diff_station:%s}" % \
-                    (self.time, self.loc, self.quality, self.num_sv, self.hdop, self.alt, self.sep, self.diff_age, self.diff_station)
+        return "GPGGA:{time:%s, loc:%s, quality:%s, num_sv:%s, hdop:%s, alt:%s, sep:%s, " \
+               "diff_age:%s, diff_station:%s}" % \
+                    (self.time, self.loc, self.quality, self.num_sv, self.hdop, self.alt, self.sep,
+                     self.diff_age, self.diff_station)

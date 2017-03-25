@@ -7,6 +7,8 @@ Created on 11 Jul 2016
 import time
 
 
+# TODO: deal with the case where network time is not available yet
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class IntervalTimer(object):

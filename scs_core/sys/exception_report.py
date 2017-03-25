@@ -101,4 +101,4 @@ class ExceptionReport(JSONable):
         trace = '[' + ', '.join(str(entry) for entry in self.trace) + ']'
 
         return "ExceptionReport:{cls:%s, args:%s, trace:%s, summary:%s}" % \
-                    (self.cls.__name__, args, trace, self.summary)
+               (self.cls.__name__, args, trace, self.summary)

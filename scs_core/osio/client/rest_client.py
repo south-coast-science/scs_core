@@ -25,7 +25,7 @@ class RESTClient(object):
     classdocs
     """
 
-    __HOST = "api.opensensors.io"
+    __HOST = "api.opensensors.io"          # hard-coded URL
 
     __HEADER_ACCEPT = "application/json"
     __HEADER_AUTHORIZATION = "api-key "
@@ -97,7 +97,8 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": RESTClient.__HEADER_ACCEPT, "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
+        return {"Accept": RESTClient.__HEADER_ACCEPT,
+                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
 
 
     # ----------------------------------------------------------------------------------------------------------------

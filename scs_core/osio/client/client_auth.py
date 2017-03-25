@@ -12,14 +12,19 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
-# TODO: throughout, replace host-as-a-parameter with an abstract Host class?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class ClientAuth(PersistentJSONable):
     """
     classdocs
     """
+
+    MQTT_HOST =        "mqtt.opensensors.io"          # hard-coded URL
+
+    MQTT_TIMEOUT =     30.0
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     __FILENAME = "osio_client_auth.json"
 

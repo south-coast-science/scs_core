@@ -29,7 +29,8 @@ class TopicStats(object):
 
         contributors_jdict = jdict.get('contributors')
 
-        contributors = [TopicContributor.construct_from_jdict(contributor_jdict) for contributor_jdict in contributors_jdict] if contributors_jdict else []
+        contributors = [TopicContributor.construct_from_jdict(contributor_jdict)
+                        for contributor_jdict in contributors_jdict] if contributors_jdict else []
 
         last_location = Location.construct_from_jdict(jdict.get('last-location'))
 
@@ -88,5 +89,7 @@ class TopicStats(object):
     def __str__(self, *args, **kwargs):
         contributors = '[' + ', '.join(str(contributor) for contributor in self.contributors) + ']'
 
-        return "TopicStats:{period:%s, last_reading:%s, average_frequency:%s, total:%s, contributors:%s, last_location:%s}" % \
-                    (self.period, self.last_reading, self.average_frequency, self.total, contributors, self.last_location)
+        return "TopicStats:{period:%s, last_reading:%s, average_frequency:%s, total:%s, contributors:%s, " \
+               "last_location:%s}" % \
+               (self.period, self.last_reading, self.average_frequency, self.total, contributors,
+                self.last_location)

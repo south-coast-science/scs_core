@@ -30,7 +30,7 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, org_id):
-        path = '/v1/orgs' + urllib.parse.quote(org_id, '')
+        path = '/v1/orgs/' + urllib.parse.quote(org_id, '')
 
         # request...
         self.__rest_client.connect()
@@ -50,6 +50,7 @@ class OrganisationManager(object):
     def find_owned_by_user(self, org_id):
         orgs = []
 
+        # request...
         self.__rest_client.connect()
 
         try:
@@ -61,6 +62,8 @@ class OrganisationManager(object):
 
         return orgs
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, org):
         path = '/v1/orgs'
@@ -77,6 +80,10 @@ class OrganisationManager(object):
         device = Organisation.construct_from_jdict(response)
 
         return device
+
+
+    def update(self, org):
+        pass                    # TODO: implement update(..)
 
 
     # ----------------------------------------------------------------------------------------------------------------
