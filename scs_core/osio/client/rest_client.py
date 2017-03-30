@@ -57,9 +57,12 @@ class RESTClient(object):
         except HTTPException as exc:
             raise ClientException.construct(exc) from exc
 
-        response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = None
 
-        return response_jdict
+        return response
 
 
     def post(self, path, payload_jdict):                # TODO: make the jdict here?
@@ -70,7 +73,10 @@ class RESTClient(object):
         except HTTPException as ex:
             raise ClientException.construct(ex) from ex
 
-        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = None
 
         return response
 
@@ -83,7 +89,10 @@ class RESTClient(object):
         except HTTPException as ex:
             raise ClientException.construct(ex) from ex
 
-        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = None
 
         return response
 
@@ -94,7 +103,10 @@ class RESTClient(object):
         except HTTPException as ex:
             raise ClientException.construct(ex) from ex
 
-        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        try:
+            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        except ValueError:
+            response = None
 
         return response
 

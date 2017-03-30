@@ -116,29 +116,29 @@ class Device(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.client_id:
+        if self.client_id is not None:
             jdict['client-id'] = self.client_id
 
         jdict['name'] = self.name
         jdict['description'] = self.description
 
-        if self.password:
+        if self.password is not None:
             jdict['password'] = self.password
 
-        if self.password_is_locked:
+        if self.password_is_locked is not None:
             jdict['password-is-locked'] = self.password_is_locked
 
         jdict['location'] = self.location
 
         jdict['device-type'] = self.device_type
 
-        if self.batch:
+        if self.batch is not None:
             jdict['batch'] = self.batch
 
-        if self.org_id:
+        if self.org_id is not None:
             jdict['org-id'] = self.org_id
 
-        if self.owner_id:
+        if self.owner_id is not None:
             jdict['owner-id'] = self.owner_id
 
         jdict['tags'] = self.tags
@@ -163,11 +163,6 @@ class Device(JSONable):
         return self.__description
 
 
-    @description.setter
-    def description(self, description):
-        self.__description = description
-
-
     @property
     def password(self):
         return self.__password
@@ -181,11 +176,6 @@ class Device(JSONable):
     @property
     def location(self):
         return self.__location
-
-
-    @location.setter
-    def location(self, location):
-        self.__location = location
 
 
     @property

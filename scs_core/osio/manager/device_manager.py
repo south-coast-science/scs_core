@@ -104,7 +104,6 @@ class DeviceManager(object):
 
         try:
             response_jdict = self.__rest_client.post(path, device.as_json())
-
         finally:
             self.__rest_client.close()
 
@@ -120,14 +119,9 @@ class DeviceManager(object):
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.put(path, device.as_json())
-
+            self.__rest_client.put(path, device.as_json())
         finally:
             self.__rest_client.close()
-
-        # device = Device.construct_from_jdict(response_jdict)
-
-        # return device
 
 
     def delete(self, user_id, client_id):
@@ -137,14 +131,9 @@ class DeviceManager(object):
         self.__rest_client.connect()
 
         try:
-            response = self.__rest_client.delete(path)
-
+            self.__rest_client.delete(path)
         finally:
             self.__rest_client.close()
-
-        success = response == ''
-
-        return success
 
 
     # ----------------------------------------------------------------------------------------------------------------
