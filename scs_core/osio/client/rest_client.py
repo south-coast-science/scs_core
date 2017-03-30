@@ -3,11 +3,7 @@ Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-org-id: south-coast-science-dev
-API KEY: 43308b72-ad41-4555-b075-b4245c1971db
-New device password:QMicOCZw
-
-
+header:
 CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key ' . AOC_OPENSENSORS_API_KEY),
 """
 
@@ -16,6 +12,8 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
+from scs_core.osio.client.client_excepion import ClientException
+from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -54,7 +52,11 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, path, params=None):
-        response_jstr = self.__http_client.get(path, params, self.__headers)
+        try:
+            response_jstr = self.__http_client.get(path, params, self.__headers)
+        except HTTPException as exc:
+            raise ClientException.construct(exc) from exc
+
         response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 
         return response_jdict
@@ -63,12 +65,12 @@ class RESTClient(object):
     def post(self, path, payload_jdict):                # TODO: make the jdict here?
         payload_jstr = JSONify.dumps(payload_jdict)
 
-        response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
-
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
-        except ValueError:
-            response = response_jstr
+            response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
+        except HTTPException as ex:
+            raise ClientException.construct(ex) from ex
+
+        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 
         return response
 
@@ -76,19 +78,23 @@ class RESTClient(object):
     def put(self, path, payload_jdict):                # TODO: make the jdict here?
         payload_jstr = JSONify.dumps(payload_jdict)
 
-        response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
-        response_jdict = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        try:
+            response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
+        except HTTPException as ex:
+            raise ClientException.construct(ex) from ex
 
-        return response_jdict
+        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+
+        return response
 
 
     def delete(self, path):
-        response_jstr = self.__http_client.delete(path, self.__headers)
-
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
-        except ValueError:
-            response = response_jstr
+            response_jstr = self.__http_client.delete(path, self.__headers)
+        except HTTPException as ex:
+            raise ClientException.construct(ex) from ex
+
+        response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
 
         return response
 

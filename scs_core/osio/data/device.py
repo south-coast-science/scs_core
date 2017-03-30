@@ -3,13 +3,32 @@ Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-name: scs-rpi-006
-client: 5392
-pass: vXy5G44P
-
-name: test
-client: 5402
-pass: cPhbitmp
+example:
+{
+  "description": "BB development platform",
+  "tags": [
+    "pm1",
+    "pm2.5",
+    "pm10",
+    "co",
+    "no",
+    "no2",
+    "o3",
+    "temperature",
+    "humidity"
+  ],
+  "client-id": "5926",
+  "name": "Alpha Pi Eng/V1 000006",
+  "org-id": "south-coast-science-dev",
+  "batch": null,
+  "device-type": "Alpha Pi Eng/V1",
+  "owner-id": "southcoastscience-dev",
+  "location": {
+    "lat": 50.819456,
+    "lon": -0.128336,
+    "postcode": "bn2 1af"
+  }
+}
 """
 
 from collections import OrderedDict
@@ -144,6 +163,11 @@ class Device(JSONable):
         return self.__description
 
 
+    @description.setter
+    def description(self, description):
+        self.__description = description
+
+
     @property
     def password(self):
         return self.__password
@@ -157,6 +181,11 @@ class Device(JSONable):
     @property
     def location(self):
         return self.__location
+
+
+    @location.setter
+    def location(self, location):
+        self.__location = location
 
 
     @property

@@ -32,8 +32,8 @@ class DeviceManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, user_id, client_id):
-        path = '/v1/users/' + user_id + '/devices/' + client_id
+    def find(self, org_id, client_id):
+        path = '/v1/orgs/' + org_id + '/devices/' + client_id
 
         # request...
         self.__rest_client.connect()
@@ -50,18 +50,18 @@ class DeviceManager(object):
         return device
 
 
-    def find_for_name(self, org_id, name):
+    def find_for_name(self, org_id, name):                  # used by: osio/device
         devices = self.find_all_for_org(org_id)
 
         for device in devices:
             if device.name == name:
-                return device
+                return self.find(org_id, device.client_id)  # get the full-fat version
 
         return None
 
 
-    def find_all_for_user(self, user_id):
-        path = '/v1/users/southcoastscience-dev/devices'
+    def find_all_for_user(self, user_id):                   # used by: osio/device_list
+        path = '/v1/users/' + user_id + '/devices'
 
         # request...
         self.__rest_client.connect()
@@ -77,7 +77,7 @@ class DeviceManager(object):
         return devices
 
 
-    def find_all_for_org(self, org_id):
+    def find_all_for_org(self, org_id):                     # used by: osio/device_list
         path = '/v1/orgs/' + org_id + '/devices'
 
         # request...
@@ -113,8 +113,21 @@ class DeviceManager(object):
         return device
 
 
-    def update(self, device):
-        pass                    # TODO: implement update(..)
+    def update(self, org_id, device_id, device):
+        path = '/v1/orgs/' + org_id + '/devices/' + device_id
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            response_jdict = self.__rest_client.put(path, device.as_json())
+
+        finally:
+            self.__rest_client.close()
+
+        # device = Device.construct_from_jdict(response_jdict)
+
+        # return device
 
 
     def delete(self, user_id, client_id):

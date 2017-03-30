@@ -2,6 +2,25 @@
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+{
+    "period": 604800,
+    "last-reading": "5 seconds ago",
+    "average-frequency": "9 seconds",
+    "total": 49661,
+    "contributors": [
+      {
+        "name": "South Coast Science - Dev",
+        "id": "southcoastscience-dev",
+        "gravatar-hash": "07f512e9fe64863039df0c0f1834cc25"
+      }
+    ]
+    "last-location": {
+      "lat": 50.819456,
+      "lon": -0.128336
+    }
+}
 """
 
 from scs_core.osio.data.topic_contributor import TopicContributor

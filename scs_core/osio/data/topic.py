@@ -3,8 +3,76 @@ Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-south-coast-science-dev
-43308b72-ad41-4555-b075-b4245c1971db
+example:
+{
+  "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+  "unit": null,
+  "derived-topics": [
+    {
+      "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+      "unit": null,
+      "name": "15min statistics of Gas concentrations",
+      "public": true,
+      "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/15min",
+      "derived-data": {
+        "interval": 900
+      },
+      "topic-info": {
+        "format": "application/json"
+      }
+    },
+    {
+      "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+      "unit": null,
+      "name": "5min statistics of Gas concentrations",
+      "public": true,
+      "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/5min",
+      "derived-data": {
+        "interval": 300
+      },
+      "topic-info": {
+        "format": "application/json"
+      }
+    },
+    {
+      "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+      "unit": null,
+      "name": "hourly statistics of Gas concentrations",
+      "public": true,
+      "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/hourly",
+      "derived-data": {
+        "interval": 3600
+      },
+      "topic-info": {
+        "format": "application/json"
+      }
+    }
+  ],
+  "name": "Gas concentrations",
+  "public": true,
+  "topic": "/orgs/south-coast-science-dev/production-test/loc/1/gases",
+  "topic-info": {
+    "format": "application/json"
+  },
+  "bookmark-count": 0,
+  "stats": {
+    "period": 604800,
+    "last-reading": "5 seconds ago",
+    "average-frequency": "9 seconds",
+    "total": 49661,
+    "contributors": [
+      {
+        "name": "South Coast Science - Dev",
+        "id": "southcoastscience-dev",
+        "gravatar-hash": "07f512e9fe64863039df0c0f1834cc25"
+      }
+    ],
+    "last-location": {
+      "lat": 50.819456,
+      "lon": -0.128336
+    }
+  }
+}
 """
 
 from collections import OrderedDict
@@ -12,6 +80,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 from scs_core.osio.data.topic_info import TopicInfo
 
+
+# TODO: update class to receive full topic metadata
 
 # --------------------------------------------------------------------------------------------------------------------
 

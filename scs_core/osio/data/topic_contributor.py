@@ -2,6 +2,13 @@
 Created on 10 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+{
+    "name": "South Coast Science - Dev",
+    "id": "southcoastscience-dev",
+    "gravatar-hash": "07f512e9fe64863039df0c0f1834cc25"
+}
 """
 
 
