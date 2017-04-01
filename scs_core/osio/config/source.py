@@ -36,7 +36,7 @@ class Source(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def device(cls, device_id, api_auth, lat, lng, postcode, description):
+    def create(cls, device_id, api_auth, lat, lng, postcode, description):
         client_id = None
         name = device_id.box_label()
         desc = cls.DESCRIPTION if description is None else description
@@ -56,5 +56,28 @@ class Source(object):
 
 
     @classmethod
-    def command(cls):
-        pass
+    def update(cls, existing, lat, lng, postcode, description):
+        client_id = None
+        name = existing.name
+        password = None
+        password_is_locked = None
+        device_type = existing.device_type
+        batch = existing.batch
+        org_id = None
+        owner_id = None
+        tags = existing.tags
+
+        if lat and lng and postcode:
+            location = Location(lat, lng, None, None, postcode)
+        else:
+            location = existing.location
+
+        if description:
+            desc = description
+        else:
+            desc = existing.description
+
+        device = Device(client_id, name, desc, password, password_is_locked, location,
+                        device_type, batch, org_id, owner_id, tags)
+
+        return device

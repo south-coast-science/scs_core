@@ -2,6 +2,13 @@
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+"location": {
+    "lat": 50.819456,
+    "lon": -0.128336,
+    "postcode": "bn2 1af"
+}
 """
 
 from collections import OrderedDict

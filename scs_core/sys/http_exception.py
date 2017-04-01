@@ -2,17 +2,6 @@
 Created on 30 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
-{
-  "error": {
-    "body-params": {
-      "client-id": "disallowed-key",
-      "org-id": "disallowed-key",
-      "owner-id": "disallowed-key"
-    }
-  }
-}
 """
 
 from collections import OrderedDict
@@ -22,30 +11,31 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Error(JSONable):
+class HTTPException(RuntimeError, JSONable):
     """
     classdocs
-   """
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
+    def construct(cls, response, encoded_data):
+        status = response.status
+        reason = response.reason
+        data = encoded_data.decode()
 
-        body_params = jdict.get('body-params')
-
-        return Error(body_params)
+        return HTTPException(status, reason, data)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, body_params):
+    def __init__(self, status, reason, data):
         """
         Constructor
         """
-        self.__body_params = body_params    # dict of field: message
+        self.__status = status
+        self.__reason = reason
+        self.__data = data
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,7 +43,9 @@ class Error(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['body-params'] = self.body_params
+        jdict['status'] = self.status
+        jdict['reason'] = self.reason
+        jdict['data'] = self.data
 
         return jdict
 
@@ -61,11 +53,21 @@ class Error(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def body_params(self):
-        return self.__body_params
+    def status(self):
+        return self.__status
+
+
+    @property
+    def reason(self):
+        return self.__reason
+
+
+    @property
+    def data(self):
+        return self.__data
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Error:{body_params:%s}" % self.body_params
+        return "HTTPException:{status:%s, reason:%s, data:%s}" % (self.status, self.reason, self.data)

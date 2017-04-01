@@ -3,13 +3,32 @@ Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-name: scs-rpi-006
-client: 5392
-pass: vXy5G44P
-
-name: test
-client: 5402
-pass: cPhbitmp
+example:
+{
+  "description": "BB development platform",
+  "tags": [
+    "pm1",
+    "pm2.5",
+    "pm10",
+    "co",
+    "no",
+    "no2",
+    "o3",
+    "temperature",
+    "humidity"
+  ],
+  "client-id": "5926",
+  "name": "Alpha Pi Eng/V1 000006",
+  "org-id": "south-coast-science-dev",
+  "batch": null,
+  "device-type": "Alpha Pi Eng/V1",
+  "owner-id": "southcoastscience-dev",
+  "location": {
+    "lat": 50.819456,
+    "lon": -0.128336,
+    "postcode": "bn2 1af"
+  }
+}
 """
 
 from collections import OrderedDict
@@ -97,29 +116,29 @@ class Device(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.client_id:
+        if self.client_id is not None:
             jdict['client-id'] = self.client_id
 
         jdict['name'] = self.name
         jdict['description'] = self.description
 
-        if self.password:
+        if self.password is not None:
             jdict['password'] = self.password
 
-        if self.password_is_locked:
+        if self.password_is_locked is not None:
             jdict['password-is-locked'] = self.password_is_locked
 
         jdict['location'] = self.location
 
         jdict['device-type'] = self.device_type
 
-        if self.batch:
+        if self.batch is not None:
             jdict['batch'] = self.batch
 
-        if self.org_id:
+        if self.org_id is not None:
             jdict['org-id'] = self.org_id
 
-        if self.owner_id:
+        if self.owner_id is not None:
             jdict['owner-id'] = self.owner_id
 
         jdict['tags'] = self.tags

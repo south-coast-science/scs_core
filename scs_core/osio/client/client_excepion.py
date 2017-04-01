@@ -2,50 +2,47 @@
 Created on 30 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
-{
-  "error": {
-    "body-params": {
-      "client-id": "disallowed-key",
-      "org-id": "disallowed-key",
-      "owner-id": "disallowed-key"
-    }
-  }
-}
 """
+
+import json
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.osio.data.error import Error
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Error(JSONable):
+class ClientException(RuntimeError, JSONable):
     """
     classdocs
-   """
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
+    def construct(cls, http_exception):
+        try:
+            jdict = json.loads(http_exception.data, object_pairs_hook=OrderedDict)
+        except ValueError:
+            return ClientException(None)
 
-        body_params = jdict.get('body-params')
+        try:
+            error = Error.construct_from_jdict(jdict['error'])
+        except KeyError:
+            return ClientException(None)
 
-        return Error(body_params)
+        return ClientException(error)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, body_params):
+    def __init__(self, error):
         """
         Constructor
         """
-        self.__body_params = body_params    # dict of field: message
+        self.__error = error
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,7 +50,7 @@ class Error(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['body-params'] = self.body_params
+        jdict['error'] = self.error
 
         return jdict
 
@@ -61,11 +58,11 @@ class Error(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def body_params(self):
-        return self.__body_params
+    def error(self):
+        return self.__error
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Error:{body_params:%s}" % self.body_params
+        return "ClientException:{error:%s}" % self.error

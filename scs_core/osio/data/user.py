@@ -5,7 +5,7 @@ Created on 21 Mar 2017
 
 {
   "id": "southcoastscience-dev",
-  "name": "South Coast Science  - Dev",
+  "name": "South Coast Science - Dev",
   "email": "opensensors-dev@southcoastscience.com",
   "month": "2016-11"
 }
