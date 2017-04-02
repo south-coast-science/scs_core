@@ -50,7 +50,7 @@ class DeviceManager(object):
         return device
 
 
-    def find_for_name(self, org_id, name):                  # used by: osio/device
+    def find_for_name(self, org_id, name):
         devices = self.find_all_for_org(org_id)
 
         for device in devices:                              # warning: unique only by convention
@@ -60,7 +60,7 @@ class DeviceManager(object):
         return None
 
 
-    def find_all_for_user(self, user_id):                   # used by: osio/device_list
+    def find_all_for_user(self, user_id):
         path = '/v1/users/' + user_id + '/devices'
 
         # request...
@@ -77,7 +77,7 @@ class DeviceManager(object):
         return devices
 
 
-    def find_all_for_org(self, org_id):                     # used by: osio/device_list
+    def find_all_for_org(self, org_id):
         path = '/v1/orgs/' + org_id + '/devices'
 
         # request...
