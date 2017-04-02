@@ -33,28 +33,16 @@ example:
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable
+from scs_core.osio.data.device_metadata import DeviceMetadata
 from scs_core.osio.data.location import Location
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Device(JSONable):
+class Device(DeviceMetadata):
     """
     classdocs
    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def find_for_org(cls, http_client, api_key, org_id):
-        pass
-
-
-    @classmethod
-    def find_for_user(cls, http_client, api_key, user_id):
-        pass
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -93,22 +81,16 @@ class Device(JSONable):
         """
         Constructor
         """
-        self.__client_id = client_id                        # int
-        self.__name = name                                  # string
-        self.__description = description                    # string
+        DeviceMetadata.__init__(self, client_id, name, description, location, tags)
 
         self.__password = password                          # string
         self.__password_is_locked = password_is_locked      # bool
-
-        self.__location = location                          # Location
 
         self.__device_type = device_type                    # string
         self.__batch = batch                                # string
 
         self.__org_id = org_id                              # string
         self.__owner_id = owner_id                          # string
-
-        self.__tags = tags                                  # array of string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,21 +131,6 @@ class Device(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def client_id(self):
-        return self.__client_id
-
-
-    @property
-    def name(self):
-        return self.__name
-
-
-    @property
-    def description(self):
-        return self.__description
-
-
-    @property
     def password(self):
         return self.__password
 
@@ -171,11 +138,6 @@ class Device(JSONable):
     @property
     def password_is_locked(self):
         return self.__password_is_locked
-
-
-    @property
-    def location(self):
-        return self.__location
 
 
     @property
@@ -196,11 +158,6 @@ class Device(JSONable):
     @property
     def owner_id(self):
         return self.__owner_id
-
-
-    @property
-    def tags(self):
-        return self.__tags
 
 
     # ----------------------------------------------------------------------------------------------------------------

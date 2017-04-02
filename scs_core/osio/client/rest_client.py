@@ -14,6 +14,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 from scs_core.osio.client.client_excepion import ClientException
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.http_status import HTTPStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -55,7 +56,10 @@ class RESTClient(object):
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
         except HTTPException as exc:
-            raise ClientException.construct(exc) from exc
+            if exc.status == HTTPStatus.NOT_FOUND:
+                return None
+            else:
+                raise ClientException.construct(exc) from exc
 
         try:
             response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
