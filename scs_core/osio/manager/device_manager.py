@@ -3,15 +3,11 @@ Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-api auth:
-{"org-id": "south-coast-science-dev", "api-key": "43308b72-ad41-4555-b075-b4245c1971db"}
-
-device auth:
-{"user-id": "southcoastscience-dev", "client-id": "5873", "client-password": "d4MctQFa"}
 """
 
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.device import Device
+from scs_core.osio.data.device_metadata import DeviceMetadata
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -55,7 +51,7 @@ class DeviceManager(object):
 
         for device in devices:                              # warning: unique only by convention
             if device.name == name:
-                return self.find(org_id, device.client_id)  # get the full-fat version
+                return self.find(org_id, device.client_id)
 
         return None
 
@@ -72,7 +68,7 @@ class DeviceManager(object):
         finally:
             self.__rest_client.close()
 
-        devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+        devices = [DeviceMetadata.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
@@ -89,7 +85,7 @@ class DeviceManager(object):
         finally:
             self.__rest_client.close()
 
-        devices = [Device.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+        devices = [DeviceMetadata.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
