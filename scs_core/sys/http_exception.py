@@ -20,7 +20,7 @@ class HTTPException(RuntimeError, JSONable):
 
     @classmethod
     def construct(cls, response, encoded_data):
-        status = response.status
+        status = None if response.status is None else int(response.status)
         reason = response.reason
         data = encoded_data.decode()
 
@@ -33,9 +33,9 @@ class HTTPException(RuntimeError, JSONable):
         """
         Constructor
         """
-        self.__status = status
-        self.__reason = reason
-        self.__data = data
+        self.__status = status              # int
+        self.__reason = reason              # string
+        self.__data = data                  # string (may be JSON)
 
 
     # ----------------------------------------------------------------------------------------------------------------

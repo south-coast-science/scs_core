@@ -53,7 +53,7 @@ class DeviceManager(object):
     def find_for_name(self, org_id, name):                  # used by: osio/device
         devices = self.find_all_for_org(org_id)
 
-        for device in devices:
+        for device in devices:                              # warning: unique only by convention
             if device.name == name:
                 return self.find(org_id, device.client_id)  # get the full-fat version
 
