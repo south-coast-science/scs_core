@@ -41,7 +41,7 @@ class Source(object):
         name = device_id.box_label()
         desc = cls.DESCRIPTION if description is None else description
         password = None
-        password_is_locked = False
+        password_is_locked = None
         location = Location(lat, lng, None, None, postcode)
         device_type = device_id.type_label()
         batch = None
