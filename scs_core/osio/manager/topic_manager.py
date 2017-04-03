@@ -2,9 +2,6 @@
 Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-south-coast-science-dev
-43308b72-ad41-4555-b075-b4245c1971db
 """
 
 import urllib.parse
@@ -12,8 +9,6 @@ import urllib.parse
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.topic import Topic
 
-
-# TODO: remove references to south-coast-science-dev
 
 # --------------------------------------------------------------------------------------------------------------------
 

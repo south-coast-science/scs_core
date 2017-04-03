@@ -43,8 +43,8 @@ class LinearRegression(object):
         # x domain...
         x_data = self.__x_data()
 
-        min_x = min(x_data)
-        max_x = max(x_data)
+        min_x = min(x_data)[0]
+        max_x = max(x_data)[0]
 
         mid_x = min_x + (max_x - min_x) / 2
 

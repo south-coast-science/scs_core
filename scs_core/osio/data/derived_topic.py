@@ -5,11 +5,14 @@ Created on 10 Nov 2016
 
 example:
     {
-      "name": "Device status",
-      "description": "lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), errors",
-      "topic": "/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000007/status",
+      "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+      "unit": null,
+      "name": "hourly statistics of Gas concentrations",
       "public": true,
-      "rollups-enabled": true,
+      "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/hourly",
+      "derived-data": {
+        "interval": 3600
+      },
       "topic-info": {
         "format": "application/json"
       }
@@ -24,7 +27,7 @@ from scs_core.osio.data.topic_info import TopicInfo
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Topic(AbstractTopic):
+class DerivedTopic(AbstractTopic):
     """
     classdocs
     """
@@ -45,26 +48,26 @@ class Topic(AbstractTopic):
 
         topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
-        # Topic...
-        rollups_enabled = jdict.get('rollups-enabled')
-        schema_id = jdict.get('schema-id', 0)
+        # DerivedTopic...
+        unit = jdict.get('unit')
+        derived_data = jdict.get('derived-data')
 
-        return Topic(path, name, description, is_public, topic_info, rollups_enabled, schema_id)
+        return DerivedTopic(path, name, description, is_public, topic_info, unit, derived_data)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, path, name, description, is_public, topic_info,
-                 rollups_enabled, schema_id):
+                 unit, derived_data):
         """
         Constructor
         """
         # AbstractTopic...
         AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
 
-        # Topic...
-        self.__rollups_enabled = rollups_enabled        # bool
-        self.__schema_id = schema_id                    # string
+        # DerivedTopic...
+        self.__unit = unit                          # string
+        self.__derived_data = derived_data          # DerivedData
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,11 +84,9 @@ class Topic(AbstractTopic):
 
         jdict['topic-info'] = self.topic_info
 
-        # Topic...
-        jdict['rollups-enabled'] = self.is_public
-
-        if self.schema_id:
-            jdict['schema-id'] = self.schema_id
+        # DerivedTopic...
+        jdict['unit'] = self.unit
+        jdict['derived-data'] = self.derived_data
 
         return jdict
 
@@ -93,19 +94,19 @@ class Topic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def rollups_enabled(self):
-        return self.__rollups_enabled
+    def unit(self):
+        return self.__unit
 
 
     @property
-    def schema_id(self):
-        return self.__schema_id
+    def derived_data(self):
+        return self.__derived_data
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
-               "rollups_enabled:%s, schema_id:%s}" % \
+        return "DerivedTopic:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+               "unit:%s, derived_data:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.topic_info,
-                self.rollups_enabled, self.schema_id)
+                self.unit, self.derived_data)
