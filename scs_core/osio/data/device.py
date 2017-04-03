@@ -98,7 +98,7 @@ class Device(DeviceMetadata):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.client_id is not None:
+        if self.client_id is not None:              # DeviceMetadata...              # TODO: put these on superclass
             jdict['client-id'] = self.client_id
 
         jdict['name'] = self.name
