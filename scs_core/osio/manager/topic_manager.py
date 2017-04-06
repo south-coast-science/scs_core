@@ -8,6 +8,7 @@ import urllib.parse
 
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.topic import Topic
+from scs_core.osio.data.topic_metadata import TopicMetadata
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ class TopicManager(object):
 
         self.__rest_client.close()
 
-        topic = Topic.construct_from_jdict(response_jdict)
+        topic = TopicMetadata.construct_from_jdict(response_jdict)
 
         return topic
 

@@ -49,10 +49,10 @@ example:
 }
 """
 
-from collections import OrderedDict
-
 from scs_core.osio.data.abstract_topic import AbstractTopic
+from scs_core.osio.data.derived_topic import DerivedTopic
 from scs_core.osio.data.topic_info import TopicInfo
+from scs_core.osio.data.topic_stats import TopicStats
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -79,9 +79,9 @@ class TopicMetadata(AbstractTopic):
         topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # TopicMetadata...
-        derived_topics = None       # TODO: implement
-        bookmark_count = None       # TODO: implement
-        stats = None                # TODO: implement
+        derived_topics = [DerivedTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('derived-topics')]
+        bookmark_count = jdict.get('bookmark-count')
+        stats = TopicStats.construct_from_jdict(jdict.get('stats'))
 
         return TopicMetadata(path, name, description, is_public, topic_info, derived_topics, bookmark_count, stats)
 
@@ -106,18 +106,8 @@ class TopicMetadata(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
+        jdict = AbstractTopic.as_json(self)
 
-        # AbstractTopic...              # TODO: put these on superclass
-        jdict['topic'] = self.path
-        jdict['name'] = self.name
-        jdict['description'] = self.description
-
-        jdict['public'] = self.is_public
-
-        jdict['topic-info'] = self.topic_info
-
-        # TopicMetadata...
         jdict['derived-topics'] = self.derived_topics
         jdict['bookmark-count'] = self.bookmark_count
         jdict['stats'] = self.stats
@@ -145,7 +135,9 @@ class TopicMetadata(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        derived_topics = '[' + ', '.join(str(derived_topic) for derived_topic in self.derived_topics) + ']'
+
         return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
                "derived_topics:%s, bookmark_count:%s, stats:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.topic_info,
-                self.derived_topics, self.bookmark_count, self.stats)
+                derived_topics, self.bookmark_count, self.stats)

@@ -4,7 +4,7 @@ Created on 2 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
+from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
@@ -35,9 +35,18 @@ class AbstractTopic(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
     def as_json(self):
-        pass
+        jdict = OrderedDict()
+
+        jdict['topic'] = self.path
+        jdict['name'] = self.name
+        jdict['description'] = self.description
+
+        jdict['public'] = self.is_public
+
+        jdict['topic-info'] = self.topic_info
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

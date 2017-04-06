@@ -16,8 +16,6 @@ example:
     }
 """
 
-from collections import OrderedDict
-
 from scs_core.osio.data.abstract_topic import AbstractTopic
 from scs_core.osio.data.topic_info import TopicInfo
 
@@ -35,6 +33,8 @@ class Topic(AbstractTopic):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
+
+        print("jdict: %s" % jdict)
 
         # AbstractTopic...
         path = jdict.get('topic')
@@ -70,19 +70,9 @@ class Topic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
+        jdict = AbstractTopic.as_json(self)
 
-        # AbstractTopic...
-        jdict['topic'] = self.path
-        jdict['name'] = self.name
-        jdict['description'] = self.description
-
-        jdict['public'] = self.is_public
-
-        jdict['topic-info'] = self.topic_info
-
-        # Topic...
-        jdict['rollups-enabled'] = self.is_public
+        jdict['rollups-enabled'] = self.rollups_enabled
 
         if self.schema_id:
             jdict['schema-id'] = self.schema_id
