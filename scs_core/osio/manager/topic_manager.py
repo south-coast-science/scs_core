@@ -7,7 +7,7 @@ Created on 13 Nov 2016
 import urllib.parse
 
 from scs_core.osio.client.rest_client import RESTClient
-from scs_core.osio.data.topic import Topic
+from scs_core.osio.data.topic_summary import TopicSummary
 from scs_core.osio.data.topic_metadata import TopicMetadata
 
 
@@ -116,7 +116,9 @@ class TopicManager(object):
 
             # topics...
             topics_jdict = response_jdict.get('topics')
-            topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
+
+            topics = [TopicSummary.construct_from_jdict(topic_jdict)
+                      for topic_jdict in topics_jdict] if topics_jdict else []
 
             yield topics
 

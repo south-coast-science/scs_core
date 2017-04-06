@@ -1,14 +1,18 @@
 """
-Created on 10 Nov 2016
+Created on 6 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
     {
-      "name": "Device status",
-      "description": "lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), errors",
-      "topic": "/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000007/status",
+      "name": "Particulate densities",
+      "description": "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7",
+      "topic": "/orgs/south-coast-science-dev/development/loc/1/particulates",
       "public": true,
+      "schema": {
+        "id": 29,
+        "name": "south-coast-science-particulates"
+      },
       "rollups-enabled": true,
       "topic-info": {
         "format": "application/json"
@@ -17,12 +21,13 @@ example:
 """
 
 from scs_core.osio.data.abstract_topic import AbstractTopic
+from scs_core.osio.data.schema import Schema
 from scs_core.osio.data.topic_info import TopicInfo
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Topic(AbstractTopic):
+class TopicSummary(AbstractTopic):
     """
     classdocs
     """
@@ -43,26 +48,26 @@ class Topic(AbstractTopic):
 
         topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
-        # Topic...
+        # TopicSummary...
         rollups_enabled = jdict.get('rollups-enabled')
-        schema_id = jdict.get('schema-id')
+        schema = Schema.construct_from_jdict(jdict.get('schema'))
 
-        return Topic(path, name, description, is_public, topic_info, rollups_enabled, schema_id)
+        return TopicSummary(path, name, description, is_public, topic_info, rollups_enabled, schema)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, path, name, description, is_public, topic_info,
-                 rollups_enabled, schema_id):
+                 rollups_enabled, schema):
         """
         Constructor
         """
         # AbstractTopic...
         AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
 
-        # Topic...
+        # TopicSummary...
         self.__rollups_enabled = rollups_enabled        # bool
-        self.__schema_id = schema_id                    # string
+        self.__schema = schema                          # Schema
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,8 +77,8 @@ class Topic(AbstractTopic):
 
         jdict['rollups-enabled'] = self.rollups_enabled
 
-        if self.schema_id:
-            jdict['schema-id'] = self.schema_id
+        if self.schema is not None:
+            jdict['schema'] = self.schema
 
         return jdict
 
@@ -86,14 +91,14 @@ class Topic(AbstractTopic):
 
 
     @property
-    def schema_id(self):
-        return self.__schema_id
+    def schema(self):
+        return self.__schema
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
-               "rollups_enabled:%s, schema_id:%s}" % \
+        return "TopicSummary:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+               "rollups_enabled:%s, schema:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.topic_info,
-                self.rollups_enabled, self.schema_id)
+                self.rollups_enabled, self.schema)
