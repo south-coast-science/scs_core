@@ -47,7 +47,7 @@ class Topic(AbstractTopic):
 
         # Topic...
         rollups_enabled = jdict.get('rollups-enabled')
-        schema_id = jdict.get('schema-id', 0)
+        schema_id = jdict.get('schema-id')
 
         return Topic(path, name, description, is_public, topic_info, rollups_enabled, schema_id)
 
