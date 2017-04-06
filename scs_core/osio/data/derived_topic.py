@@ -22,6 +22,7 @@ example:
 from collections import OrderedDict
 
 from scs_core.osio.data.abstract_topic import AbstractTopic
+from scs_core.osio.data.derived_data import DerivedData
 from scs_core.osio.data.topic_info import TopicInfo
 
 
@@ -50,7 +51,7 @@ class DerivedTopic(AbstractTopic):
 
         # DerivedTopic...
         unit = jdict.get('unit')
-        derived_data = jdict.get('derived-data')
+        derived_data = DerivedData.construct_from_jdict(jdict.get('derived-data'))
 
         return DerivedTopic(path, name, description, is_public, topic_info, unit, derived_data)
 
