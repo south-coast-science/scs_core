@@ -68,7 +68,9 @@ class CSVWriter(object):
         if self.filename is None:
             return
 
-        self.__writer.flush()
+        if self.__cache:
+            self.__writer.flush()
+
         self.__file.close()
 
 
