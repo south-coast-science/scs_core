@@ -26,7 +26,7 @@ class Project(PersistentJSONable):
     CLIMATE_SCHEMA =            None                                            # TODO: needs a schema
 
     GASES_NAME =                "Gas concentrations"
-    GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT"
+    GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt1000 temp, internal SHT"
     GASES_SCHEMA =              28                                              # TODO: should come from AFECalib
 
     PARTICULATES_NAME =         "Particulate densities"

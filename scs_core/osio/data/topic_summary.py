@@ -1,34 +1,33 @@
 """
-Created on 10 Nov 2016
+Created on 6 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
     {
-      "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
-      "unit": null,
-      "name": "hourly statistics of Gas concentrations",
+      "name": "Particulate densities",
+      "description": "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7",
+      "topic": "/orgs/south-coast-science-dev/development/loc/1/particulates",
       "public": true,
-      "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/hourly",
-      "derived-data": {
-        "interval": 3600
+      "schema": {
+        "id": 29,
+        "name": "south-coast-science-particulates"
       },
+      "rollups-enabled": true,
       "topic-info": {
         "format": "application/json"
       }
     }
 """
 
-from collections import OrderedDict
-
 from scs_core.osio.data.abstract_topic import AbstractTopic
-from scs_core.osio.data.derived_data import DerivedData
+from scs_core.osio.data.schema import Schema
 from scs_core.osio.data.topic_info import TopicInfo
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DerivedTopic(AbstractTopic):
+class TopicSummary(AbstractTopic):
     """
     classdocs
     """
@@ -49,45 +48,37 @@ class DerivedTopic(AbstractTopic):
 
         info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
-        # DerivedTopic...
-        unit = jdict.get('unit')
-        derived_data = DerivedData.construct_from_jdict(jdict.get('derived-data'))
+        # TopicSummary...
+        rollups_enabled = jdict.get('rollups-enabled')
+        schema = Schema.construct_from_jdict(jdict.get('schema'))
 
-        return DerivedTopic(path, name, description, is_public, info, unit, derived_data)
+        return TopicSummary(path, name, description, is_public, info, rollups_enabled, schema)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, path, name, description, is_public, info,
-                 unit, derived_data):
+                 rollups_enabled, schema):
         """
         Constructor
         """
         # AbstractTopic...
         AbstractTopic.__init__(self, path, name, description, is_public, info)
 
-        # DerivedTopic...
-        self.__unit = unit                          # string
-        self.__derived_data = derived_data          # DerivedData
+        # TopicSummary...
+        self.__rollups_enabled = rollups_enabled        # bool
+        self.__schema = schema                          # Schema
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
+        jdict = AbstractTopic.as_json(self)
 
-        # AbstractTopic...
-        jdict['topic'] = self.path
-        jdict['name'] = self.name
-        jdict['description'] = self.description
+        jdict['rollups-enabled'] = self.rollups_enabled
 
-        jdict['public'] = self.is_public
-
-        jdict['topic-info'] = self.info
-
-        # DerivedTopic...
-        jdict['unit'] = self.unit
-        jdict['derived-data'] = self.derived_data
+        if self.schema is not None:
+            jdict['schema'] = self.schema
 
         return jdict
 
@@ -95,19 +86,19 @@ class DerivedTopic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def unit(self):
-        return self.__unit
+    def rollups_enabled(self):
+        return self.__rollups_enabled
 
 
     @property
-    def derived_data(self):
-        return self.__derived_data
+    def schema(self):
+        return self.__schema
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DerivedTopic:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
-               "unit:%s, derived_data:%s}" % \
+        return "TopicSummary:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
+               "rollups_enabled:%s, schema:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.info,
-                self.unit, self.derived_data)
+                self.rollups_enabled, self.schema)

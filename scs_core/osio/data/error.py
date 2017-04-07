@@ -34,7 +34,10 @@ class Error(JSONable):
         if not jdict:
             return None
 
-        body_params = jdict.get('body-params')
+        try:
+            body_params = jdict.get('body-params')
+        except AttributeError:
+            return jdict            # a non-JSON string was provided
 
         return Error(body_params)
 

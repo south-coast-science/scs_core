@@ -35,7 +35,7 @@ from scs_core.osio.data.location import Location
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceMetadata(JSONable):
+class DeviceSummary(JSONable):
     """
     classdocs
    """
@@ -55,7 +55,7 @@ class DeviceMetadata(JSONable):
 
         tags = jdict.get('tags')
 
-        device = DeviceMetadata(client_id, name, description, location, tags)
+        device = DeviceSummary(client_id, name, description, location, tags)
 
         return device
 
@@ -123,5 +123,5 @@ class DeviceMetadata(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceMetadata:{client_id:%s, name:%s, description:%s, location:%s, tags:%s}" % \
+        return "DeviceSummary:{client_id:%s, name:%s, description:%s, location:%s, tags:%s}" % \
                     (self.client_id, self.name, self.description, self.location, self.tags)

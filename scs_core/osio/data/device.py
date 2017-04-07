@@ -31,15 +31,13 @@ example:
 }
 """
 
-from collections import OrderedDict
-
-from scs_core.osio.data.device_metadata import DeviceMetadata
+from scs_core.osio.data.device_summary import DeviceSummary
 from scs_core.osio.data.location import Location
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Device(DeviceMetadata):
+class Device(DeviceSummary):
     """
     classdocs
    """
@@ -51,22 +49,24 @@ class Device(DeviceMetadata):
         if not jdict:
             return None
 
+        # DeviceSummary...
         client_id = jdict.get('client-id')
         name = jdict.get('name')
         description = jdict.get('description')
 
+        location = Location.construct_from_jdict(jdict.get('location'))
+
+        tags = jdict.get('tags')
+
+        # Device...
         password = jdict.get('password')
         password_is_locked = jdict.get('password-is-locked')
-
-        location = Location.construct_from_jdict(jdict.get('location'))
 
         device_type = jdict.get('device-type')
         batch = jdict.get('batch')
 
         org_id = jdict.get('org-id')
         owner_id = jdict.get('owner-id')
-
-        tags = jdict.get('tags')
 
         device = Device(client_id, name, description, password, password_is_locked, location,
                         device_type, batch, org_id, owner_id, tags)
@@ -81,7 +81,7 @@ class Device(DeviceMetadata):
         """
         Constructor
         """
-        DeviceMetadata.__init__(self, client_id, name, description, location, tags)
+        DeviceSummary.__init__(self, client_id, name, description, location, tags)
 
         self.__password = password                          # string
         self.__password_is_locked = password_is_locked      # bool
@@ -96,21 +96,13 @@ class Device(DeviceMetadata):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        if self.client_id is not None:              # DeviceMetadata...              # TODO: put these on superclass
-            jdict['client-id'] = self.client_id
-
-        jdict['name'] = self.name
-        jdict['description'] = self.description
+        jdict = DeviceSummary.as_json(self)
 
         if self.password is not None:
             jdict['password'] = self.password
 
         if self.password_is_locked is not None:
             jdict['password-is-locked'] = self.password_is_locked
-
-        jdict['location'] = self.location
 
         jdict['device-type'] = self.device_type
 
@@ -122,8 +114,6 @@ class Device(DeviceMetadata):
 
         if self.owner_id is not None:
             jdict['owner-id'] = self.owner_id
-
-        jdict['tags'] = self.tags
 
         return jdict
 

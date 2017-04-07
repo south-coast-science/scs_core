@@ -23,13 +23,17 @@ example:
 }
 """
 
+from collections import OrderedDict
+
+from scs_core.data.json import JSONable
+
 from scs_core.osio.data.topic_contributor import TopicContributor
 from scs_core.osio.data.location import Location
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicStats(object):
+class TopicStats(JSONable):
     """
     classdocs
     """
@@ -69,6 +73,22 @@ class TopicStats(object):
 
         self.__contributors = contributors              # list of TopicContributor
         self.__last_location = last_location            # Location
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['period'] = self.period
+        jdict['last-reading'] = self.last_reading
+        jdict['average-frequency'] = self.average_frequency
+        jdict['total'] = self.total
+
+        jdict['contributors'] = self.contributors
+        jdict['last-location'] = self.last_location
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

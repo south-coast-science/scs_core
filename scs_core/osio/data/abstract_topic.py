@@ -4,7 +4,7 @@ Created on 2 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
+from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
@@ -20,7 +20,7 @@ class AbstractTopic(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info):
+    def __init__(self, path, name, description, is_public, info):
         """
         Constructor
         """
@@ -30,14 +30,25 @@ class AbstractTopic(JSONable):
 
         self.__is_public = is_public                # bool
 
-        self.__topic_info = topic_info              # TopicInfo
+        self.__info = info              # TopicInfo
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
     def as_json(self):
-        pass
+        jdict = OrderedDict()
+
+        if self.path is not None:
+            jdict['topic'] = self.path
+
+        jdict['name'] = self.name
+        jdict['description'] = self.description
+
+        jdict['public'] = self.is_public
+
+        jdict['topic-info'] = self.info
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,5 +74,5 @@ class AbstractTopic(JSONable):
 
 
     @property
-    def topic_info(self):
-        return self.__topic_info
+    def info(self):
+        return self.__info

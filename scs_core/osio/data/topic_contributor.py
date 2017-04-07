@@ -11,10 +11,14 @@ example:
 }
 """
 
+from collections import OrderedDict
+
+from scs_core.data.json import JSONable
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicContributor(object):
+class TopicContributor(JSONable):
     """
     classdocs
     """
@@ -42,6 +46,18 @@ class TopicContributor(object):
         self.__name = name                      # string
         self.__id = id                          # string
         self.__gravatar_hash = gravatar_hash    # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['name'] = self.name
+        jdict['id'] = self.id
+        jdict['gravatar-hash'] = self.gravatar_hash
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

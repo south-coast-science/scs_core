@@ -55,7 +55,9 @@ class Schema(JSONable):
 
         jdict['id'] = self.id
         jdict['name'] = self.name
-        jdict['description'] = self.description
+
+        if self.description is not None:
+            jdict['description'] = self.description
 
         return jdict
 
