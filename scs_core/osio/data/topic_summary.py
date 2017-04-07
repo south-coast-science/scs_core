@@ -46,24 +46,24 @@ class TopicSummary(AbstractTopic):
 
         is_public = jdict.get('public')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
+        info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # TopicSummary...
         rollups_enabled = jdict.get('rollups-enabled')
         schema = Schema.construct_from_jdict(jdict.get('schema'))
 
-        return TopicSummary(path, name, description, is_public, topic_info, rollups_enabled, schema)
+        return TopicSummary(path, name, description, is_public, info, rollups_enabled, schema)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info,
+    def __init__(self, path, name, description, is_public, info,
                  rollups_enabled, schema):
         """
         Constructor
         """
         # AbstractTopic...
-        AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
+        AbstractTopic.__init__(self, path, name, description, is_public, info)
 
         # TopicSummary...
         self.__rollups_enabled = rollups_enabled        # bool
@@ -98,7 +98,7 @@ class TopicSummary(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicSummary:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+        return "TopicSummary:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "rollups_enabled:%s, schema:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.topic_info,
+               (self.path, self.name, self.description, self.is_public, self.info,
                 self.rollups_enabled, self.schema)

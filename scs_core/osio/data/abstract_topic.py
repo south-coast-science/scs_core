@@ -20,7 +20,7 @@ class AbstractTopic(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info):
+    def __init__(self, path, name, description, is_public, info):
         """
         Constructor
         """
@@ -30,7 +30,7 @@ class AbstractTopic(JSONable):
 
         self.__is_public = is_public                # bool
 
-        self.__topic_info = topic_info              # TopicInfo
+        self.__info = info              # TopicInfo
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,13 +38,15 @@ class AbstractTopic(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['topic'] = self.path
+        if self.path is not None:
+            jdict['topic'] = self.path
+
         jdict['name'] = self.name
         jdict['description'] = self.description
 
         jdict['public'] = self.is_public
 
-        jdict['topic-info'] = self.topic_info
+        jdict['topic-info'] = self.info
 
         return jdict
 
@@ -72,5 +74,5 @@ class AbstractTopic(JSONable):
 
 
     @property
-    def topic_info(self):
-        return self.__topic_info
+    def info(self):
+        return self.__info

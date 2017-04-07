@@ -47,24 +47,24 @@ class DerivedTopic(AbstractTopic):
 
         is_public = jdict.get('public')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
+        info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # DerivedTopic...
         unit = jdict.get('unit')
         derived_data = DerivedData.construct_from_jdict(jdict.get('derived-data'))
 
-        return DerivedTopic(path, name, description, is_public, topic_info, unit, derived_data)
+        return DerivedTopic(path, name, description, is_public, info, unit, derived_data)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info,
+    def __init__(self, path, name, description, is_public, info,
                  unit, derived_data):
         """
         Constructor
         """
         # AbstractTopic...
-        AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
+        AbstractTopic.__init__(self, path, name, description, is_public, info)
 
         # DerivedTopic...
         self.__unit = unit                          # string
@@ -83,7 +83,7 @@ class DerivedTopic(AbstractTopic):
 
         jdict['public'] = self.is_public
 
-        jdict['topic-info'] = self.topic_info
+        jdict['topic-info'] = self.info
 
         # DerivedTopic...
         jdict['unit'] = self.unit
@@ -107,7 +107,7 @@ class DerivedTopic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DerivedTopic:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+        return "DerivedTopic:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "unit:%s, derived_data:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.topic_info,
+               (self.path, self.name, self.description, self.is_public, self.info,
                 self.unit, self.derived_data)

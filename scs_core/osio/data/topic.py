@@ -41,24 +41,24 @@ class Topic(AbstractTopic):
 
         is_public = jdict.get('public')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
+        info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # Topic...
         rollups_enabled = jdict.get('rollups-enabled')
         schema_id = jdict.get('schema-id')
 
-        return Topic(path, name, description, is_public, topic_info, rollups_enabled, schema_id)
+        return Topic(path, name, description, is_public, info, rollups_enabled, schema_id)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info,
+    def __init__(self, path, name, description, is_public, info,
                  rollups_enabled, schema_id):
         """
         Constructor
         """
         # AbstractTopic...
-        AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
+        AbstractTopic.__init__(self, path, name, description, is_public, info)
 
         # Topic...
         self.__rollups_enabled = rollups_enabled        # bool
@@ -70,9 +70,10 @@ class Topic(AbstractTopic):
     def as_json(self):
         jdict = AbstractTopic.as_json(self)
 
-        jdict['rollups-enabled'] = self.rollups_enabled
+        if self.rollups_enabled is not None:
+            jdict['rollups-enabled'] = self.rollups_enabled
 
-        if self.schema_id:
+        if self.schema_id is not None:
             jdict['schema-id'] = self.schema_id
 
         return jdict
@@ -93,7 +94,7 @@ class Topic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "rollups_enabled:%s, schema_id:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.topic_info,
+               (self.path, self.name, self.description, self.is_public, self.info,
                 self.rollups_enabled, self.schema_id)

@@ -76,26 +76,26 @@ class TopicMetadata(AbstractTopic):
 
         is_public = jdict.get('public')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
+        info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # TopicMetadata...
         derived_topics = [DerivedTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('derived-topics')]
         bookmark_count = jdict.get('bookmark-count')
         stats = TopicStats.construct_from_jdict(jdict.get('stats'))
 
-        return TopicMetadata(path, name, description, is_public, topic_info, derived_topics, bookmark_count, stats)
+        return TopicMetadata(path, name, description, is_public, info, derived_topics, bookmark_count, stats)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, topic_info,
+    def __init__(self, path, name, description, is_public, info,
                  derived_topics, bookmark_count, stats):
         """
         Constructor
         """
 
         # AbstractTopic...
-        AbstractTopic.__init__(self, path, name, description, is_public, topic_info)
+        AbstractTopic.__init__(self, path, name, description, is_public, info)
 
         # TopicMetadata...
         self.__derived_topics = derived_topics              # list of DerivedTopic
@@ -137,7 +137,7 @@ class TopicMetadata(AbstractTopic):
     def __str__(self, *args, **kwargs):
         derived_topics = '[' + ', '.join(str(derived_topic) for derived_topic in self.derived_topics) + ']'
 
-        return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, topic_info:%s, " \
+        return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "derived_topics:%s, bookmark_count:%s, stats:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.topic_info,
+               (self.path, self.name, self.description, self.is_public, self.info,
                 derived_topics, self.bookmark_count, self.stats)
