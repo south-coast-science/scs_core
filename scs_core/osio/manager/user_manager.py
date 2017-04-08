@@ -50,8 +50,16 @@ class UserManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def update(self, user):
-        pass                    # TODO: implement update(..)
+    def update(self, user_id, user):
+        path = '/v1/users/' + user_id
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            self.__rest_client.put(path, user.as_json())
+        finally:
+            self.__rest_client.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
