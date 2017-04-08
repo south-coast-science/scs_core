@@ -7,7 +7,7 @@ Created on 13 Nov 2016
 
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.device import Device
-from scs_core.osio.data.device_metadata import DeviceMetadata
+from scs_core.osio.data.device_summary import DeviceSummary
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ class DeviceManager(object):
         finally:
             self.__rest_client.close()
 
-        devices = [DeviceMetadata.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
@@ -85,7 +85,7 @@ class DeviceManager(object):
         finally:
             self.__rest_client.close()
 
-        devices = [DeviceMetadata.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 

@@ -5,13 +5,13 @@ Created on 2 Apr 2017
 
 example:
 {
-  "stats": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
+  "description": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
   "unit": null,
   "derived-topics": [
     {
       "stats": "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt100 temp, internal SHT",
       "unit": null,
-      "bookmark_count": "hourly statistics of Gas concentrations",
+      "name": "hourly statistics of Gas concentrations",
       "public": true,
       "topic": "/osio/orgs/south-coast-science-dev/production-test/loc/1/gases/hourly",
       "derived-data": {
@@ -22,7 +22,7 @@ example:
       }
     }
   ],
-  "bookmark_count": "Gas concentrations",
+  "name": "Gas concentrations",
   "public": true,
   "topic": "/orgs/south-coast-science-dev/production-test/loc/1/gases",
   "topic-info": {
@@ -36,7 +36,7 @@ example:
     "total": 49661,
     "contributors": [
       {
-        "bookmark_count": "South Coast Science - Dev",
+        "name": "South Coast Science - Dev",
         "id": "southcoastscience-dev",
         "gravatar-hash": "07f512e9fe64863039df0c0f1834cc25"
       }
@@ -49,15 +49,15 @@ example:
 }
 """
 
-from collections import OrderedDict
-
-from scs_core.osio.data.topic import Topic
+from scs_core.osio.data.abstract_topic import AbstractTopic
+from scs_core.osio.data.derived_topic import DerivedTopic
 from scs_core.osio.data.topic_info import TopicInfo
+from scs_core.osio.data.topic_stats import TopicStats
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicMetadata(Topic):
+class TopicMetadata(AbstractTopic):
     """
     classdocs
     """
@@ -69,49 +69,48 @@ class TopicMetadata(Topic):
         if not jdict:
             return None
 
-        derived_topics = jdict.get('topic')
-        bookmark_count = jdict.get('bookmark_count')
-        stats = jdict.get('stats')
+        # AbstractTopic...
+        path = jdict.get('topic')
+        name = jdict.get('name')
+        description = jdict.get('description')
 
         is_public = jdict.get('public')
-        rollups_enabled = jdict.get('rollups-enabled')
 
-        topic_info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
+        info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
-        schema_id = jdict.get('schema-id', 0)
+        # TopicMetadata...
+        derived_topics = [DerivedTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('derived-topics')]
+        bookmark_count = jdict.get('bookmark-count')
+        stats = TopicStats.construct_from_jdict(jdict.get('stats'))
 
-        return TopicMetadata(derived_topics, bookmark_count, stats, is_public, rollups_enabled, topic_info, schema_id)
+        return TopicMetadata(path, name, description, is_public, info, derived_topics, bookmark_count, stats)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, derived_topics, bookmark_count, stats, is_public, rollups_enabled, topic_info, schema_id):
+    def __init__(self, path, name, description, is_public, info,
+                 derived_topics, bookmark_count, stats):
         """
         Constructor
         """
-        Topic.__init__(self, derived_topics, bookmark_count, stats, is_public, rollups_enabled, topic_info, schema_id)
-        
-        self.__derived_topics = derived_topics              # string
-        self.__bookmark_count = bookmark_count              # string
-        self.__stats = stats                                # string
+
+        # AbstractTopic...
+        AbstractTopic.__init__(self, path, name, description, is_public, info)
+
+        # TopicMetadata...
+        self.__derived_topics = derived_topics              # list of DerivedTopic
+        self.__bookmark_count = bookmark_count              # int
+        self.__stats = stats                                # TopicStats
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
+        jdict = AbstractTopic.as_json(self)
 
-        jdict['topic'] = self.derived_topics
-        jdict['bookmark_count'] = self.bookmark_count
+        jdict['derived-topics'] = self.derived_topics
+        jdict['bookmark-count'] = self.bookmark_count
         jdict['stats'] = self.stats
-
-        jdict['public'] = self.is_public
-        jdict['rollups-enabled'] = self.is_public
-
-        jdict['topic-info'] = self.topic_info
-
-        if self.schema_id:
-            jdict['schema-id'] = self.schema_id
 
         return jdict
 
@@ -136,7 +135,9 @@ class TopicMetadata(Topic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicMetadata:{derived_topics:%s, bookmark_count:%s, stats:%s, is_public:%s, rollups_enabled:%s, topic_info:%s, " \
-               "schema_id:%s}" % \
-               (self.derived_topics, self.bookmark_count, self.stats, self.is_public, self.rollups_enabled, self.topic_info,
-                self.schema_id)
+        derived_topics = '[' + ', '.join(str(derived_topic) for derived_topic in self.derived_topics) + ']'
+
+        return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
+               "derived_topics:%s, bookmark_count:%s, stats:%s}" % \
+               (self.path, self.name, self.description, self.is_public, self.info,
+                derived_topics, self.bookmark_count, self.stats)

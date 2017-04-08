@@ -7,7 +7,8 @@ Created on 13 Nov 2016
 import urllib.parse
 
 from scs_core.osio.client.rest_client import RESTClient
-from scs_core.osio.data.topic import Topic
+from scs_core.osio.data.topic_summary import TopicSummary
+from scs_core.osio.data.topic_metadata import TopicMetadata
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,6 +31,9 @@ class TopicManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, topic_path):
+        if topic_path is None:
+            return None
+
         path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
 
         # request...
@@ -42,19 +46,19 @@ class TopicManager(object):
 
         self.__rest_client.close()
 
-        topic = Topic.construct_from_jdict(response_jdict)
+        topic = TopicMetadata.construct_from_jdict(response_jdict)
 
         return topic
 
 
-    def find_for_org(self, org_id):
+    def find_for_org(self, org_id, path=None):
         topics = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            for batch in self.__get(org_id):
+            for batch in self.__get(org_id, path):
                 topics.extend(batch)
 
         finally:
@@ -82,8 +86,16 @@ class TopicManager(object):
         return success
 
 
-    def update(self, topic):
-        pass                    # TODO: implement update(..)
+    def update(self, topic_path, topic):
+        path = '/v1/topics/' + topic_path
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            self.__rest_client.put(path, topic.as_json())
+        finally:
+            self.__rest_client.close()
 
 
     def delete(self, topic_path):
@@ -105,7 +117,7 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __get(self, org_id):
+    def __get(self, org_id, topic_path=None):
         path = '/v2/orgs/' + org_id + '/topics'
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
@@ -115,7 +127,15 @@ class TopicManager(object):
 
             # topics...
             topics_jdict = response_jdict.get('topics')
-            topics = [Topic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict] if topics_jdict else []
+
+            topics = []
+
+            if topics_jdict:
+                for topic_jdict in topics_jdict:
+                    topic = TopicSummary.construct_from_jdict(topic_jdict)
+
+                    if topic_path is None or topic.path.startswith(topic_path):
+                        topics.append(topic)
 
             yield topics
 
@@ -123,7 +143,7 @@ class TopicManager(object):
                 break
 
             # next...
-            params['offset'] = len(topics)
+            params['offset'] = len(topics_jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

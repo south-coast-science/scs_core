@@ -99,7 +99,7 @@ class Location(JSONable):
 
     @property
     def postcode(self):
-        return self.__postcode
+        return None if self.__postcode is None else self.__postcode.upper()
 
 
     # ----------------------------------------------------------------------------------------------------------------
