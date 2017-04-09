@@ -59,7 +59,9 @@ class Organisation(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['id'] = self.id
+        if self.id is not None:
+            jdict['id'] = self.id
+
         jdict['name'] = self.name
         jdict['website'] = self.website
         jdict['description'] = self.description

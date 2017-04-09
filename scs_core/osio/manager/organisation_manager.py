@@ -77,13 +77,21 @@ class OrganisationManager(object):
         finally:
             self.__rest_client.close()
 
-        device = Organisation.construct_from_jdict(response)
+        print("create response: %s" % response)
 
-        return device
+        return response
 
 
-    def update(self, org):
-        pass                    # TODO: implement update(..)
+    def update(self, org_id, org):
+        path = '/v1/orgs/' + org_id
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            self.__rest_client.put(path, org.as_json())
+        finally:
+            self.__rest_client.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
