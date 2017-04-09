@@ -71,4 +71,4 @@ class Publication(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Project:{topic:%s, payload:%s}" % (self.topic, self.payload)
+        return "Publication:{topic:%s, payload:%s}" % (self.topic, self.payload)
