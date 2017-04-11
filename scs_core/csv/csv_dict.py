@@ -92,21 +92,21 @@ class CSVDict(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __header(self, dictionary, prefix=None):
-        lprefix = prefix + '.' if prefix else ''
+        dot_prefix = prefix + '.' if prefix else ''
 
         header = []
         for key in dictionary:
             # object...
             if isinstance(dictionary[key], dict):
-                header.extend(self.__header(dictionary[key], lprefix + key))
+                header.extend(self.__header(dictionary[key], dot_prefix + key))
 
             # list...
             elif isinstance(dictionary[key], list):
-                header.extend([lprefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
+                header.extend([dot_prefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
 
             # scalar...
             else:
-                header.append(lprefix + key)
+                header.append(dot_prefix + key)
 
         return header
 

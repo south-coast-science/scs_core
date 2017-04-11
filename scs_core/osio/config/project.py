@@ -23,7 +23,7 @@ class Project(PersistentJSONable):
 
     CLIMATE_NAME =              "Climate"
     CLIMATE_DESCRIPTION =       "temperature (Centigrade), relative humidity (%)"
-    CLIMATE_SCHEMA =            None                                            # TODO: needs a schema
+    CLIMATE_SCHEMA =            33
 
     GASES_NAME =                "Gas concentrations"
     GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt1000 temp, internal SHT"
