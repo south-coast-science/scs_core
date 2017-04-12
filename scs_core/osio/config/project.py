@@ -48,7 +48,7 @@ class Project(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.SCS_OSIO + cls.__FILENAME
+        return host.osio_dir() + cls.__FILENAME
 
 
     @classmethod
