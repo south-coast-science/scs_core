@@ -7,8 +7,6 @@ Created on 11 Jul 2016
 import time
 
 
-# TODO: deal with the case where network time is not available yet
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class IntervalTimer(object):
@@ -25,25 +23,26 @@ class IntervalTimer(object):
 
     def range(self, stop):
         for i in range(stop):
-            sleep_time = self.__next_yield - time.time()
-
-            if sleep_time > 0:
-                time.sleep(sleep_time)
-
-            self.__next_yield += self.__interval
+            self.__sleep()
 
             yield i
 
 
     def true(self):
-        sleep_time = self.__next_yield - time.time()
+        self.__sleep()
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __sleep(self):
+        sleep_time = (self.__next_yield - time.time()) % self.__interval        # prevent negative time!
 
         if sleep_time > 0:
             time.sleep(sleep_time)
 
         self.__next_yield += self.__interval
-
-        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
