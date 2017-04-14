@@ -59,3 +59,9 @@ class Sampler(object):
     @property
     def sample_count(self):
         return self.__sample_count
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "Sampler:{timer:%s, sample_count:%s}" % (self.__timer, self.__sample_count)
