@@ -9,8 +9,6 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
-# TODO: add forged message datetime for OSIO compatibility
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class SampleDatum(JSONable):
