@@ -18,7 +18,7 @@ class Sampler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count=0):
+    def __init__(self, interval, sample_count=None):
         """
         Constructor
         """
@@ -34,7 +34,7 @@ class Sampler(object):
 
 
     def samples(self):
-        if self.__sample_count == 0:
+        if self.__sample_count is None:
             while self.__timer.true():
                 yield self.sample()
 
