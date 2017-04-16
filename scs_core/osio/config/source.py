@@ -26,11 +26,7 @@ class Source(object):
     classdocs
     """
 
-    DESCRIPTION =       "South Coast Science air quality monitoring device"
-
-    TAGS = {28: ('no2', 'o3', 'no', 'co', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
-            98: ('no2', 'o3', 'co', 'so2', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
-            99: ('no2', 'co', 'so2', 'h2s', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity')}
+    DEVICE_DESCRIPTION =       "South Coast Science air quality monitoring device"
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -39,7 +35,7 @@ class Source(object):
     def create(cls, system_id, api_auth, lat, lng, postcode, description):
         client_id = None
         name = system_id.box_label()
-        desc = cls.DESCRIPTION if description is None else description
+        desc = cls.DEVICE_DESCRIPTION if description is None else description
         password = None
         password_is_locked = None
         location = Location(lat, lng, None, None, postcode)
