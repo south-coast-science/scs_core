@@ -2,20 +2,12 @@
 Created on 19 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
- "SO2": {"weV": 0.294567, "aeV": 0.297067, "weC": -4.929433, "cnc": -14084.1}, "pt1": {"v": 0.325224, "tmp": 24.6},
- "sht": {"hmd": 60.9, "tmp": 25.9}}}
-
-{"rec": "2017-03-04T12:07:22.627+00:00", "val": "CO": {"weV": 0.350568, "aeV": 0.275629, "weC": 0.052055, "cnc": 188.6},
-"SO2": {"weV": 0.294379, "aeV": 0.296942, "weC": -4.929621, "cnc": -14084.6}, "pt1": {"v": 0.325208, "tmp": 24.5},
-"sht": {"hmd": 60.9, "tmp": 25.9}}}
 """
 
+from scs_core.osio.config.project_schema import ProjectSchema
 from scs_core.osio.data.device import Device
 from scs_core.osio.data.location import Location
 
-
-# TODO: add device id message_tag to source
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +22,24 @@ class ProjectSource(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create(cls, system_id, api_auth, lat, lng, postcode, description):
+    def tags(cls, afe_calib, include_particulates):
+        gases_schema = ProjectSchema.find_gas_schema(afe_calib.gas_names())
+
+        tags = ['SCS']
+
+        if gases_schema:
+            tags.extend(gases_schema.tags)
+
+        if include_particulates:
+            tags.extend(ProjectSchema.PARTICULATES.tags)
+
+        tags.extend(ProjectSchema.CLIMATE.tags)
+
+        return tags
+
+
+    @classmethod
+    def create(cls, system_id, api_auth, lat, lng, postcode, description, tags):
         client_id = None
         name = system_id.box_label()
         desc = cls.DEVICE_DESCRIPTION if description is None else description
@@ -41,7 +50,6 @@ class ProjectSource(object):
         batch = None
         org_id = api_auth.org_id
         owner_id = None
-        tags = cls.TAGS[28]
 
         device = Device(client_id, name, desc, password, password_is_locked, location,
                         device_type, batch, org_id, owner_id, tags)
@@ -50,7 +58,7 @@ class ProjectSource(object):
 
 
     @classmethod
-    def update(cls, existing, lat, lng, postcode, description):
+    def update(cls, existing, lat, lng, postcode, description, tags):
         client_id = None
         name = existing.name
         password = None
@@ -59,7 +67,6 @@ class ProjectSource(object):
         batch = existing.batch
         org_id = None
         owner_id = None
-        tags = existing.tags
 
         if lat and lng and postcode:
             location = Location(lat, lng, None, None, postcode)
