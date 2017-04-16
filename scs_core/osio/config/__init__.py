@@ -10,5 +10,3 @@ from scs_core.osio.config.source_schema import SourceSchema
 # --------------------------------------------------------------------------------------------------------------------
 
 SourceSchema.init()
-
-
