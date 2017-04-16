@@ -108,8 +108,8 @@ class DeviceManager(object):
         return device
 
 
-    def update(self, org_id, device_id, device):
-        path = '/v1/orgs/' + org_id + '/devices/' + device_id
+    def update(self, org_id, system_id, device):
+        path = '/v1/orgs/' + org_id + '/devices/' + system_id
 
         # request...
         self.__rest_client.connect()

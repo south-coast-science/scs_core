@@ -2,52 +2,54 @@
 Created on 19 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
- "SO2": {"weV": 0.294567, "aeV": 0.297067, "weC": -4.929433, "cnc": -14084.1}, "pt1": {"v": 0.325224, "tmp": 24.6},
- "sht": {"hmd": 60.9, "tmp": 25.9}}}
-
-{"rec": "2017-03-04T12:07:22.627+00:00", "val": "CO": {"weV": 0.350568, "aeV": 0.275629, "weC": 0.052055, "cnc": 188.6},
-"SO2": {"weV": 0.294379, "aeV": 0.296942, "weC": -4.929621, "cnc": -14084.6}, "pt1": {"v": 0.325208, "tmp": 24.5},
-"sht": {"hmd": 60.9, "tmp": 25.9}}}
 """
 
+from scs_core.osio.config.project_schema import ProjectSchema
 from scs_core.osio.data.device import Device
 from scs_core.osio.data.location import Location
 
 
-# TODO: add device id message_tag to source
-
-# TODO: we need to map AFE configs to device tags
-
 # --------------------------------------------------------------------------------------------------------------------
 
-class Source(object):
+class ProjectSource(object):
     """
     classdocs
     """
 
-    DESCRIPTION =       "South Coast Science air quality monitoring device"
-
-    TAGS = {28: ('no2', 'o3', 'no', 'co', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
-            98: ('no2', 'o3', 'co', 'so2', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity'),
-            99: ('no2', 'co', 'so2', 'h2s', 'pm1', 'pm2.5', 'pm10', 'temperature', 'humidity')}
+    DEVICE_DESCRIPTION =       "South Coast Science air quality monitoring device"
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create(cls, device_id, api_auth, lat, lng, postcode, description):
+    def tags(cls, afe_calib, include_particulates):
+        gases_schema = ProjectSchema.find_gas_schema(afe_calib.gas_names())
+
+        tags = ['SCS']
+
+        if gases_schema:
+            tags.extend(gases_schema.tags)
+
+        if include_particulates:
+            tags.extend(ProjectSchema.PARTICULATES.tags)
+
+        tags.extend(ProjectSchema.CLIMATE.tags)
+
+        return tags
+
+
+    @classmethod
+    def create(cls, system_id, api_auth, lat, lng, postcode, description, tags):
         client_id = None
-        name = device_id.box_label()
-        desc = cls.DESCRIPTION if description is None else description
+        name = system_id.box_label()
+        desc = cls.DEVICE_DESCRIPTION if description is None else description
         password = None
         password_is_locked = None
         location = Location(lat, lng, None, None, postcode)
-        device_type = device_id.type_label()
+        device_type = system_id.type_label()
         batch = None
         org_id = api_auth.org_id
         owner_id = None
-        tags = cls.TAGS[28]
 
         device = Device(client_id, name, desc, password, password_is_locked, location,
                         device_type, batch, org_id, owner_id, tags)
@@ -56,7 +58,7 @@ class Source(object):
 
 
     @classmethod
-    def update(cls, existing, lat, lng, postcode, description):
+    def update(cls, existing, lat, lng, postcode, description, tags=None):
         client_id = None
         name = existing.name
         password = None
@@ -65,7 +67,8 @@ class Source(object):
         batch = existing.batch
         org_id = None
         owner_id = None
-        tags = existing.tags
+
+        device_tags = existing.tags if tags is None else tags
 
         if lat and lng and postcode:
             location = Location(lat, lng, None, None, postcode)
@@ -78,6 +81,6 @@ class Source(object):
             desc = existing.description
 
         device = Device(client_id, name, desc, password, password_is_locked, location,
-                        device_type, batch, org_id, owner_id, tags)
+                        device_type, batch, org_id, owner_id, device_tags)
 
         return device

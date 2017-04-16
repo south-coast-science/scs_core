@@ -12,35 +12,12 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
-# TODO: we need to map AFE configs to OSIO schemas
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Project(PersistentJSONable):
     """
     classdocs
     """
-
-    CLIMATE_NAME =              "Climate"
-    CLIMATE_DESCRIPTION =       "temperature (Centigrade), relative humidity (%)"
-    CLIMATE_SCHEMA =            33
-
-    GASES_NAME =                "Gas concentrations"
-    GASES_DESCRIPTION =         "electrochemical we (V), ae (V), wc (V), cnc (ppb), Pt1000 temp, internal SHT"
-    GASES_SCHEMA =              28                                              # TODO: should come from AFECalib
-
-    PARTICULATES_NAME =         "Particulate densities"
-    PARTICULATES_DESCRIPTION =  "pm1 (ug/m3), pm2.5 (ug/m3), pm10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7"
-    PARTICULATES_SCHEMA =       29
-
-    STATUS_NAME =               "Device status"
-    STATUS_DESCRIPTION =        "lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), errors"
-    STATUS_SCHEMA =             None                                            # TODO: needs a schema
-
-    CONTROL_NAME =              "Device control"
-    CONTROL_DESCRIPTION =       "this topic is subscribed to by the device"
-    CONTROL_SCHEMA =            None
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -120,12 +97,12 @@ class Project(PersistentJSONable):
         return self.__location_path + '/particulates'
 
 
-    def status_topic_path(self, device_id):
-        return self.__device_path + '/' + device_id.topic_label() + '/status'
+    def status_topic_path(self, system_id):
+        return self.__device_path + '/' + system_id.topic_label() + '/status'
 
 
-    def control_topic_path(self, device_id):
-        return self.__device_path + '/' + device_id.topic_label() + '/control'
+    def control_topic_path(self, system_id):
+        return self.__device_path + '/' + system_id.topic_label() + '/control'
 
 
     # ----------------------------------------------------------------------------------------------------------------
