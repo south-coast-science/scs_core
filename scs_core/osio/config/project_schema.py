@@ -14,6 +14,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: get a gas schema for ('CO', 'SO2', 'H2S', 'VOC') - and other VOC profile?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class ProjectSchema(JSONable):
