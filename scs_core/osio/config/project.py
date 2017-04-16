@@ -12,8 +12,6 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
-# TODO: we need to map AFE configs to OSIO schemas
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Project(PersistentJSONable):
