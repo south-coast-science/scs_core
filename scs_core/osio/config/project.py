@@ -120,12 +120,12 @@ class Project(PersistentJSONable):
         return self.__location_path + '/particulates'
 
 
-    def status_topic_path(self, device_id):
-        return self.__device_path + '/' + device_id.topic_label() + '/status'
+    def status_topic_path(self, system_id):
+        return self.__device_path + '/' + system_id.topic_label() + '/status'
 
 
-    def control_topic_path(self, device_id):
-        return self.__device_path + '/' + device_id.topic_label() + '/control'
+    def control_topic_path(self, system_id):
+        return self.__device_path + '/' + system_id.topic_label() + '/control'
 
 
     # ----------------------------------------------------------------------------------------------------------------

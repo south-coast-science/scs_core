@@ -36,14 +36,14 @@ class Source(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create(cls, device_id, api_auth, lat, lng, postcode, description):
+    def create(cls, system_id, api_auth, lat, lng, postcode, description):
         client_id = None
-        name = device_id.box_label()
+        name = system_id.box_label()
         desc = cls.DESCRIPTION if description is None else description
         password = None
         password_is_locked = None
         location = Location(lat, lng, None, None, postcode)
-        device_type = device_id.type_label()
+        device_type = system_id.type_label()
         batch = None
         org_id = api_auth.org_id
         owner_id = None
