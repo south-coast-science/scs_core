@@ -58,7 +58,7 @@ class ProjectSource(object):
 
 
     @classmethod
-    def update(cls, existing, lat, lng, postcode, description, tags):
+    def update(cls, existing, lat, lng, postcode, description, tags=None):
         client_id = None
         name = existing.name
         password = None
@@ -67,6 +67,8 @@ class ProjectSource(object):
         batch = existing.batch
         org_id = None
         owner_id = None
+
+        device_tags = existing.tags if tags is None else tags
 
         if lat and lng and postcode:
             location = Location(lat, lng, None, None, postcode)
@@ -79,6 +81,6 @@ class ProjectSource(object):
             desc = existing.description
 
         device = Device(client_id, name, desc, password, password_is_locked, location,
-                        device_type, batch, org_id, owner_id, tags)
+                        device_type, batch, org_id, owner_id, device_tags)
 
         return device
