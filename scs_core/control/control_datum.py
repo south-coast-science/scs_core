@@ -30,27 +30,27 @@ class ControlDatum(JSONable):
 
         tag = jdict.get('tag')
         date = LocalizedDatetime.construct_from_iso8601(jdict.get('date'))
-        command = jdict.get('command')
+        cmd = jdict.get('cmd')
         params = jdict.get('params')
         digest = jdict.get('digest')
 
-        datum = ControlDatum(tag, date, command, params, digest)
+        datum = ControlDatum(tag, date, cmd, params, digest)
 
         return datum
 
 
     @classmethod
-    def construct(cls, tag, date, command, params, subscriber_sn):
-        digest = ControlDatum.__hash(tag, date, command, params, subscriber_sn)
+    def construct(cls, tag, date, cmd, params, subscriber_sn):
+        digest = ControlDatum.__hash(tag, date, cmd, params, subscriber_sn)
 
-        return ControlDatum(tag, date, command, params, digest)
+        return ControlDatum(tag, date, cmd, params, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __hash(cls, tag, date, command, params, subscriber_sn):
-        text = str(tag) + date.as_json() + str(command) + str(params) + str(subscriber_sn)
+    def __hash(cls, tag, date, cmd, params, subscriber_sn):
+        text = str(tag) + date.as_json() + str(cmd) + str(params) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -58,13 +58,13 @@ class ControlDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, date, command, params, digest):
+    def __init__(self, tag, date, cmd, params, digest):
         """
         Constructor
         """
         self.__tag = tag                # string
         self.__date = date              # LocalizedDatetime
-        self.__command = command        # string
+        self.__cmd = cmd                # string
         self.__params = params          # array of { string | int | float }
         self.__digest = digest          # string
 
@@ -72,7 +72,7 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, subscriber_sn):
-        digest = ControlDatum.__hash(self.tag, self.date, self.command, self.params, subscriber_sn)
+        digest = ControlDatum.__hash(self.tag, self.date, self.cmd, self.params, subscriber_sn)
 
         return digest == self.__digest
 
@@ -84,7 +84,7 @@ class ControlDatum(JSONable):
 
         jdict['tag'] = self.tag
         jdict['date'] = self.date
-        jdict['command'] = self.command
+        jdict['cmd'] = self.cmd
         jdict['params'] = self.params
         jdict['digest'] = self.__digest
 
@@ -104,8 +104,8 @@ class ControlDatum(JSONable):
 
 
     @property
-    def command(self):
-        return self.__command
+    def cmd(self):
+        return self.__cmd
 
 
     @property
@@ -116,5 +116,5 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlDatum:{tag:%s, date:%s, command:%s, params:%s, digest:%s}" % \
-               (self.tag, self.date, self.command, self.params, self.__digest)
+        return "ControlDatum:{tag:%s, date:%s, cmd:%s, params:%s, digest:%s}" % \
+               (self.tag, self.date, self.cmd, self.params, self.__digest)
