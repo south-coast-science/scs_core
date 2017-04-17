@@ -16,7 +16,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ControlDatum(JSONable):
+class ControlReceipt(JSONable):
     """
     classdocs
     """
@@ -30,27 +30,26 @@ class ControlDatum(JSONable):
 
         tag = jdict.get('tag')
         date = LocalizedDatetime.construct_from_iso8601(jdict.get('date'))
-        cmd = jdict.get('cmd')
-        params = jdict.get('params')
+        omd = jdict.get('omd')
         digest = jdict.get('digest')
 
-        datum = ControlDatum(tag, date, cmd, params, digest)
+        datum = ControlReceipt(tag, date, omd, digest)
 
         return datum
 
 
     @classmethod
-    def construct(cls, tag, date, cmd, params, subscriber_sn):
-        digest = ControlDatum.__hash(tag, date, cmd, params, subscriber_sn)
+    def construct_from_datum(cls, datum, date, subscriber_sn):
+        digest = ControlReceipt.__hash(datum.tag, date, datum.digest, subscriber_sn)
 
-        return ControlDatum(tag, date, cmd, params, digest)
+        return ControlReceipt(datum.tag, date, datum.digest, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __hash(cls, tag, date, cmd, params, subscriber_sn):
-        text = str(tag) + date.as_json() + str(cmd) + str(params) + str(subscriber_sn)
+    def __hash(cls, tag, date, omd, subscriber_sn):
+        text = str(tag) + date.as_json() + str(omd) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -58,23 +57,22 @@ class ControlDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, date, cmd, params, digest):
+    def __init__(self, tag, date, omd, digest):
         """
         Constructor
         """
         self.__tag = tag                # string
         self.__date = date              # LocalizedDatetime
-        self.__cmd = cmd                # string
-        self.__params = params          # array of { string | int | float }
+        self.__omd = omd                # string
         self.__digest = digest          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, subscriber_sn):
-        digest = ControlDatum.__hash(self.tag, self.date, self.cmd, self.params, subscriber_sn)
+        digest = ControlReceipt.__hash(self.tag, self.date, self.omd, subscriber_sn)
 
-        return digest == self.digest
+        return digest == self.__digest
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -84,9 +82,8 @@ class ControlDatum(JSONable):
 
         jdict['tag'] = self.tag
         jdict['date'] = self.date
-        jdict['cmd'] = self.cmd
-        jdict['params'] = self.params
-        jdict['digest'] = self.digest
+        jdict['omd'] = self.omd
+        jdict['digest'] = self.__digest
 
         return jdict
 
@@ -104,22 +101,12 @@ class ControlDatum(JSONable):
 
 
     @property
-    def cmd(self):
-        return self.__cmd
-
-
-    @property
-    def params(self):
-        return self.__params
-
-
-    @property
-    def digest(self):
-        return self.__digest
+    def omd(self):
+        return self.__omd
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlDatum:{tag:%s, date:%s, cmd:%s, params:%s, digest:%s}" % \
-               (self.tag, self.date, self.cmd, self.params, self.digest)
+        return "ControlReceipt:{tag:%s, date:%s, omd:%s, digest:%s}" % \
+               (self.tag, self.date, self.omd, self.__digest)
