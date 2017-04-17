@@ -2,12 +2,6 @@
 Created on 22 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
-{
-    "topic": 28,
-    "payload": "south-coast-science-gases-Ox-NO2-NO-CO",
-}
 """
 
 from collections import OrderedDict
