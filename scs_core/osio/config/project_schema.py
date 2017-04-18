@@ -64,10 +64,15 @@ class ProjectSchema(JSONable):
                               'NO2, CO, SO2, H2S electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                               'Pt1000 temp, internal SHT', ('NO2', 'CO', 'SO2', 'H2S')),
 
-            ('CO', 'SO2', 'H2S', 'VOC'):
+            ('NO2', 'O3', 'CO', 'VOC'):                         # TODO: request an OSIO schema
+                ProjectSchema(None, 'Gas concentrations',
+                              'NO2, O3, CO, VOC electrochemical we (V), ae (V), wc (V), cnc (ppb), '
+                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'VOC')),
+
+            ('CO', 'SO2', 'H2S', 'VOC'):                        # TODO: request an OSIO schema
                 ProjectSchema(None, 'Gas concentrations',
                               'CO, SO2, H2S, VOCs electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC')),
+                              'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC'))
         }
 
 
