@@ -4,7 +4,7 @@ Created on 19 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.osio.config.project_schema import ProjectSchema
+from scs_core.osio.config.project_topic import ProjectTopic
 from scs_core.osio.data.device import Device
 from scs_core.osio.data.location import Location
 
@@ -23,7 +23,10 @@ class ProjectSource(object):
 
     @classmethod
     def tags(cls, afe_calib, include_particulates):
-        gases_schema = ProjectSchema.find_gas_schema(afe_calib.gas_names())
+        gases_schema = ProjectTopic.find_gas_schema(afe_calib.gas_names())
+
+        if gases_schema is None:
+            raise ValueError("ProjectSource.tags: no topic found for AFE: %s" % afe_calib.gas_names())
 
         tags = ['SCS']
 
@@ -31,9 +34,9 @@ class ProjectSource(object):
             tags.extend(gases_schema.tags)
 
         if include_particulates:
-            tags.extend(ProjectSchema.PARTICULATES.tags)
+            tags.extend(ProjectTopic.PARTICULATES.tags)
 
-        tags.extend(ProjectSchema.CLIMATE.tags)
+        tags.extend(ProjectTopic.CLIMATE.tags)
 
         return tags
 

@@ -14,11 +14,9 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
-# TODO: get a gas schema for ('CO', 'SO2', 'H2S', 'VOC') - and other VOC profile?
-
 # --------------------------------------------------------------------------------------------------------------------
 
-class ProjectSchema(JSONable):
+class ProjectTopic(JSONable):
     """
     classdocs
     """
@@ -34,45 +32,41 @@ class ProjectSchema(JSONable):
 
     @classmethod
     def init(cls):
-        cls.CLIMATE = ProjectSchema(33, 'Climate',
-                                    'temperature (Centigrade), relative humidity (%)', ('temperature', 'humidity'))
+        cls.CLIMATE = ProjectTopic(33, 'Climate',
+                                   'temperature (Centigrade), relative humidity (%)', ('temperature', 'humidity'))
 
-        cls.PARTICULATES = ProjectSchema(29, 'Particulate densities',
-                                         'PM1 (ug/m3), PM2.5 (ug/m3), PM10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7',
-                                         ('PM1', 'PM2.5', 'PM10'))
+        cls.PARTICULATES = ProjectTopic(29, 'Particulate densities',
+                                        'PM1 (ug/m3), PM2.5 (ug/m3), PM10 (ug/m3), bin counts, mtf1, mtf3, mtf5 mtf7',
+                                        ('PM1', 'PM2.5', 'PM10'))
 
-        cls.STATUS = ProjectSchema(None, 'Device status',
-                                   'lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), '
-                                   'errors', ())
+        cls.STATUS = ProjectTopic(None, 'Device status',
+                                  'errors', ())
 
-        cls.CONTROL = ProjectSchema(None, 'Device control',
-                                    'this topic is subscribed to by the device for control purposes', ())
+        cls.CONTROL = ProjectTopic(None, 'Device control',
+                                   'this topic is subscribed to by the device for control purposes', ())
 
         cls.__GAS_SCHEMAS = {
-            ('NO2', 'O3', 'NO', 'CO'):
-                ProjectSchema(28, 'Gas concentrations',
-                              'NO2, O3, NO, CO electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'NO', 'CO')),
+            ('NO2', 'Ox', 'NO', 'CO'):
+                ProjectTopic(28, 'Gas concentrations',
+                             'Pt1000 temp, internal SHT', ('NO2', 'O3', 'NO', 'CO')),
 
-            ('NO2', 'O3', 'CO', 'SO2'):
-                ProjectSchema(35, 'Gas concentrations',
-                              'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
+            ('NO2', 'Ox', 'CO', 'SO2'):
+                ProjectTopic(35, 'Gas concentrations',
+                             'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
 
             ('NO2', 'CO', 'SO2', 'H2S'):
-                ProjectSchema(34, 'Gas concentrations',
-                              'NO2, CO, SO2, H2S electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('NO2', 'CO', 'SO2', 'H2S')),
+                ProjectTopic(34, 'Gas concentrations',
+                             'Pt1000 temp, internal SHT', ('NO2', 'CO', 'SO2', 'H2S')),
 
-            ('NO2', 'O3', 'CO', 'VOC'):                         # TODO: request an OSIO schema
-                ProjectSchema(None, 'Gas concentrations',
-                              'NO2, O3, CO, VOC electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'VOC')),
+            ('NO2', 'Ox', 'CO', 'VOC'):                         # TODO: request an OSIO schema
+                ProjectTopic(None, 'Gas concentrations',
+                             'NO2, O3, CO, VOC electrochemical we (V), ae (V), wc (V), cnc (ppb), '
+                             'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'VOC')),
 
             ('CO', 'SO2', 'H2S', 'VOC'):                        # TODO: request an OSIO schema
-                ProjectSchema(None, 'Gas concentrations',
-                              'CO, SO2, H2S, VOCs electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                              'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC'))
+                ProjectTopic(None, 'Gas concentrations',
+                             'CO, SO2, H2S, VOCs electrochemical we (V), ae (V), wc (V), cnc (ppb), '
+                             'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC'))
         }
 
 
@@ -138,5 +132,5 @@ class ProjectSchema(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ProjectSchema:{schema_id:%s, name:%s, tags:%s, description:%s}" % \
+        return "ProjectTopic:{schema_id:%s, name:%s, tags:%s, description:%s}" % \
                (self.schema_id, self.name, self.tags, self.description)
