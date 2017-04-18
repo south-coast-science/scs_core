@@ -40,6 +40,7 @@ class ProjectTopic(JSONable):
                                         ('PM1', 'PM2.5', 'PM10'))
 
         cls.STATUS = ProjectTopic(None, 'Device status',
+                                  'lat (deg), lng (deg) GPS qual, DFE temp (Centigrade), host temp (Centigrade), ' 
                                   'errors', ())
 
         cls.CONTROL = ProjectTopic(None, 'Device control',
