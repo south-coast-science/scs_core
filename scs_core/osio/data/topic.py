@@ -52,8 +52,7 @@ class Topic(AbstractTopic):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, name, description, is_public, info,
-                 rollups_enabled, schema_id):
+    def __init__(self, path, name, description, is_public, info, rollups_enabled, schema_id):
         """
         Constructor
         """

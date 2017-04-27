@@ -30,7 +30,7 @@ class AbstractTopic(JSONable):
 
         self.__is_public = is_public                # bool
 
-        self.__info = info              # TopicInfo
+        self.__info = info                          # TopicInfo
 
 
     # ----------------------------------------------------------------------------------------------------------------
