@@ -41,8 +41,8 @@ class A4(Sensor):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def sample(self, afe, temp, index, no2_sample=None):
-        we_v, ae_v = afe.sample_raw_wrk_aux(index, self.adc_gain_index)
+    def sample(self, afe, temp, sensor_index, no2_sample=None):
+        we_v, ae_v = afe.sample_raw_wrk_aux(sensor_index, self.adc_gain_index)
 
         if self.has_no2_cross_sensitivity():
             if no2_sample is None:
