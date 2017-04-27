@@ -72,6 +72,8 @@ class RESTClient(object):
     def post(self, path, payload_jdict):                # TODO: make the jdict here?
         payload_jstr = JSONify.dumps(payload_jdict)
 
+        print("payload_jstr: %s" % payload_jstr)
+
         try:
             response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
         except HTTPException as ex:
