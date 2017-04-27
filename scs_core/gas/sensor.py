@@ -44,14 +44,14 @@ class Sensor(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_code, gas_name, adc_gain, calib=None, baseline=None):
+    def __init__(self, sensor_code, gas_name, adc_gain_index, calib=None, baseline=None):
         """
         Constructor
         """
         self.__sensor_code = sensor_code
 
         self.__gas_name = gas_name
-        self.__adc_gain = adc_gain
+        self.__adc_gain_index = adc_gain_index
 
         self.__calib = calib
         self.__baseline = baseline
@@ -84,8 +84,8 @@ class Sensor(object):
 
 
     @property
-    def adc_gain(self):
-        return self.__adc_gain
+    def adc_gain_index(self):
+        return self.__adc_gain_index
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -23,10 +23,10 @@ class Publication(JSONable):
         if not jdict:
             return None
 
-        topic = jdict.get('topic')
-        payload = jdict.get('payload')
+        for topic, payload in jdict.items():
+            return Publication(topic, payload)
 
-        return Publication(topic, payload)
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -44,8 +44,7 @@ class Publication(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['topic'] = self.topic
-        jdict['payload'] = self.payload
+        jdict[self.topic] = self.payload
 
         return jdict
 
