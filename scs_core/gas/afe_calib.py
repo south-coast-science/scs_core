@@ -55,8 +55,6 @@ class AFECalib(PersistentJSONable):
         if not jdict:
             return None
 
-        # print("jdict: %s" % jdict)
-
         serial_number = jdict.get('serial_number')
         afe_type = jdict.get('type')
 
@@ -144,15 +142,7 @@ class AFECalib(PersistentJSONable):
         return sensors
 
 
-    def gas_names(self):                                    # TODO: looks like Sensor.SENSORS is not populated!!
-        for sensor_calib in self.__sensor_calibs:
-            print("SENSORS: %s" % Sensor.SENSORS)
-
-            print("sensor_calib: %s" % sensor_calib)
-            print("serial_number: %s" % sensor_calib.serial_number)
-            print("sensor: %s" % Sensor.find(sensor_calib.serial_number))
-            print("-")
-
+    def gas_names(self):
         return [Sensor.find(sensor_calib.serial_number).gas_name for sensor_calib in self.__sensor_calibs]
 
 
