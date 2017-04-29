@@ -35,7 +35,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_topic(self, topic, start_date, end_date):
-        path = '/v1/messages/topic/' + topic
+        request_path = '/v1/messages/topic/' + topic
 
         collection = []
 
@@ -43,7 +43,7 @@ class MessageManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__find(path, start_date, end_date):
+            for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
 
         finally:
@@ -54,12 +54,12 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __find(self, path, start_date, end_date):
+    def __find(self, request_path, start_date, end_date):
         params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}
 
         while True:
             # request...
-            jdict = self.__rest_client.get(path, params)
+            jdict = self.__rest_client.get(request_path, params)
 
             # messages...
             msg_jdict = jdict.get('messages')

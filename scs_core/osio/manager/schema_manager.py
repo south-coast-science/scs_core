@@ -2,9 +2,6 @@
 Created on 14 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-south-coast-science-dev
-43308b72-ad41-4555-b075-b4245c1971db
 """
 
 from scs_core.osio.client.rest_client import RESTClient
@@ -30,13 +27,13 @@ class SchemaManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self):
-        path = '/v2/schemas'
+        request_path = '/v2/schemas'
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            response_jdict = self.__rest_client.get(request_path)
 
         finally:
             self.__rest_client.close()

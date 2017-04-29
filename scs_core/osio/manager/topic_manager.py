@@ -34,13 +34,13 @@ class TopicManager(object):
         if topic_path is None:
             return None
 
-        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
+        request_path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            response_jdict = self.__rest_client.get(request_path)
         except RuntimeError:
             response_jdict = None
 
@@ -51,14 +51,14 @@ class TopicManager(object):
         return topic
 
 
-    def find_for_org(self, org_id, partial_path=None):
+    def find_for_org(self, org_id, partial_topic_path=None):
         topics = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            for batch in self.__find(org_id, partial_path):
+            for batch in self.__find(org_id, partial_topic_path):
                 topics.extend(batch)
 
         finally:
@@ -69,13 +69,13 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __find(self, org_id, partial_path=None):
-        path = '/v2/orgs/' + org_id + '/topics'
+    def __find(self, org_id, partial_topic_path=None):
+        request_path = '/v2/orgs/' + org_id + '/topics'
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
         while True:
             # request...
-            response_jdict = self.__rest_client.get(path, params)
+            response_jdict = self.__rest_client.get(request_path, params)
 
             # topics...
             topics_jdict = response_jdict.get('topics')
@@ -86,7 +86,7 @@ class TopicManager(object):
                 for topic_jdict in topics_jdict:
                     topic = TopicSummary.construct_from_jdict(topic_jdict)
 
-                    if partial_path is None or partial_path in topic.path:
+                    if partial_topic_path is None or partial_topic_path in topic.path:
                         topics.append(topic)
 
             yield topics
@@ -101,13 +101,13 @@ class TopicManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, topic):
-        path = '/v2/topics'
+        request_path = '/v2/topics'
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response = self.__rest_client.post(path, topic.as_json())
+            response = self.__rest_client.post(request_path, topic.as_json())
 
         finally:
             self.__rest_client.close()
@@ -118,25 +118,25 @@ class TopicManager(object):
 
 
     def update(self, topic_path, topic):
-        path = '/v1/topics/' + topic_path
+        request_path = '/v1/topics/' + topic_path
 
         # request...
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.put(path, topic.as_json())
+            self.__rest_client.put(request_path, topic.as_json())
         finally:
             self.__rest_client.close()
 
 
     def delete(self, topic_path):
-        path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
+        request_path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response = self.__rest_client.delete(path)
+            response = self.__rest_client.delete(request_path)
 
         finally:
             self.__rest_client.close()
