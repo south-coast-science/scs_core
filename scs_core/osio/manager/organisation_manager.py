@@ -104,8 +104,8 @@ class OrganisationManager(object):
             # request...
             response_jdict = self.__rest_client.get(path, params)
 
-            # topics...
-            orgs = [Organisation.construct_from_jdict(topic_jdict) for topic_jdict in response_jdict] \
+            # organisations...
+            orgs = [Organisation.construct_from_jdict(org_jdict) for org_jdict in response_jdict] \
                 if response_jdict else []
 
             yield orgs
@@ -114,7 +114,7 @@ class OrganisationManager(object):
                 break
 
             # next...
-            params['offset'] = len(orgs)
+            params['offset'] += len(orgs)
 
 
     # ----------------------------------------------------------------------------------------------------------------

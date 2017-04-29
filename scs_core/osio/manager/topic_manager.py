@@ -17,7 +17,7 @@ class TopicManager(object):
     """
     classdocs
     """
-    __FINDER_BATCH_SIZE = 100
+    __FINDER_BATCH_SIZE = 10
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -143,7 +143,7 @@ class TopicManager(object):
                 break
 
             # next...
-            params['offset'] = len(topics_jdict)
+            params['offset'] += len(topics_jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
