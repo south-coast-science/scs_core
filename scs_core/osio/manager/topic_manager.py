@@ -58,13 +58,44 @@ class TopicManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__get(org_id, path):
+            for batch in self.__find(org_id, path):
                 topics.extend(batch)
 
         finally:
             self.__rest_client.close()
 
         return topics
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __find(self, org_id, topic_path=None):
+        path = '/v2/orgs/' + org_id + '/topics'
+        params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
+
+        while True:
+            # request...
+            response_jdict = self.__rest_client.get(path, params)
+
+            # topics...
+            topics_jdict = response_jdict.get('topics')
+
+            topics = []
+
+            if topics_jdict:
+                for topic_jdict in topics_jdict:
+                    topic = TopicSummary.construct_from_jdict(topic_jdict)
+
+                    if topic_path is None or topic.path.startswith(topic_path):
+                        topics.append(topic)
+
+            yield topics
+
+            if len(topics) == 0:
+                break
+
+            # next...
+            params['offset'] += len(topics_jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,37 +144,6 @@ class TopicManager(object):
         success = response == ''
 
         return success
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __get(self, org_id, topic_path=None):
-        path = '/v2/orgs/' + org_id + '/topics'
-        params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
-
-        while True:
-            # request...
-            response_jdict = self.__rest_client.get(path, params)
-
-            # topics...
-            topics_jdict = response_jdict.get('topics')
-
-            topics = []
-
-            if topics_jdict:
-                for topic_jdict in topics_jdict:
-                    topic = TopicSummary.construct_from_jdict(topic_jdict)
-
-                    if topic_path is None or topic.path.startswith(topic_path):
-                        topics.append(topic)
-
-            yield topics
-
-            if len(topics) == 0:
-                break
-
-            # next...
-            params['offset'] += len(topics_jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

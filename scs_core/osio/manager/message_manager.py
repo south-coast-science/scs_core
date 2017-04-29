@@ -43,7 +43,7 @@ class MessageManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__get(path, start_date, end_date):
+            for batch in self.__find(path, start_date, end_date):
                 collection.extend(batch)
 
         finally:
@@ -54,7 +54,7 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __get(self, path, start_date, end_date):
+    def __find(self, path, start_date, end_date):
         params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}
 
         while True:

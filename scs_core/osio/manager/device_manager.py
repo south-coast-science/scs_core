@@ -16,6 +16,8 @@ class DeviceManager(object):
     """
     classdocs
     """
+    __FINDER_BATCH_SIZE = 100
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -58,36 +60,60 @@ class DeviceManager(object):
 
     def find_all_for_user(self, user_id):
         path = '/v1/users/' + user_id + '/devices'
+        devices = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path, {'user-id': user_id})
+            for batch in self.__find(path, {'user-id': user_id}):
+                devices.extend(batch)
 
         finally:
             self.__rest_client.close()
-
-        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
 
     def find_all_for_org(self, org_id):
         path = '/v1/orgs/' + org_id + '/devices'
+        devices = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            for batch in self.__find(path):
+                devices.extend(batch)
 
         finally:
             self.__rest_client.close()
 
-        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
-
         return devices
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __find(self, path, params=None):
+        if params is None:
+            params = {}
+
+        params['offset'] = 0
+        params['count'] = self.__FINDER_BATCH_SIZE
+
+        while True:
+            # request...
+            response_jdict = self.__rest_client.get(path, params)
+
+            devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+
+            yield devices
+
+            if len(devices) == 0:
+                break
+
+            # next...
+            params['offset'] += len(devices)
 
 
     # ----------------------------------------------------------------------------------------------------------------
