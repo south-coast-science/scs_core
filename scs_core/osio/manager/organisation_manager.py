@@ -30,13 +30,13 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, org_id):
-        path = '/v1/orgs/' + urllib.parse.quote(org_id, '')
+        request_path = '/v1/orgs/' + urllib.parse.quote(org_id, '')
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            response_jdict = self.__rest_client.get(request_path)
         except RuntimeError:
             response_jdict = None
 
@@ -66,13 +66,13 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, org):
-        path = '/v1/orgs'
+        request_path = '/v1/orgs'
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response = self.__rest_client.post(path, org.as_json())
+            response = self.__rest_client.post(request_path, org.as_json())
 
         finally:
             self.__rest_client.close()
@@ -83,13 +83,13 @@ class OrganisationManager(object):
 
 
     def update(self, org_id, org):
-        path = '/v1/orgs/' + org_id
+        request_path = '/v1/orgs/' + org_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.put(path, org.as_json())
+            self.__rest_client.put(request_path, org.as_json())
         finally:
             self.__rest_client.close()
 
@@ -97,15 +97,15 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __get(self, user_id):
-        path = '/v12/users/' + user_id + '/owned-orgs'
+        request_path = '/v12/users/' + user_id + '/owned-orgs'
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
         while True:
             # request...
-            response_jdict = self.__rest_client.get(path, params)
+            response_jdict = self.__rest_client.get(request_path, params)
 
-            # topics...
-            orgs = [Organisation.construct_from_jdict(topic_jdict) for topic_jdict in response_jdict] \
+            # organisations...
+            orgs = [Organisation.construct_from_jdict(org_jdict) for org_jdict in response_jdict] \
                 if response_jdict else []
 
             yield orgs
@@ -114,7 +114,7 @@ class OrganisationManager(object):
                 break
 
             # next...
-            params['offset'] = len(orgs)
+            params['offset'] += len(orgs)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -27,13 +27,13 @@ class UserManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, user_id):
-        path = '/v1/users/' + user_id
+        request_path = '/v1/users/' + user_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            response_jdict = self.__rest_client.get(request_path)
         except RuntimeError:
             response_jdict = None
 
@@ -51,13 +51,13 @@ class UserManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def update(self, user_id, user):
-        path = '/v1/users/' + user_id
+        request_path = '/v1/users/' + user_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.put(path, user.as_json())
+            self.__rest_client.put(request_path, user.as_json())
         finally:
             self.__rest_client.close()
 

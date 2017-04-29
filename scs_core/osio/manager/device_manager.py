@@ -16,6 +16,8 @@ class DeviceManager(object):
     """
     classdocs
     """
+    __FINDER_BATCH_SIZE = 100
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -29,13 +31,13 @@ class DeviceManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, org_id, client_id):
-        path = '/v1/orgs/' + org_id + '/devices/' + client_id
+        request_path = '/v1/orgs/' + org_id + '/devices/' + client_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            response_jdict = self.__rest_client.get(request_path)
         except RuntimeError:
             response_jdict = None
 
@@ -57,49 +59,73 @@ class DeviceManager(object):
 
 
     def find_all_for_user(self, user_id):
-        path = '/v1/users/' + user_id + '/devices'
+        request_path = '/v1/users/' + user_id + '/devices'
+        devices = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path, {'user-id': user_id})
+            for batch in self.__find(request_path, {'user-id': user_id}):
+                devices.extend(batch)
 
         finally:
             self.__rest_client.close()
-
-        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
 
     def find_all_for_org(self, org_id):
-        path = '/v1/orgs/' + org_id + '/devices'
+        request_path = '/v1/orgs/' + org_id + '/devices'
+        devices = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.get(path)
+            for batch in self.__find(request_path):
+                devices.extend(batch)
 
         finally:
             self.__rest_client.close()
-
-        devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
         return devices
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __find(self, request_path, params=None):
+        if params is None:
+            params = {}
+
+        params['offset'] = 0
+        params['count'] = self.__FINDER_BATCH_SIZE
+
+        while True:
+            # request...
+            response_jdict = self.__rest_client.get(request_path, params)
+
+            devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
+
+            yield devices
+
+            if len(devices) == 0:
+                break
+
+            # next...
+            params['offset'] += len(devices)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def create(self, user_id, device):
-        path = '/v1/users/' + user_id + '/devices'
+        request_path = '/v1/users/' + user_id + '/devices'
 
         # request...
         self.__rest_client.connect()
 
         try:
-            response_jdict = self.__rest_client.post(path, device.as_json())
+            response_jdict = self.__rest_client.post(request_path, device.as_json())
         finally:
             self.__rest_client.close()
 
@@ -109,25 +135,25 @@ class DeviceManager(object):
 
 
     def update(self, org_id, system_id, device):
-        path = '/v1/orgs/' + org_id + '/devices/' + system_id
+        request_path = '/v1/orgs/' + org_id + '/devices/' + system_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.put(path, device.as_json())
+            self.__rest_client.put(request_path, device.as_json())
         finally:
             self.__rest_client.close()
 
 
     def delete(self, user_id, client_id):
-        path = '/v1/users/' + user_id + '/devices/' + client_id
+        request_path = '/v1/users/' + user_id + '/devices/' + client_id
 
         # request...
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.delete(path)
+            self.__rest_client.delete(request_path)
         finally:
             self.__rest_client.close()
 
