@@ -51,14 +51,14 @@ class TopicManager(object):
         return topic
 
 
-    def find_for_org(self, org_id, partial_topic_path=None):
+    def find_for_org(self, org_id, partial_topic_path=None, topic_schema=None):
         topics = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            for batch in self.__find(org_id, partial_topic_path):
+            for batch in self.__find(org_id, partial_topic_path, topic_schema):
                 topics.extend(batch)
 
         finally:
@@ -69,7 +69,7 @@ class TopicManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __find(self, org_id, partial_topic_path=None):
+    def __find(self, org_id, partial_topic_path=None, topic_schema=None):
         request_path = '/v2/orgs/' + org_id + '/topics'
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
@@ -86,8 +86,13 @@ class TopicManager(object):
                 for topic_jdict in topics_jdict:
                     topic = TopicSummary.construct_from_jdict(topic_jdict)
 
-                    if partial_topic_path is None or partial_topic_path in topic.path:
-                        topics.append(topic)
+                    if partial_topic_path is not None and partial_topic_path not in topic.path:
+                        continue
+
+                    if topic_schema is not None and (topic.schema is None or topic_schema != topic.schema.id):
+                        continue
+
+                    topics.append(topic)
 
             yield topics
 
