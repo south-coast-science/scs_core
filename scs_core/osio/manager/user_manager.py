@@ -6,6 +6,7 @@ Created on 21 Mar 2017
 
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.user import User
+from scs_core.osio.data.user_metadata import UserMetadata
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,6 +41,24 @@ class UserManager(object):
         self.__rest_client.close()
 
         user = User.construct_from_jdict(response_jdict)
+
+        return user
+
+
+    def find_public(self, user_id):
+        request_path = '/v1/public/users/' + user_id
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            response_jdict = self.__rest_client.get(request_path)
+        except RuntimeError:
+            response_jdict = None
+
+        self.__rest_client.close()
+
+        user = UserMetadata.construct_from_jdict(response_jdict)
 
         return user
 

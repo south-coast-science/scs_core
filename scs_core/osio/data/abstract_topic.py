@@ -9,8 +9,6 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
-# TODO: is this the TopicSummary delivered by the API?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class AbstractTopic(JSONable):

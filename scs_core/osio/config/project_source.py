@@ -23,15 +23,15 @@ class ProjectSource(object):
 
     @classmethod
     def tags(cls, afe_calib, include_particulates):
-        gases_schema = ProjectTopic.find_gas_schema(afe_calib.gas_names())
+        gases_topic = ProjectTopic.find_gases_topic(afe_calib.gas_names())
 
-        if gases_schema is None:
+        if gases_topic is None:
             raise ValueError("ProjectSource.tags: no topic found for AFE: %s" % afe_calib.gas_names())
 
         tags = ['SCS']
 
-        if gases_schema:
-            tags.extend(gases_schema.tags)
+        if gases_topic:
+            tags.extend(gases_topic.tags)
 
         if include_particulates:
             tags.extend(ProjectTopic.PARTICULATES.tags)
