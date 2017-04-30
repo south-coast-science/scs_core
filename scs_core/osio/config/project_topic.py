@@ -26,7 +26,7 @@ class ProjectTopic(JSONable):
     STATUS = None
     CONTROL = None
 
-    __GAS_SCHEMAS = {}
+    __GASES_TOPICS = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -46,17 +46,20 @@ class ProjectTopic(JSONable):
         cls.CONTROL = ProjectTopic(None, 'Device control',
                                    'this topic is subscribed to by the device for control purposes', ())
 
-        cls.__GAS_SCHEMAS = {
+        cls.__GASES_TOPICS = {
             ('NO2', 'Ox', 'NO', 'CO'):
                 ProjectTopic(28, 'Gas concentrations',
+                             'NO2, O3, NO, CO electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'NO', 'CO')),
 
             ('NO2', 'Ox', 'CO', 'SO2'):
                 ProjectTopic(35, 'Gas concentrations',
+                             'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
 
             ('NO2', 'CO', 'SO2', 'H2S'):
                 ProjectTopic(34, 'Gas concentrations',
+                             'NO2, CO, SO2, H2S electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'CO', 'SO2', 'H2S')),
 
             ('NO2', 'Ox', 'CO', 'VOC'):                         # TODO: request an OSIO schema
@@ -72,13 +75,13 @@ class ProjectTopic(JSONable):
 
 
     @classmethod
-    def find_gas_schema(cls, gas_names):
+    def find_gases_topic(cls, gas_names):
         if gas_names is None:
             return None
 
-        for schema_gas_names, schema in cls.__GAS_SCHEMAS.items():
-            if set(schema_gas_names) == set(gas_names):
-                return schema
+        for topic_gas_names, topic in cls.__GASES_TOPICS.items():
+            if set(topic_gas_names) == set(gas_names):
+                return topic
 
         return None
 
