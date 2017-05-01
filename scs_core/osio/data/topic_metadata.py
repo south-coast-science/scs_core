@@ -79,7 +79,11 @@ class TopicMetadata(AbstractTopic):
         info = TopicInfo.construct_from_jdict(jdict.get('topic-info'))
 
         # TopicMetadata...
-        derived_topics = [DerivedTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('derived-topics')]
+        if jdict.get('derived-topics'):
+            derived_topics = [DerivedTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('derived-topics')]
+        else:
+            derived_topics = []
+
         bookmark_count = jdict.get('bookmark-count')
         stats = TopicStats.construct_from_jdict(jdict.get('stats'))
 
