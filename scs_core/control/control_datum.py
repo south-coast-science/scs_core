@@ -14,6 +14,8 @@ from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
+# TODO: add requester tag
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class ControlDatum(JSONable):
@@ -63,7 +65,7 @@ class ControlDatum(JSONable):
         Constructor
         """
         self.__tag = tag                # string
-        self.__rec = rec              # LocalizedDatetime
+        self.__rec = rec                # LocalizedDatetime
         self.__cmd = cmd                # string
         self.__params = params          # array of { string | int | float }
         self.__digest = digest          # string
