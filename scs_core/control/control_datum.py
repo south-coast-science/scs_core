@@ -14,8 +14,6 @@ from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
-# TODO: add requester tag
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class ControlDatum(JSONable):
@@ -31,28 +29,30 @@ class ControlDatum(JSONable):
             return None
 
         tag = jdict.get('tag')
+        attn = jdict.get('attn')
+
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         cmd = jdict.get('cmd')
-        params = jdict.get('params')
+        cmd_tokens = jdict.get('cmd_tokens')
         digest = jdict.get('digest')
 
-        datum = ControlDatum(tag, rec, cmd, params, digest)
+        datum = ControlDatum(tag, attn, rec, cmd_tokens, digest)
 
         return datum
 
 
     @classmethod
-    def construct(cls, tag, rec, cmd, params, subscriber_sn):
-        digest = ControlDatum.__hash(tag, rec, cmd, params, subscriber_sn)
+    def construct(cls, tag, attn, rec, cmd_tokens, subscriber_sn):
+        digest = ControlDatum.__hash(tag, attn, rec, cmd_tokens, subscriber_sn)
 
-        return ControlDatum(tag, rec, cmd, params, digest)
+        return ControlDatum(tag, attn, rec, cmd_tokens, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __hash(cls, tag, rec, cmd, params, subscriber_sn):
-        text = str(tag) + rec.as_json() + str(cmd) + str(params) + str(subscriber_sn)
+    def __hash(cls, tag, attn, rec, cmd_tokens, subscriber_sn):
+        text = str(tag) + str(attn) + rec.as_json() + str(cmd_tokens) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -60,21 +60,22 @@ class ControlDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, cmd, params, digest):
+    def __init__(self, tag, attn, rec, cmd_tokens, digest):
         """
         Constructor
         """
-        self.__tag = tag                # string
-        self.__rec = rec                # LocalizedDatetime
-        self.__cmd = cmd                # string
-        self.__params = params          # array of { string | int | float }
-        self.__digest = digest          # string
+        self.__tag = tag                    # string - originator of message
+        self.__attn = attn                  # string - intended recipient of message
+        
+        self.__rec = rec                    # LocalizedDatetime
+        self.__cmd_tokens = cmd_tokens      # array of { string | int | float }
+        self.__digest = digest              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, subscriber_sn):
-        digest = ControlDatum.__hash(self.tag, self.rec, self.cmd, self.params, subscriber_sn)
+        digest = ControlDatum.__hash(self.tag, self.attn, self.rec, self.cmd_tokens, subscriber_sn)
 
         return digest == self.digest
 
@@ -85,9 +86,10 @@ class ControlDatum(JSONable):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag
+        jdict['attn'] = self.attn
+
         jdict['rec'] = self.rec
-        jdict['cmd'] = self.cmd
-        jdict['params'] = self.params
+        jdict['cmd_tokens'] = self.cmd_tokens
         jdict['digest'] = self.digest
 
         return jdict
@@ -101,18 +103,18 @@ class ControlDatum(JSONable):
 
 
     @property
+    def attn(self):
+        return self.__attn
+
+
+    @property
     def rec(self):
         return self.__rec
 
 
     @property
-    def cmd(self):
-        return self.__cmd
-
-
-    @property
-    def params(self):
-        return self.__params
+    def cmd_tokens(self):
+        return self.__cmd_tokens
 
 
     @property
@@ -123,5 +125,5 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlDatum:{tag:%s, rec:%s, cmd:%s, params:%s, digest:%s}" % \
-               (self.tag, self.rec, self.cmd, self.params, self.digest)
+        return "ControlDatum:{tag:%s, attn:%s, rec:%s, cmd_tokens:%s, digest:%s}" % \
+               (self.tag, self.attn, self.rec, self.cmd_tokens, self.digest)

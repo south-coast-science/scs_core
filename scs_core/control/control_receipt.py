@@ -40,9 +40,9 @@ class ControlReceipt(JSONable):
 
     @classmethod
     def construct_from_datum(cls, datum, rec, subscriber_sn):
-        digest = ControlReceipt.__hash(datum.tag, rec, datum.digest, subscriber_sn)
+        digest = ControlReceipt.__hash(datum.attn, rec, datum.digest, subscriber_sn)
 
-        return ControlReceipt(datum.tag, rec, datum.digest, digest)
+        return ControlReceipt(datum.attn, rec, datum.digest, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ class ControlReceipt(JSONable):
         Constructor
         """
         self.__tag = tag                # string
-        self.__rec = rec              # LocalizedDatetime
+        self.__rec = rec                # LocalizedDatetime
         self.__omd = omd                # string
         self.__digest = digest          # string
 

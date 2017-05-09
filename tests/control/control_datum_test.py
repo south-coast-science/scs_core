@@ -22,7 +22,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 serial = '00000000cda1f8b9'
 now = LocalizedDatetime.now()
 
-datum = ControlDatum.construct('scs-ap1-6', now, 'shutdown', ['now'], serial)
+datum = ControlDatum.construct('my-laptop', 'scs-ap1-6', now, ['now'], serial)
 print(datum)
 print("-")
 
