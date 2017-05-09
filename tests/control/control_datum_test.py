@@ -39,7 +39,7 @@ print("-")
 valid = datum.is_valid(serial)
 print("datum valid: %s" % valid)
 
-valid = datum.is_valid('00000000cda1f8b8')
+valid = datum.is_valid('00000000cda1f8b9')
 print("datum valid: %s" % valid)
 print("=")
 
