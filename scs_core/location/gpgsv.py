@@ -40,6 +40,7 @@ class GPGSV(object):
         num_sv = s.str(3)
 
         sats = []
+        # noinspection PyArgumentList
         for i in range(4, len(s), 4):
             sats.append(GPSAT(s.int(i), s.int(i + 1), s.int(i + 2), s.int(i + 3)))
 
