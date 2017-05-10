@@ -32,7 +32,6 @@ class ControlDatum(JSONable):
         attn = jdict.get('attn')
 
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
-        cmd = jdict.get('cmd')
         cmd_tokens = jdict.get('cmd_tokens')
         digest = jdict.get('digest')
 

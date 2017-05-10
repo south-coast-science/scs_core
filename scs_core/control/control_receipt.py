@@ -29,6 +29,7 @@ class ControlReceipt(JSONable):
             return None
 
         tag = jdict.get('tag')
+
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         return_code = jdict.get('code')
         omd = jdict.get('omd')
@@ -63,6 +64,7 @@ class ControlReceipt(JSONable):
         Constructor
         """
         self.__tag = tag                    # string
+
         self.__rec = rec                    # LocalizedDatetime
         self.__return_code = return_code    # string
         self.__omd = omd                    # string
@@ -83,6 +85,7 @@ class ControlReceipt(JSONable):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag
+
         jdict['rec'] = self.rec
         jdict['code'] = self.return_code
         jdict['omd'] = self.omd
