@@ -85,6 +85,27 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def channel_path(self, channel, system_id):
+        if channel == 'C':
+            return self.climate_topic_path()
+
+        if channel == 'G':
+            return self.gases_topic_path()
+
+        if channel == 'P':
+            return self.particulates_topic_path()
+
+        if channel == 'S':
+            return self.status_topic_path(system_id)
+
+        if channel == 'X':
+            return self.control_topic_path(system_id)
+
+        raise ValueError("channel_path: unrecognised channel: %s" % channel)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def climate_topic_path(self):
         return self.__location_path + '/climate'
 
