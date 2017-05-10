@@ -36,6 +36,13 @@ class Project(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def is_valid_channel(cls, channel):
+        return channel in ('C', 'G', 'P', 'S', 'X')
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct(cls, org_id, group, location_id):
         path_root = '/orgs/' + org_id + '/'
 
