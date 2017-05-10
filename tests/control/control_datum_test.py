@@ -46,7 +46,9 @@ print("=")
 time.sleep(1)
 now = LocalizedDatetime.now()
 
-receipt = ControlReceipt.construct_from_datum(datum, now, serial)
+return_code = 'OK'
+
+receipt = ControlReceipt.construct_from_datum(datum, now, return_code, serial)
 print(receipt)
 print("-")
 
