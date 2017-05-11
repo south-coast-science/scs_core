@@ -11,6 +11,7 @@ import hashlib
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
@@ -51,7 +52,7 @@ class ControlReceipt(JSONable):
 
     @classmethod
     def __hash(cls, tag, rec, command, omd, subscriber_sn):
-        text = str(tag) + rec.as_json() + command.as_json() + str(omd) + str(subscriber_sn)
+        text = str(tag) + JSONify.dumps(rec) + JSONify.dumps(command) + str(omd) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
