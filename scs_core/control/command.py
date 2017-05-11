@@ -65,8 +65,8 @@ class Command(JSONable):
         self.__cmd = cmd                        # string
         self.__params = params                  # array
 
-        self.__stdout = stdout                  # array
-        self.__stderr = stderr                  # array
+        self.__stdout = stdout                  # array of string
+        self.__stderr = stderr                  # array of string
         self.__return_code = return_code        # int
 
 

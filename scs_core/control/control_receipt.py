@@ -67,7 +67,7 @@ class ControlReceipt(JSONable):
         self.__tag = tag                    # string
 
         self.__rec = rec                    # LocalizedDatetime
-        self.__command = command            # string
+        self.__command = command            # Command
         self.__omd = omd                    # string
         self.__digest = digest              # string
 
