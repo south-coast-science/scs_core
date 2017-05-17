@@ -138,8 +138,8 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def localize(self, zone):
-        localized = zone.localize(self.__datetime)
+    def localize(self, zone):                           # zone may be datetime timezone or pytz timezone
+        localized = self.datetime.astimezone(zone)
 
         return LocalizedDatetime(localized)
 
