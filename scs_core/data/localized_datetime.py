@@ -67,18 +67,18 @@ class LocalizedDatetime(JSONable):
         # fields...
         year = int(fields[0])
         month = int(fields[1])
-        date = int(fields[2])
+        day = int(fields[2])
 
-        hours = int(fields[3])
-        mins = int(fields[4])
-        secs = int(fields[5])
+        hour = int(fields[3])
+        minute = int(fields[4])
+        second = int(fields[5])
         micros = int(fields[6]) * 1000
 
         # construct...
         zone_offset = timedelta(hours=0, minutes=0)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, date, hours, mins, secs, micros, tzinfo=zone)
+        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -97,11 +97,11 @@ class LocalizedDatetime(JSONable):
         # fields...
         year = int(fields[0])
         month = int(fields[1])
-        date = int(fields[2])
+        day = int(fields[2])
 
-        hours = int(fields[3])
-        mins = int(fields[4])
-        secs = int(fields[5])
+        hour = int(fields[3])
+        minute = int(fields[4])
+        second = int(fields[5])
         micros = int(fields[6]) * 1000
 
         zone_sign = -1 if fields[7] == '-' else 1
@@ -112,7 +112,7 @@ class LocalizedDatetime(JSONable):
         zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, date, hours, mins, secs, micros, tzinfo=zone)
+        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -138,7 +138,7 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def localize(self, zone):                           # zone may be datetime timezone or pytz timezone
+    def localize(self, zone):                           # zone may be datetime.timezone or pytz.timezone
         localized = self.datetime.astimezone(zone)
 
         return LocalizedDatetime(localized)
