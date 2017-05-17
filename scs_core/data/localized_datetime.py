@@ -2,6 +2,8 @@
 Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 """
 
 import re
@@ -121,26 +123,32 @@ class LocalizedDatetime(JSONable):
         """
         Constructor
         """
-        self.__localized = localized            # datetime
+        self.__datetime = localized            # datetime
 
 
     def __add__(self, other: datetime):
-        return LocalizedDatetime(self.__localized + other)
+        return LocalizedDatetime(self.__datetime + other)
 
 
     def __sub__(self, other):
-        other_datetime = other.__localized if type(other) == LocalizedDatetime else other
+        other_datetime = other.__datetime if type(other) == LocalizedDatetime else other
 
-        return self.__localized - other_datetime
+        return self.__datetime - other_datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def localize(self, zone):
+        localized = zone.localize(self.__datetime)
+
+        return LocalizedDatetime(localized)
+
 
     def timedelta(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         td = timedelta(days=days, seconds=seconds, microseconds=microseconds, milliseconds=milliseconds,
                        minutes=minutes, hours=hours, weeks=weeks)
 
-        return LocalizedDatetime(self.__localized + td)
+        return LocalizedDatetime(self.__datetime + td)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,13 +157,13 @@ class LocalizedDatetime(JSONable):
         """
         example: 2016-08-13T00:38:05.210+00:00
         """
-        date = self.__localized.strftime("%Y-%m-%d")
-        time = self.__localized.strftime("%H:%M:%S")
+        date = self.__datetime.strftime("%Y-%m-%d")
+        time = self.__datetime.strftime("%H:%M:%S")
 
-        micros = float(self.__localized.strftime("%f"))
+        micros = float(self.__datetime.strftime("%f"))
         millis = "%03d" % (micros // 1000)
 
-        zone = self.__localized.strftime("%z")
+        zone = self.__datetime.strftime("%z")
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
@@ -167,17 +175,17 @@ class LocalizedDatetime(JSONable):
 
 
     def timestamp(self):
-        return self.__localized.timestamp()
+        return self.__datetime.timestamp()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def localized(self):
-        return self.__localized
+    def datetime(self):
+        return self.__datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "LocalizedDatetime:{localized:%s}" % self.localized
+        return "LocalizedDatetime:{datetime:%s}" % self.datetime
