@@ -23,9 +23,6 @@ class RTCDatetime(JSONable):
 
     CENTURY =               2000
 
-    __DoW = {'Mo': 1, 'Tu': 2, 'We': 3, 'Th': 4, 'Fr': 5, 'Sa': 6, 'Su': 7}
-
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -34,7 +31,7 @@ class RTCDatetime(JSONable):
         if not jstr:
             return None
 
-        match = re.match('(\d{2})-(\d{2})-(\d{2}) \(([AZ][az])\) (\d{2}):(\d{2}):(\d{2})', jstr)
+        match = re.match('(\d{2})-(\d{2})-(\d{2}) \((\d)\) (\d{2}):(\d{2}):(\d{2})', jstr)
 
         if match is None:
             return None
@@ -46,7 +43,7 @@ class RTCDatetime(JSONable):
         month = int(fields[1])
         day = int(fields[2])
 
-        weekday = cls.__DoW[fields[3]]
+        weekday = int(fields[3])
 
         hour = int(fields[4])
         minute = int(fields[5])
