@@ -35,6 +35,15 @@ print(iso)
 print("-")
 
 
+print("from truncated iso...")
+iso = "2017-05-18T10:42:50Z"
+print("iso: %s" % iso)
+
+loc = LocalizedDatetime.construct_from_iso8601(iso)
+print(loc)
+print("-")
+
+
 print("datetime localise...")
 offset = 1 * timedelta(hours=2, minutes=0)
 print("offset: %s" % offset)

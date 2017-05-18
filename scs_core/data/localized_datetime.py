@@ -3,6 +3,8 @@ Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Note that, for the ISO 8601 constructors, milliseconds are optional.
+
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 """
 
@@ -15,8 +17,6 @@ import tzlocal
 
 from scs_core.data.json import JSONable
 
-
-# TODO: add another constructor with no seconds / millis
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_z(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z', datetime_str)
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', datetime_str)
 
         if match is None:
             return None
@@ -73,7 +73,7 @@ class LocalizedDatetime(JSONable):
         hour = int(fields[3])
         minute = int(fields[4])
         second = int(fields[5])
-        micros = int(fields[6]) * 1000
+        micros = int(fields[6]) * 1000 if fields[6] else 0
 
         # construct...
         zone_offset = timedelta(hours=0, minutes=0)
@@ -87,13 +87,15 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([ +\-]?)(\d{2}):(\d{2})',
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?([ +\-]?)(\d{2}):(\d{2})',
                          datetime_str)
 
         if match is None:
             return None
 
         fields = match.groups()
+
+        print("fields: %s" % str(fields))
 
         # fields...
         year = int(fields[0])
@@ -103,7 +105,7 @@ class LocalizedDatetime(JSONable):
         hour = int(fields[3])
         minute = int(fields[4])
         second = int(fields[5])
-        micros = int(fields[6]) * 1000
+        micros = int(fields[6]) * 1000 if fields[6] else 0
 
         zone_sign = -1 if fields[7] == '-' else 1
         zone_hours = int(fields[8])
