@@ -2,6 +2,8 @@
 Created on 17 May 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Note: time shall always be represented as UTC, then localized on conversion.
 """
 
 from datetime import datetime
