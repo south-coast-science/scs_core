@@ -36,6 +36,15 @@ print("-")
 
 
 print("from truncated iso...")
+iso = "2017-05-18T10:42:50+00:00"
+print("iso: %s" % iso)
+
+loc = LocalizedDatetime.construct_from_iso8601(iso)
+print(loc)
+print("-")
+
+
+print("from truncated iso z...")
 iso = "2017-05-18T10:42:50Z"
 print("iso: %s" % iso)
 

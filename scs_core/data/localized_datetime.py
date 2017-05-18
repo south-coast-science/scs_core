@@ -95,8 +95,6 @@ class LocalizedDatetime(JSONable):
 
         fields = match.groups()
 
-        print("fields: %s" % str(fields))
-
         # fields...
         year = int(fields[0])
         month = int(fields[1])
