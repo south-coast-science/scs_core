@@ -86,7 +86,7 @@ class RTCDatetime(JSONable):
         self.__month = month            # int       1 - 12
         self.__day = day                # int       1 - 31
 
-        self.__weekday = weekday        # int       1 - 7
+        self.__weekday = weekday        # int       1 - 7   ISO 8601: Monday is 1
 
         self.__hour = hour              # int       0 - 23
         self.__minute = minute          # int       0 - 59
@@ -95,7 +95,7 @@ class RTCDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_localized_datetime(self, local_zone):
+    def as_localized_datetime(self, local_zone):        # may be pytz timezone or datetime timezone
         # RTC zone...
         zone_offset = timedelta(hours=0, minutes=0)
         utc_zone = timezone(zone_offset)

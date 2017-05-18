@@ -6,16 +6,17 @@ Created on 13 Aug 2016
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 """
 
-import re
-
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
+import re
 import tzlocal
 
 from scs_core.data.json import JSONable
 
+
+# TODO: add another constructor with no seconds / millis
 
 # --------------------------------------------------------------------------------------------------------------------
 
