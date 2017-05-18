@@ -64,8 +64,8 @@ class PersistentJSONable(JSONable):
     def save(self, filename):
         jstr = JSONify.dumps(self)
 
-        f = open(filename, "w")                     # self.__class__.filename(host)
-        f.write('\n' + jstr + '\n')
+        f = open(filename, "w")
+        f.write(jstr + '\n')
         f.close()
 
 

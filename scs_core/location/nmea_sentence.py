@@ -66,8 +66,8 @@ class NMEASentence(object):
 
 
     def float(self, index, precision):
-        str = self.str(index)
-        number = None if str is None else float(str)
+        index_str = self.str(index)
+        number = None if index_str is None else float(index_str)
 
         if number is None:
             return None
