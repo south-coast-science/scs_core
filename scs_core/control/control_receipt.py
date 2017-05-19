@@ -11,6 +11,7 @@ import hashlib
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
@@ -29,27 +30,29 @@ class ControlReceipt(JSONable):
             return None
 
         tag = jdict.get('tag')
+
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
+        command = jdict.get('cmd')
         omd = jdict.get('omd')
         digest = jdict.get('digest')
 
-        datum = ControlReceipt(tag, rec, omd, digest)
+        datum = ControlReceipt(tag, rec, command, omd, digest)
 
         return datum
 
 
     @classmethod
-    def construct_from_datum(cls, datum, rec, subscriber_sn):
-        digest = ControlReceipt.__hash(datum.attn, rec, datum.digest, subscriber_sn)
+    def construct_from_datum(cls, datum, rec, command, subscriber_sn):
+        digest = ControlReceipt.__hash(datum.attn, rec, command, datum.digest, subscriber_sn)
 
-        return ControlReceipt(datum.attn, rec, datum.digest, digest)
+        return ControlReceipt(datum.attn, rec, command, datum.digest, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __hash(cls, tag, rec, omd, subscriber_sn):
-        text = str(tag) + rec.as_json() + str(omd) + str(subscriber_sn)
+    def __hash(cls, tag, rec, command, omd, subscriber_sn):
+        text = str(tag) + JSONify.dumps(rec) + JSONify.dumps(command) + str(omd) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -57,20 +60,22 @@ class ControlReceipt(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, omd, digest):
+    def __init__(self, tag, rec, command, omd, digest):
         """
         Constructor
         """
-        self.__tag = tag                # string
-        self.__rec = rec                # LocalizedDatetime
-        self.__omd = omd                # string
-        self.__digest = digest          # string
+        self.__tag = tag                    # string
+
+        self.__rec = rec                    # LocalizedDatetime
+        self.__command = command            # Command
+        self.__omd = omd                    # string
+        self.__digest = digest              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, subscriber_sn):
-        digest = ControlReceipt.__hash(self.tag, self.rec, self.omd, subscriber_sn)
+        digest = ControlReceipt.__hash(self.tag, self.rec, self.command, self.omd, subscriber_sn)
 
         return digest == self.__digest
 
@@ -81,7 +86,9 @@ class ControlReceipt(JSONable):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag
+
         jdict['rec'] = self.rec
+        jdict['cmd'] = self.command
         jdict['omd'] = self.omd
         jdict['digest'] = self.__digest
 
@@ -101,6 +108,11 @@ class ControlReceipt(JSONable):
 
 
     @property
+    def command(self):
+        return self.__command
+
+
+    @property
     def omd(self):
         return self.__omd
 
@@ -108,5 +120,5 @@ class ControlReceipt(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlReceipt:{tag:%s, rec:%s, omd:%s, digest:%s}" % \
-               (self.tag, self.rec, self.omd, self.__digest)
+        return "ControlReceipt:{tag:%s, rec:%s, command:%s, omd:%s, digest:%s}" % \
+               (self.tag, self.rec, self.command, self.omd, self.__digest)

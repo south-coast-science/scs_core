@@ -2,14 +2,17 @@
 Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-"""
 
-import re
+Note that, for the ISO 8601 constructors, milliseconds are optional.
+
+http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+"""
 
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
+import re
 import tzlocal
 
 from scs_core.data.json import JSONable
@@ -55,7 +58,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_z(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z', datetime_str)
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', datetime_str)
 
         if match is None:
             return None
@@ -65,18 +68,18 @@ class LocalizedDatetime(JSONable):
         # fields...
         year = int(fields[0])
         month = int(fields[1])
-        date = int(fields[2])
+        day = int(fields[2])
 
-        hours = int(fields[3])
-        mins = int(fields[4])
-        secs = int(fields[5])
-        micros = int(fields[6]) * 1000
+        hour = int(fields[3])
+        minute = int(fields[4])
+        second = int(fields[5])
+        micros = int(fields[6]) * 1000 if fields[6] else 0
 
         # construct...
         zone_offset = timedelta(hours=0, minutes=0)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, date, hours, mins, secs, micros, tzinfo=zone)
+        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -84,7 +87,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([ +\-]?)(\d{2}):(\d{2})',
+        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?([ +\-]?)(\d{2}):(\d{2})',
                          datetime_str)
 
         if match is None:
@@ -95,12 +98,12 @@ class LocalizedDatetime(JSONable):
         # fields...
         year = int(fields[0])
         month = int(fields[1])
-        date = int(fields[2])
+        day = int(fields[2])
 
-        hours = int(fields[3])
-        mins = int(fields[4])
-        secs = int(fields[5])
-        micros = int(fields[6]) * 1000
+        hour = int(fields[3])
+        minute = int(fields[4])
+        second = int(fields[5])
+        micros = int(fields[6]) * 1000 if fields[6] else 0
 
         zone_sign = -1 if fields[7] == '-' else 1
         zone_hours = int(fields[8])
@@ -110,7 +113,7 @@ class LocalizedDatetime(JSONable):
         zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, date, hours, mins, secs, micros, tzinfo=zone)
+        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -121,26 +124,32 @@ class LocalizedDatetime(JSONable):
         """
         Constructor
         """
-        self.__localized = localized            # datetime
+        self.__datetime = localized            # datetime
 
 
     def __add__(self, other: datetime):
-        return LocalizedDatetime(self.__localized + other)
+        return LocalizedDatetime(self.__datetime + other)
 
 
     def __sub__(self, other):
-        other_datetime = other.__localized if type(other) == LocalizedDatetime else other
+        other_datetime = other.__datetime if type(other) == LocalizedDatetime else other
 
-        return self.__localized - other_datetime
+        return self.__datetime - other_datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def localize(self, zone):                           # zone may be datetime.timezone or pytz.timezone
+        localized = self.datetime.astimezone(zone)
+
+        return LocalizedDatetime(localized)
+
 
     def timedelta(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         td = timedelta(days=days, seconds=seconds, microseconds=microseconds, milliseconds=milliseconds,
                        minutes=minutes, hours=hours, weeks=weeks)
 
-        return LocalizedDatetime(self.__localized + td)
+        return LocalizedDatetime(self.__datetime + td)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,13 +158,13 @@ class LocalizedDatetime(JSONable):
         """
         example: 2016-08-13T00:38:05.210+00:00
         """
-        date = self.__localized.strftime("%Y-%m-%d")
-        time = self.__localized.strftime("%H:%M:%S")
+        date = self.__datetime.strftime("%Y-%m-%d")
+        time = self.__datetime.strftime("%H:%M:%S")
 
-        micros = float(self.__localized.strftime("%f"))
+        micros = float(self.__datetime.strftime("%f"))
         millis = "%03d" % (micros // 1000)
 
-        zone = self.__localized.strftime("%z")
+        zone = self.__datetime.strftime("%z")
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
@@ -167,17 +176,17 @@ class LocalizedDatetime(JSONable):
 
 
     def timestamp(self):
-        return self.__localized.timestamp()
+        return self.__datetime.timestamp()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def localized(self):
-        return self.__localized
+    def datetime(self):
+        return self.__datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "LocalizedDatetime:{localized:%s}" % self.localized
+        return "LocalizedDatetime:{datetime:%s}" % self.datetime
