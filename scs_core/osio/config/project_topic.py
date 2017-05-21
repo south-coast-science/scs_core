@@ -4,9 +4,24 @@ Created on 22 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 schemas:
-{"id": 34, "name": "south-coast-science-gasses-NO2-CO-SO2-H2S", "description": "..."}
-{"id": 35, "name": "south-coast-science-gasses-NO2-Ox-CO-SO2", "description": "..."}
-{"id": 28, "name": "south-coast-science-gasses-Ox-NO2-NO-CO", "description": "..."}
+{"id": 33, "name": "south-coast-science-climate", 
+"description": "South Coast Science Air Quality Sensor; climate"}
+
+{"id": 29, "name": "south-coast-science-particulates", "description": 
+"South Coast Science Air Quality Sensor; particulates"}
+
+
+{"id": 28, "name": "south-coast-science-gasses-Ox-NO2-NO-CO", 
+"description": "South Coast Science Air Quality Sensor; concentration of gasses"}
+
+{"id": 34, "name": "south-coast-science-gasses-NO2-CO-SO2-H2S", 
+"description": "South Coast Science Air Quality Sensor; concentration of gasses"}
+
+{"id": 35, "name": "south-coast-science-gasses-NO-Ox-CO-SO2", 
+"description": "South Coast Science Air Quality Sensor; concentration of gasses"}
+
+{"id": 39, "name": "south-coast-science-gasses-NO2-Ox-CO-SO2", 
+"description": "South Coast Science Air Quality Sensor; concentration of gasses"}
 """
 
 from collections import OrderedDict
@@ -52,15 +67,20 @@ class ProjectTopic(JSONable):
                              'NO2, O3, NO, CO electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'NO', 'CO')),
 
-            ('NO2', 'Ox', 'CO', 'SO2'):
-                ProjectTopic(35, 'Gas concentrations',
-                             'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                             'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
-
             ('NO2', 'CO', 'SO2', 'H2S'):
                 ProjectTopic(34, 'Gas concentrations',
                              'NO2, CO, SO2, H2S electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'CO', 'SO2', 'H2S')),
+
+            ('NO', 'Ox', 'CO', 'SO2'):                          # not a standard Alphasense configuration
+                ProjectTopic(35, 'Gas concentrations',
+                             'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
+                             'Pt1000 temp, internal SHT', ('NO', 'O3', 'CO', 'SO2')),
+
+            ('NO2', 'Ox', 'CO', 'SO2'):
+                ProjectTopic(39, 'Gas concentrations',
+                             'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
+                             'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
 
             ('NO2', 'Ox', 'CO', 'VOC'):                         # TODO: request an OSIO schema
                 ProjectTopic(None, 'Gas concentrations',
@@ -75,7 +95,7 @@ class ProjectTopic(JSONable):
 
 
     @classmethod
-    def find_gases_topic(cls, gas_names):
+    def get_gases_topic(cls, gas_names):
         if gas_names is None:
             return None
 
