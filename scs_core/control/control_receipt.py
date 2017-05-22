@@ -10,6 +10,8 @@ import hashlib
 
 from collections import OrderedDict
 
+from scs_core.control.command import Command
+
 from scs_core.data.json import JSONable
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -32,7 +34,7 @@ class ControlReceipt(JSONable):
         tag = jdict.get('tag')
 
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
-        command = jdict.get('cmd')
+        command = Command.construct_from_jdict(jdict.get('cmd'))
         omd = jdict.get('omd')
         digest = jdict.get('digest')
 
