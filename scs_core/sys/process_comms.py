@@ -17,15 +17,22 @@ class ProcessComms(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
+    def connect(self):
+        pass
+
+
+    @abstractmethod
+    def close(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
     def read(self):
         pass
 
 
     @abstractmethod
     def write(self, message, wait_for_availability=True):
-        pass
-
-
-    @abstractmethod
-    def close(self):
         pass
