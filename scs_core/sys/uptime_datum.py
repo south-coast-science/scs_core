@@ -38,7 +38,7 @@ class UptimeDatum(JSONable):
         uptime = Timedelta.construct_from_uptime_report(report)
 
         # users...
-        users_match = re.match('.*(\d+) users,', report)
+        users_match = re.match('.*(\d+) user(?:s)?,', report)
 
         if users_match:
             fields = users_match.groups()
