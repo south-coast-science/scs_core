@@ -53,6 +53,11 @@ class LocalizedDatetime(JSONable):
         return cls.__construct_from_iso8601_numeric(datetime_str)
 
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        return cls.construct_from_iso8601(jdict)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod

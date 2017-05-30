@@ -14,7 +14,7 @@ from scs_core.data.json import JSONable
 class Publication(JSONable):
     """
     classdocs
-   """
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
