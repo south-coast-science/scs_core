@@ -43,6 +43,7 @@ class UptimeDatum(JSONable):
         if users_match:
             fields = users_match.groups()
             users = int(fields[0])
+
         else:
             users = None
 
@@ -134,6 +135,7 @@ class UptimeLoad(JSONable):
         if load_match:
             fields = load_match.groups()
             return UptimeLoad(fields[0], fields[1], fields[2])
+
         else:
             return None
 
