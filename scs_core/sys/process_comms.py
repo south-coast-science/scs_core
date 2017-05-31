@@ -17,7 +17,7 @@ class ProcessComms(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def connect(self):
+    def connect(self, wait_for_availability=True):
         pass
 
 
