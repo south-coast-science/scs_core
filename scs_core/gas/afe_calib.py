@@ -33,6 +33,30 @@ class AFECalib(PersistentJSONable):
     PATH =          "/api/v1/boards/"
     HEADER =        {"Accept": "application/json"}
 
+    TEST_JSON = '''
+                {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
+                "pt1000_v20": 1.0, 
+            
+                "sn1": {"serial_number": "01", "sensor_type": "SN1", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
+                "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
+                "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
+                "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
+            
+                "sn2": {"serial_number": "02", "sensor_type": "SN2", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
+                "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
+                "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
+                "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
+            
+                "sn3": {"serial_number": "03", "sensor_type": "SN3", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
+                "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
+                "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
+                "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
+            
+                "sn4": {"serial_number": "04", "sensor_type": "SN4", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
+                "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
+                "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
+                "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}}    
+                '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -74,7 +98,7 @@ class AFECalib(PersistentJSONable):
 
                 sensor_type = jdict[key]['sensor_type']
 
-                if sensor_type[-2:] == 'A4':
+                if sensor_type[-2:] == 'A4' or sensor_type[:2] == 'SN':
                     sensor_calibs.append(A4Calib.construct_from_jdict(jdict[key]))
 
                 elif sensor_type[:3] == 'PID':

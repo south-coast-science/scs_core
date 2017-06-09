@@ -20,12 +20,17 @@ class A4(Sensor):
 
     @classmethod
     def init(cls):
-        cls.SENSORS[cls.CODE_CO] =  A4(cls.CODE_CO,     'CO',   3)
-        cls.SENSORS[cls.CODE_H2S] = A4(cls.CODE_H2S,    'H2S',  3)
-        cls.SENSORS[cls.CODE_NO] =  A4(cls.CODE_NO,     'NO',   3)
-        cls.SENSORS[cls.CODE_NO2] = A4(cls.CODE_NO2,    'NO2',  3)
-        cls.SENSORS[cls.CODE_OX] =  A4(cls.CODE_OX,     'Ox',   3)
-        cls.SENSORS[cls.CODE_SO2] = A4(cls.CODE_SO2,    'SO2',  3)
+        cls.SENSORS[cls.CODE_CO] =      A4(cls.CODE_CO,     'CO',   3)
+        cls.SENSORS[cls.CODE_H2S] =     A4(cls.CODE_H2S,    'H2S',  3)
+        cls.SENSORS[cls.CODE_NO] =      A4(cls.CODE_NO,     'NO',   3)
+        cls.SENSORS[cls.CODE_NO2] =     A4(cls.CODE_NO2,    'NO2',  3)
+        cls.SENSORS[cls.CODE_OX] =      A4(cls.CODE_OX,     'Ox',   3)
+        cls.SENSORS[cls.CODE_SO2] =     A4(cls.CODE_SO2,    'SO2',  3)
+
+        cls.SENSORS[cls.CODE_TEST_1] =  A4(cls.CODE_TEST_1, 'SN1', 3)
+        cls.SENSORS[cls.CODE_TEST_2] =  A4(cls.CODE_TEST_2, 'SN2', 3)
+        cls.SENSORS[cls.CODE_TEST_3] =  A4(cls.CODE_TEST_3, 'SN3', 3)
+        cls.SENSORS[cls.CODE_TEST_4] =  A4(cls.CODE_TEST_4, 'SN4', 3)
 
 
     # ----------------------------------------------------------------------------------------------------------------
