@@ -35,7 +35,12 @@ class TempComp(object):
             Sensor.CODE_NO:     TempComp(3, 'kp_t', [0.7, 0.7, 0.7, 0.7, 0.8, 1.0, 1.2, 1.4, 1.6]),
             Sensor.CODE_NO2:    TempComp(1, 'n_t', [0.8, 0.8, 1.0, 1.2, 1.6, 1.8, 1.9, 2.5, 3.6]),
             Sensor.CODE_OX:     TempComp(3, 'kp_t',  [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0]),
-            Sensor.CODE_SO2:    TempComp(1, 'kpp_t', [1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.9, 3.0, 5.8])
+            Sensor.CODE_SO2:    TempComp(1, 'kpp_t', [1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.9, 3.0, 5.8]),
+
+            Sensor.CODE_TEST_1: None,
+            Sensor.CODE_TEST_2: None,
+            Sensor.CODE_TEST_3: None,
+            Sensor.CODE_TEST_4: None
         }
 
 

@@ -25,6 +25,11 @@ class Sensor(object):
     CODE_VOC_PPM =  '142'           # PIDN1
     CODE_VOC_PPB =  '143'           # PIDNH
 
+    CODE_TEST_1 =   '01'            # test load
+    CODE_TEST_2 =   '02'            # test load
+    CODE_TEST_3 =   '03'            # test load
+    CODE_TEST_4 =   '04'            # test load
+
     SENSORS =       {}
 
 
