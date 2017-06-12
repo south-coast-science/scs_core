@@ -84,13 +84,15 @@ class JSONify(json.JSONEncoder):
     """
 
     @staticmethod
-    def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None,
-              indent=None, separators=None, default=None, sort_keys=False, **kw):
+    def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
+              allow_nan=True, cls=None, indent=None, separators=None,
+              default=None, sort_keys=False, **kw):
 
         handler = JSONify if cls is None else cls
 
-        return json.dumps(obj, skipkeys, ensure_ascii, check_circular, allow_nan, handler,
-                          indent, separators, default, sort_keys, **kw)
+        return json.dumps(obj, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular,
+                          allow_nan=allow_nan, cls=handler, indent=indent, separators=separators,
+                          default=default, sort_keys=sort_keys, **kw)
 
 
     # ----------------------------------------------------------------------------------------------------------------
