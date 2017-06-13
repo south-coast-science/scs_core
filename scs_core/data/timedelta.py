@@ -70,19 +70,22 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_uptime_report(cls, report):
         # uptime...
-        #                       0        1                    2        3                    4               5
         match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,',
                          report)
 
         if match:
             fields = match.groups()
 
-            print(fields)
-
             if fields[1] == 'day':
                 days = int(fields[0])
-                hours = 0 if fields[3] == 'min' else int(fields[2])
-                minutes = int(fields[2]) if fields[3] == 'min' else int(fields[5])
+
+                if fields[3] == 'min':
+                    hours = 0
+                    minutes = int(fields[2])
+
+                else:
+                    hours = int(fields[2])
+                    minutes = int(fields[5])
 
             elif fields[3] == 'min':
                 days = 0
