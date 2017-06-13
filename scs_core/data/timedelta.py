@@ -35,7 +35,6 @@ class Timedelta(JSONable):
             return None
 
         fields = match.groups()
-        # print(fields)
 
         hours = 0 if fields[0] is None else int(fields[0])
         minutes = int(fields[1])
@@ -48,49 +47,46 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_ps_elapsed_report(cls, report):
         # uptime...
-        match = re.match('(\d+)?(?:-)?(\d{2})?(?::)?(\d{2}):(\d{2})', report)
+        match = re.match('(\d+)?(-)?(\d{2})?(?::)?(\d{2}):(\d{2})', report)
 
         if match is None:
             return None
 
         fields = match.groups()
-        # print(fields)
 
-        days = 0 if fields[0] is None else int(fields[0])
-        hours = 0 if fields[1] is None else int(fields[1])
-        minutes = int(fields[2])
-        seconds = int(fields[3])
+        if fields[1] == "-":
+            days = int(fields[0])
+            hours = 0 if fields[2] is None else int(fields[2])
+        else:
+            days = 0
+            hours = 0 if fields[0] is None else int(fields[0])
+
+        minutes = int(fields[3])
+        seconds = int(fields[4])
 
         return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
 
-    " 12:32:26 up 21:19,  3 users,  load average: 0.00, 0.00, 0.00"
-
-    "('21', None, None, '19')"
 
     @classmethod
     def construct_from_uptime_report(cls, report):
         # uptime...
-        match = re.match('.*up (\d+)?\s*(min|day)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,', report)
+        match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s+(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,',
+                         report)
 
         if match:
             fields = match.groups()
 
-            print(fields)
-
-            if fields[1] == 'min':
-                return Timedelta(minutes=int(fields[0]))
-
-            elif fields[1] == 'day':
-                return Timedelta(days=int(fields[0]), hours=int(fields[2]), minutes=int(fields[3]))
-
-            elif fields[1] is None:
-                return Timedelta(hours=int(fields[0]), minutes=int(fields[3]))
+            if fields[1] == 'day':
+                days = int(fields[0])
+                minutes = int(fields[2]) if fields[3] == 'min' else int(fields[5])
 
             else:
-                raise ValueError("unknown time unit: %s" % fields[1])
+                days = 0
+                minutes = int(fields[0]) if fields[3] == 'min' else int(fields[5])
 
-        else:
-            return None
+            hours = 0 if fields[3] == 'min' else int(fields[2])
+
+            return Timedelta(days=days, hours=hours, minutes=minutes)
 
 
     @classmethod
