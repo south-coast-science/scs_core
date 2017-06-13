@@ -8,13 +8,10 @@ A JSONable wrapper for timedelta.
 
 import re
 
-from collections import OrderedDict
 from datetime import timedelta
 
 from scs_core.data.json import JSONable
 
-
-# TODO: check whether we need to deal with weeks.
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -26,27 +23,76 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_ps_time_report(cls, report):
+        # ps CPU time...
+        match = re.match('(\d+)?(?::)?(\d+):(\d{2})(?:\.)?(\d{2})?', report)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        hours = 0 if fields[0] is None else int(fields[0])
+        minutes = int(fields[1])
+        seconds = int(fields[2])
+        milliseconds = 0 if fields[3] is None else int(fields[3]) * 10
+
+        return Timedelta(hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
+
+
+    @classmethod
+    def construct_from_ps_elapsed_report(cls, report):
+        # ps elapsed time...
+        match = re.match('(\d+)?(-)?(\d{2})?(?::)?(\d{2}):(\d{2})', report)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        if fields[1] == "-":
+            days = int(fields[0])
+            hours = 0 if fields[2] is None else int(fields[2])
+        else:
+            days = 0
+            hours = 0 if fields[0] is None else int(fields[0])
+
+        minutes = int(fields[3])
+        seconds = int(fields[4])
+
+        return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+
+
+    @classmethod
     def construct_from_uptime_report(cls, report):
         # uptime...
-        up_match = re.match('.*up (\d+)?\s*(min|day)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,', report)
+        match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,',
+                         report)
 
-        if up_match:
-            fields = up_match.groups()
+        if match:
+            fields = match.groups()
 
-            if fields[1] == 'min':
-                return Timedelta(minutes=int(fields[0]))
+            if fields[1] == 'day' and fields[3] == 'min':
+                days = int(fields[0])
+                hours = 0
+                minutes = int(fields[2])
 
-            elif fields[1] == 'day':
-                return Timedelta(days=int(fields[0]), hours=int(fields[2]), minutes=int(fields[3]))
+            elif fields[1] == 'day' and fields[3] is None:
+                days = int(fields[0])
+                hours = int(fields[2])
+                minutes = int(fields[5])
 
-            elif fields[1] is None:
-                return Timedelta(hours=int(fields[2]), minutes=int(fields[3]))
+            elif fields[1] is None and fields[3] == 'min':
+                days = 0
+                hours = 0
+                minutes = int(fields[0])
 
             else:
-                raise ValueError("unknown time unit: %s" % fields[1])
+                days = 0
+                hours = int(fields[2])
+                minutes = int(fields[5])
 
-        else:
-            return None
+            return Timedelta(days=days, hours=hours, minutes=minutes)
 
 
     @classmethod
@@ -54,12 +100,20 @@ class Timedelta(JSONable):
         if not jdict:
             return None
 
-        days = jdict.get('days')
-        hours = jdict.get('hours')
-        minutes = jdict.get('minutes')
-        seconds = jdict.get('seconds')
+        match = re.match('(\d{2})-(\d{2}):(\d{2}):(\d{2}).(\d{3})', jdict)
 
-        return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        days = int(fields[0])
+        hours = int(fields[1])
+        minutes = int(fields[2])
+        seconds = int(fields[3])
+        milliseconds = int(fields[4])
+
+        return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -75,15 +129,7 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['days'] = self.days
-
-        jdict['hours'] = self.hours
-        jdict['minutes'] = self.minutes
-        jdict['seconds'] = self.seconds
-
-        return jdict
+        return "%02d-%02d:%02d:%02d.%03d" % (self.days, self.hours, self.minutes, self.seconds, self.milliseconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,6 +159,11 @@ class Timedelta(JSONable):
     @property
     def seconds(self):
         return self.__td.seconds % 60
+
+
+    @property
+    def milliseconds(self):
+        return self.__td.microseconds // 1000
 
 
     # ----------------------------------------------------------------------------------------------------------------
