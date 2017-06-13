@@ -90,7 +90,7 @@ class Timedelta(JSONable):
             else:
                 days = 0
                 hours = int(fields[2])
-                minutes = int(fields[0]) if fields[3] == 'min' else int(fields[5])
+                minutes = int(fields[5])
 
             return Timedelta(days=days, hours=hours, minutes=minutes)
 
