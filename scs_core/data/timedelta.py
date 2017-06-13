@@ -72,18 +72,17 @@ class Timedelta(JSONable):
         if match:
             fields = match.groups()
 
-            if fields[1] == 'day':
+            if fields[1] == 'day' and fields[3] == 'min':
                 days = int(fields[0])
+                hours = 0
+                minutes = int(fields[2])
 
-                if fields[3] == 'min':
-                    hours = 0
-                    minutes = int(fields[2])
+            elif fields[1] == 'day' and fields[3] is None:
+                days = 0
+                hours = int(fields[2])
+                minutes = int(fields[5])
 
-                else:
-                    hours = int(fields[2])
-                    minutes = int(fields[5])
-
-            elif fields[3] == 'min':
+            elif fields[1] is None and fields[3] == 'min':
                 days = 0
                 hours = 0
                 minutes = int(fields[0])
