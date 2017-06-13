@@ -43,7 +43,6 @@ class PsDatum(JSONable):
             return None
 
         fields = match.groups()
-        # print(fields)
 
         ppid = int(fields[0])
         pid = int(fields[1])
