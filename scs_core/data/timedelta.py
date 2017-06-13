@@ -8,13 +8,10 @@ A JSONable wrapper for timedelta.
 
 import re
 
-from collections import OrderedDict
 from datetime import timedelta
 
 from scs_core.data.json import JSONable
 
-
-# TODO: check whether we need to deal with weeks.
 
 # --------------------------------------------------------------------------------------------------------------------
 
