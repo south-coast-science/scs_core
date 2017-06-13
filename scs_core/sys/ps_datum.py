@@ -12,8 +12,8 @@ report examples:
 
 JSON example:
 {"ppid": 154, "pid": 26605, "uid": 502, "tty": "??", "pcpu": 0.0, "pmem": 0.0,
-"cpu_time": {"days": 0, "hours": 0, "minutes": 0, "seconds": 0, "millis": 370},
-"elapsed_time": {"days": 1, "hours": 0, "minutes": 43, "seconds": 12, "millis": 0},
+"cpu": {"days": 0, "hours": 0, "minutes": 0, "seconds": 0, "millis": 370},
+"elapsed": {"days": 1, "hours": 0, "minutes": 43, "seconds": 12, "millis": 0},
 "cmd": "/usr/bin/ssh-agent -l"}
 """
 
@@ -73,8 +73,8 @@ class PsDatum(JSONable):
         pcpu = float(jdict.get('pcpu'))
         pmem = float(jdict.get('pmem'))
 
-        cpu_time = Timedelta.construct_from_jdict(jdict.get('cpu_time'))
-        elapsed_time = Timedelta.construct_from_jdict(jdict.get('elapsed_time'))
+        cpu_time = Timedelta.construct_from_jdict(jdict.get('cpu'))
+        elapsed_time = Timedelta.construct_from_jdict(jdict.get('elapsed'))
 
         cmd = jdict.get('cmd')
 
@@ -114,8 +114,8 @@ class PsDatum(JSONable):
         jdict['pcpu'] = self.pcpu
         jdict['pmem'] = self.pmem
 
-        jdict['cpu_time'] = self.cpu_time
-        jdict['elapsed_time'] = self.elapsed_time
+        jdict['cpu'] = self.cpu_time
+        jdict['elapsed'] = self.elapsed_time
 
         jdict['cmd'] = self.cmd
 
