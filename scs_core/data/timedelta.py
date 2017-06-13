@@ -78,7 +78,7 @@ class Timedelta(JSONable):
                 minutes = int(fields[2])
 
             elif fields[1] == 'day' and fields[3] is None:
-                days = 0
+                days = int(fields[0])
                 hours = int(fields[2])
                 minutes = int(fields[5])
 
