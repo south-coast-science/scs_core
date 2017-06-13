@@ -24,7 +24,6 @@ class Timedelta(JSONable):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-    "'0:00.37', '01-00:43:12'"
 
     @classmethod
     def construct_from_ps_time_report(cls, report):
@@ -105,11 +104,18 @@ class Timedelta(JSONable):
         if not jdict:
             return None
 
-        days = jdict.get('days')
-        hours = jdict.get('hours')
-        minutes = jdict.get('minutes')
-        seconds = jdict.get('seconds')
-        milliseconds = jdict.get('millis')
+        match = re.match('(\d{2})-(\d{2}):(\d{2}):(\d{2}).(\d{2})', jdict)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        days = int(fields[0])
+        hours = int(fields[1])
+        minutes = int(fields[2])
+        seconds = int(fields[3])
+        milliseconds = int(fields[4])
 
         return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
 
@@ -127,16 +133,7 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['days'] = self.days
-
-        jdict['hours'] = self.hours
-        jdict['minutes'] = self.minutes
-        jdict['seconds'] = self.seconds
-        jdict['millis'] = self.milliseconds
-
-        return jdict
+        return "%02d-%02d:%02d:%02d.%02d" % (self.days, self.hours, self.minutes, self.seconds, self.milliseconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
