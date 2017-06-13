@@ -79,7 +79,7 @@ class Timedelta(JSONable):
                 return Timedelta(days=int(fields[0]), hours=int(fields[2]), minutes=int(fields[3]))
 
             elif fields[1] is None:
-                return Timedelta(hours=int(fields[2]), minutes=int(fields[3]))
+                return Timedelta(hours=int(fields[0]), minutes=int(fields[3]))
 
             else:
                 raise ValueError("unknown time unit: %s" % fields[1])
