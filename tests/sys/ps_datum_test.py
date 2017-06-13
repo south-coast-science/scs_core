@@ -11,7 +11,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
-from scs_core.sys.process_status import ProcessStatus
+from scs_core.sys.ps_datum import PsDatum
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ report = "  154 26605   502 ??        0.0   0.0   0:00.37 01-00:43:12 /usr/bin/s
 print(report)
 print("-")
 
-status = ProcessStatus.construct_from_report(report)
+status = PsDatum.construct_from_report(report)
 print(status)
 print("-")
 
@@ -34,6 +34,6 @@ jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
 print(jdict)
 print("-")
 
-status = ProcessStatus.construct_from_jdict(jdict)
+status = PsDatum.construct_from_jdict(jdict)
 print(status)
 print("-")

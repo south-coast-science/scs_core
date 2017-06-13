@@ -29,18 +29,18 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_ps_time_report(cls, report):
         # uptime...
-        match = re.match('(\d+)?(?::)?(\d+):(\d{2})\.(\d{2})', report)
+        match = re.match('(\d+)?(?::)?(\d+):(\d{2})(?:\.)?(\d{2})?', report)
 
         if match is None:
             return None
 
         fields = match.groups()
-        print(fields)
+        # print(fields)
 
         hours = 0 if fields[0] is None else int(fields[0])
         minutes = int(fields[1])
         seconds = int(fields[2])
-        milliseconds = int(fields[3]) * 10
+        milliseconds = 0 if fields[3] is None else int(fields[3]) * 10
 
         return Timedelta(hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
 
@@ -54,7 +54,7 @@ class Timedelta(JSONable):
             return None
 
         fields = match.groups()
-        print(fields)
+        # print(fields)
 
         days = 0 if fields[0] is None else int(fields[0])
         hours = 0 if fields[1] is None else int(fields[1])
@@ -63,6 +63,9 @@ class Timedelta(JSONable):
 
         return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
 
+    " 12:32:26 up 21:19,  3 users,  load average: 0.00, 0.00, 0.00"
+
+    "('21', None, None, '19')"
 
     @classmethod
     def construct_from_uptime_report(cls, report):
@@ -72,6 +75,8 @@ class Timedelta(JSONable):
         if match:
             fields = match.groups()
 
+            print(fields)
+
             if fields[1] == 'min':
                 return Timedelta(minutes=int(fields[0]))
 
@@ -79,7 +84,7 @@ class Timedelta(JSONable):
                 return Timedelta(days=int(fields[0]), hours=int(fields[2]), minutes=int(fields[3]))
 
             elif fields[1] is None:
-                return Timedelta(hours=int(fields[2]), minutes=int(fields[3]))
+                return Timedelta(hours=int(fields[0]), minutes=int(fields[3]))
 
             else:
                 raise ValueError("unknown time unit: %s" % fields[1])

@@ -27,7 +27,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ProcessStatus(JSONable):
+class PsDatum(JSONable):
     """
     classdocs
     """
@@ -43,7 +43,7 @@ class ProcessStatus(JSONable):
             return None
 
         fields = match.groups()
-        print(fields)
+        # print(fields)
 
         ppid = int(fields[0])
         pid = int(fields[1])
@@ -57,7 +57,7 @@ class ProcessStatus(JSONable):
         elapsed_time = Timedelta.construct_from_ps_elapsed_report(fields[7])
         cmd = fields[8]
 
-        return ProcessStatus(ppid, pid, uid, tty, pcpu, pmem, cpu_time, elapsed_time, cmd)
+        return PsDatum(ppid, pid, uid, tty, pcpu, pmem, cpu_time, elapsed_time, cmd)
 
 
     @classmethod
@@ -78,7 +78,7 @@ class ProcessStatus(JSONable):
 
         cmd = jdict.get('cmd')
 
-        return ProcessStatus(ppid, pid, uid, tty, pcpu, pmem, cpu_time, elapsed_time, cmd)
+        return PsDatum(ppid, pid, uid, tty, pcpu, pmem, cpu_time, elapsed_time, cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ class ProcessStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ProcessStatus:{ppid:%s, pid:%s, uid:%s, tty:%s, pcpu:%s, pmem:%s, " \
+        return "PsDatum:{ppid:%s, pid:%s, uid:%s, tty:%s, pcpu:%s, pmem:%s, " \
                "cpu_time:%s, elapsed_time:%s, cmd:%s}" %  \
                (self.ppid, self.pid, self.uid, self.tty, self.pcpu, self.pmem,
                 self.cpu_time, self.elapsed_time, self.cmd)
