@@ -10,6 +10,8 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
+# TODO: change this to SHTP to enable optional barometric pressure?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class SHTDatum(JSONable):
