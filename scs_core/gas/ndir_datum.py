@@ -1,5 +1,5 @@
 """
-Created on 18 Sep 2016
+Created on 20 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -23,10 +23,10 @@ class NDIRDatum(JSONable):
         """
         Constructor
         """
-        self.__temp = Datum.float(temp, 1)              # temperature                       ºC
-        self.__voltage = Datum.int(voltage)             # voltage                           mV
-        self.__cnc = Datum.float(cnc, 1)                # concentration                     ppm
-        self.__cnc_igl = Datum.float(cnc_igl, 1)        # concentration (ideal gas law)     ppm
+        self.__temp = Datum.float(temp, 1)              # temperature                               ºC
+        self.__voltage = Datum.int(voltage)             # voltage                                   mV
+        self.__cnc = Datum.float(cnc, 1)                # concentration                             ppm
+        self.__cnc_igl = Datum.float(cnc_igl, 1)        # concentration (ideal gas law corrected)   ppm
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ class NDIRDatum(JSONable):
 
         jdict['tmp'] = self.temp
         jdict['v'] = self.voltage
-        jdict['cnc'] = self.cnc
+        jdict['cnc-raw'] = self.cnc
         jdict['cnc-igl'] = self.cnc_igl
 
         return jdict
