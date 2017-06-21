@@ -58,6 +58,10 @@ class A4(Sensor):
         return A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v)
 
 
+    def null_datum(self):
+        return A4Datum(None, None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

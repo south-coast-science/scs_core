@@ -23,7 +23,7 @@ class TraceEntry(JSONable):
         lines = [line.strip() for line in text.splitlines()]
 
         location = lines[0]
-        statement = lines[1]
+        statement = lines[1] if len(lines) > 1 else None
 
         return TraceEntry(location, statement)
 
