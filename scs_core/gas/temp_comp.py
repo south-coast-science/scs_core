@@ -54,6 +54,9 @@ class TempComp(object):
 
     @classmethod
     def in_range(cls, temp):
+        if temp is None:
+            return None
+
         return cls.__MIN_TEMP <= temp <= cls.__MAX_TEMP
 
 
@@ -79,7 +82,7 @@ class TempComp(object):
         """
         Compute weC from weT, aeT
         """
-        if temp is None or not TempComp.in_range(temp):
+        if not TempComp.in_range(temp):
             return None
 
         if self.__algorithm == 1:
