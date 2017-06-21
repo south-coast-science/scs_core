@@ -23,7 +23,7 @@ class AFEDatum(JSONable):
         Constructor
         """
         self.__pt1000 = pt1000
-        self.__sns = OrderedDict(sns)   # None if sns is None else OrderedDict(sns)
+        self.__sns = OrderedDict(sns)
 
 
     # ----------------------------------------------------------------------------------------------------------------

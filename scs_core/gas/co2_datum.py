@@ -1,5 +1,5 @@
 """
-Created on 18 Sep 2016
+Created on 20 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -10,23 +10,20 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
-# TODO: change this to SHTP to enable optional barometric pressure?
-
 # --------------------------------------------------------------------------------------------------------------------
 
-class SHTDatum(JSONable):
+class CO2Datum(JSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, humid, temp):
+    def __init__(self, cnc):
         """
         Constructor
         """
-        self.__humid = Datum.float(humid, 1)        # relative humidity       %
-        self.__temp = Datum.float(temp, 1)          # temperature             ºC
+        self.__cnc = Datum.float(cnc, 1)            # gas concentration             ppm (f)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -34,8 +31,7 @@ class SHTDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['hmd'] = self.humid
-        jdict['tmp'] = self.temp
+        jdict['cnc'] = self.cnc
 
         return jdict
 
@@ -43,16 +39,11 @@ class SHTDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def humid(self):
-        return self.__humid
-
-
-    @property
-    def temp(self):
-        return self.__temp
+    def cnc(self):
+        return self.__cnc
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SHTDatum:{humid:%0.1f, temp:%0.1f}" % (self.humid, self.temp)
+        return "CO2Datum:{cnc:%0.1f}" % self.cnc

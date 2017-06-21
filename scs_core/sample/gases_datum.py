@@ -7,7 +7,7 @@ Created on 20 Oct 2016
 from scs_core.sample.sample_datum import SampleDatum
 
 
-# TODO: rename "sht" to "int" - requires clearance from OpenSensors.io
+# TODO: rename "sht" to "int" - requires clearance from OpenSensors.io?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,16 +18,18 @@ class GasesDatum(SampleDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, afe_datum, sht_datum):
+    def __init__(self, tag, rec, co2_datum, afe_datum, sht_datum):
         """
         Constructor
         """
         val = []
 
-        for key in afe_datum.sns:
-            val.append((key, afe_datum.sns[key]))
+        if co2_datum:
+            val.append(('CO2', co2_datum))
 
-        val.append(('pt1', afe_datum.pt1000))
-        val.append(('sht', sht_datum))
+        if afe_datum:
+            val.extend([(key, afe_datum.sns[key]) for key in afe_datum.sns])
+            val.append(('pt1', afe_datum.pt1000))
+            val.append(('sht', sht_datum))
 
         super().__init__(tag, rec, *val)

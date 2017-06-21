@@ -76,6 +76,11 @@ class Sensor(object):
         pass
 
 
+    @abstractmethod
+    def null_datum(self):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

@@ -42,6 +42,10 @@ class PID(Sensor):
         return PIDDatum(wrk)
 
 
+    def null_datum(self):
+        return PIDDatum(None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
