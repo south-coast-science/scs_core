@@ -83,7 +83,7 @@ class TempComp(object):
         Compute weC from weT, aeT
         """
         if not TempComp.in_range(temp):
-            return None
+            return False
 
         if self.__algorithm == 1:
             return self.__eq1(temp, we_t, ae_t)
