@@ -2,8 +2,6 @@
 Created on 22 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-# Sensor.CODE_SO2:   TempComp(4, 'kpp_t', [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 25.0, 45.0])
 """
 
 # import sys
