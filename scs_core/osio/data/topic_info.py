@@ -75,6 +75,16 @@ class TopicInfo(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def schema_id(self):
+        if self.__schema is None:
+            return None
+
+        return self.__schema.id
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
     def format(self):
         return self.__format
 

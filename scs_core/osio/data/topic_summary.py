@@ -86,6 +86,16 @@ class TopicSummary(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def schema_id(self):
+        if self.__schema is None:
+            return None
+
+        return self.__schema.id
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
     def rollups_enabled(self):
         return self.__rollups_enabled
 
