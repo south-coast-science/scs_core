@@ -90,7 +90,12 @@ class ProjectTopic(JSONable):
             ('CO', 'SO2', 'H2S', 'VOC'):                        # TODO: request an OSIO schema
                 ProjectTopic(None, 'Gas concentrations',
                              'CO, SO2, H2S, VOCs electrochemical we (V), ae (V), wc (V), cnc (ppb), '
-                             'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC'))
+                             'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC')),
+
+            ('SN1', 'SN2', 'SN3', 'SN4'):
+                ProjectTopic(None, 'Test load',
+                             'electrochemical we (V), ae (V), '
+                             'Pt1000 temp, internal SHT', ('SN1', 'SN2', 'SN3', 'SN4'))
         }
 
 
