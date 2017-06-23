@@ -2,8 +2,6 @@
 Created on 22 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-# Sensor.CODE_SO2:   TempComp(4, 'kpp_t', [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 25.0, 45.0])
 """
 
 # import sys
@@ -54,6 +52,9 @@ class TempComp(object):
 
     @classmethod
     def in_range(cls, temp):
+        if temp is None:
+            return False
+
         return cls.__MIN_TEMP <= temp <= cls.__MAX_TEMP
 
 
@@ -79,7 +80,7 @@ class TempComp(object):
         """
         Compute weC from weT, aeT
         """
-        if temp is None or not TempComp.in_range(temp):
+        if not TempComp.in_range(temp):
             return None
 
         if self.__algorithm == 1:

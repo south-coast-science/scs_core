@@ -89,7 +89,7 @@ class TopicManager(object):
                     if partial_topic_path is not None and partial_topic_path not in topic.path:
                         continue
 
-                    if topic_schema is not None and (topic.schema is None or topic_schema != topic.schema.id):
+                    if topic_schema is not None and (topic.schema_id != topic_schema):
                         continue
 
                     topics.append(topic)
