@@ -101,8 +101,6 @@ class ProjectTopic(JSONable):
 
     @classmethod
     def get_gases_topic(cls, gas_names):
-        print("gas_names: %s" % gas_names)
-
         if gas_names is None:
             return None
 
