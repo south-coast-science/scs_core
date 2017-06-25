@@ -10,6 +10,7 @@ example JSON:
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
@@ -27,7 +28,13 @@ class SensorBaseline(JSONable):
         if not jdict:
             return SensorBaseline(None, 0)
 
-        calibrated_on = Datum.date(jdict.get('calibrated_on'))
+        if 'calibrated_on' in jdict:                            # TODO: deprecated
+            date = Datum.date(jdict.get('calibrated_on'))
+            calibrated_on = LocalizedDatetime.construct_from_date(date)
+
+        else:
+            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+
         offset = Datum.int(jdict.get('offset'))
 
         return SensorBaseline(calibrated_on, offset)
@@ -48,7 +55,7 @@ class SensorBaseline(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated_on'] = self.calibrated_on.isoformat() if self.calibrated_on else None
+        jdict['calibrated-on'] = self.calibrated_on
         jdict['offset'] = self.offset
 
         return jdict

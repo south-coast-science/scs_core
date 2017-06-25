@@ -95,7 +95,7 @@ class ProjectTopic(JSONable):
             ('SN1', 'SN2', 'SN3', 'SN4'):
                 ProjectTopic(None, 'Test load',
                              'electrochemical we (V), ae (V), '
-                             'Pt1000 temp, internal SHT', ('SN1', 'SN2', 'SN3', 'SN4'))
+                             'Pt1000 temp, internal SHT', ('test',))
         }
 
 

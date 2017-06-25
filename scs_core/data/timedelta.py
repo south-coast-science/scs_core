@@ -7,6 +7,7 @@ A JSONable wrapper for timedelta.
 """
 
 import re
+import sys
 
 from datetime import timedelta
 
@@ -66,31 +67,37 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_uptime_report(cls, report):
         # uptime...
+        # TODO: split match into component parts? Search for hours?
         match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,',
                          report)
 
         if match:
             fields = match.groups()
 
-            if fields[1] == 'day' and fields[3] == 'min':
-                days = int(fields[0])
-                hours = 0
-                minutes = int(fields[2])
+            try:
+                if fields[1] == 'day' and fields[3] == 'min':
+                    days = int(fields[0])
+                    hours = 0
+                    minutes = int(fields[2])
 
-            elif fields[1] == 'day' and fields[3] is None:
-                days = int(fields[0])
-                hours = int(fields[2])
-                minutes = int(fields[5])
+                elif fields[1] == 'day' and fields[3] is None:
+                    days = int(fields[0])
+                    hours = int(fields[2])
+                    minutes = int(fields[5])
 
-            elif fields[1] is None and fields[3] == 'min':
-                days = 0
-                hours = 0
-                minutes = int(fields[0])
+                elif fields[1] is None and fields[3] == 'min':
+                    days = 0
+                    hours = 0
+                    minutes = int(fields[0])
 
-            else:
-                days = 0
-                hours = int(fields[2])
-                minutes = int(fields[5])
+                else:
+                    days = 0
+                    hours = int(fields[2])
+                    minutes = int(fields[5])
+
+            except TypeError:
+                print('Timedelta: unparsable:[%s]' % report, file=sys.stderr)
+                return None
 
             return Timedelta(days=days, hours=hours, minutes=minutes)
 

@@ -23,7 +23,7 @@ class AFEBaseline(PersistentJSONable):
     classdocs
     """
 
-    __SENSORS = 4       # TODO: better to find out how long the AFECalib is than to use a constant?
+    __SENSORS = 4       # TODO: better to find out how long the AFECalib is than to use a constant
 
     # ----------------------------------------------------------------------------------------------------------------
 
