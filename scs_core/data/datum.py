@@ -6,6 +6,8 @@ Created on 24 Sep 2016
 
 from datetime import date
 
+from scs_core.data.localized_datetime import LocalizedDatetime
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -43,11 +45,11 @@ class Datum(object):
 
 
     @staticmethod
-    def date(isodate):
-        if isodate is None:
+    def date(iso_date):
+        if iso_date is None:
             return None
 
-        parts = isodate.split("-")
+        parts = iso_date.split("-")
 
         if len(parts) != 3:
             return None
@@ -60,3 +62,16 @@ class Datum(object):
             return None
 
         return date(year, month, day)
+
+
+    @staticmethod
+    def datetime(iso_datetime):
+        if iso_datetime is None:
+            return None
+
+        try:
+            value = LocalizedDatetime.construct_from_iso8601(iso_datetime)
+        except ValueError:
+            return None
+
+        return value
