@@ -8,10 +8,10 @@ example JSON:
 """
 
 from collections import OrderedDict
-from datetime import date
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
+from scs_core.data.localized_datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,13 @@ class Pt1000Calib(PersistentJSONable):
         if not jdict:
             return None
 
-        calibrated_on = Datum.date(jdict.get('calibrated_on'))
+        if 'calibrated_on' in jdict:                            # TODO: deprecated
+            date = Datum.date(jdict.get('calibrated_on'))
+            calibrated_on = LocalizedDatetime.construct_from_date(date)
+
+        else:
+            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+
         v20 = jdict.get('v20')
 
         return Pt1000Calib(calibrated_on, v20)
@@ -52,7 +58,7 @@ class Pt1000Calib(PersistentJSONable):
         """
         Constructor
         """
-        self.__calibrated_on = calibrated_on        # date
+        self.__calibrated_on = calibrated_on        # LocalizedDatetime
         self.__v20 = Datum.float(v20, 6)            # voltage at 20 ºC
 
 
@@ -60,7 +66,7 @@ class Pt1000Calib(PersistentJSONable):
 
     def save(self, host):
         if self.__calibrated_on is None:
-            self.__calibrated_on = date.today()
+            self.__calibrated_on = LocalizedDatetime.now()
 
         PersistentJSONable.save(self, self.__class__.filename(host))
 
@@ -70,7 +76,7 @@ class Pt1000Calib(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated_on'] = self.calibrated_on.isoformat() if self.calibrated_on else None
+        jdict['calibrated-on'] = self.calibrated_on
         jdict['v20'] = self.v20
 
         return jdict

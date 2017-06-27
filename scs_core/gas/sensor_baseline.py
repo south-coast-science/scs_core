@@ -46,8 +46,8 @@ class SensorBaseline(JSONable):
         """
         Constructor
         """
-        self.__calibrated_on = calibrated_on            # date
-        self.__offset = offset                          # int
+        self.__calibrated_on = calibrated_on            # LocalizedDatetime
+        self.__offset = offset                          # int                   ppb
 
 
     # ----------------------------------------------------------------------------------------------------------------
