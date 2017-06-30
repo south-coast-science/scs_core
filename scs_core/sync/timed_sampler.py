@@ -11,7 +11,7 @@ from scs_core.sync.interval_timer import IntervalTimer
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Sampler(object):
+class TimedSampler(object):
     """
     classdocs
     """
@@ -64,4 +64,4 @@ class Sampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Sampler:{timer:%s, sample_count:%s}" % (self.__timer, self.__sample_count)
+        return "TimedSampler:{timer:%s, sample_count:%s}" % (self.__timer, self.__sample_count)

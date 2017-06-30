@@ -119,20 +119,20 @@ class ScheduleItem(JSONable):
             return None
 
         interval = jdict.get('interval')
-        count = jdict.get('count')
+        tally = jdict.get('tally')
 
-        return ScheduleItem(name, interval, count)
+        return ScheduleItem(name, interval, tally)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, interval, count):
+    def __init__(self, name, interval, tally):
         """
         Constructor
         """
         self.__name = name
         self.__interval = Datum.float(interval, 1)          # time between samples
-        self.__count = Datum.int(count)                     # number of samples per report
+        self.__tally = Datum.int(tally)                     # number of samples per report
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ class ScheduleItem(JSONable):
         jdict = OrderedDict()
 
         jdict['interval'] = self.interval
-        jdict['count'] = self.count
+        jdict['tally'] = self.tally
 
         return jdict
 
@@ -159,12 +159,12 @@ class ScheduleItem(JSONable):
 
 
     @property
-    def count(self):
-        return self.__count
+    def tally(self):
+        return self.__tally
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ScheduleItem:{name:%s, interval:%0.1f, count:%d}" % \
-               (self.name, self.interval, self.count)
+        return "ScheduleItem:{name:%s, interval:%0.1f, tally:%d}" % \
+               (self.name, self.interval, self.tally)
