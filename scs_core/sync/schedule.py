@@ -97,6 +97,10 @@ class Schedule(PersistentJSONable):
         return self.__items[name]
 
 
+    def is_empty(self):
+        return len(self.__items) == 0
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
