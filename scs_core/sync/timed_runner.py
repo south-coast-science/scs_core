@@ -4,8 +4,6 @@ Created on 18 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
-
 from scs_core.sync.interval_timer import IntervalTimer
 
 
@@ -28,24 +26,19 @@ class TimedRunner(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
-    def sample(self):
-        pass
-
-
-    def samples(self):
+    def samples(self, sampler):
         if self.__sample_count is None:
             while self.__timer.true():
-                yield self.sample()
+                yield sampler.sample()
 
         else:
             for _ in self.__timer.range(self.__sample_count):
-                yield self.sample()
+                yield sampler.sample()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def reset_timer(self):
+    def reset(self):
         self.__timer = IntervalTimer(self.__timer.interval)
 
 
