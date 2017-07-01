@@ -5,11 +5,12 @@ Created on 18 Aug 2016
 """
 
 from scs_core.sync.interval_timer import IntervalTimer
+from scs_core.sync.runner import Runner
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TimedRunner(object):
+class TimedRunner(Runner):
     """
     classdocs
     """
@@ -26,6 +27,10 @@ class TimedRunner(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def reset(self):
+        self.__timer = IntervalTimer(self.__timer.interval)
+
+
     def samples(self, sampler):
         if self.__sample_count is None:
             while self.__timer.true():
@@ -34,12 +39,6 @@ class TimedRunner(object):
         else:
             for _ in self.__timer.range(self.__sample_count):
                 yield sampler.sample()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def reset(self):
-        self.__timer = IntervalTimer(self.__timer.interval)
 
 
     # ----------------------------------------------------------------------------------------------------------------
