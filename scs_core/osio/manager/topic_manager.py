@@ -73,6 +73,26 @@ class TopicManager(object):
         return topics
 
 
+    def find_for_user(self, user_id):
+        request_path = '/v1/users/' + user_id + '/topics'
+
+        topics = {}
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            jdict = self.__rest_client.get(request_path)
+
+            for topic in jdict:
+                print(topic)
+
+        finally:
+            self.__rest_client.close()
+
+        return topics
+
+
     def find_for_device(self, client_id, start_date, end_date):
         request_path = '/v1/messages/device/' + client_id
         params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}

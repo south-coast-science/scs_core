@@ -68,6 +68,8 @@ class UserMetadata(User):
 
         topics = [UserTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('topics')]
 
+        # TODO: sort topics by path
+
         return UserMetadata(id, name, None, None, start, gravatar_hash, topics)
 
 
