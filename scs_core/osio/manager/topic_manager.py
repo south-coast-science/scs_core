@@ -75,15 +75,14 @@ class TopicManager(object):
 
 
     def find_for_user(self, user_id):
-        request_path = '/v1/users/' + user_id + '/topics'
+        topics = []
 
         # request...
         self.__rest_client.connect()
 
         try:
-            jdict = self.__rest_client.get(request_path)
-
-            topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in jdict]
+            for batch in self.__find_for_user(user_id):
+                topics.extend(batch)
 
         finally:
             self.__rest_client.close()
@@ -152,6 +151,29 @@ class TopicManager(object):
                         continue
 
                     topics.append(topic)
+
+            yield topics
+
+            if len(topics_jdict) == 0:
+                break
+
+            # next...
+            params['offset'] += len(topics_jdict)
+
+
+    def __find_for_user(self, user_id):
+        request_path = '/v1/users/' + user_id + '/topics'
+        params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
+
+        while True:
+            # request...
+            topics_jdict = self.__rest_client.get(request_path, params)
+
+            # topics...
+            topics = []
+
+            for topic_jdict in topics_jdict:
+                topics.append(UserTopic.construct_from_jdict(topic_jdict))
 
             yield topics
 
