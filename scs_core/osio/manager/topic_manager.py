@@ -155,7 +155,7 @@ class TopicManager(object):
             yield topics
 
             if len(topics_jdict) == 0:
-                break
+                return
 
             # next...
             params['offset'] += len(topics_jdict)
@@ -175,7 +175,7 @@ class TopicManager(object):
             yield topics
 
             if len(topics_jdict) == 0:
-                break
+                return
 
             # next...
             params['offset'] += len(topics_jdict)
