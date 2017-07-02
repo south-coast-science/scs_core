@@ -71,7 +71,7 @@ class MessageManager(object):
             next_jdict = jdict.get('next')
             next_query = NextMessageQuery.construct_from_uri(next_jdict)
 
-            if not next_query:
+            if next_query is None:
                 return
 
             params['start-date'] = next_query.start_date.as_iso8601()

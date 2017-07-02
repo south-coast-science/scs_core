@@ -6,9 +6,15 @@ Created on 13 Nov 2016
 
 import urllib.parse
 
+from collections import OrderedDict
+
 from scs_core.osio.client.rest_client import RESTClient
+
+from scs_core.osio.data.device_topic import DeviceTopic
 from scs_core.osio.data.topic_summary import TopicSummary
 from scs_core.osio.data.topic_metadata import TopicMetadata
+
+from scs_core.osio.manager.message_manager import NextMessageQuery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -65,6 +71,41 @@ class TopicManager(object):
             self.__rest_client.close()
 
         return topics
+
+
+    def find_for_device(self, client_id, start_date, end_date):
+        request_path = '/v1/messages/device/' + client_id
+        params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}
+
+        topics = {}
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            while True:
+                jdict = self.__rest_client.get(request_path, params)
+
+                # messages...
+                for message in jdict['messages']:
+                    if message['topic'] not in topics:
+                        topics[message['topic']] = DeviceTopic.construct_from_message_jdict(message)
+
+                # next...
+                next_query = NextMessageQuery.construct_from_uri(jdict.get('next'))
+
+                if next_query is None:
+                    break
+
+                params['start-date'] = next_query.start_date.as_iso8601()
+                params['end-date'] = next_query.end_date.as_iso8601()
+
+            sorted_topics = OrderedDict(sorted(topics.items()))
+
+            return list(sorted_topics.values())
+
+        finally:
+            self.__rest_client.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
