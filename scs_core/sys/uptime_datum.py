@@ -5,7 +5,7 @@ Created on 29 May 2017
 
 report examples:
  8:27  up 6 mins, 2 users, load averages: 3.78 2.20 1.09
- 9:31  up  1:09, 2 users, load averages: 0.82 0.96 1.00
+11:06:37 up 22:25,  2 users,  load average: 0.00, 0.00, 0.00
 07:02:40 up 2 days, 19:34,  0 users,  load average: 0.66, 0.65, 0.60
 
 JSON example:
