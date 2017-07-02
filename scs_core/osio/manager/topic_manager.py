@@ -13,6 +13,7 @@ from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.device_topic import DeviceTopic
 from scs_core.osio.data.topic_summary import TopicSummary
 from scs_core.osio.data.topic_metadata import TopicMetadata
+from scs_core.osio.data.user_topic import UserTopic
 
 from scs_core.osio.manager.message_manager import NextMessageQuery
 
@@ -76,16 +77,13 @@ class TopicManager(object):
     def find_for_user(self, user_id):
         request_path = '/v1/users/' + user_id + '/topics'
 
-        topics = {}
-
         # request...
         self.__rest_client.connect()
 
         try:
             jdict = self.__rest_client.get(request_path)
 
-            for topic in jdict:
-                print(topic)
+            topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in jdict]
 
         finally:
             self.__rest_client.close()

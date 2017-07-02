@@ -66,9 +66,7 @@ class UserMetadata(User):
         # UserMetadata...
         gravatar_hash = jdict.get('gravatar-hash')
 
-        topics = [UserTopic.construct_from_jdict(dt_jdict) for dt_jdict in jdict.get('topics')]
-
-        # TODO: sort topics by path
+        topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in jdict.get('topics')]
 
         return UserMetadata(id, name, None, None, start, gravatar_hash, topics)
 
