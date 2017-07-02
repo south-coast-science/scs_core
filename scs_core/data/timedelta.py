@@ -8,7 +8,6 @@ A JSONable wrapper for timedelta.
 
 import re
 import sys
-
 from datetime import timedelta
 
 from scs_core.data.json import JSONable
@@ -27,7 +26,7 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_ps_time_report(cls, report):
         # ps CPU time...
-        match = re.match('(\d+)?(?::)?(\d+):(\d{2})(?:\.)?(\d{2})?', report)
+        match = re.match('(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
 
         if match is None:
             return None
@@ -45,7 +44,7 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_ps_elapsed_report(cls, report):
         # ps elapsed time...
-        match = re.match('(\d+)?(-)?(\d{2})?(?::)?(\d{2}):(\d{2})', report)
+        match = re.match('(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
         if match is None:
             return None
@@ -68,7 +67,7 @@ class Timedelta(JSONable):
     @classmethod
     def construct_from_uptime_report(cls, report):
         # uptime...
-        match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d{1,2})?(?::)?(\d{1,2})?,',
+        match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d+)?(?::)?(\d+)?,',
                          report)
 
         if match:
@@ -92,7 +91,7 @@ class Timedelta(JSONable):
 
                 else:
                     days = 0
-                    hours = int(fields[0])
+                    hours = int(fields[2])
                     minutes = int(fields[5])
 
             except TypeError as ex:
