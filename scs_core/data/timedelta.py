@@ -92,11 +92,12 @@ class Timedelta(JSONable):
 
                 else:
                     days = 0
-                    hours = int(fields[2])
+                    hours = int(fields[0])
                     minutes = int(fields[5])
 
             except TypeError as ex:
-                print('Timedelta: unparsable:[%s]' % report, file=sys.stderr)
+                print('Timedelta: unparsable:[%s]' % report.strip(), file=sys.stderr)
+                print('Timedelta: fields:%s' % str(fields), file=sys.stderr)
                 print(ExceptionReport.construct(ex), file=sys.stderr)
                 return None
 
