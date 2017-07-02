@@ -170,10 +170,7 @@ class TopicManager(object):
             topics_jdict = self.__rest_client.get(request_path, params)
 
             # topics...
-            topics = []
-
-            for topic_jdict in topics_jdict:
-                topics.append(UserTopic.construct_from_jdict(topic_jdict))
+            topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict]
 
             yield topics
 
