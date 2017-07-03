@@ -16,8 +16,8 @@ class StatusDatum(SampleDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, location, temperature, exception):
+    def __init__(self, tag, rec, location, temperature, uptime):
         """
         Constructor
         """
-        super().__init__(tag, rec, ('loc', location), ('tmp', temperature), ('exc', exception))
+        super().__init__(tag, rec, ('loc', location), ('tmp', temperature), ('up', uptime))
