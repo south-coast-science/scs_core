@@ -23,13 +23,19 @@ class IntervalTimer(object):
 
     def range(self, stop):
         for i in range(stop):
-            self.__sleep_until_next_yield()
+            try:
+                self.__sleep_until_next_yield()
+            except KeyboardInterrupt:
+                return stop
 
             yield i
 
 
     def true(self):
-        self.__sleep_until_next_yield()
+        try:
+            self.__sleep_until_next_yield()
+        except KeyboardInterrupt:
+            return False
 
         return True
 
@@ -37,7 +43,7 @@ class IntervalTimer(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __sleep_until_next_yield(self):
-        sleep_time = (self.__next_yield - time.time()) % self.__interval        # prevent negative interval!
+        sleep_time = (self.__next_yield - time.time()) % self.__interval        # this prevents negative intervals!
 
         if sleep_time > 0:
             time.sleep(sleep_time)

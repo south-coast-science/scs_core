@@ -66,7 +66,7 @@ class DeviceSummary(JSONable):
         """
         Constructor
         """
-        self.__client_id = client_id                        # int
+        self.__client_id = client_id                        # string (int by convention)
         self.__name = name                                  # string
         self.__description = description                    # string
 

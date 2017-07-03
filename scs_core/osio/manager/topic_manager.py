@@ -6,9 +6,16 @@ Created on 13 Nov 2016
 
 import urllib.parse
 
+from collections import OrderedDict
+
 from scs_core.osio.client.rest_client import RESTClient
+
+from scs_core.osio.data.device_topic import DeviceTopic
 from scs_core.osio.data.topic_summary import TopicSummary
 from scs_core.osio.data.topic_metadata import TopicMetadata
+from scs_core.osio.data.user_topic import UserTopic
+
+from scs_core.osio.manager.message_manager import NextMessageQuery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -67,6 +74,57 @@ class TopicManager(object):
         return topics
 
 
+    def find_for_user(self, user_id):
+        topics = []
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            for batch in self.__find_for_user(user_id):
+                topics.extend(batch)
+
+        finally:
+            self.__rest_client.close()
+
+        return topics
+
+
+    def find_for_device(self, client_id, start_date, end_date):
+        request_path = '/v1/messages/device/' + client_id
+        params = {'start-date': start_date.as_iso8601(), 'end-date': end_date.as_iso8601()}
+
+        topics = {}
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            while True:
+                jdict = self.__rest_client.get(request_path, params)
+
+                # messages...
+                for message in jdict['messages']:
+                    if message['topic'] not in topics:
+                        topics[message['topic']] = DeviceTopic.construct_from_message_jdict(message)
+
+                # next...
+                next_query = NextMessageQuery.construct_from_uri(jdict.get('next'))
+
+                if next_query is None:
+                    break
+
+                params['start-date'] = next_query.start_date.as_iso8601()
+                params['end-date'] = next_query.end_date.as_iso8601()
+
+            sorted_topics = OrderedDict(sorted(topics.items()))
+
+            return list(sorted_topics.values())
+
+        finally:
+            self.__rest_client.close()
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __find(self, org_id, partial_topic_path=None, topic_schema=None):
@@ -97,7 +155,27 @@ class TopicManager(object):
             yield topics
 
             if len(topics_jdict) == 0:
-                break
+                return
+
+            # next...
+            params['offset'] += len(topics_jdict)
+
+
+    def __find_for_user(self, user_id):
+        request_path = '/v1/users/' + user_id + '/topics'
+        params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
+
+        while True:
+            # request...
+            topics_jdict = self.__rest_client.get(request_path, params)
+
+            # topics...
+            topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict]
+
+            yield topics
+
+            if len(topics_jdict) == 0:
+                return
 
             # next...
             params['offset'] += len(topics_jdict)

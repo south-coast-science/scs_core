@@ -4,14 +4,13 @@ Created on 18 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
-
 from scs_core.sync.interval_timer import IntervalTimer
+from scs_core.sync.runner import Runner
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Sampler(object):
+class TimedRunner(Runner):
     """
     classdocs
     """
@@ -28,25 +27,18 @@ class Sampler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
-    def sample(self):
-        pass
+    def reset(self):
+        self.__timer = IntervalTimer(self.__timer.interval)
 
 
-    def samples(self):
+    def samples(self, sampler):
         if self.__sample_count is None:
             while self.__timer.true():
-                yield self.sample()
+                yield sampler.sample()
 
         else:
             for _ in self.__timer.range(self.__sample_count):
-                yield self.sample()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def reset_timer(self):
-        self.__timer = IntervalTimer(self.__timer.interval)
+                yield sampler.sample()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,4 +56,4 @@ class Sampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Sampler:{timer:%s, sample_count:%s}" % (self.__timer, self.__sample_count)
+        return "TimedRunner:{timer:%s, sample_count:%s}" % (self.__timer, self.__sample_count)
