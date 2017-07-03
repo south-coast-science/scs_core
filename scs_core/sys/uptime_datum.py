@@ -14,13 +14,12 @@ JSON example:
 """
 
 import re
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
-from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -83,7 +82,9 @@ class UptimeDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['time'] = self.time
+        if self.time:
+            jdict['time'] = self.time
+
         jdict['up'] = self.uptime
         jdict['users'] = self.users
         jdict['load'] = self.load
