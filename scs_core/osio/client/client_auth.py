@@ -4,7 +4,7 @@ Created on 17 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"user_id": "southcoastscience-dev", "client-id": "5406", "client-password": "jtxSrK2e"}
+{"user_id": "southcoastscience-dev", "client-id": "5401", "client-password": "wtxSrs2e"}
 """
 
 from collections import OrderedDict

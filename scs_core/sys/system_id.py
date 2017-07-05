@@ -5,6 +5,9 @@ Created on 17 Feb 2017
 
 Note: The system_serial_number is independent of both dfe serial number and host serial number. It is typically
 associated with the hostname. The combination vendor-id + model-id + system-sn must be universally unique.
+
+example:
+{"vendor-id": "scs", "model-id": "ap1", "model": "Alpha Pi Eng", "config": "V1", "system-sn": 6}
 """
 
 from collections import OrderedDict
