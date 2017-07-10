@@ -33,7 +33,7 @@ class SampleDatum(JSONable):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag
-        jdict['rec'] = self.rec
+        jdict['rec'] = self.rec.as_json()
         jdict['val'] = self.val
 
         return jdict
