@@ -20,6 +20,29 @@ class OPCDatum(PMxDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        pm1 = jdict.get('pm1')
+        pm2p5 = jdict.get('pm2p5')
+        pm10 = jdict.get('pm10')
+
+        period = jdict.get('per')
+
+        bins = jdict.get('bin')
+
+        bin_1_mtof = jdict.get('mtf1')
+        bin_3_mtof = jdict.get('mtf3')
+        bin_5_mtof = jdict.get('mtf5')
+        bin_7_mtof = jdict.get('mtf7')
+
+        return OPCDatum(pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof):
         """
         Constructor
