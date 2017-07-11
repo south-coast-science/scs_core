@@ -28,11 +28,11 @@ class OPCDatum(PMxDatum):
 
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
-        pm1 = jdict.get('pm1')
-        pm2p5 = jdict.get('pm2p5')
-        pm10 = jdict.get('pm10')
-
         period = jdict.get('per')
+
+        pm1 = jdict.get('pm1')
+        pm2p5 = jdict.get('pm2.5')
+        pm10 = jdict.get('pm10')
 
         bins = jdict.get('bin')
 
@@ -69,11 +69,11 @@ class OPCDatum(PMxDatum):
 
         jdict['rec'] = self.rec.as_json()
 
-        jdict['pm1'] = self.pm1
-        jdict['pm2p5'] = self.pm2p5
-        jdict['pm10'] = self.pm10
-
         jdict['per'] = self.period
+
+        jdict['pm1'] = self.pm1
+        jdict['pm2.5'] = self.pm2p5
+        jdict['pm10'] = self.pm10
 
         jdict['bin'] = self.bins
 

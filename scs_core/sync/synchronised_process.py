@@ -25,6 +25,7 @@ class SynchronisedProcess(object):
         """
         Constructor
         """
+        self.__proc = None
         self.__lock = Lock()
         self.__value = value
 
@@ -32,10 +33,16 @@ class SynchronisedProcess(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        proc = Process(target=self.run)
-        proc.start()
+        self.__proc = Process(target=self.run)
+        self.__proc.start()
 
-        return proc
+
+    def stop(self):
+        if self.__proc is None:
+            return
+
+        self.__proc.terminate()
+        self.__proc = None
 
 
     @abstractmethod
@@ -46,16 +53,8 @@ class SynchronisedProcess(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def value(self):
-        with self._lock:
-            return self.__value
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def _value(self):
-        return self.__value
+    def _proc(self):
+        return self.__proc
 
 
     @property
@@ -63,7 +62,6 @@ class SynchronisedProcess(object):
         return self.__lock
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "SynchronisedProcess:{value:%s}" % self.value
+    @property
+    def _value(self):
+        return self.__value
