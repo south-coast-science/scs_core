@@ -7,6 +7,7 @@ Created on 18 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.particulate.pmx_datum import PMxDatum
 
@@ -20,11 +21,36 @@ class OPCDatum(PMxDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof):
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+
+        period = jdict.get('per')
+
+        pm1 = jdict.get('pm1')
+        pm2p5 = jdict.get('pm2.5')
+        pm10 = jdict.get('pm10')
+
+        bins = jdict.get('bin')
+
+        bin_1_mtof = jdict.get('mtf1')
+        bin_3_mtof = jdict.get('mtf3')
+        bin_5_mtof = jdict.get('mtf5')
+        bin_7_mtof = jdict.get('mtf7')
+
+        return OPCDatum(rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof):
         """
         Constructor
         """
-        PMxDatum.__init__(self, pm1, pm2p5, pm10)
+        PMxDatum.__init__(self, rec, pm1, pm2p5, pm10)
 
         self.__period = Datum.float(period, 1)              # seconds
 
@@ -41,11 +67,13 @@ class OPCDatum(PMxDatum):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['pm1'] = self.pm1
-        jdict['pm2p5'] = self.pm2p5
-        jdict['pm10'] = self.pm10
+        jdict['rec'] = self.rec.as_json()
 
         jdict['per'] = self.period
+
+        jdict['pm1'] = self.pm1
+        jdict['pm2.5'] = self.pm2p5
+        jdict['pm10'] = self.pm10
 
         jdict['bin'] = self.bins
 
@@ -92,7 +120,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OPCDatum:{pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
+        return "OPCDatum:{rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
                "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s}" % \
-                    (self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
+                    (self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
                      self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof)

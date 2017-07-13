@@ -51,7 +51,7 @@ class MessageTag(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, message):
-        print("sig: %s msg: %s" % (self.signature, message))      # TODO: implement is_valid as signature on message
+        print("sig: %s msg: %s" % (self.signature, message))
         return True
 
 

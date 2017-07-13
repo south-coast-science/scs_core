@@ -24,6 +24,7 @@ class ParticulatesDatum(SampleDatum):
         """
         bins = OrderedDict([(i, sample.bins[i]) for i in range(len(sample.bins))])
 
-        super().__init__(tag, rec, ('pm1', sample.pm1), ('pm2p5', sample.pm2p5), ('pm10', sample.pm10), ('bins', bins),
+        super().__init__(tag, rec, ('per', sample.period),
+                         ('pm1', sample.pm1), ('pm2.5', sample.pm2p5), ('pm10', sample.pm10), ('bins', bins),
                          ('mtf1', sample.bin_1_mtof), ('mtf3', sample.bin_3_mtof), ('mtf5', sample.bin_5_mtof),
                          ('mtf7', sample.bin_7_mtof))

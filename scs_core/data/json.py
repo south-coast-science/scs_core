@@ -20,12 +20,21 @@ class JSONable(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_list(self, jlist):
+        del jlist[:]                                    # empty the list
+
+        for key_value in self.as_json().items():
+            jlist.append(key_value)                     # append the key-value pairs of the dictionary
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @abstractmethod
     def as_json(self):
         pass
 
 
-# TODO: move PersistentJSONable to host.data
+# TODO: move PersistentJSONable to host.data?
 
 # --------------------------------------------------------------------------------------------------------------------
 
