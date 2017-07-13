@@ -10,8 +10,6 @@ from scs_core.data.datum import Datum
 from scs_core.gas.sensor_calib import SensorCalib
 
 
-# TODO: why was pid_elc not picked up?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PIDCalib(SensorCalib):
