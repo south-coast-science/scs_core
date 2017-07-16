@@ -20,4 +20,12 @@ class StatusDatum(SampleDatum):
         """
         Constructor
         """
-        super().__init__(tag, rec, ('loc', location), ('tmp', temperature), ('up', uptime))
+        val = []
+
+        if location:
+            val.append(('loc', location))
+
+        val.append(('tmp', temperature))
+        val.append(('up', uptime))
+
+        super().__init__(tag, rec, *val)
