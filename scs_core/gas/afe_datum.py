@@ -31,7 +31,9 @@ class AFEDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['pt1'] = self.pt1000
+        if self.pt1000:
+            jdict['pt1'] = self.pt1000
+
         jdict['sns'] = self.sns
 
         return jdict
