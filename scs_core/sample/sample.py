@@ -11,7 +11,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SampleDatum(JSONable):
+class Sample(JSONable):
     """
     classdocs
     """

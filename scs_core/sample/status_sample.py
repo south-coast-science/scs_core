@@ -1,23 +1,31 @@
 """
-Created on 17 Feb 2017
+Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.sample.sample_datum import SampleDatum
+from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClimateDatum(SampleDatum):
+class StatusSample(Sample):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, sample):
+    def __init__(self, tag, rec, location, temperature, uptime):
         """
         Constructor
         """
-        super().__init__(tag, rec, ('hmd', sample.humid), ('tmp', sample.temp))
+        val = []
+
+        if location:
+            val.append(('loc', location))
+
+        val.append(('tmp', temperature))
+        val.append(('up', uptime))
+
+        super().__init__(tag, rec, *val)

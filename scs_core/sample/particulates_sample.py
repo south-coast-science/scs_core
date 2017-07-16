@@ -6,12 +6,12 @@ Created on 20 Oct 2016
 
 from collections import OrderedDict
 
-from scs_core.sample.sample_datum import SampleDatum
+from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ParticulatesDatum(SampleDatum):
+class ParticulatesSample(Sample):
     """
     classdocs
     """

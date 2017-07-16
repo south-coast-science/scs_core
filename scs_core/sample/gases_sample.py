@@ -4,12 +4,12 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.sample.sample_datum import SampleDatum
+from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasesDatum(SampleDatum):
+class GasesSample(Sample):
     """
     classdocs
     """
