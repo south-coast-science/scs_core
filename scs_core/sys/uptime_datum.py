@@ -33,8 +33,8 @@ class UptimeDatum(JSONable):
 
     @classmethod
     def construct_from_report(cls, time, report):
-        # uptime...
-        uptime = Timedelta.construct_from_uptime_report(report)
+        # period...
+        period = Timedelta.construct_from_period_report(report)
 
         # users...
         users_match = re.match('.*(\d+) user(?:s)?,', report)
@@ -47,9 +47,9 @@ class UptimeDatum(JSONable):
             users = None
 
         # load...
-        load = UptimeLoad.construct_from_uptime_report(report)
+        load = UptimeLoad.construct_from_period_report(report)
 
-        return UptimeDatum(time, uptime, users, load)
+        return UptimeDatum(time, period, users, load)
 
 
     @classmethod
@@ -58,21 +58,21 @@ class UptimeDatum(JSONable):
             return None
 
         time = LocalizedDatetime.construct_from_iso8601(jdict.get('time'))
-        uptime = Timedelta.construct_from_jdict(jdict.get('up'))
+        period = Timedelta.construct_from_jdict(jdict.get('up'))
         users = int(jdict.get('users'))
         load = UptimeLoad.construct_from_jdict(jdict.get('load'))
 
-        return UptimeDatum(time, uptime, users, load)
+        return UptimeDatum(time, period, users, load)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, time, uptime, users, load):
+    def __init__(self, time, period, users, load):
         """
         Constructor
         """
         self.__time = time                  # LocalizedDatetime
-        self.__uptime = uptime              # Timedelta
+        self.__period = period              # Timedelta
         self.__users = users                # int
         self.__load = load                  # UptimeLoad
 
@@ -85,7 +85,7 @@ class UptimeDatum(JSONable):
         if self.time:
             jdict['time'] = self.time
 
-        jdict['up'] = self.uptime
+        jdict['period'] = self.period
         jdict['users'] = self.users
         jdict['load'] = self.load
 
@@ -100,8 +100,8 @@ class UptimeDatum(JSONable):
 
 
     @property
-    def uptime(self):
-        return self.__uptime
+    def period(self):
+        return self.__period
 
 
     @property
@@ -117,7 +117,7 @@ class UptimeDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "UptimeDatum:{time:%s, uptime:%s, users:%s, load:%s}" %  (self.time, self.uptime, self.users, self.load)
+        return "UptimeDatum:{time:%s, period:%s, users:%s, load:%s}" %  (self.time, self.period, self.users, self.load)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ class UptimeLoad(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_uptime_report(cls, report):
+    def construct_from_period_report(cls, report):
         load_match = re.match('.*load average(?:s)?: (\d+\.\d+)(?:,)? (\d+\.\d+)(?:,)? (\d+\.\d+)', report)
 
         if load_match:
