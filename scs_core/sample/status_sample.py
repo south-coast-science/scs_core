@@ -16,7 +16,7 @@ class StatusSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, location, temperature, schedule, uptime):
+    def __init__(self, tag, rec, location, temperature, schedule, uptime, psu_status):
         """
         Constructor
         """
@@ -28,5 +28,8 @@ class StatusSample(Sample):
         val.append(('tmp', temperature))
         val.append(('sch', schedule))
         val.append(('up', uptime))
+
+        if psu_status:
+            val.append(('psu', psu_status))
 
         super().__init__(tag, rec, *val)

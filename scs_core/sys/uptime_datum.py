@@ -34,7 +34,7 @@ class UptimeDatum(JSONable):
     @classmethod
     def construct_from_report(cls, time, report):
         # period...
-        period = Timedelta.construct_from_period_report(report)
+        period = Timedelta.construct_from_uptime_report(report)
 
         # users...
         users_match = re.match('.*(\d+) user(?:s)?,', report)
