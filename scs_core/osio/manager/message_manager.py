@@ -7,9 +7,13 @@ south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
+import sys
+import time
+
 import urllib.parse
 
 from scs_core.data.localized_datetime import LocalizedDatetime
+
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.message import Message
 
@@ -45,6 +49,12 @@ class MessageManager(object):
         try:
             for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
+
+                now = LocalizedDatetime.now()
+                print("%s: find_for_topic: block done" % now.as_iso8601(), file=sys.stderr)
+                sys.stderr.flush()
+
+                time.sleep(1)      # TODO: find out when "rate limit exceeded" occurs
 
         finally:
             self.__rest_client.close()
