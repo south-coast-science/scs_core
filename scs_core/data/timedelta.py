@@ -11,6 +11,7 @@ This is consistent with datetime.timedelta. You have been warned.
 
 import re
 import sys
+
 from datetime import timedelta
 
 from scs_core.data.json import JSONable
