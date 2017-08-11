@@ -4,6 +4,7 @@ Created on 11 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://stackoverflow.com/questions/5537876/get-utc-offset-from-time-zone-name-in-python
+
 example JSON:
 "-04:00"
 """

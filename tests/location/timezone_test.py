@@ -20,7 +20,7 @@ from scs_core.location.timezone_conf import TimezoneConf
 for zone_name in Timezone.zones():
     print(zone_name)
 
-print("-")
+print("=")
 
 zone_name = "US/Michigan"               # Etc/UTC  US/Michigan  Europe/London   Asia/Calcutta
 print("zone_name: %s" % zone_name)

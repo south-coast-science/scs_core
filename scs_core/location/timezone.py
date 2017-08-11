@@ -15,7 +15,6 @@ import pytz
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-
 from scs_core.location.timezone_offset import TimezoneOffset
 
 
@@ -52,20 +51,20 @@ class Timezone(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def current_utc_offset(self):
-        tz = pytz.timezone(self.__name)
-        dt = datetime.datetime.now(tz)
-
-        offset = dt.strftime('%z')
-
-        return TimezoneOffset.construct_from_offset(offset)
-
-
     def utc_offset(self, year, month, day, hour):
         tz = pytz.timezone(self.__name)
         dt = datetime.datetime(year=year, month=month, day=day, hour=hour)
 
         offset = tz.localize(dt).strftime('%z')
+
+        return TimezoneOffset.construct_from_offset(offset)
+
+
+    def current_utc_offset(self):
+        tz = pytz.timezone(self.__name)
+        dt = datetime.datetime.now(tz)
+
+        offset = dt.strftime('%z')
 
         return TimezoneOffset.construct_from_offset(offset)
 
