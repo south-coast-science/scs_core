@@ -28,7 +28,7 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_time_report(cls, report):
-        # ps CPU time...
+        # CPU time...
         match = re.match('(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
 
         if match is None:
@@ -46,7 +46,7 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_elapsed_report(cls, report):
-        # ps elapsed time...
+        # elapsed time...
         match = re.match('(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
         if match is None:
