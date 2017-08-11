@@ -17,8 +17,8 @@ GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V,
         loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
 """
 
-from scs_core.location.gpdatetime import GPDateTime
-from scs_core.location.gploc import GPLoc
+from scs_core.position.gpdatetime import GPDateTime
+from scs_core.position.gploc import GPLoc
 
 
 # --------------------------------------------------------------------------------------------------------------------
