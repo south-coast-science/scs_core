@@ -56,14 +56,18 @@ class Timezone(JSONable):
         tz = pytz.timezone(self.__name)
         dt = datetime.datetime.now(tz)
 
-        return TimezoneOffset.construct_from_datetime(dt)
+        offset = dt.strftime('%z')
+
+        return TimezoneOffset.construct_from_offset(offset)
 
 
     def utc_offset(self, year, month, day, hour):
         tz = pytz.timezone(self.__name)
-        dt = datetime.datetime(year, month=month, day=day, hour=hour, tzinfo=tz)
+        dt = datetime.datetime(year=year, month=month, day=day, hour=hour)
 
-        return TimezoneOffset.construct_from_datetime(dt)
+        offset = tz.localize(dt).strftime('%z')
+
+        return TimezoneOffset.construct_from_offset(offset)
 
 
     # ----------------------------------------------------------------------------------------------------------------

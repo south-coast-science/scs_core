@@ -24,9 +24,7 @@ class TimezoneOffset(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_datetime(cls, dt):
-        offset = dt.strftime('%z')
-
+    def construct_from_offset(cls, offset):
         match = re.match('([+\-])(\d{2})(\d{2})', offset)
 
         if match is None:

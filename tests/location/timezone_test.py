@@ -22,7 +22,7 @@ for zone_name in Timezone.zones():
 
 print("-")
 
-zone_name = "Etc/UTC"               # Etc/UTC  US/Michigan
+zone_name = "US/Michigan"               # Etc/UTC  US/Michigan  Europe/London   Asia/Calcutta
 print("zone_name: %s" % zone_name)
 print("valid: %s" % Timezone.is_valid(zone_name))
 
@@ -57,4 +57,14 @@ print("-")
 local_tz = get_localzone()
 print(local_tz)
 
+print("=")
+
+
+offset = zone.utc_offset(2016, 12, 2, 1)
+print(offset)
+
+td = offset.as_timedelta()
+print(td)
+
 print("-")
+

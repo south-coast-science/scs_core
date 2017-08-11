@@ -50,12 +50,6 @@ class MessageManager(object):
             for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
 
-                # now = LocalizedDatetime.now()
-                # print("%s: find_for_topic: block done" % now.as_iso8601(), file=sys.stderr)
-                # sys.stderr.flush()
-                #
-                # time.sleep(1)      # TODO: find out when "rate limit exceeded" occurs
-
         finally:
             self.__rest_client.close()
 
