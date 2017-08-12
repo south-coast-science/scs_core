@@ -9,7 +9,7 @@ system timezone. If no timezone_conf.json document is found, then the system "lo
 https://stackoverflow.com/questions/13866926/python-pytz-list-of-timezones
 
 example JSON:
-{"name": "Etc/GMT-1", "set-on": "2017-08-11T10:27:30.726+00:00"}
+{"set-on": "2017-08-12T11:20:28.740+00:00", "name": "Europe/London"}
 """
 
 from collections import OrderedDict
@@ -45,9 +45,14 @@ class TimezoneConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def system_name(cls):
+        return get_localzone().zone
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return TimezoneConf(None, get_localzone())             # fall back on system localzone
+            return TimezoneConf(None, None)
 
         set_on = Datum.datetime(jdict.get('set-on'))
         name = jdict.get('name')
@@ -62,16 +67,13 @@ class TimezoneConf(PersistentJSONable):
         Constructor
         """
         self.__set_on = set_on                          # LocalizedDatetime
-        self.__name = name                              # a Pytz timezone name
+        self.__name = name                              # a Pytz timezone name or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def timezone(self):
-        if self.name is None:
-            return None
-
-        return Timezone(self.name)
+        return Timezone(self.reporting_name())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -92,6 +94,16 @@ class TimezoneConf(PersistentJSONable):
         jdict['name'] = self.name
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def uses_system_name(self):
+        return self.name is None
+
+
+    def reporting_name(self):
+        return self.system_name() if self.uses_system_name() else self.name
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -7,9 +7,6 @@ south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
-import sys
-import time
-
 import urllib.parse
 
 from scs_core.data.localized_datetime import LocalizedDatetime
