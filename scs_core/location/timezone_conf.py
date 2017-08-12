@@ -4,7 +4,7 @@ Created on 11 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 The TimezoneConf subsystem enables the device user to set the reported timezone independently from the
-system timezone - if no timezone_conf.json record is found, then the system "localzone" is used.
+system timezone. If no timezone_conf.json document is found, then the system "localzone" is used.
 
 https://stackoverflow.com/questions/13866926/python-pytz-list-of-timezones
 

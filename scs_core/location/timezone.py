@@ -3,6 +3,8 @@ Created on 11 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+A JSONable extension to pytz.timezone.
+
 https://stackoverflow.com/questions/13866926/python-pytz-list-of-timezones
 
 example JSON:

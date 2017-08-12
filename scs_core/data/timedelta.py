@@ -3,7 +3,7 @@ Created on 29 May 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A JSONable wrapper for timedelta.
+A JSONable wrapper for datetime.timedelta.
 
 Warning: for the accessor methods, only days() carries the sign of the delta.
 This is consistent with datetime.timedelta. You have been warned.

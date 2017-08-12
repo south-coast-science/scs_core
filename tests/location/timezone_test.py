@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Created on 31 Dec 2016
+Created on 11 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -21,6 +21,7 @@ for zone_name in Timezone.zones():
     print(zone_name)
 
 print("=")
+
 
 zone_name = "US/Michigan"               # Etc/UTC  US/Michigan  Europe/London   Asia/Calcutta
 print("zone_name: %s" % zone_name)

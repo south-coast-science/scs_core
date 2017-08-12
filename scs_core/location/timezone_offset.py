@@ -3,6 +3,8 @@ Created on 11 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+A JSONable wrapper for datetime.strftime('%z').
+
 https://stackoverflow.com/questions/5537876/get-utc-offset-from-time-zone-name-in-python
 
 example JSON:
@@ -52,7 +54,6 @@ class TimezoneOffset(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
 
     def as_timedelta(self):
         minutes = self.hours * 60 + self.minutes
