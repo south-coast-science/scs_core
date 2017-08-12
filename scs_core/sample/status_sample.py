@@ -16,17 +16,20 @@ class StatusSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, location, temperature, schedule, uptime, psu_status):
+    def __init__(self, tag, rec, timezone, position, temperature, schedule, uptime, psu_status):
         """
         Constructor
         """
         val = []
 
-        if location:
-            val.append(('loc', location))
+        if timezone:
+            val.append(('tz', timezone))
 
-        val.append(('tmp', temperature))
+        if position:
+            val.append(('pos', position))
+
         val.append(('sch', schedule))
+        val.append(('tmp', temperature))
         val.append(('up', uptime))
 
         if psu_status:
