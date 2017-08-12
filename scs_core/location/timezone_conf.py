@@ -73,7 +73,10 @@ class TimezoneConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def timezone(self):
-        return Timezone(self.reporting_name())
+        if self.name is None:
+            return None
+
+        return Timezone(self.name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
