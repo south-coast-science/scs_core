@@ -35,7 +35,8 @@ class TimezoneOffset(JSONable):
 
         fields = match.groups()
 
-        sign = fields[0]
+        sign = -1 if fields[0] == '-' else 1
+
         hours = int(fields[1])
         minutes = int(fields[2])
 
@@ -48,7 +49,7 @@ class TimezoneOffset(JSONable):
         """
         Constructor
         """
-        self.__sign = sign                  # string
+        self.__sign = sign                  # int { -1 or 1 }
         self.__hours = hours                # int
         self.__minutes = minutes            # int
 
@@ -56,16 +57,15 @@ class TimezoneOffset(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_timedelta(self):
-        minutes = self.hours * 60 + self.minutes
-
-        if self.sign == '-':
-            minutes = -minutes
+        minutes = self.sign * ((self.hours * 60) + self.minutes)
 
         return Timedelta(minutes=minutes)
 
 
     def as_json(self):
-        return "%s%02d:%02d" % (self.sign, self.hours, self.minutes)
+        sign = '-' if self.sign < 0 else '+'
+
+        return "%s%02d:%02d" % (sign, self.hours, self.minutes)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -88,4 +88,4 @@ class TimezoneOffset(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TimezoneOffset:{sign:%s, hours:%02d, minutes:%02d}" % (self.sign, self.hours, self.minutes)
+        return "TimezoneOffset:{sign:%d, hours:%02d, minutes:%02d}" % (self.sign, self.hours, self.minutes)

@@ -23,7 +23,7 @@ for zone_name in Timezone.zones():
 print("=")
 
 
-zone_name = "US/Michigan"               # Etc/UTC  US/Michigan  Europe/London   Asia/Calcutta
+zone_name = "Europe/London"               # Etc/UTC  US/Michigan  Europe/London   Asia/Calcutta
 print("zone_name: %s" % zone_name)
 print("valid: %s" % Timezone.is_valid(zone_name))
 
@@ -45,6 +45,7 @@ print("-")
 
 offset = zone.current_utc_offset()
 print(offset)
+print(JSONify.dumps(offset))
 
 td = offset.as_timedelta()
 print(td)
@@ -63,6 +64,7 @@ print("=")
 
 offset = zone.utc_offset(2016, 12, 2, 1)
 print(offset)
+print(JSONify.dumps(offset))
 
 td = offset.as_timedelta()
 print(td)
