@@ -10,6 +10,7 @@ south-coast-science-dev
 import urllib.parse
 
 from scs_core.data.localized_datetime import LocalizedDatetime
+
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.message import Message
 

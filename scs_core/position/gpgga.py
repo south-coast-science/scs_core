@@ -17,8 +17,8 @@ GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:
 hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
 """
 
-from scs_core.location.gploc import GPLoc
-from scs_core.location.gptime import GPTime
+from scs_core.position.gploc import GPLoc
+from scs_core.position.gptime import GPTime
 
 
 # --------------------------------------------------------------------------------------------------------------------

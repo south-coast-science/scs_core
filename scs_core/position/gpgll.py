@@ -14,8 +14,8 @@ GPGLL:{loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, time:GPTime:{tim
 GPGLL:{loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, time:GPTime:{time:140047.00}, status:V, pos_mode:N}
 """
 
-from scs_core.location.gploc import GPLoc
-from scs_core.location.gptime import GPTime
+from scs_core.position.gploc import GPLoc
+from scs_core.position.gptime import GPTime
 
 
 # --------------------------------------------------------------------------------------------------------------------

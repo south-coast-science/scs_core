@@ -3,11 +3,15 @@ Created on 29 May 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A JSONable wrapper for timedelta.
+A JSONable wrapper for datetime.timedelta.
+
+Warning: for the accessor methods, only days() carries the sign of the delta.
+This is consistent with datetime.timedelta. You have been warned.
 """
 
 import re
 import sys
+
 from datetime import timedelta
 
 from scs_core.data.json import JSONable
@@ -25,7 +29,7 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_time_report(cls, report):
-        # ps CPU time...
+        # CPU time...
         match = re.match('(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
 
         if match is None:
@@ -43,7 +47,7 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_elapsed_report(cls, report):
-        # ps elapsed time...
+        # elapsed time...
         match = re.match('(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
         if match is None:

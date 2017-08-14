@@ -30,7 +30,7 @@ class JSONable(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def as_json(self):
+    def as_json(self):          # TODO: handle named parameters of JSONify.dumps(..)
         pass
 
 

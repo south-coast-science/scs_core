@@ -11,9 +11,9 @@ command line example:
 
 from scs_core.data.json import JSONify
 
-from scs_core.location.gpgga import GPGGA
-from scs_core.location.gps_location import GPSLocation
-from scs_core.location.nmea_sentence import NMEASentence
+from scs_core.position.gpgga import GPGGA
+from scs_core.position.gps_location import GPSLocation
+from scs_core.position.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------

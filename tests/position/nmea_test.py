@@ -6,13 +6,13 @@ Created on 31 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.location.gpgga import GPGGA
-from scs_core.location.gpgll import GPGLL
-from scs_core.location.gpgsa import GPGSA
-from scs_core.location.gpgsv import GPGSV
-from scs_core.location.gprmc import GPRMC
-from scs_core.location.gpvtg import GPVTG
-from scs_core.location.nmea_sentence import NMEASentence
+from scs_core.position.gpgga import GPGGA
+from scs_core.position.gpgll import GPGLL
+from scs_core.position.gpgsa import GPGSA
+from scs_core.position.gpgsv import GPGSV
+from scs_core.position.gprmc import GPRMC
+from scs_core.position.gpvtg import GPVTG
+from scs_core.position.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------
