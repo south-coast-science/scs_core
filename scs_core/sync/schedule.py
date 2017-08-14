@@ -58,6 +58,16 @@ class Schedule(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_valid(self):
+        for item in self.__items.values():
+            if not item.is_valid():
+                return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def set(self, item):
         self.__items[item.name] = item
 
@@ -74,6 +84,9 @@ class Schedule(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, host):
+        if not self.is_valid():
+            raise ValueError("Schedule.save: schedule is not valid.")
+
         PersistentJSONable.save(self, self.__class__.filename(host))
 
 
@@ -137,6 +150,18 @@ class ScheduleItem(JSONable):
         self.__name = name
         self.__interval = Datum.float(interval, 1)          # time between samples
         self.__tally = Datum.int(tally)                     # number of samples per report
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        if self.__interval <= 0:
+            return False
+
+        if self.__tally < 1:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
