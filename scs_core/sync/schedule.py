@@ -2,6 +2,10 @@
 Created on 29 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+document example:
+{"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"scs-status": {"interval": 60.0, "tally": 1}, "scs-particulates": {"interval": 10.0, "tally": 1}}
 """
 
 from collections import OrderedDict
@@ -10,6 +14,8 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.json import PersistentJSONable
 
+
+# TODO: order by name
 
 # --------------------------------------------------------------------------------------------------------------------
 
