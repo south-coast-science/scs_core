@@ -2,6 +2,10 @@
 Created on 29 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+document example:
+{"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}}
 """
 
 from collections import OrderedDict
@@ -35,6 +39,18 @@ class Schedule(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def __sorted(cls, items):
+        sorted_items = OrderedDict()
+
+        for name in sorted(items.keys()):
+            sorted_items[name] = items[name]
+
+        return sorted_items
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return Schedule(OrderedDict())
@@ -44,7 +60,7 @@ class Schedule(PersistentJSONable):
         for name, value_jdict in jdict.items():
             items[name] = ScheduleItem.construct_from_jdict(name, value_jdict)
 
-        return Schedule(items)
+        return Schedule(cls.__sorted(items))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,6 +86,8 @@ class Schedule(PersistentJSONable):
 
     def set(self, item):
         self.__items[item.name] = item
+
+        self.__items = Schedule.__sorted(self.__items)
 
 
     def clear(self, name):
