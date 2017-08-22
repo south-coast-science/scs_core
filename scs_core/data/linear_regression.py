@@ -30,6 +30,8 @@ class LinearRegression(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def append(self, rec: LocalizedDatetime, val):
+        # TODO: if a tally is kept, del first element as necessary
+
         self.__data.append((rec.timestamp(), val))
 
 
