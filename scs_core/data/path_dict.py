@@ -49,7 +49,7 @@ class PathDict(JSONable):
         try:
             leaf_node = float(nodes[1])
             return leaf_node.is_integer()
-        except RuntimeError:
+        except ValueError:
             return False
 
 
