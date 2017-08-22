@@ -14,12 +14,15 @@ class LinearRegression(object):
     classdocs
     """
 
+    MIN_DATA_POINTS =   2
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    def __init__(self, tally=None):
         """
         Constructor
         """
+        self.__tally = tally
         self.__data = []
 
 
@@ -29,14 +32,65 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def append(self, rec: LocalizedDatetime, val):
-        # TODO: if a tally is kept, del first element as necessary
+    def has_tally(self):
+        count = len(self)
 
-        self.__data.append((rec.timestamp(), val))
+        if self.__tally is None:
+            return count >= self.MIN_DATA_POINTS
+
+        return count >= self.__tally
+
+
+    def append(self, rec: LocalizedDatetime, value):
+        count = len(self.__data)
+
+        # remove oldest?
+        if self.__tally is not None and count == self.__tally:
+            del self.__data[0]
+
+        # append...
+        self.__data.append((rec.timestamp(), value))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def compute(self):
+        n = len(self)
+
+        # validate...
+        if n < self.MIN_DATA_POINTS:
+            return None, None
+
+        # init...
+        sum_x = 0
+        sum_y = 0
+
+        sum_x2 = 0
+        sum_xy = 0
+
+        # sum....
+        for x, y in self.__data:
+            sum_x += x
+            sum_y += y
+
+            sum_x2 += x * x
+            sum_xy += x * y
+
+        # compute...
+        avg_x = sum_x / n
+        avg_y = sum_y / n
+
+        d_x = (sum_x2 * n) - (sum_x * sum_x)
+        d_y = (sum_xy * n) - (sum_x * sum_y)
+
+        slope = d_y / d_x
+        intercept = avg_y - (slope * avg_x)
+
+        return slope, intercept
 
 
     def midpoint(self):
-        slope, intercept = self.__line()
+        slope, intercept = self.compute()
 
         # validate...
         if slope is None:
@@ -58,46 +112,7 @@ class LinearRegression(object):
         return rec, val
 
 
-    def reset(self):
-        self.__data = []
-
-
     # ----------------------------------------------------------------------------------------------------------------
-
-    def __line(self):
-        n = len(self)
-
-        # validate...
-        if n < 3:
-            return None, None
-
-        # init...
-        sum_x = 0
-        sum_y = 0
-
-        sum_xx = 0
-        sum_xy = 0
-
-        # sum....
-        for x, y in self.__data:
-            sum_x += x
-            sum_y += y
-
-            sum_xx += x * x
-            sum_xy += x * y
-
-        # compute...
-        avg_x = sum_x / n
-        avg_y = sum_y / n
-
-        d_x = (sum_xx * n) - (sum_x * sum_x)
-        d_y = (sum_xy * n) - (sum_x * sum_y)
-
-        slope = d_y / d_x
-        intercept = avg_y - (slope * avg_x)
-
-        return slope, intercept
-
 
     def __x_data(self):
         return [float(x) for x, _ in self.__data]

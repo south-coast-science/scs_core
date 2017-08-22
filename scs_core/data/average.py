@@ -27,13 +27,17 @@ class Average(object):
         self.__values = []
 
 
+    def __len__(self):
+        return len(self.__values)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def has_tally(self):
-        count = len(self.__values)
+        count = len(self)
 
         if self.__tally is None:
-            return count >= Average.MIN_DATA_POINTS
+            return count >= self.MIN_DATA_POINTS
 
         return count >= self.__tally
 
@@ -49,8 +53,10 @@ class Average(object):
         self.__values.append(float(value))
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def compute(self):
-        count = len(self.__values)
+        count = len(self)
 
         if count < Average.MIN_DATA_POINTS:
             return None
