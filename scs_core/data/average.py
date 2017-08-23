@@ -3,8 +3,8 @@ Created on 22 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-If tally is None: computes the average of all the appended values.
-If tally is a positive integer N: computes the average of the last N appended values.
+If tally is None: computes the average of all the appended data.
+If tally is a positive integer N: computes the average of the last N appended data.
 """
 
 
@@ -24,11 +24,11 @@ class Average(object):
         Constructor
         """
         self.__tally = tally                            # number of rolling samples, None for all samples
-        self.__values = []
+        self.__data = []
 
 
     def __len__(self):
-        return len(self.__values)
+        return len(self.__data)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,14 +43,14 @@ class Average(object):
 
 
     def append(self, value):
-        count = len(self.__values)
+        count = len(self.__data)
 
         # remove oldest?
         if self.__tally is not None and count == self.__tally:
-            del self.__values[0]
+            del self.__data[0]
 
         # append...
-        self.__values.append(float(value))
+        self.__data.append(float(value))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ class Average(object):
 
         total = 0
 
-        for value in self.__values:
+        for value in self.__data:
             total += value
 
         return total / count
@@ -71,7 +71,17 @@ class Average(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def min(self):
+        return min(self.__data)
+
+
+    def max(self):
+        return max(self.__data)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "Average:{tally:%s, values:%s}" % (self.__tally, self.__values)
+        return "Average:{tally:%s, data:%s}" % (self.__tally, self.__data)
 
 
