@@ -23,7 +23,7 @@ class Average(object):
         """
         Constructor
         """
-        self.__tally = tally
+        self.__tally = tally                            # number of rolling samples, None for all samples
         self.__values = []
 
 

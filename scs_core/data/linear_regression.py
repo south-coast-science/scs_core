@@ -22,8 +22,8 @@ class LinearRegression(object):
         """
         Constructor
         """
-        self.__tally = tally                            # number of rolling samples, None for infinite
-        self.__time_relative = time_relative            # take first timestamp as time zero?
+        self.__tally = tally                            # number of rolling samples, None for all samples
+        self.__time_relative = time_relative            # first timestamp is time zero
 
         self.__start_timestamp = 0
         self.__data = []
@@ -127,4 +127,5 @@ class LinearRegression(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "LinearRegression:{data:%s}" % self.__data
+        return "LinearRegression:{tally:%s, time_relative:%s, data:%s}" % \
+               (self.__tally, self.__time_relative, self.__data)
