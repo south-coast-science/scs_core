@@ -18,11 +18,14 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tally=None):
+    def __init__(self, time_relative=False, tally=None):
         """
         Constructor
         """
-        self.__tally = tally
+        self.__tally = tally                            # number of rolling samples, None for infinite
+        self.__time_relative = time_relative            # take first timestamp as time zero?
+
+        self.__start_timestamp = 0
         self.__data = []
 
 
@@ -44,12 +47,15 @@ class LinearRegression(object):
     def append(self, rec: LocalizedDatetime, value):
         count = len(self.__data)
 
+        if self.__time_relative and count == 0:
+            self.__start_timestamp = rec.timestamp()
+
         # remove oldest?
         if self.__tally is not None and count == self.__tally:
             del self.__data[0]
 
         # append...
-        self.__data.append((rec.timestamp(), value))
+        self.__data.append((rec.timestamp() - self.__start_timestamp, value))
 
 
     # ----------------------------------------------------------------------------------------------------------------
