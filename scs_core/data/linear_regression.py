@@ -20,12 +20,12 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, time_relative=False, tally=None):
+    def __init__(self, tally=None, time_relative=False):
         """
         Constructor
         """
-        self.__tally = tally                            # number of rolling samples, None for all samples
-        self.__time_relative = time_relative            # first timestamp is time zero
+        self.__tally = tally                            # number of rolling samples (None for all samples)
+        self.__time_relative = time_relative            # set first timestamp to time zero
 
         self.__start_timestamp = None
         self.__tzinfo = None
