@@ -14,6 +14,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: add listing of cmd directory as a native command.
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Command(JSONable):
