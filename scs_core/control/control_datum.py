@@ -4,6 +4,13 @@ Created on 17 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 http://pythoncentral.io/hashing-strings-with-python/
+
+example:
+{"tag": "bruno.lan",
+"attn": "scs-be2-3",
+"rec": "2017-08-29T11:12:31.636+01:00",
+"cmd_tokens": ["?"],
+"digest": "6e81c77aa20562ea06e0e32158d2c7c9431ed251cd5790917f6cb385f6cf62c0"}
 """
 
 import hashlib
@@ -66,7 +73,7 @@ class ControlDatum(JSONable):
         """
         self.__tag = tag                    # string - originator of message
         self.__attn = attn                  # string - intended recipient of message
-        
+
         self.__rec = rec                    # LocalizedDatetime
         self.__cmd_tokens = cmd_tokens      # array of { string | int | float }
         self.__digest = digest              # string
