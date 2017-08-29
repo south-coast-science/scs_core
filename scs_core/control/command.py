@@ -14,14 +14,14 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
-# TODO: add listing of cmd directory as a native command.
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Command(JSONable):
     """
     classdocs
     """
+
+    __LIST_CMD = '?'
 
     __PROHIBITED_TOKENS = ('<', '>', ';', '|')
 
@@ -83,6 +83,9 @@ class Command(JSONable):
         if set(self.params).intersection(set(Command.__PROHIBITED_TOKENS)):
             return False
 
+        if self.cmd == Command.__LIST_CMD:
+            return True
+
         if self.cmd not in os.listdir(host.COMMAND_DIR):
             return False
 
@@ -91,7 +94,7 @@ class Command(JSONable):
 
     def execute(self, host):
         if not self.cmd:
-            return
+            return None
 
         statement = ['./' + self.cmd]
         statement.extend(self.params)
