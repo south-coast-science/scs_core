@@ -12,6 +12,7 @@ import subprocess
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -96,9 +97,23 @@ class Command(JSONable):
         if not self.cmd:
             return None
 
-        statement = ['./' + self.cmd]
-        statement.extend(self.params)
+        if self.cmd == Command.__LIST_CMD:
+            result = self.__execute('ls', host)
 
+            self.__stdout = [JSONify.dumps(self.__stdout)]
+
+        else:
+            statement = ['./' + self.cmd]
+            statement.extend(self.params)
+
+            result = self.__execute(statement, host)
+
+        return result
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __execute(self, statement, host):
         proc = subprocess.Popen(statement, cwd=host.COMMAND_DIR, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout_bytes, stderr_bytes = proc.communicate(None, Command.__TIMEOUT)
