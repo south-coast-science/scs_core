@@ -7,6 +7,8 @@ south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
+import time
+
 import urllib.parse
 
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -14,8 +16,6 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.osio.client.rest_client import RESTClient
 from scs_core.osio.data.message import Message
 
-
-# TODO: how should we distinguish between HTTP and MQTT topic clients? unification here?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -46,6 +46,8 @@ class MessageManager(object):
         try:
             for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
+
+                time.sleep(1)       # prevent "Rate limit exceeded" error
 
         finally:
             self.__rest_client.close()
