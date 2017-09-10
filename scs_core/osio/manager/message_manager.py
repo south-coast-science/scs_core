@@ -7,6 +7,7 @@ south-coast-science-dev
 43308b72-ad41-4555-b075-b4245c1971db
 """
 
+import sys
 import time
 
 import urllib.parse
@@ -26,16 +27,17 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, api_key):
+    def __init__(self, http_client, api_key, verbose=False):
         """
         Constructor
         """
         self.__rest_client = RESTClient(http_client, api_key)
+        self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_for_topic(self, topic, start_date, end_date):
+    def find_for_topic(self, topic, start_date, end_date, batch_pause=0.0):
         request_path = '/v1/messages/topic/' + topic
 
         collection = []
@@ -47,7 +49,12 @@ class MessageManager(object):
             for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
 
-                time.sleep(1)       # prevent "Rate limit exceeded" error
+                if self.__verbose:
+                    now = LocalizedDatetime.now()
+                    print("%s: docs: %d" % (now.as_iso8601(), len(batch)), file=sys.stderr)
+                    sys.stderr.flush()
+
+                time.sleep(batch_pause)     # prevent "Rate limit exceeded" error
 
         finally:
             self.__rest_client.close()
@@ -84,7 +91,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageManager:{rest_client:%s}" % self.__rest_client
+        return "MessageManager:{rest_client:%s, verbose:%s}" % (self.__rest_client, self.__verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------
