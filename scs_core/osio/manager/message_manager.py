@@ -40,6 +40,7 @@ class MessageManager(object):
     def find_for_topic(self, topic, start_date, end_date, batch_pause=0.0):
         request_path = '/v1/messages/topic/' + topic
 
+        total = 0
         collection = []
 
         # request...
@@ -51,7 +52,10 @@ class MessageManager(object):
 
                 if self.__verbose:
                     now = LocalizedDatetime.now()
-                    print("%s: docs: %d" % (now.as_iso8601(), len(batch)), file=sys.stderr)
+                    batch_count = len(batch)
+                    total += batch_count
+
+                    print("%s: batch: %d total: %d" % (now.as_iso8601(), batch_count, total), file=sys.stderr)
                     sys.stderr.flush()
 
                 time.sleep(batch_pause)     # prevent "Rate limit exceeded" error
