@@ -37,6 +37,9 @@ class Pt1000Datum(JSONable):
 
     @classmethod
     def construct(cls, calib, v):
+        if v is None:
+            return None
+
         temp = cls.__temp(calib.v20, v)
 
         return Pt1000Datum(v, temp)
