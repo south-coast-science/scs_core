@@ -24,9 +24,9 @@ class Command(JSONable):
 
     __LIST_CMD = '?'
 
-    __PROHIBITED_TOKENS = ('<', '>', ';', '|')
+    __PROHIBITED_TOKENS = ('-i', '--interactive', '<', '>', ';', '|')
 
-    __TIMEOUT = 60.0
+    __TIMEOUT = 30.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -109,6 +109,12 @@ class Command(JSONable):
             result = self.__execute(statement, host)
 
         return result
+
+
+    def error(self, message):
+        self.__stdout = []
+        self.__stderr = [message]
+        self.__return_code = 1
 
 
     # ----------------------------------------------------------------------------------------------------------------
