@@ -105,7 +105,7 @@ class A4TempComp(object):
 
         we_c = we_t - n_t * ae_t
 
-        # print("A4TempComp: alg:%d, temp:%f we_t:%f n_t:%f we_c:%f " %
+        # print("A4TempComp.__eq1: alg:%d, temp:%f we_t:%f n_t:%f we_c:%f " %
         #       (self.__algorithm, temp, we_t, n_t, we_c), file=sys.stderr)
 
         return we_c
@@ -116,7 +116,7 @@ class A4TempComp(object):
 
         we_c = we_t - k_t * (we_cal_mv / ae_cal_mv) * ae_t
 
-        # print("A4TempComp: alg:%d, temp:%f we_t:%f ae_t:%f we_cal_mv:%f ae_cal_mv:%f k_t:%f we_c:%f " %
+        # print("A4TempComp.__eq2: alg:%d, temp:%f we_t:%f ae_t:%f we_cal_mv:%f ae_cal_mv:%f k_t:%f we_c:%f " %
         #       (self.__algorithm, temp, we_t, ae_t, we_cal_mv, ae_cal_mv, k_t, we_c), file=sys.stderr)
 
         return we_c
@@ -127,7 +127,7 @@ class A4TempComp(object):
 
         we_c = we_t - kp_t * (we_cal_mv - ae_cal_mv) * ae_t
 
-        # print("A4TempComp: alg:%d, temp:%f we_t:%f ae_t:%f we_cal_mv:%f ae_cal_mv:%f kp_t:%f we_c:%f " %
+        # print("A4TempComp.__eq3: alg:%d, temp:%f we_t:%f ae_t:%f we_cal_mv:%f ae_cal_mv:%f kp_t:%f we_c:%f " %
         #       (self.__algorithm, temp, we_t, ae_t, we_cal_mv, ae_cal_mv, kp_t, we_c), file=sys.stderr)
 
         return we_c
@@ -138,7 +138,7 @@ class A4TempComp(object):
 
         we_c = we_t - we_cal_mv - kpp_t     # TODO: fix over-sensitivity to temperature
 
-        # print("A4TempComp: alg:%d, temp:%f we_t:%f we_cal_mv:%f kpp_t:%f we_c:%f " %
+        # print("A4TempComp.__eq4: alg:%d, temp:%f we_t:%f we_cal_mv:%f kpp_t:%f we_c:%f " %
         #       (self.__algorithm, temp, we_t, we_cal_mv, kpp_t, we_c), file=sys.stderr)
 
         return we_c
@@ -157,8 +157,8 @@ class A4TempComp(object):
             return self.__values[index]
 
         # all others...
-        y1 = self.__values[index]                                               # y value at start of interval
-        y2 = self.__values[index + 1]                                           # y value at end of interval
+        y1 = self.__values[index]                                                   # y value at start of interval
+        y2 = self.__values[index + 1]                                               # y value at end of interval
 
         delta_y = y2 - y1
 
@@ -166,7 +166,7 @@ class A4TempComp(object):
 
         cf_t = y1 + (delta_y * delta_x)
 
-        # print("A4TempComp: alg:%d, temp:%f y1:%f y2:%f delta_y:%f delta_x:%f cf_t:%f " %
+        # print("A4TempComp.cf_t: alg:%d, temp:%f y1:%f y2:%f delta_y:%f delta_x:%f cf_t:%f " %
         #       (self.__algorithm, temp, y1, y2, delta_y, delta_x, cf_t), file=sys.stderr)
 
         return cf_t

@@ -98,10 +98,10 @@ class A4Datum(JSONable):
         """
         Constructor
         """
-        self.__we_v = Datum.float(we_v, 6)        # uncorrected working electrode voltage       V
-        self.__ae_v = Datum.float(ae_v, 6)        # uncorrected auxiliary electrode voltage     V
+        self.__we_v = Datum.float(we_v, 6)        # uncorrected working electrode voltage       Volts
+        self.__ae_v = Datum.float(ae_v, 6)        # uncorrected auxiliary electrode voltage     Volts
 
-        self.__we_c = Datum.float(we_c, 6)        # corrected working electrode voltage         V
+        self.__we_c = Datum.float(we_c, 6)        # corrected working electrode voltage         Volts
         self.__cnc = Datum.float(cnc, 1)          # gas concentration                           ppb
 
 

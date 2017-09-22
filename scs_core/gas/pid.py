@@ -5,6 +5,7 @@ Created on 30 Sep 2016
 """
 
 from scs_core.gas.pid_datum import PIDDatum
+from scs_core.gas.pid_temp_comp import PIDTempComp
 from scs_core.gas.sensor import Sensor
 
 
@@ -14,8 +15,6 @@ class PID(Sensor):
     """
     classdocs
     """
-
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -27,26 +26,30 @@ class PID(Sensor):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_type, gas_name, adc_gain_index, default_elc, default_sens):
+    def __init__(self, sensor_code, gas_name, adc_gain_index, default_elc, default_sens):
         """
         Constructor
         """
-        Sensor.__init__(self, sensor_type, gas_name, adc_gain_index)
+        Sensor.__init__(self, sensor_code, gas_name, adc_gain_index)
 
         self.__default_elc = default_elc
         self.__default_sens = default_sens
+
+        self.__tc = PIDTempComp.find(sensor_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def sample(self, afe, temp, sensor_index, no2_sample=None):
-        wrk = afe.sample_raw_wrk(sensor_index, self.adc_gain_index)
+        we_v = afe.sample_raw_wrk(sensor_index, self.adc_gain_index)
 
         # TODO handle PID calib and baseline for cnc
 
-        print("sample: %s" % self)
+        print("PID.sample: %s" % self)
 
-        return PIDDatum(wrk)
+        # return PIDDatum.construct(calib, self.baseline, self.__tc, temp, we_v)  # TODO: calib versus defaults!?!
+
+        return PIDDatum(we_v, we_v)
 
 
     def null_datum(self):
