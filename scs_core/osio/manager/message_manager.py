@@ -12,6 +12,7 @@ import time
 
 import urllib.parse
 
+from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.osio.client.rest_client import RESTClient
@@ -54,6 +55,9 @@ class MessageManager(object):
                     now = LocalizedDatetime.now()
                     batch_count = len(batch)
                     total += batch_count
+
+                    # last_document = batch[len(batch) - 1]
+                    # print("last: %s" % JSONify.dumps(last_document), file=sys.stderr)
 
                     print("%s: batch: %d total: %d" % (now.as_iso8601(), batch_count, total), file=sys.stderr)
                     sys.stderr.flush()
