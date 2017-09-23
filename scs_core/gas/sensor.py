@@ -22,8 +22,8 @@ class Sensor(object):
     CODE_OX =       '214'           # OXGA4
     CODE_SO2 =      '134'           # SO2A4
 
-    CODE_VOC_PPM =  '142'           # PIDN1
-    CODE_VOC_PPB =  '143'           # PIDNH
+    CODE_VOC_PPM =  '142'           # PID-A12
+    CODE_VOC_PPB =  '143'           # PID-AH
 
     CODE_TEST_1 =   '01'            # test load
     CODE_TEST_2 =   '02'            # test load
@@ -106,7 +106,7 @@ class Sensor(object):
 
 
     @calib.setter
-    def calib(self, calib):
+    def calib(self, calib):             # TODO: override this in PID, to use defaults
         self.__calib = calib
 
 

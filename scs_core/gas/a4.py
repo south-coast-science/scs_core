@@ -6,7 +6,7 @@ Created on 30 Sep 2016
 
 from scs_core.gas.a4_datum import A4Datum
 from scs_core.gas.sensor import Sensor
-from scs_core.gas.temp_comp import TempComp
+from scs_core.gas.a4_temp_comp import A4TempComp
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class A4(Sensor):
         """
         Sensor.__init__(self, sensor_code, gas_name, adc_gain_index)
 
-        self.__tc = TempComp.find(sensor_code)
+        self.__tc = A4TempComp.find(sensor_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
