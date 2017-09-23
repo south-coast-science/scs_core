@@ -45,7 +45,7 @@ class PID(Sensor):
 
         # TODO handle PID calib and baseline for cnc
 
-        print("PID.sample: %s" % self)
+        # print("PID.sample: %s" % self)
 
         # return PIDDatum.construct(calib, self.baseline, self.__tc, temp, we_v)  # TODO: calib versus defaults!?!
 
