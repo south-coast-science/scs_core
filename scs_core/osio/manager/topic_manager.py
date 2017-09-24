@@ -207,7 +207,7 @@ class TopicManager(object):
         self.__rest_client.connect()
 
         try:
-            self.__rest_client.put(request_path, topic.as_json())
+            self.__rest_client.put(request_path, topic.as_json())       # TODO: check what it looks like
         finally:
             self.__rest_client.close()
 

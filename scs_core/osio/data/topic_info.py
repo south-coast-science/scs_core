@@ -41,8 +41,9 @@ class TopicInfo(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # for the v2 API, schema_id goes in Topic...
 
-    def __init__(self, topic_format, topic_type, schema, graph_path):
+    def __init__(self, topic_format, topic_type=None, schema=None, graph_path=None):
         """
         Constructor
         """
