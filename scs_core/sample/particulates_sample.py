@@ -2,6 +2,15 @@
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"tag": "scs-bgb-113",
+ "rec": "2017-09-24T07:54:28.687+00:00",
+ "val": {
+  "pm1": 14.0, "pm2p5": 16.4, "pm10": 22.2,
+  "bins": {"0": 1482, "1": 230, "2": 72, "3": 14, "4": 7, "5": 6, "6": 7, "7": 2, "8": 5, "9": 3, "10": 0,
+    "11": 0, "12": 0, "13": 0, "14": 0, "15": 0},
+  "mtf1": 14, "mtf3": 18, "mtf5": 22, "mtf7": 31}}
 """
 
 from collections import OrderedDict

@@ -5,7 +5,7 @@ Created on 17 Apr 2017
 
 http://pythoncentral.io/hashing-strings-with-python/
 
-example:
+example document:
 {"tag": "scs-be2-3",
 "rec": "2017-08-29T10:12:32.056+00:00",
 "cmd": {"cmd": "?", "params": [], "stdout": ["[\"afe_baseline\", \"afe_calib\""], "stderr": [], "ret": 0},

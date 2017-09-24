@@ -5,7 +5,7 @@ Created on 17 Apr 2017
 
 http://pythoncentral.io/hashing-strings-with-python/
 
-example:
+example document:
 {"tag": "bruno.lan",
 "attn": "scs-be2-3",
 "rec": "2017-08-29T11:12:31.636+01:00",
