@@ -4,7 +4,7 @@ Created on 22 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
+# import sys
 
 from scs_core.gas.sensor import Sensor
 
@@ -65,7 +65,7 @@ class PIDTempComp(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def correct(self, calib, temp, we_t):
+    def correct(self, temp, we_t):
         """
         Compute weC from weT
         """
@@ -77,10 +77,10 @@ class PIDTempComp(object):
         if n_t is None:
             return None
 
-        we_c = None     # we_t - n_t * ae_t     # TODO: need to subtract nominal zero offset first
+        we_c = we_t * n_t
 
-        print("PIDTempComp.correct: temp:%f we_t:%f n_t:%f we_c:%s " %
-              (temp, we_t, n_t, we_c), file=sys.stderr)
+        # print("PIDTempComp.correct: temp:%f we_t:%f n_t:%f we_c:%s " % (temp, we_t, n_t, we_c), file=sys.stderr)
+        # print("-", file=sys.stderr)
 
         return we_c
 
@@ -110,8 +110,8 @@ class PIDTempComp(object):
 
         cf_t = y1 + (delta_y * delta_x)
 
-        print("PIDTempComp.cf_t: temp:%f y1:%f y2:%f delta_y:%f delta_x:%f cf_t:%f " %
-              (temp, y1, y2, delta_y, delta_x, cf_t), file=sys.stderr)
+        # print("PIDTempComp.cf_t: temp:%f y1:%f y2:%f delta_y:%f delta_x:%f cf_t:%f " %
+        #       (temp, y1, y2, delta_y, delta_x, cf_t), file=sys.stderr)
 
         return cf_t
 
