@@ -49,18 +49,6 @@ class PIDDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, we_v, we_c=None, cnc=None):
-        """
-        Constructor
-        """
-        self.__we_v = Datum.float(we_v, 6)          # uncorrected working electrode output      Volts
-
-        self.__we_c = Datum.float(we_c, 6)          # corrected working electrode voltage       Volts
-        self.__cnc = Datum.float(cnc, 1)            # gas concentration                         ppb
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @classmethod
     def __we_c(cls, calib, tc, temp, we_v):
         """
@@ -88,6 +76,18 @@ class PIDDatum(JSONable):
         # print("PIDDatum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
 
         return cnc
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, we_v, we_c=None, cnc=None):
+        """
+        Constructor
+        """
+        self.__we_v = Datum.float(we_v, 6)          # uncorrected working electrode output      Volts
+
+        self.__we_c = Datum.float(we_c, 6)          # corrected working electrode voltage       Volts
+        self.__cnc = Datum.float(cnc, 1)            # gas concentration                         ppb
 
 
     # ----------------------------------------------------------------------------------------------------------------
