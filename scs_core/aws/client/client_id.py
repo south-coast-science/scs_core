@@ -4,7 +4,7 @@ Created on 4 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"id": "rpi-006", "certificate": "9f01402232"}
+{"name": "rpi-006", "certificate": "9f01402232"}
 """
 
 from collections import OrderedDict
@@ -44,7 +44,7 @@ class ClientID(PersistentJSONable):
         if not jdict:
             return None
 
-        name = jdict.get('id')
+        name = jdict.get('name')
         certificate = jdict.get('certificate')
 
         return ClientID(name, certificate)
@@ -52,13 +52,13 @@ class ClientID(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id, certificate):
+    def __init__(self, name, certificate):
         """
         Constructor
         """
         super().__init__()
 
-        self.__id = id                              # String
+        self.__name = name                          # String
         self.__certificate = certificate            # String
 
 
@@ -67,7 +67,7 @@ class ClientID(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['id'] = self.id
+        jdict['name'] = self.name
         jdict['certificate'] = self.certificate
 
         return jdict
@@ -75,18 +75,22 @@ class ClientID(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def root_ca_file_path(self):
         return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.__ROOT_CA
 
 
+    @property
     def certificate_path(self):
         return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__CERTIFICATE_SUFFIX
 
 
+    @property
     def public_key_path(self):
         return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PUBLIC_KEY_SUFFIX
 
 
+    @property
     def private_key_path(self):
         return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PRIVATE_KEY_SUFFIX
 
@@ -94,8 +98,8 @@ class ClientID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def id(self):
-        return self.__id
+    def name(self):
+        return self.__name
 
 
     @property
@@ -106,4 +110,4 @@ class ClientID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientID:{id:%s, certificate:%s}" % (self.id, self.certificate)
+        return "ClientID:{host:%s, name:%s, certificate:%s}" % (self.host, self.name, self.certificate)

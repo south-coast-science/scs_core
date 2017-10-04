@@ -95,5 +95,5 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientAuth:{user_id:%s, client_id:%s, client_password:%s}" % \
-                    (self.user_id, self.client_id, self.client_password)
+        return "ClientAuth:{host:%s, user_id:%s, client_id:%s, client_password:%s}" % \
+                    (self.host, self.user_id, self.client_id, self.client_password)

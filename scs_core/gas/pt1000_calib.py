@@ -94,4 +94,4 @@ class Pt1000Calib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Pt1000Calib:{calibrated_on:%s, v20:%s}" % (self.calibrated_on, self.v20)
+        return "Pt1000Calib:{host:%s, calibrated_on:%s, v20:%s}" % (self.host, self.calibrated_on, self.v20)

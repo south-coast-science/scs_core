@@ -69,4 +69,4 @@ class Endpoint(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Endpoint:{endpoint_host:%s}" % self.endpoint_host
+        return "Endpoint:{host:%s, endpoint_host:%s}" % (self.host, self.endpoint_host)

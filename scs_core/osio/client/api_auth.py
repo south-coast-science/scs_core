@@ -77,4 +77,4 @@ class APIAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "APIAuth:{org_id:%s, api_key:%s}" % (self.org_id, self.api_key)
+        return "APIAuth:{host:%s, org_id:%s, api_key:%s}" % (self.host, self.org_id, self.api_key)

@@ -118,11 +118,6 @@ class PersistentJSONable(JSONable):
         return self.__host
 
 
-    # @host.setter
-    # def host(self, host):
-    #     self.__host = host
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
