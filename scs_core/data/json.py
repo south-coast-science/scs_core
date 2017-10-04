@@ -64,7 +64,7 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, host):
         pass
 
 
