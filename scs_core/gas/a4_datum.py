@@ -55,8 +55,8 @@ class A4Datum(JSONable):
         """
         Compute weC from sensor temperature compensation of weV, aeV
         """
-        we_t = we_v - (float(calib.we_elc_mv) / 1000.0)
-        ae_t = ae_v - (float(calib.ae_elc_mv) / 1000.0)
+        we_t = we_v - (float(calib.we_elc_mv) / 1000.0)        # remove electronic we zero
+        ae_t = ae_v - (float(calib.ae_elc_mv) / 1000.0)        # remove electronic ae zero
 
         we_c = tc.correct(calib, temp, we_t, ae_t)
 
@@ -73,7 +73,7 @@ class A4Datum(JSONable):
         if we_c is None:
             return None
 
-        cnc = (we_c * 1000.0) / sens_mv
+        cnc = we_c / (sens_mv / 1000.0)
 
         # print("A4Datum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
 
@@ -81,7 +81,7 @@ class A4Datum(JSONable):
 
 
     @classmethod
-    def __reverse_we_c(cls, sens_mv, cnc):
+    def __reverse_we_c(cls, sens_mv, cnc):      # TODO: don't use concentration - factor out baseline?
         """
         Compute weC from cnc (using cross-sensitivity)
         """
