@@ -67,11 +67,6 @@ class AFECalib(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -113,6 +108,8 @@ class AFECalib(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__serial_number = serial_number
         self.__afe_type = afe_type
 
@@ -126,12 +123,6 @@ class AFECalib(PersistentJSONable):
 
     def __len__(self):
         return len(self.__sensor_calibs)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------

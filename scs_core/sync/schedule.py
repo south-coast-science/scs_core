@@ -31,11 +31,6 @@ class Schedule(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -69,6 +64,8 @@ class Schedule(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__items = items
 
 
@@ -105,7 +102,7 @@ class Schedule(PersistentJSONable):
         if not self.is_valid():
             raise ValueError("Schedule.save: schedule is not valid.")
 
-        PersistentJSONable.save(self, self.__class__.filename(host))
+        super().save(host)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -26,11 +26,6 @@ class Endpoint(PersistentJSONable):
         return host.aws_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -38,24 +33,20 @@ class Endpoint(PersistentJSONable):
         if not jdict:
             return None
 
-        host = jdict.get('host')
+        endpoint_host = jdict.get('host')
 
-        return Endpoint(host)
+        return Endpoint(endpoint_host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host):
+    def __init__(self, endpoint_host):
         """
         Constructor
         """
-        self.__host = host                  # String
+        super().__init__()
 
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
+        self.__endpoint_host = endpoint_host                  # String
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,7 +54,7 @@ class Endpoint(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['host'] = self.host
+        jdict['host'] = self.endpoint_host
 
         return jdict
 
@@ -71,11 +62,11 @@ class Endpoint(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def host(self):
-        return self.__host
+    def endpoint_host(self):
+        return self.__endpoint_host
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Endpoint:{host:%s}" % self.host
+        return "Endpoint:{endpoint_host:%s}" % self.endpoint_host

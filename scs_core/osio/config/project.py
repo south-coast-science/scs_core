@@ -28,11 +28,6 @@ class Project(PersistentJSONable):
         return host.osio_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -69,14 +64,10 @@ class Project(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__location_path = location_path          # string
         self.__device_path = device_path              # string
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------

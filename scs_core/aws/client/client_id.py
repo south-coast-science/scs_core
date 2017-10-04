@@ -5,12 +5,6 @@ Created on 4 Oct 2017
 
 example document:
 {"id": "rpi-006", "certificate": "9f01402232"}
-
-# rootCAPath = "/home/pi/SCS/aws/root-CA.crt"
-# certificatePath = "/home/pi/SCS/aws/scs-rpi-006.cert.pem"  # 9f01402232-certificate.pem.crt
-# privateKeyPath = "/home/pi/SCS/aws/scs-rpi-006.private.key"  # 9f01402232-private.pem.key
-
-def configureCredentials(self, CAFilePath, KeyPath="", CertificatePath=""):  # Should be good for MutualAuth certs config and Websocket rootCA config
 """
 
 from collections import OrderedDict
@@ -32,11 +26,6 @@ class ClientID(PersistentJSONable):
         return host.aws_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     __CERTIFICATE_DIR = "certs/"
@@ -46,14 +35,6 @@ class ClientID(PersistentJSONable):
     __PUBLIC_KEY_SUFFIX = "-public.pem.key"
     __PRIVATE_KEY_SUFFIX = "-private.pem.key"
     __CERTIFICATE_SUFFIX = "-certificate.pem.crt"
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def root_ca_file_path(cls, host):
-        return host.aws_dir() + cls.__CERTIFICATE_DIR + cls.__ROOT_CA
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -75,14 +56,10 @@ class ClientID(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__id = id                              # String
         self.__certificate = certificate            # String
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -98,16 +75,20 @@ class ClientID(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def certificate_path(self, host):
-        return host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__CERTIFICATE_SUFFIX
+    def root_ca_file_path(self):
+        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.__ROOT_CA
 
 
-    def public_key_path(self, host):
-        return host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PUBLIC_KEY_SUFFIX
+    def certificate_path(self):
+        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__CERTIFICATE_SUFFIX
 
 
-    def private_key_path(self, host):
-        return host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PRIVATE_KEY_SUFFIX
+    def public_key_path(self):
+        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PUBLIC_KEY_SUFFIX
+
+
+    def private_key_path(self):
+        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PRIVATE_KEY_SUFFIX
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -26,11 +26,6 @@ class APIAuth(PersistentJSONable):
         return host.osio_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -50,14 +45,10 @@ class APIAuth(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__org_id = org_id                  # String
         self.__api_key = api_key                # String
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
