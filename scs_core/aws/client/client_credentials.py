@@ -4,7 +4,7 @@ Created on 4 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"name": "rpi-006", "certificate": "9f01402232"}
+{"name": "scs-rpi-006", "certificate": "9f01402232"}
 """
 
 from collections import OrderedDict
@@ -14,7 +14,7 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClientID(PersistentJSONable):
+class ClientCredentials(PersistentJSONable):
     """
     classdocs
     """
@@ -28,7 +28,7 @@ class ClientID(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __CERTIFICATE_DIR = "certs/"
+    __CERTIFICATE_DIR = "certs/"                    # hard-coded path
 
     __ROOT_CA = "root-CA.crt"
 
@@ -47,7 +47,7 @@ class ClientID(PersistentJSONable):
         name = jdict.get('name')
         certificate = jdict.get('certificate')
 
-        return ClientID(name, certificate)
+        return ClientCredentials(name, certificate)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -110,4 +110,4 @@ class ClientID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientID:{host:%s, name:%s, certificate:%s}" % (self.host, self.name, self.certificate)
+        return "ClientCredentials:{host:%s, name:%s, certificate:%s}" % (self.host, self.name, self.certificate)
