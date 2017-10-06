@@ -4,13 +4,15 @@ Created on 19 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-# import sys
+import sys
 
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
+
+# TODO: clean up PID data interpretation
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -37,7 +39,7 @@ class PIDDatum(JSONable):
             return PIDDatum(we_v)
 
         # cnc...
-        cnc = cls.__cnc(calib.pid_sens_mv, we_c)
+        cnc = cls.__cnc(calib.pid_elc_mv, calib.pid_sens_mv, we_c)
 
         baselined_cnc = cnc + baseline.offset
 
@@ -54,26 +56,27 @@ class PIDDatum(JSONable):
         """
         Compute weC from sensor temperature compensation of weV
         """
-        we_t = we_v - (float(calib.pid_elc_mv) / 1000.0)        # remove electronic zero
+        # we_t = we_v - (float(calib.pid_elc_mv) / 1000.0)        # remove electronic zero
 
-        we_c = tc.correct(temp, we_t)
+        we_c = tc.correct(temp, we_v)
 
-        # print("PIDDatum.__we_c: we_v:%f we_t:%f we_c:%s" % (we_v, we_t, we_c), file=sys.stderr)
+        # print("PIDDatum.__we_c: we_v:%f we_t:%f we_c:%s" % (we_v, we_v, we_c), file=sys.stderr)
 
         return we_c
 
 
     @classmethod
-    def __cnc(cls, sens_mv, we_c):
+    def __cnc(cls, pid_elc_mv, sens_mv, we_c):
         """
         Compute cnc from weC
         """
         if we_c is None:
             return None
 
-        cnc = (we_c / (sens_mv / 1000.0)) * 1000.0     # to get ppb
+        # cnc = (we_c / (sens_mv / 1000.0)) * 1000.0     # to get ppb
+        cnc = (we_c - (pid_elc_mv / 1000.0)) / sens_mv          # * 1000.0     # to get ppb
 
-        # print("PIDDatum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
+        # print("PIDDatum__cnc: we_c:%s pid_elc_mv:%s cnc:%f" % (we_c, pid_elc_mv, cnc), file=sys.stderr)
 
         return cnc
 

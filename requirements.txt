@@ -1,3 +1,5 @@
+AWSIoTPythonSDK
+AWSIoTPythonSDK
 pytz
 tzlocal
 
