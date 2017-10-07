@@ -197,7 +197,7 @@ class AFECalib(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         sensor_calibs = '[' + ', '.join(str(calib) for calib in self.__sensor_calibs) + ']'
 
-        return "AFECalib:{host:%s, serial_number:%s, afe_type:%s, calibrated_on:%s, dispatched_on:%s, " \
+        return "AFECalib:{serial_number:%s, afe_type:%s, calibrated_on:%s, dispatched_on:%s, " \
                "pt100_calib:%s, sensor_calibs:%s}" % \
-               (self.host, self.serial_number, self.afe_type, self.calibrated_on, self.dispatched_on,
+               (self.serial_number, self.afe_type, self.calibrated_on, self.dispatched_on,
                 self.pt1000_calib, sensor_calibs)

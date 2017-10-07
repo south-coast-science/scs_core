@@ -139,4 +139,4 @@ class Project(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Project:{host:%s, location_path:%s, device_path:%s}" % (self.host, self.location_path, self.device_path)
+        return "Project:{location_path:%s, device_path:%s}" % (self.location_path, self.device_path)

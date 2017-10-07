@@ -110,4 +110,4 @@ class ClientCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientCredentials:{host:%s, name:%s, certificate:%s}" % (self.host, self.name, self.certificate)
+        return "ClientCredentials:{name:%s, certificate:%s}" % (self.name, self.certificate)

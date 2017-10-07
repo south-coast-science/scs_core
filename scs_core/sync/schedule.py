@@ -134,7 +134,7 @@ class Schedule(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         items = '[' + ', '.join(str(item) for item in self.__items.values()) + ']'
 
-        return "Schedule:{host:%s, items:%s}" % (self.host, items)
+        return "Schedule:{items:%s}" % items
 
 
 # --------------------------------------------------------------------------------------------------------------------

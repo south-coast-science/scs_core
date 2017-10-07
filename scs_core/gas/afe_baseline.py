@@ -93,4 +93,4 @@ class AFEBaseline(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         sensor_baselines = '[' + ', '.join(str(baseline) for baseline in self.__sensor_baselines) + ']'
 
-        return "AFEBaseline:{host:%s, sensor_baselines:%s}" % (self.host, sensor_baselines)
+        return "AFEBaseline:{sensor_baselines:%s}" % sensor_baselines

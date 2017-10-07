@@ -118,4 +118,4 @@ class TimezoneConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TimezoneConf:{host:%s, set_on:%s, name:%s}" % (self.host, self.set_on, self.name)
+        return "TimezoneConf:{set_on:%s, name:%s}" % (self.set_on, self.name)
