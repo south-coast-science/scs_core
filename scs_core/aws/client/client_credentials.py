@@ -7,6 +7,8 @@ example document:
 {"name": "scs-rpi-006", "certificate": "9f01402232"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -19,7 +21,7 @@ class ClientCredentials(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "client_id.json"
+    __FILENAME = "client_credentials.json"
 
     @classmethod
     def filename(cls, host):
@@ -71,6 +73,24 @@ class ClientCredentials(PersistentJSONable):
         jdict['certificate'] = self.certificate
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def installed_ok(self):
+        if not os.access(self.root_ca_file_path, os.R_OK):
+            return False
+
+        if not os.access(self.certificate_path, os.R_OK):
+            return False
+
+        if not os.access(self.public_key_path, os.R_OK):
+            return False
+
+        if not os.access(self.private_key_path, os.R_OK):
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
