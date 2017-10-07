@@ -4,7 +4,7 @@ Created on 19 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
+# import sys
 
 from collections import OrderedDict
 

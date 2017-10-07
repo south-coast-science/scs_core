@@ -6,16 +6,10 @@ Created on 6 Oct 2017
 https://github.com/aws/aws-iot-device-sdk-python
 """
 
-# import json
-
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
-
-# from collections import OrderedDict
-
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 from scs_core.data.json import JSONify
-# from scs_core.data.publication import Publication
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -25,7 +19,7 @@ class MQTTClient(object):
     classdocs
     """
 
-    __PORT =        8883
+    __PORT =                        8883
 
     __QUEUE_SIZE =                  -1                      # recommended: infinite
     __QUEUE_DROP_BEHAVIOUR =        MQTTLib.DROP_OLDEST     # not required for infinite queue
@@ -38,30 +32,27 @@ class MQTTClient(object):
     __DISCONNECT_TIMEOUT =          30                      # recommended: 10 sec
     __OPERATION_TIMEOUT =           30                      # recommended: 5 sec
 
-    __PUB_QOS =     1
-    __SUB_QOS =     1
+    __PUB_QOS =                     1
+    __SUB_QOS =                     1
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def on_message_handler(cls, subscriber):
-        pass
-
-
-    @classmethod
-    def on_topic_message_handler(cls, subscriber, msg):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, endpoint, credentials, *subscribers):
+    def __init__(self, *subscribers):
         """
         Constructor
         """
+        self.__client = None
+        self.__subscribers = subscribers
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def connect(self, endpoint, credentials):
+        # client...
         self.__client = AWSIoTMQTTClient(credentials.name)
 
+        # configuration...
         self.__client.configureEndpoint(endpoint.endpoint_host, self.__PORT)
 
         self.__client.configureCredentials(credentials.root_ca_file_path,
@@ -75,10 +66,11 @@ class MQTTClient(object):
         self.__client.configureConnectDisconnectTimeout(self.__DISCONNECT_TIMEOUT)
         self.__client.configureMQTTOperationTimeout(self.__OPERATION_TIMEOUT)
 
+        # subscriptions...
+        for subscriber in self.__subscribers:
+            self.__client.subscribe(subscriber.topic, self.__SUB_QOS, subscriber.handler)
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def connect(self):
+        # connect...
         self.__client.connect()
 
 
@@ -97,9 +89,9 @@ class MQTTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        # subscribers = '[' + ', '.join(str(subscriber) for subscriber in self.__subscribers) + ']'
+        subscribers = '[' + ', '.join(str(subscriber) for subscriber in self.__subscribers) + ']'
 
-        return "MQTTClient:{client:%s}" % self.__client
+        return "MQTTClient:{subscribers:%s}" % subscribers
 
 
 # --------------------------------------------------------------------------------------------------------------------

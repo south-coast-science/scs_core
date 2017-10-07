@@ -8,7 +8,7 @@ PID-AH sn: 143950149 - pid_elc_mv: 47.6, pid_sens_mv: 0.0375
 PID-AH default - pid_elc_mv: 54, pid_sens_mv: 0.040
 """
 
-import sys
+# import sys
 
 from scs_core.gas.pid_calib import PIDCalib
 from scs_core.gas.pid_datum import PIDDatum

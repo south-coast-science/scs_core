@@ -4,7 +4,7 @@ Created on 22 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
+# import sys
 
 from scs_core.gas.sensor import Sensor
 
