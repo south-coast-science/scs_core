@@ -4,12 +4,8 @@ Created on 22 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-# import sys
-
 from scs_core.gas.sensor import Sensor
 
-
-# TODO: clean up PID data interpretation
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -81,9 +77,6 @@ class PIDTempComp(object):
 
         we_c = we_t * n_t
 
-        # print("PIDTempComp.correct: temp:%f we_t:%f n_t:%f we_c:%s " % (temp, we_t, n_t, we_c), file=sys.stderr)
-        # print("-", file=sys.stderr)
-
         return we_c
 
 
@@ -111,9 +104,6 @@ class PIDTempComp(object):
         delta_x = float(temp % PIDTempComp.__INTERVAL) / PIDTempComp.__INTERVAL     # proportion of interval
 
         cf_t = y1 + (delta_y * delta_x)
-
-        # print("PIDTempComp.cf_t: temp:%f y1:%f y2:%f delta_y:%f delta_x:%f cf_t:%f " %
-        #       (temp, y1, y2, delta_y, delta_x, cf_t), file=sys.stderr)
 
         return cf_t
 

@@ -55,8 +55,8 @@ class A4Datum(JSONable):
         """
         Compute weC from sensor temperature compensation of weV, aeV
         """
-        we_t = we_v - (float(calib.we_elc_mv) / 1000.0)        # remove electronic we zero
-        ae_t = ae_v - (float(calib.ae_elc_mv) / 1000.0)        # remove electronic ae zero
+        we_t = we_v - (calib.we_elc_mv / 1000.0)        # remove electronic we zero
+        ae_t = ae_v - (calib.ae_elc_mv / 1000.0)        # remove electronic ae zero
 
         we_c = tc.correct(calib, temp, we_t, ae_t)
 

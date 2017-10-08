@@ -5,10 +5,8 @@ Created on 30 Sep 2016
 
 PID-AH sn: 143950149 - pid_elc_mv: 47.6, pid_sens_mv: 0.0375
 
-PID-AH default - pid_elc_mv: 54, pid_sens_mv: 0.040
+PID-AH "default" - pid_elc_mv: 54, pid_sens_mv: 0.040
 """
-
-import sys
 
 from scs_core.gas.pid_calib import PIDCalib
 from scs_core.gas.pid_datum import PIDDatum
@@ -16,8 +14,6 @@ from scs_core.gas.pid_temp_comp import PIDTempComp
 
 from scs_core.gas.sensor import Sensor
 
-
-# TODO: clean up PID data interpretation
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -30,8 +26,8 @@ class PID(Sensor):
 
     @classmethod
     def init(cls):
-        cls.SENSORS[cls.CODE_VOC_PPB] = PID(cls.CODE_VOC_PPB,  'VOC',  4, 47.6, 0.0375)
-        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  4, 54, 0.040)
+        cls.SENSORS[cls.CODE_VOC_PPB] = PID(cls.CODE_VOC_PPB,  'VOC',  4, 50.0, 0.040)
+        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  4, 50.0, 0.040)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -52,9 +48,6 @@ class PID(Sensor):
 
     def sample(self, afe, temp, sensor_index, no2_sample=None):
         we_v = afe.sample_raw_wrk(sensor_index, self.adc_gain_index)
-
-        print("PID.sample: %s" % self, file=sys.stderr)
-        print("-", file=sys.stderr)
 
         return PIDDatum.construct(self.calib, self.baseline, self.__tc, temp, we_v)
 
