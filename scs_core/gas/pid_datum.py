@@ -4,7 +4,7 @@ Created on 19 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-# import sys
+import sys
 
 from collections import OrderedDict
 
@@ -28,9 +28,9 @@ class PIDDatum(JSONable):
         if calib is None or tc is None:
             return PIDDatum(we_v)
 
-        # print("PIDDatum.construct: calib:%s baseline:%s tc:%s temp:%.1f we_v:%f" % (calib, baseline, tc, temp, we_v),
-        #       file=sys.stderr)
-        # print("-", file=sys.stderr)
+        print("PIDDatum.construct: calib:%s baseline:%s tc:%s temp:%.1f we_v:%f" % (calib, baseline, tc, temp, we_v),
+              file=sys.stderr)
+        print("-", file=sys.stderr)
 
         # weC...
         we_c = cls.__we_c(calib, tc, temp, we_v)
@@ -43,8 +43,8 @@ class PIDDatum(JSONable):
 
         baselined_cnc = cnc + baseline.offset
 
-        # print("PIDDatum.construct: baselined_cnc:%s" % baselined_cnc, file=sys.stderr)
-        # print("-", file=sys.stderr)
+        print("PIDDatum.construct: baselined_cnc:%s" % baselined_cnc, file=sys.stderr)
+        print("-", file=sys.stderr)
 
         return PIDDatum(we_v, we_c, baselined_cnc)
 
@@ -60,7 +60,7 @@ class PIDDatum(JSONable):
 
         we_c = tc.correct(temp, we_v)
 
-        # print("PIDDatum.__we_c: we_v:%f we_t:%f we_c:%s" % (we_v, we_v, we_c), file=sys.stderr)
+        print("PIDDatum.__we_c: we_v:%f we_t:%f we_c:%s" % (we_v, we_v, we_c), file=sys.stderr)
 
         return we_c
 
@@ -76,7 +76,7 @@ class PIDDatum(JSONable):
         # cnc = (we_c / (sens_mv / 1000.0)) * 1000.0     # to get ppb
         cnc = (we_c - (pid_elc_mv / 1000.0)) / sens_mv          # * 1000.0     # to get ppb
 
-        # print("PIDDatum__cnc: we_c:%s pid_elc_mv:%s cnc:%f" % (we_c, pid_elc_mv, cnc), file=sys.stderr)
+        print("PIDDatum__cnc: we_c:%s pid_elc_mv:%s cnc:%f" % (we_c, pid_elc_mv, cnc), file=sys.stderr)
 
         return cnc
 
