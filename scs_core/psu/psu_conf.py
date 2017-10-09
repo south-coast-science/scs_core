@@ -18,7 +18,7 @@ class PSUConf(object):
     """
 
     @classmethod
-    def load_from_host(cls, _):
+    def load(cls, _):
         return PSUConf()
 
 
