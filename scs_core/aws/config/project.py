@@ -1,10 +1,10 @@
 """
-Created on 17 Feb 2017
+Created on 7 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"location-path": "/orgs/southcoastscience-dev/test/loc/1", "device-path": "/orgs/southcoastscience-dev/test/device"}
+{"location-path": "southcoastscience-dev/test/loc/1", "device-path": "southcoastscience-dev/test/device"}
 """
 
 from collections import OrderedDict
@@ -21,11 +21,11 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                "osio_project.json"
+    __FILENAME =                "project.json"
 
     @classmethod
     def filename(cls, host):
-        return host.osio_dir() + cls.__FILENAME
+        return host.aws_dir() + cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class Project(PersistentJSONable):
 
     @classmethod
     def construct(cls, org_id, group, location_id):
-        path_root = '/orgs/' + org_id + '/'
+        path_root = org_id + '/'
 
         location_path = path_root + group + '/loc/' + str(location_id)
         device_path = path_root + group + '/device'

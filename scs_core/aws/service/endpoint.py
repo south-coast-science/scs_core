@@ -1,10 +1,10 @@
 """
-Created on 17 Nov 2016
+Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"org-id": "south-coast-science-test-user", "api-key": "9fdfb841-3433-45b8-b223-3f5a283ceb8e"}
+{"host": "asrfh6e5j5ecz.iot.us-west-2.amazonaws.com"}
 """
 
 from collections import OrderedDict
@@ -14,16 +14,16 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class APIAuth(PersistentJSONable):
+class Endpoint(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "osio_api_auth.json"
+    __FILENAME = "endpoint.json"
 
     @classmethod
     def filename(cls, host):
-        return host.osio_dir() + cls.__FILENAME
+        return host.aws_dir() + cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -33,22 +33,20 @@ class APIAuth(PersistentJSONable):
         if not jdict:
             return None
 
-        org_id = jdict.get('org-id')
-        api_key = jdict.get('api-key')
+        endpoint_host = jdict.get('host')
 
-        return APIAuth(org_id, api_key)
+        return Endpoint(endpoint_host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org_id, api_key):
+    def __init__(self, endpoint_host):
         """
         Constructor
         """
         super().__init__()
 
-        self.__org_id = org_id                  # String
-        self.__api_key = api_key                # String
+        self.__endpoint_host = endpoint_host                  # String
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -56,8 +54,7 @@ class APIAuth(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['org-id'] = self.org_id
-        jdict['api-key'] = self.api_key
+        jdict['host'] = self.endpoint_host
 
         return jdict
 
@@ -65,16 +62,11 @@ class APIAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def org_id(self):
-        return self.__org_id
-
-
-    @property
-    def api_key(self):
-        return self.__api_key
+    def endpoint_host(self):
+        return self.__endpoint_host
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "APIAuth:{org_id:%s, api_key:%s}" % (self.org_id, self.api_key)
+        return "Endpoint:{endpoint_host:%s}" % self.endpoint_host

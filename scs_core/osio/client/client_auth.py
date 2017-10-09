@@ -33,11 +33,6 @@ class ClientAuth(PersistentJSONable):
         return host.osio_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -59,16 +54,12 @@ class ClientAuth(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__user_id = user_id                        # string
 
         self.__client_id = client_id                    # string
         self.__client_password = client_password        # string
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------

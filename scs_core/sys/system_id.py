@@ -29,11 +29,6 @@ class SystemID(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -58,6 +53,8 @@ class SystemID(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__vendor_id = vendor_id                # string (3 chars)
         self.__model_id = model_id                  # string (3 chars)
 
@@ -65,12 +62,6 @@ class SystemID(PersistentJSONable):
         self.__configuration = configuration        # string
 
         self.__system_serial_number = system_serial_number        # string (by convention, int)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -157,5 +148,5 @@ class SystemID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SystemID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s, system_serial_number:%s}" % \
+        return "SystemID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s,  system_serial_number:%s}" % \
                (self.vendor_id, self.model_id, self.model_name, self.configuration, self.system_serial_number)

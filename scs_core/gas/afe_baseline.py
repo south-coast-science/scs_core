@@ -34,11 +34,6 @@ class AFEBaseline(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -63,17 +58,13 @@ class AFEBaseline(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__sensor_baselines = sensor_baselines        # array of SensorBaseline
 
 
     def __len__(self):
         return len(self.__sensor_baselines)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -34,8 +34,6 @@ class JSONable(object):
         pass
 
 
-# TODO: move PersistentJSONable to host.data?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PersistentJSONable(JSONable):
@@ -44,6 +42,16 @@ class PersistentJSONable(JSONable):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load(cls, host):
+        instance = cls.load_from_file(cls.filename(host))
+
+        if instance is not None:
+            instance.__host = host
+
+        return instance
+
 
     @classmethod
     def load_from_file(cls, filename):
@@ -64,13 +72,31 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def filename(cls, host):
         pass
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, jdict):
+        return PersistentJSONable()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, filename):
+    def __init__(self):
+        self.__host = None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, host):
+        self.__host = host
+
+        self.save_to_file(self.filename(host))
+
+
+    def save_to_file(self, filename):
         jstr = JSONify.dumps(self)
 
         f = open(filename, "w")
@@ -83,6 +109,19 @@ class PersistentJSONable(JSONable):
     @abstractmethod
     def as_json(self):
         pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def host(self):
+        return self.__host
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "PersistentJSONable:{host:%s}" % self.host
 
 
 # --------------------------------------------------------------------------------------------------------------------
