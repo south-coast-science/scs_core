@@ -1,5 +1,4 @@
 AWSIoTPythonSDK
-AWSIoTPythonSDK
 pytz
 tzlocal
 
