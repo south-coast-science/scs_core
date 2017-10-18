@@ -4,6 +4,7 @@ Created on 13 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
 import urllib.parse
 
 from collections import OrderedDict
@@ -188,6 +189,8 @@ class TopicManager(object):
 
     def create(self, topic):
         request_path = '/v2/topics'
+
+        print("create: %s" % topic.as_json(), file=sys.stderr)
 
         # request...
         self.__rest_client.connect()
