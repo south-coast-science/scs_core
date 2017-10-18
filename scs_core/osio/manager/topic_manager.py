@@ -132,13 +132,16 @@ class TopicManager(object):
         params = {'offset': 0, 'count': self.__FINDER_BATCH_SIZE}
 
         while True:
+            topics = []
+
             # request...
             response_jdict = self.__rest_client.get(request_path, params)
 
+            if response_jdict is None:
+                return
+
             # topics...
             topics_jdict = response_jdict.get('topics')
-
-            topics = []
 
             if topics_jdict:
                 for topic_jdict in topics_jdict:
