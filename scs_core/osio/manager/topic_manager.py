@@ -190,8 +190,6 @@ class TopicManager(object):
     def create(self, topic):
         request_path = '/v2/topics'
 
-        print("create: %s" % topic.as_json(), file=sys.stderr)
-
         # request...
         self.__rest_client.connect()
 
