@@ -4,7 +4,6 @@ Created on 13 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
 import urllib.parse
 
 from collections import OrderedDict
