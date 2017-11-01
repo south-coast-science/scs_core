@@ -22,6 +22,11 @@ class Node(object):
 
 
     @abstractmethod
+    def scs_dir(self):
+        pass
+
+
+    @abstractmethod
     def conf_dir(self):
         pass
 
