@@ -1,4 +1,4 @@
-AWSIoTPythonSDK
-pytz
-tzlocal
+AWSIoTPythonSDK>=1.2.0,<1.3
+pytz>=2017.3
+tzlocal>=1.4,<1.5
 
