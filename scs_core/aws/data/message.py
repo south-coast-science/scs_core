@@ -45,8 +45,8 @@ class Message(JSONable):
 
         device = jdict.get('device')
         topic = jdict.get('topic')
-
         upload = LocalizedDatetime.construct_from_iso8601(jdict.get('upload'))
+
         payload = jdict.get('payload')
 
         return Message(device, topic, upload, payload)
