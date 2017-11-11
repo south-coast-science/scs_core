@@ -46,22 +46,21 @@ class Message(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-
-        date = LocalizedDatetime.construct_from_iso8601(jdict.get('sampled_at'))
+        upload = LocalizedDatetime.construct_from_iso8601(jdict.get('upload'))
         payload = jdict.get('payload')
 
-        return Message(device, topic, date, payload)
+        return Message(device, topic, upload, payload)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, date, payload):
+    def __init__(self, device, topic, upload, payload):
         """
         Constructor
         """
         self.__device = device                  # string
         self.__topic = topic                    # string
-        self.__date = date                      # LocalizedDatetime
+        self.__upload = upload                  # LocalizedDatetime
 
         self.__payload = payload                # string (JSON document)
 
@@ -73,7 +72,8 @@ class Message(JSONable):
 
         jdict['device'] = self.device
         jdict['topic'] = self.topic
-        jdict['date'] = self.date
+        jdict['upload'] = self.upload
+
         jdict['payload'] = self.payload
 
         return jdict
@@ -92,8 +92,8 @@ class Message(JSONable):
 
 
     @property
-    def date(self):
-        return self.__date
+    def upload(self):
+        return self.__upload
 
 
     @property
@@ -104,5 +104,5 @@ class Message(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Message:{device:%s, topic:%s, date:%s, payload:%s}" % \
-               (self.device, self.topic, self.date, self.payload)
+        return "Message:{device:%s, topic:%s, upload:%s, payload:%s}" % \
+               (self.device, self.topic, self.upload, self.payload)
