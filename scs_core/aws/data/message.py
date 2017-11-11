@@ -18,7 +18,7 @@ example:
         "tag":"scs-be2-2"
     },
     "topic":"south-coast-science-dev/production-test/loc/1/gases",
-    "sampled_at":"2017-11-03T17:52:45.559+00:00",
+    "upload":"2017-11-03T17:52:45.559+00:00",
     "device":"scs-bbe-002"
 }
 """
