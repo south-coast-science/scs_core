@@ -2,9 +2,6 @@
 Created on 13 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-south-coast-science-dev
-43308b72-ad41-4555-b075-b4245c1971db
 """
 
 import sys
@@ -12,7 +9,6 @@ import time
 
 import urllib.parse
 
-# from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.osio.client.rest_client import RESTClient
@@ -56,9 +52,6 @@ class MessageManager(object):
                     batch_count = len(batch)
                     total += batch_count
 
-                    # last_document = batch[len(batch) - 1]
-                    # print("last: %s" % JSONify.dumps(last_document), file=sys.stderr)
-
                     print("%s: batch: %d total: %d" % (now.as_iso8601(), batch_count, total), file=sys.stderr)
                     sys.stderr.flush()
 
@@ -80,8 +73,8 @@ class MessageManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # messages...
-            msg_jdict = jdict.get('messages')
-            messages = [Message.construct_from_jdict(msg_jdict) for msg_jdict in msg_jdict] if msg_jdict else []
+            msgs_jdict = jdict.get('messages')
+            messages = [Message.construct_from_jdict(msg_jdict) for msg_jdict in msgs_jdict] if msgs_jdict else []
 
             yield messages
 
