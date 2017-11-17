@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('requirements.txt') as req_txt:
@@ -14,12 +14,14 @@ except ImportError:
 
 setup(
     name='scs_core',
-    version='0.1.2',
+    version='0.1.6',
     description='Core package for South Coast Science Software',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
     url='https://github.com/south-coast-science/scs_core',
-    packages=['scs_core'],
+    package_dir={'scs_core':'scs_core'},
+    packages=find_packages('scs_core'),
+    # packages=['scs_core'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: MacOS :: MacOS X',
