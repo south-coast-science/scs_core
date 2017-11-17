@@ -19,8 +19,8 @@ setup(
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
     url='https://github.com/south-coast-science/scs_core',
-    package_dir={'scs_core':'scs_core'},
-    packages=find_packages('scs_core'),
+    package_dir={'':'src'},
+    packages=find_packages('src'),
     # packages=['scs_core'],
     classifiers=[
         'Development Status :: 4 - Beta',
