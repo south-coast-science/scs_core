@@ -36,21 +36,21 @@ class MessagePayload(JSONable):
         content_type = jdict.get('content-type')
         text = jdict.get('text')
 
-        payload = PathDict.construct_from_jstr(text) if content_type == cls.__TYPE_JSON else text
+        content = PathDict.construct_from_jstr(text) if content_type == cls.__TYPE_JSON else text
 
-        return MessagePayload(encoding, content_type, payload)
+        return MessagePayload(encoding, content_type, content)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, encoding, content_type, payload):
+    def __init__(self, encoding, content_type, content):
         """
         Constructor
         """
         self.__encoding = encoding              # string			utf-8
         self.__content_type = content_type      # string			application/json
 
-        self.__payload = payload                # string			JSON document
+        self.__content = content                # string			JSON document
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ class MessagePayload(JSONable):
         jdict['encoding'] = self.encoding
         jdict['content-type'] = self.content_type
 
-        jdict['payload'] = self.payload
+        jdict['content'] = self.content
 
         return jdict
 
@@ -79,12 +79,12 @@ class MessagePayload(JSONable):
 
 
     @property
-    def payload(self):
-        return self.__payload
+    def content(self):
+        return self.__content
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessagePayload:{encoding:%s, content_type:%s, payload:%s}" % \
-               (self.encoding, self.content_type, self.payload)
+        return "MessagePayload:{encoding:%s, content_type:%s, content:%s}" % \
+               (self.encoding, self.content_type, self.content)

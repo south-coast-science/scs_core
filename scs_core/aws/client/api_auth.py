@@ -1,10 +1,10 @@
 """
-Created on 17 Nov 2016
+Created on 6 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"org-id": "south-coast-science-test-user", "api-key": "9fdfb841-3433-45b8-b223-3f5a283ceb8e"}
+{"api-key": "de92c5ff-b47a-4cc4-a04c-62d684d74a1f"}
 """
 
 from collections import OrderedDict
@@ -19,11 +19,11 @@ class APIAuth(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "osio_api_auth.json"
+    __FILENAME = "aws_api_auth.json"
 
     @classmethod
     def filename(cls, host):
-        return host.osio_dir() + cls.__FILENAME
+        return host.aws_dir() + cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -33,21 +33,19 @@ class APIAuth(PersistentJSONable):
         if not jdict:
             return None
 
-        org_id = jdict.get('org-id')
         api_key = jdict.get('api-key')
 
-        return APIAuth(org_id, api_key)
+        return APIAuth(api_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org_id, api_key):
+    def __init__(self, api_key):
         """
         Constructor
         """
         super().__init__()
 
-        self.__org_id = org_id                  # String
         self.__api_key = api_key                # String
 
 
@@ -56,18 +54,12 @@ class APIAuth(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['org-id'] = self.org_id
         jdict['api-key'] = self.api_key
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def org_id(self):
-        return self.__org_id
-
 
     @property
     def api_key(self):
@@ -77,4 +69,4 @@ class APIAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "APIAuth:{org_id:%s, api_key:%s}" % (self.org_id, self.api_key)
+        return "APIAuth:{api_key:%s}" % self.api_key

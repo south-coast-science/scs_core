@@ -67,11 +67,6 @@ class AFECalib(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -113,6 +108,8 @@ class AFECalib(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__serial_number = serial_number
         self.__afe_type = afe_type
 
@@ -126,12 +123,6 @@ class AFECalib(PersistentJSONable):
 
     def __len__(self):
         return len(self.__sensor_calibs)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -206,7 +197,7 @@ class AFECalib(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         sensor_calibs = '[' + ', '.join(str(calib) for calib in self.__sensor_calibs) + ']'
 
-        return "AFECalib:{serial_number:%s, afe_type:%s, calibrated_on:%s, dispatched_on:%s, pt100_calib:%s, " \
-               "sensor_calibs:%s}" % \
-               (self.serial_number, self.afe_type, self.calibrated_on, self.dispatched_on, self.pt1000_calib,
-                sensor_calibs)
+        return "AFECalib:{serial_number:%s, afe_type:%s, calibrated_on:%s, dispatched_on:%s, " \
+               "pt100_calib:%s, sensor_calibs:%s}" % \
+               (self.serial_number, self.afe_type, self.calibrated_on, self.dispatched_on,
+                self.pt1000_calib, sensor_calibs)

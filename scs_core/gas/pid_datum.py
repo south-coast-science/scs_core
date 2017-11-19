@@ -4,8 +4,6 @@ Created on 19 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-# import sys
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -26,10 +24,6 @@ class PIDDatum(JSONable):
         if calib is None or tc is None:
             return PIDDatum(we_v)
 
-        # print("PIDDatum.construct: calib:%s baseline:%s tc:%s temp:%.1f we_v:%f" % (calib, baseline, tc, temp, we_v),
-        #       file=sys.stderr)
-        # print("-", file=sys.stderr)
-
         # weC...
         we_c = cls.__we_c(calib, tc, temp, we_v)
 
@@ -37,12 +31,9 @@ class PIDDatum(JSONable):
             return PIDDatum(we_v)
 
         # cnc...
-        cnc = cls.__cnc(calib.pid_sens_mv, we_c)
+        cnc = cls.__cnc(calib, we_c)
 
         baselined_cnc = cnc + baseline.offset
-
-        # print("PIDDatum.construct: baselined_cnc:%s" % baselined_cnc, file=sys.stderr)
-        # print("-", file=sys.stderr)
 
         return PIDDatum(we_v, we_c, baselined_cnc)
 
@@ -54,26 +45,27 @@ class PIDDatum(JSONable):
         """
         Compute weC from sensor temperature compensation of weV
         """
-        we_t = we_v - (float(calib.pid_elc_mv) / 1000.0)        # remove electronic zero
+        offset_v = calib.pid_elc_mv / 1000.0
 
-        we_c = tc.correct(temp, we_t)
-
-        # print("PIDDatum.__we_c: we_v:%f we_t:%f we_c:%s" % (we_v, we_t, we_c), file=sys.stderr)
+        response_v = we_v - offset_v                # remove electronic zero
+        response_c = tc.correct(temp, response_v)   # correct the response component
+        we_c = response_c + offset_v                # replace electronic zero
 
         return we_c
 
 
     @classmethod
-    def __cnc(cls, sens_mv, we_c):
+    def __cnc(cls, calib, we_c):
         """
         Compute cnc from weC
         """
         if we_c is None:
             return None
 
-        cnc = (we_c / (sens_mv / 1000.0)) * 1000.0     # to get ppb
+        offset_v = calib.pid_elc_mv / 1000.0
 
-        # print("PIDDatum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
+        response_c = we_c - offset_v                # remove electronic zero
+        cnc = response_c / calib.pid_sens_mv        # mV / ppm magnitudes factor out!
 
         return cnc
 

@@ -28,11 +28,6 @@ class Pt1000Calib(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -58,6 +53,8 @@ class Pt1000Calib(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
         self.__v20 = Datum.float(v20, 6)            # voltage at 20 ºC
 
@@ -68,7 +65,7 @@ class Pt1000Calib(PersistentJSONable):
         if self.__calibrated_on is None:
             self.__calibrated_on = LocalizedDatetime.now()
 
-        PersistentJSONable.save(self, self.__class__.filename(host))
+        super().save(host)
 
 
     # ----------------------------------------------------------------------------------------------------------------

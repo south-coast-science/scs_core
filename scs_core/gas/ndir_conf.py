@@ -18,7 +18,7 @@ class NDIRConf(object):
     """
 
     @classmethod
-    def load_from_host(cls, _):
+    def load(cls, _):
         return NDIRConf()
 
 

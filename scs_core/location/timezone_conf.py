@@ -37,11 +37,6 @@ class TimezoneConf(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -66,6 +61,8 @@ class TimezoneConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__set_on = set_on                          # LocalizedDatetime
         self.__name = name                              # a Pytz timezone name or None
 
@@ -82,7 +79,7 @@ class TimezoneConf(PersistentJSONable):
         if self.__set_on is None:
             self.__set_on = LocalizedDatetime.now()
 
-        PersistentJSONable.save(self, self.__class__.filename(host))
+        super().save(host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
