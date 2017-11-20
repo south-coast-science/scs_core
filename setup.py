@@ -16,7 +16,7 @@ except ImportError:
 
 setup(
     name='scs_core',
-    version='0.1.8',
+    version='0.1.9',
     description='Core package for South Coast Science Software',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
