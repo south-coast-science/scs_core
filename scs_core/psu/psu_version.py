@@ -27,7 +27,8 @@ class PSUVersion(JSONable):
             return None
 
         id = jdict.get('id')
-        tag = jdict.get('tag')
+
+        tag = PSUTag.construct_from_jdict(jdict.get('tag'))
 
         compile_date = jdict.get('c-date')
         compile_time = jdict.get('c-time')
@@ -41,11 +42,11 @@ class PSUVersion(JSONable):
         """
         Constructor
         """
-        self.__id = id
-        self.__tag = tag
+        self.__id = id                                  # string
+        self.__tag = tag                                # PSUTag
 
-        self.__compile_date = compile_date
-        self.__compile_time = compile_time
+        self.__compile_date = compile_date              # string (Unix date)
+        self.__compile_time = compile_time              # string (time)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -89,3 +90,66 @@ class PSUVersion(JSONable):
     def __str__(self, *args, **kwargs):
         return "PSUVersion:{id:%s, tag:%s, compile_date:%s, compile_time:%s}" \
                % (self.id, self.tag, self.compile_date, self.compile_time)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class PSUTag(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        items = jdict.split('.')
+
+        device = int(items[0])
+        api = int(items[1])
+        patch = int(items[2])
+
+        return PSUTag(device, api, patch)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device, api, patch):
+        """
+        Constructor
+        """
+        self.__device = device                  # int
+        self.__api = api                        # int
+        self.__patch = patch                    # int
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        return str(self.device) + '.' + str(self.api) + '.' + str(self.patch)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device(self):
+        return self.__device
+
+
+    @property
+    def api(self):
+        return self.__api
+
+
+    @property
+    def patch(self):
+        return self.__patch
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "PSUTag:{device:%s, api:%s, patch:%s}" % (self.device, self.api, self.patch)
