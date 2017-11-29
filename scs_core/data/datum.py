@@ -15,8 +15,21 @@ class Datum(object):
     """
     classdocs
     """
-    
+
     # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def bool(field):
+        if field is None:
+            return None
+
+        try:
+            value = bool(field)
+        except ValueError:
+            return None
+
+        return value
+
 
     @staticmethod
     def float(number, ndigits):
