@@ -86,7 +86,8 @@ class DeviceSummary(JSONable):
         jdict['name'] = self.name
         jdict['description'] = self.description
 
-        jdict['location'] = self.location
+        if self.location is not None:
+            jdict['location'] = self.location
 
         jdict['tags'] = self.tags
 

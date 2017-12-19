@@ -4,11 +4,12 @@ Created on 13 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from collections import OrderedDict
-
 import json
+import os
 
 from abc import abstractmethod
+
+from collections import OrderedDict
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -68,12 +69,17 @@ class PersistentJSONable(JSONable):
         return cls.construct_from_jdict(jdict)
 
 
+    @classmethod
+    def delete(cls, host):
+        os.remove(cls.filename(host))
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     @abstractmethod
     def filename(cls, host):
-        pass
+        return ''
 
 
     @classmethod
