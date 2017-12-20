@@ -4,9 +4,7 @@ Created on 19 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.osio.config.project_topic import ProjectTopic
 from scs_core.osio.data.device import Device
-from scs_core.osio.data.location import Location
 
 
 # --------------------------------------------------------------------------------------------------------------------
