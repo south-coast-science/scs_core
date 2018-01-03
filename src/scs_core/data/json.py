@@ -78,13 +78,13 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def filename(cls, host):
+    def filename(cls, _):
         return ''
 
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, _):
         return PersistentJSONable()
 
 
