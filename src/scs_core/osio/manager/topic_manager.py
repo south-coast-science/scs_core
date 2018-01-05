@@ -4,6 +4,8 @@ Created on 13 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import socket
+
 import urllib.parse
 
 from collections import OrderedDict
@@ -25,6 +27,9 @@ class TopicManager(object):
     classdocs
     """
     __FINDER_BATCH_SIZE = 100
+
+    __TIMEOUT = 10.0                            # Required because of OSIO non-response on CRUD operations.
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -190,12 +195,13 @@ class TopicManager(object):
         request_path = '/v2/topics'
 
         # request...
-        self.__rest_client.connect()         # TODO: add timeout
+        self.__rest_client.connect(timeout=self.__TIMEOUT)
 
         try:
             response = self.__rest_client.post(request_path, topic.as_json())
 
-            # TODO: accept timeout as OK
+        except socket.timeout:
+            return True
 
         finally:
             self.__rest_client.close()
@@ -209,10 +215,14 @@ class TopicManager(object):
         request_path = '/v1/topics/' + topic_path
 
         # request...
-        self.__rest_client.connect()
+        self.__rest_client.connect(timeout=self.__TIMEOUT)
 
         try:
             self.__rest_client.put(request_path, topic.as_json())       # TODO: check what it looks like
+
+        except socket.timeout:
+            pass
+
         finally:
             self.__rest_client.close()
 
@@ -221,10 +231,13 @@ class TopicManager(object):
         request_path = '/v1/topics/' + urllib.parse.quote(topic_path, '')
 
         # request...
-        self.__rest_client.connect()
+        self.__rest_client.connect(timeout=self.__TIMEOUT)
 
         try:
             response = self.__rest_client.delete(request_path)
+
+        except socket.timeout:
+            return True
 
         finally:
             self.__rest_client.close()
