@@ -190,10 +190,12 @@ class TopicManager(object):
         request_path = '/v2/topics'
 
         # request...
-        self.__rest_client.connect()
+        self.__rest_client.connect()         # TODO: add timeout
 
         try:
             response = self.__rest_client.post(request_path, topic.as_json())
+
+            # TODO: accept timeout as OK
 
         finally:
             self.__rest_client.close()

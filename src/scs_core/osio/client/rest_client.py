@@ -42,7 +42,7 @@ class RESTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self):
+    def connect(self):         # TODO: add timeout
         self.__http_client.connect(RESTClient.__HOST)
 
 
