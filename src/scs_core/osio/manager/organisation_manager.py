@@ -54,7 +54,7 @@ class OrganisationManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__get(org_id):
+            for batch in [self.__get(org_id)]:
                 orgs.extend(batch)
 
         finally:

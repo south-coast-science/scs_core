@@ -65,7 +65,7 @@ class TopicManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__find(org_id, partial_topic_path, topic_schema):
+            for batch in [self.__find(org_id, partial_topic_path, topic_schema)]:
                 topics.extend(batch)
 
         finally:
@@ -81,7 +81,7 @@ class TopicManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in self.__find_for_user(user_id):
+            for batch in [self.__find_for_user(user_id)]:
                 topics.extend(batch)
 
         finally:

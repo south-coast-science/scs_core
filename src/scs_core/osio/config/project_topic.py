@@ -4,23 +4,23 @@ Created on 22 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 schemas:
-{"id": 33, "name": "south-coast-science-climate", 
+{"id": 33, "name": "south-coast-science-climate",
 "description": "South Coast Science Air Quality Sensor; climate"}
 
-{"id": 29, "name": "south-coast-science-particulates", "description": 
+{"id": 29, "name": "south-coast-science-particulates", "description":
 "South Coast Science Air Quality Sensor; particulates"}
 
 
-{"id": 28, "name": "south-coast-science-gasses-Ox-NO2-NO-CO", 
+{"id": 28, "name": "south-coast-science-gasses-Ox-NO2-NO-CO",
 "description": "South Coast Science Air Quality Sensor; concentration of gasses"}
 
-{"id": 34, "name": "south-coast-science-gasses-NO2-CO-SO2-H2S", 
+{"id": 34, "name": "south-coast-science-gasses-NO2-CO-SO2-H2S",
 "description": "South Coast Science Air Quality Sensor; concentration of gasses"}
 
-{"id": 35, "name": "south-coast-science-gasses-NO-Ox-CO-SO2", 
+{"id": 35, "name": "south-coast-science-gasses-NO-Ox-CO-SO2",
 "description": "South Coast Science Air Quality Sensor; concentration of gasses"}
 
-{"id": 39, "name": "south-coast-science-gasses-NO2-Ox-CO-SO2", 
+{"id": 39, "name": "south-coast-science-gasses-NO2-Ox-CO-SO2",
 "description": "South Coast Science Air Quality Sensor; concentration of gasses"}
 """
 
@@ -104,7 +104,7 @@ class ProjectTopic(JSONable):
         if gas_names is None:
             return None
 
-        for topic_gas_names, topic in cls.__GASES_TOPICS.items():
+        for topic_gas_names, topic in [cls.__GASES_TOPICS.items()]:
             if set(topic_gas_names) == set(gas_names):
                 return topic
 
