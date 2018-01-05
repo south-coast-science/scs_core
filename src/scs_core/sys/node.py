@@ -22,6 +22,26 @@ class Node(object):
 
 
     @abstractmethod
+    def ndir_spi_bus(self):
+        pass
+
+
+    @abstractmethod
+    def ndir_spi_device(self):
+        pass
+
+
+    @abstractmethod
+    def opc_spi_bus(self):
+        pass
+
+
+    @abstractmethod
+    def opc_spi_device(self):
+        pass
+
+
+    @abstractmethod
     def scs_dir(self):
         pass
 
