@@ -104,7 +104,7 @@ class ProjectTopic(JSONable):
         if gas_names is None:
             return None
 
-        for topic_gas_names, topic in [cls.__GASES_TOPICS.items()]:
+        for topic_gas_names, topic in cls.__GASES_TOPICS.items():
             if set(topic_gas_names) == set(gas_names):
                 return topic
 

@@ -66,7 +66,7 @@ class DeviceManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in [self.__find(request_path, {'user-id': user_id})]:
+            for batch in self.__find(request_path, {'user-id': user_id}):
                 devices.extend(batch)
 
         finally:
@@ -83,7 +83,7 @@ class DeviceManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in [self.__find(request_path)]:
+            for batch in self.__find(request_path):
                 devices.extend(batch)
 
         finally:

@@ -44,12 +44,12 @@ class MessageManager(object):
         self.__rest_client.connect()
 
         try:
-            for batch in [self.__find(request_path, start_date, end_date)]:
+            for batch in self.__find(request_path, start_date, end_date):
                 collection.extend(batch)
 
                 if self.__verbose:
                     now = LocalizedDatetime.now()
-                    batch_count = len([batch])
+                    batch_count = len(batch)
                     total += batch_count
 
                     print("%s: batch: %d total: %d" % (now.as_iso8601(), batch_count, total), file=sys.stderr)
