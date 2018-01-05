@@ -5,7 +5,9 @@ with open('requirements.txt') as req_txt:
     required = [line for line in req_txt.read().splitlines() if line]
 
 try:
+    # noinspection PyUnresolvedReferences
     import pypandoc
+    # noinspection PyUnresolvedReferences
     from os import path
     here = path.abspath(path.dirname(__file__))
     long_description = pypandoc.convert(path.join(here, 'README.md'), 'rst'),
