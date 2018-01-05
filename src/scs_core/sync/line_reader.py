@@ -38,8 +38,8 @@ class LineReader(object):
         file = os.fdopen(self.__fileno)
 
         try:
-            for line in file:
-                self.__queue.put(line.strip())
+            for line in [file]:
+                self.__queue.put(str(line).strip())
 
         except KeyboardInterrupt:
             pass
