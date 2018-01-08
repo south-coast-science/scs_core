@@ -40,7 +40,7 @@ class Sensor(object):
         if serial_number is None:
             return None
 
-        for code, sensor in [cls.SENSORS.items()]:
+        for code, sensor in cls.SENSORS.items():
             if str(serial_number).startswith(code):
                 return sensor
 
