@@ -8,6 +8,7 @@ associated with the hostname. The combination vendor-id + model-id + system-sn m
 
 example:
 {"vendor-id": "scs", "model-id": "ap1", "model": "Alpha Pi Eng", "config": "V1", "system-sn": 6}
+{"vendor-id": "SCS", "model-id": "BGB", "model": "Praxis", "config": "BGB", "system-sn": 406}
 """
 
 from collections import OrderedDict
