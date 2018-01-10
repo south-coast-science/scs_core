@@ -3,10 +3,10 @@ Created on 21 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies whether on not an NDIR is present
+specifies which PSU board is present, if any
 
 example JSON:
-{"present": true}
+{"model": "OsloV1"}
 """
 
 
@@ -30,11 +30,11 @@ class PSUConf(object):
 
 
     @property
-    def present(self):
-        return False
+    def model(self):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{present:False}"
+        return "PSUConf:{model:None}"
