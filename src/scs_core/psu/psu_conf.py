@@ -29,6 +29,11 @@ class PSUConf(object):
         return None
 
 
+    @classmethod
+    def psu_monitor(cls, _):
+        return None
+
+
     @property
     def model(self):
         return None
