@@ -23,6 +23,18 @@ class GPSLocation(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        lat = jdict.get('lat')
+        lng = jdict.get('lng')
+        quality = jdict.get('qual')
+
+        return GPSLocation(lat, lng, quality)
+
+
+    @classmethod
     def construct(cls, gga):
         if gga is None:
             return None
