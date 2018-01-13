@@ -24,14 +24,19 @@ class JSONable(object):
     def as_list(self, jlist):
         del jlist[:]                                    # empty the list
 
-        for key_value in self.as_json().items():
-            jlist.append(key_value)                     # append the key-value pairs of the dictionary
+        for key, value in self.as_json().items():
+            try:
+                value = value.as_json()                 # TODO: recurse to construct a list
+            except AttributeError:
+                pass
+
+            jlist.append((key, value))                  # append the key-value pairs of the dictionary
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def as_json(self):          # TODO: handle named parameters of JSONify.dumps(..)
+    def as_json(self):              # TODO: handle named parameters of JSONify.dumps(..)
         pass
 
 
