@@ -5,4 +5,4 @@ _Contains library classes only._
 
 **Required libraries:** 
 
-* Third party: tzlocal
+* Third party: AWSIoTPythonSDK, tzlocal
