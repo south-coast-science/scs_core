@@ -12,8 +12,6 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
-# TODO: check whether formatting is required - "NO2": {"weV": 0.288567, "aeV": 0.306942, "weC": -7.5e-05, "cnc": -0.4}
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class A4Datum(JSONable):

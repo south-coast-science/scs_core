@@ -21,7 +21,7 @@ class SynchronisedProcess(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, value):
+    def __init__(self, value=None):     # TODO: ! Consider whether the constructor should have value parameter
         """
         Constructor
         """

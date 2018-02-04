@@ -14,8 +14,6 @@ from scs_core.data.json import PersistentJSONable
 from scs_core.gas.sensor_baseline import SensorBaseline
 
 
-# TODO: similar to AFECalib, this class should be backed by the cloud helper system
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class AFEBaseline(PersistentJSONable):
