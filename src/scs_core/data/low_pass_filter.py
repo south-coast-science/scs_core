@@ -7,8 +7,6 @@ Ten Little Algorithms, Part 2: The Single-Pole Low-Pass Filter
 https://www.embeddedrelated.com/showarticle/779.php
 """
 
-import sys
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,8 +20,6 @@ class LowPassFilter(object):
         tau = 1 / cut_off_frequency
         alpha = delta_t / tau
 
-        print("tau: %s" % tau, file=sys.stderr)
-
         return LowPassFilter(alpha)
 
 
@@ -34,6 +30,10 @@ class LowPassFilter(object):
         Constructor
         """
         self.__alpha = alpha
+        self.__y = None
+
+
+    def reset(self):
         self.__y = None
 
 
