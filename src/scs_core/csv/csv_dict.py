@@ -20,7 +20,7 @@ class CSVDict(object):
         dictionary = OrderedDict()
 
         for i in range(len(header)):
-            cls.__as_dict(header[i].split("."), row[i], dictionary)
+            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)
 
         return dictionary
 
