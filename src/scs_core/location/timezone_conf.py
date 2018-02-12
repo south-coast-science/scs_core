@@ -12,6 +12,8 @@ example JSON:
 {"set-on": "2017-08-12T11:20:28.740+00:00", "name": "Europe/London"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from tzlocal import get_localzone
@@ -34,7 +36,7 @@ class TimezoneConf(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.conf_dir() + cls.__FILENAME
+        return os.path.join(host.conf_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------

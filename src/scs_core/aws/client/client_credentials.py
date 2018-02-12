@@ -25,12 +25,12 @@ class ClientCredentials(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.aws_dir() + cls.__FILENAME
+        return os.path.join(host.aws_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __CERTIFICATE_DIR = "certs/"                    # hard-coded path
+    __CERTIFICATE_DIR = "certs"                    # hard-coded path
 
     __ROOT_CA = "root-CA.crt"
 
@@ -97,22 +97,22 @@ class ClientCredentials(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.__ROOT_CA
+        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__CERTIFICATE_SUFFIX
+        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__CERTIFICATE_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PUBLIC_KEY_SUFFIX
+        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return self.host.aws_dir() + self.__CERTIFICATE_DIR + self.certificate + self.__PRIVATE_KEY_SUFFIX
+        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__PRIVATE_KEY_SUFFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------
