@@ -45,12 +45,23 @@ class Node(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @abstractmethod
+    def home_dir(self):
+        pass
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def scs_dir(self):
+    def lock_dir(self):
+        pass
+
+
+    @abstractmethod
+    def tmp_dir(self):
+        pass
+
+
+    @abstractmethod
+    def command_dir(self):
         pass
 
 
@@ -66,4 +77,9 @@ class Node(object):
 
     @abstractmethod
     def osio_dir(self):
+        pass
+
+
+    @abstractmethod
+    def eep_image(self):
         pass
