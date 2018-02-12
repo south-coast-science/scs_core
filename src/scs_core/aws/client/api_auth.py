@@ -7,6 +7,8 @@ example document:
 {"api-key": "de92c5ff-b47a-4cc4-a04c-62d684d74a1f"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -23,7 +25,7 @@ class APIAuth(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.aws_dir() + cls.__FILENAME
+        return os.path.join(host.aws_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------

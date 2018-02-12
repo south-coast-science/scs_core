@@ -7,6 +7,8 @@ example document:
 {"host": "asrfh6e5j5ecz.iot.us-west-2.amazonaws.com"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -23,7 +25,7 @@ class Endpoint(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.aws_dir() + cls.__FILENAME
+        return os.path.join(host.aws_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -77,8 +77,8 @@ class Command(JSONable):
 
     def is_valid(self, host):
         try:
-            host.COMMAND_DIR
-        except AttributeError:
+            host.command_dir()
+        except NotImplementedError:
             return False
 
         if set(self.params).intersection(set(Command.__PROHIBITED_TOKENS)):
@@ -87,7 +87,7 @@ class Command(JSONable):
         if self.cmd == Command.__LIST_CMD:
             return True
 
-        if self.cmd not in os.listdir(host.COMMAND_DIR):
+        if self.cmd not in os.listdir(host.command_dir()):
             return False
 
         return True
@@ -120,7 +120,7 @@ class Command(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __execute(self, statement, host):
-        proc = subprocess.Popen(statement, cwd=host.COMMAND_DIR, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(statement, cwd=host.host.command_dir(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout_bytes, stderr_bytes = proc.communicate(None, Command.__TIMEOUT)
 

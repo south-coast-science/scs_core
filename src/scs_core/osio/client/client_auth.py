@@ -7,6 +7,8 @@ example document:
 {"user_id": "southcoastscience-dev", "client-id": "5401", "client-password": "wtxSrs2e"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -30,7 +32,7 @@ class ClientAuth(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.osio_dir() + cls.__FILENAME
+        return os.path.join(host.osio_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------

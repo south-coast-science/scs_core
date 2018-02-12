@@ -7,6 +7,8 @@ example JSON:
 {"v20": 0.322802, "calibrated_on": "2016-10-11"}
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -25,7 +27,7 @@ class Pt1000Calib(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.conf_dir() + cls.__FILENAME
+        return os.path.join(host.conf_dir(), cls.__FILENAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
