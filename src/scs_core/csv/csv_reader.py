@@ -23,14 +23,12 @@ class CSVReader(object):
     @staticmethod
     def __recast(value):
         try:
-            recast = int(value)
-            return recast
+            return int(value)
         except ValueError:
             pass
 
         try:
-            recast = float(value)
-            return recast
+            return float(value)
         except ValueError:
             pass
 
