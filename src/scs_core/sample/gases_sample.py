@@ -42,6 +42,7 @@ class GasesSample(Sample):
             if afe_datum.pt1000:
                 val.append(('pt1', afe_datum.pt1000))
 
-            val.append(('sht', sht_datum))
+            if sht_datum:
+                val.append(('sht', sht_datum))
 
         super().__init__(tag, rec, *val)
