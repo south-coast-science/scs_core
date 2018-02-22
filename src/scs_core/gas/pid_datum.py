@@ -49,6 +49,10 @@ class PIDDatum(JSONable):
 
         response_v = we_v - offset_v                # remove electronic zero
         response_c = tc.correct(temp, response_v)   # correct the response component
+
+        if response_c is None:
+            return None
+
         we_c = response_c + offset_v                # replace electronic zero
 
         return we_c
