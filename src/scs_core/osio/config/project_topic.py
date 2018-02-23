@@ -29,6 +29,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: fix for CO2
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class ProjectTopic(JSONable):
@@ -40,6 +42,7 @@ class ProjectTopic(JSONable):
     PARTICULATES = None
     STATUS = None
     CONTROL = None
+    EMPTY_GASES_TOPIC = None
 
     __GASES_TOPICS = {}
 
@@ -98,17 +101,20 @@ class ProjectTopic(JSONable):
                              'Pt1000 temp, internal SHT', ('test',))
         }
 
+        cls.EMPTY_GASES_TOPIC = ProjectTopic(None, 'Gas concentrations',
+                                             'no information available', ())
+
 
     @classmethod
     def get_gases_topic(cls, gas_names):
         if gas_names is None:
-            return None
+            return cls.EMPTY_GASES_TOPIC
 
         for topic_gas_names, topic in cls.__GASES_TOPICS.items():
             if set(topic_gas_names) == set(gas_names):
                 return topic
 
-        return None
+        return cls.EMPTY_GASES_TOPIC
 
 
     # ----------------------------------------------------------------------------------------------------------------
