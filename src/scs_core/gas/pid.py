@@ -72,7 +72,7 @@ class PID(Sensor):
 
     @property
     def calib(self):
-        return self.__calib
+        return self._calib
 
 
     @calib.setter
@@ -82,7 +82,7 @@ class PID(Sensor):
         pid_sens_mv = self.default_sens_mv if calib.pid_sens_mv is None else calib.pid_sens_mv
 
         # set calibration...
-        self.__calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv)
+        self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv)
 
 
     # ----------------------------------------------------------------------------------------------------------------
