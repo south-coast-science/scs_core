@@ -58,6 +58,10 @@ class NDIRDatum(JSONable):
         return True
 
 
+    def __add__(self, other):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
