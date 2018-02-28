@@ -50,7 +50,11 @@ class Average(object):
             del self.__data[0]
 
         # append...
-        self.__data.append(float(value))
+        self.__data.append(value)        # float(value)
+
+
+    def reset(self):
+        self.__data = []
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,10 +65,10 @@ class Average(object):
         if count < Average.MIN_DATA_POINTS:
             return None
 
-        total = 0
+        total = None
 
         for value in self.__data:
-            total += value
+            total = value if total is None else total + value
 
         return total / count
 
@@ -83,5 +87,3 @@ class Average(object):
 
     def __str__(self, *args, **kwargs):
         return "Average:{tally:%s, data:%s}" % (self.__tally, self.__data)
-
-

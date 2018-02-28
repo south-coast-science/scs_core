@@ -27,14 +27,14 @@ class GasesSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, co2_datum, afe_datum, sht_datum):
+    def __init__(self, tag, rec, ndir_datum, afe_datum, sht_datum):
         """
         Constructor
         """
         val = []
 
-        if co2_datum:
-            val.append(('CO2', co2_datum))
+        if ndir_datum:
+            val.append(('CO2', ndir_datum))
 
         if afe_datum:
             val.extend([(key, afe_datum.sns[key]) for key in afe_datum.sns])

@@ -10,6 +10,8 @@ example JSON:
 """
 
 
+# TODO: make stub NDIRConf compatible with the real one
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class NDIRConf(object):

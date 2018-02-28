@@ -58,7 +58,7 @@ class Sensor(object):
         self.__gas_name = gas_name
         self.__adc_gain_index = adc_gain_index
 
-        self.__calib = calib
+        self._calib = calib
         self.__baseline = baseline
 
 
@@ -102,12 +102,12 @@ class Sensor(object):
 
     @property
     def calib(self):
-        return self.__calib
+        return self._calib
 
 
     @calib.setter
     def calib(self, calib):             # TODO: override this in PID, to use defaults
-        self.__calib = calib
+        self._calib = calib
 
 
     @property

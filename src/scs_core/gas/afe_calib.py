@@ -83,7 +83,7 @@ class AFECalib(PersistentJSONable):
         dispatched_on = Datum.date(jdict.get('dispatched_on'))
 
         pt1000_v20 = jdict.get('pt1000_v20')
-        pt100_calib = Pt1000Calib(calibrated_on, pt1000_v20) if pt1000_v20 is not None else None
+        pt100_calib = None if pt1000_v20 is None else Pt1000Calib(calibrated_on, pt1000_v20)
 
         sensor_calibs = []
 
