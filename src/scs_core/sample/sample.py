@@ -32,7 +32,9 @@ class Sample(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['tag'] = self.tag
+        if self.tag is not None:
+            jdict['tag'] = self.tag
+
         jdict['rec'] = self.rec.as_json()
         jdict['val'] = self.val
 
