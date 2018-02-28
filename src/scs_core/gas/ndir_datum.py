@@ -33,7 +33,7 @@ class NDIRDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, cnc, cnc_igl, temp):
+    def __init__(self, temp, cnc, cnc_igl):
         """
         Constructor
         """
@@ -59,7 +59,25 @@ class NDIRDatum(JSONable):
 
 
     def __add__(self, other):
-        pass
+        if not isinstance(other, self.__class__):
+            raise TypeError(other)
+
+        temp = self.temp + other.temp
+        cnc = self.cnc + other.cnc
+        cnc_igl = self.cnc_igl + other.cnc_igl
+
+        return NDIRDatum(temp, cnc, cnc_igl)
+
+
+    def __truediv__(self, other):
+        if isinstance(other, self.__class__):
+            raise TypeError(other)
+
+        temp = self.temp / other
+        cnc = self.cnc / other
+        cnc_igl = self.cnc_igl / other
+
+        return NDIRDatum(temp, cnc, cnc_igl)
 
 
     # ----------------------------------------------------------------------------------------------------------------
