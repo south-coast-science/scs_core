@@ -31,6 +31,7 @@ class SynchronisedProcess(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # process...
 
     def start(self):
         self.__proc = Process(target=self.run)
@@ -47,6 +48,14 @@ class SynchronisedProcess(object):
 
     @abstractmethod
     def run(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # data retrieval for client process...
+
+    @abstractmethod
+    def sample(self):
         pass
 
 
