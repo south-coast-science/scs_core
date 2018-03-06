@@ -50,7 +50,7 @@ class Average(object):
             del self.__data[0]
 
         # append...
-        self.__data.append(value)        # float(value)
+        self.__data.append(value)
 
 
     def reset(self):
