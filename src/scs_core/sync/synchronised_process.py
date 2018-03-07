@@ -21,7 +21,7 @@ class SynchronisedProcess(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, value=None):     # TODO: ! Consider whether the constructor should have value parameter
+    def __init__(self, value=None):
         """
         Constructor
         """
@@ -31,6 +31,7 @@ class SynchronisedProcess(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # process...
 
     def start(self):
         self.__proc = Process(target=self.run)
@@ -47,6 +48,14 @@ class SynchronisedProcess(object):
 
     @abstractmethod
     def run(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # data retrieval for client process...
+
+    @abstractmethod
+    def sample(self):
         pass
 
 

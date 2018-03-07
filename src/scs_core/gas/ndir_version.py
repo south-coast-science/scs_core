@@ -87,9 +87,13 @@ class NDIRTag(JSONable):
 
         items = jdict.split('.')
 
-        device = int(items[0])
-        api = int(items[1])
-        patch = int(items[2])
+        try:
+            device = int(items[0])
+            api = int(items[1])
+            patch = int(items[2])
+
+        except ValueError:
+            return None
 
         return NDIRTag(device, api, patch)
 
