@@ -1,42 +1,43 @@
 """
-Created on 21 Jun 2017
+Created on 15 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies whether on not an NDIR is present
-
-example JSON:
-{"present": true}
+A stub class for an NDIRConf that may be implemented elsewhere
 """
 
+from abc import abstractmethod
 
-# TODO: make stub NDIRConf compatible with the real one
+from scs_core.data.json import PersistentJSONable
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NDIRConf(object):
+class NDIRConf(PersistentJSONable):
     """
-    A stub class for an NDIR that may be implemented elsewhere
+    classdocs
     """
 
     @classmethod
-    def load(cls, _):
-        return NDIRConf()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def ndir(cls, _):
+    def filename(cls, host):
         return None
 
 
-    @property
-    def present(self):
-        return False
-
-
     # ----------------------------------------------------------------------------------------------------------------
+    # abstract NDIRConf...
 
-    def __str__(self, *args, **kwargs):
-        return "NDIRConf:{present:False}"
+    @abstractmethod
+    def ndir_monitor(self, host):
+        pass
+
+
+    @property
+    @abstractmethod
+    def model(self):
+        pass
+
+
+    @property
+    @abstractmethod
+    def tally(self):
+        pass

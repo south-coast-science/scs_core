@@ -4,6 +4,7 @@ Created on 20 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from numbers import Number
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -70,7 +71,7 @@ class NDIRDatum(JSONable):
 
 
     def __truediv__(self, other):
-        if isinstance(other, self.__class__):
+        if not isinstance(other, Number):
             raise TypeError(other)
 
         temp = self.temp / other
