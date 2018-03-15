@@ -71,7 +71,6 @@ class NDIRMonitor(SynchronisedProcess):
 
             while timer.true():
                 sample = self.__ndir.sample()
-                print("sample: %s" % sample)
 
                 self.__averaging.append(sample)
                 average = self.__averaging.compute()
