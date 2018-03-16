@@ -1,7 +1,10 @@
 """
 Created on 18 Sep 2016
 
-@author: Bruno Beloff (bruno.beloff@southcoastscience.com)c
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Alphasense Application Note AAN 803-02
+AAN 803-02 070916_DRAFT03.doc
 """
 
 # import sys

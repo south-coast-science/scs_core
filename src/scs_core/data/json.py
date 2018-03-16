@@ -51,10 +51,12 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def load(cls, host):
-        instance = cls.load_from_file(cls.filename(host))
+        filename = cls.filename(host)
+
+        instance = None if filename is None else cls.load_from_file(filename)
 
         if instance is not None:
-            instance.__host = host
+            instance.__host = host      # TODO: remove host management from PersistentJSONable subclasses
 
         return instance
 
