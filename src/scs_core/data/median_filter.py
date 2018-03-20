@@ -25,9 +25,9 @@ class MedianFilter(object):
             raise ValueError("window_size must be an odd number")
 
         self.__window_size = window_size
+
         self.__window_midpoint = window_size // 2
         self.__window_index = 0
-
         self.__values = []
 
 
