@@ -53,4 +53,4 @@ class MedianFilter(object):
 
     def __str__(self, *args, **kwargs):
         return "MedianFilter:{window_size:%s, window_midpoint:%s, window_index:%s, values:%s}" % \
-               (self.__window_size, self.__window_midpoint, self.__window_index, sorted(self.__values))
+               (self.__window_size, self.__window_midpoint, self.__window_index, self.__values)
