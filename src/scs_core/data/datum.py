@@ -78,6 +78,13 @@ class Datum(object):
         return None if math.isnan(packed[0]) else packed[0]
 
 
+    @staticmethod
+    def decode_double(byte_values):
+        packed = struct.unpack('d', struct.pack('BBBBBBBB', *byte_values))
+
+        return None if math.isnan(packed[0]) else packed[0]
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # cast or None...
 
