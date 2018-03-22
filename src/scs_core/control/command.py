@@ -120,7 +120,7 @@ class Command(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __execute(self, statement, host):
-        proc = subprocess.Popen(statement, cwd=host.host.command_dir(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(statement, cwd=host.command_dir(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout_bytes, stderr_bytes = proc.communicate(None, Command.__TIMEOUT)
 
