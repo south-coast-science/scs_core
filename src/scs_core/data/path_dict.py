@@ -66,28 +66,32 @@ class PathDict(JSONable):
     # source...
 
     def has_path(self, path):
-        return self.__has_path(self.__dictionary, path.split("."))
+        if path is None:
+            return True
+
+        try:
+            return self.__has_path(self.__dictionary, path.split("."))
+
+        except TypeError:
+            return False
 
 
-    def node(self, *paths):
-        if not paths:
+    def node(self, path=None):
+        if path is None:
             return self.__dictionary
 
-        values = tuple([self.__node(self.__dictionary, path.split(".")) for path in paths])
-
-        return values[0] if len(values) == 1 else values
+        return self.__node(self.__dictionary, path.split("."))
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # target...
 
-    def copy(self, other, *paths):
-        if not paths:
+    def copy(self, other, path=None):
+        if path is None:
             self.__dictionary = deepcopy(other.__dictionary)
             return
 
-        for path in paths:
-            self.__append(self.__dictionary, path.split("."), other.node(path))
+        self.__append(self.__dictionary, path.split("."), other.node(path))
 
 
     def append(self, path, value):
