@@ -12,6 +12,7 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
+import pytz
 import re
 import tzlocal
 
@@ -154,6 +155,12 @@ class LocalizedDatetime(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def utc(self):
+        localized = self.datetime.astimezone(pytz.timezone('Etc/UTC'))
+
+        return LocalizedDatetime(localized)
+
 
     def localize(self, zone):                           # zone may be datetime.timezone or pytz.timezone
         localized = self.datetime.astimezone(zone)

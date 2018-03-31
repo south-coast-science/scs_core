@@ -3,6 +3,11 @@ Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/staging/topicMessages?
+topic=south-coast-science-dev/production-test/loc/1/gases&
+startTime=2018-03-31T07:50:59.712Z&
+endTime=2018-03-31T07:55:59.712Z
+
 header:
 CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key ' . AOC_OPENSENSORS_API_KEY),
 """
@@ -24,26 +29,24 @@ class RESTClient(object):
     classdocs
     """
 
-    __HOST = "aws.southcoastscience.com"                # hard-coded URL
-
     __HEADER_ACCEPT = "application/json"
     __HEADER_AUTHORIZATION = "api-key "
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, api_key):
+    def __init__(self, http_client, auth):
         """
         Constructor
         """
         self.__http_client = http_client
-        self.__api_key = api_key
+        self.__auth = auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(RESTClient.__HOST)
+        self.__http_client.connect(self.__auth.endpoint)
 
 
     def close(self):
@@ -123,11 +126,13 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": RESTClient.__HEADER_ACCEPT,
-                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
+        # return {"Accept": RESTClient.__HEADER_ACCEPT,
+        #         "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__auth.api_key}
+
+        return {"Accept": RESTClient.__HEADER_ACCEPT}
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-            return "RESTClient:{http_client:%s, api_key:%s}" % (self.__http_client, self.__api_key)
+            return "RESTClient:{http_client:%s, auth:%s}" % (self.__http_client, self.__auth)
