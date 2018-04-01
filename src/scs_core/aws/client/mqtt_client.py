@@ -7,6 +7,7 @@ https://github.com/aws/aws-iot-device-sdk-python
 """
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
+
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 from scs_core.data.json import JSONify
@@ -48,15 +49,14 @@ class MQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self, endpoint, credentials):
+    def connect(self, auth):
         # client...
-        self.__client = AWSIoTMQTTClient(credentials.name)
+        self.__client = AWSIoTMQTTClient(auth.client_id)
 
         # configuration...
-        self.__client.configureEndpoint(endpoint.endpoint_host, self.__PORT)
+        self.__client.configureEndpoint(auth.endpoint, self.__PORT)
 
-        self.__client.configureCredentials(credentials.root_ca_file_path,
-                                           credentials.private_key_path, credentials.certificate_path)
+        self.__client.configureCredentials(auth.root_ca_file_path, auth.private_key_path, auth.certificate_path)
 
         self.__client.configureAutoReconnectBackoffTime(self.__RECONN_BASE, self.__RECONN_MAX, self.__RECONN_STABLE)
 

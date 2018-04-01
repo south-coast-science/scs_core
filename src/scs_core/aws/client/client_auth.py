@@ -4,7 +4,7 @@ Created on 4 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"name": "scs-rpi-006", "certificate": "9f01402232"}
+{"endpoint": "asrft7e5j5ecz.iot.us-west-2.amazonaws.com", "client-id": "bruno", "cert-id": "9f08402232"}
 """
 
 import os
@@ -16,12 +16,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClientCredentials(PersistentJSONable):
+class ClientAuth(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "client_credentials.json"
+    __FILENAME = "aws_client_auth.json"
 
     @classmethod
     def filename(cls, host):
@@ -30,13 +30,13 @@ class ClientCredentials(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __CERTIFICATE_DIR = "certs"                    # hard-coded path
+    __CERT_DIR = "certs"                                # hard-coded path
 
     __ROOT_CA = "root-CA.crt"
 
     __PUBLIC_KEY_SUFFIX = "-public.pem.key"
     __PRIVATE_KEY_SUFFIX = "-private.pem.key"
-    __CERTIFICATE_SUFFIX = "-certificate.pem.crt"
+    __CERT_SUFFIX = "-certificate.pem.crt"
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,22 +46,26 @@ class ClientCredentials(PersistentJSONable):
         if not jdict:
             return None
 
-        name = jdict.get('name')
-        certificate = jdict.get('certificate')
+        endpoint = jdict.get('endpoint')
 
-        return ClientCredentials(name, certificate)
+        client_id = jdict.get('client-id')
+        cert_id = jdict.get('cert-id')
+
+        return ClientAuth(endpoint, client_id, cert_id)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, certificate):
+    def __init__(self, endpoint, client_id, cert_id):
         """
         Constructor
         """
         super().__init__()
 
-        self.__name = name                          # String
-        self.__certificate = certificate            # String
+        self.__endpoint = endpoint                  # String
+
+        self.__client_id = client_id                # String
+        self.__cert_id = cert_id                    # String
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,8 +73,10 @@ class ClientCredentials(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['name'] = self.name
-        jdict['certificate'] = self.certificate
+        jdict['endpoint'] = self.endpoint
+
+        jdict['client-id'] = self.client_id
+        jdict['cert-id'] = self.cert_id
 
         return jdict
 
@@ -97,37 +103,42 @@ class ClientCredentials(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.__ROOT_CA)
+        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__CERTIFICATE_SUFFIX)
+        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__PUBLIC_KEY_SUFFIX)
+        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERTIFICATE_DIR, self.certificate + self.__PRIVATE_KEY_SUFFIX)
+        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def name(self):
-        return self.__name
+    def endpoint(self):
+        return self.__endpoint
 
 
     @property
-    def certificate(self):
-        return self.__certificate
+    def client_id(self):
+        return self.__client_id
+
+
+    @property
+    def cert_id(self):
+        return self.__cert_id
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientCredentials:{name:%s, certificate:%s}" % (self.name, self.certificate)
+        return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s}" % (self.endpoint, self.client_id, self.cert_id)
