@@ -47,7 +47,6 @@ class ClientAuth(PersistentJSONable):
             return None
 
         endpoint = jdict.get('endpoint')
-
         client_id = jdict.get('client-id')
         cert_id = jdict.get('cert-id')
 
@@ -63,7 +62,6 @@ class ClientAuth(PersistentJSONable):
         super().__init__()
 
         self.__endpoint = endpoint                  # String
-
         self.__client_id = client_id                # String
         self.__cert_id = cert_id                    # String
 
@@ -74,7 +72,6 @@ class ClientAuth(PersistentJSONable):
         jdict = OrderedDict()
 
         jdict['endpoint'] = self.endpoint
-
         jdict['client-id'] = self.client_id
         jdict['cert-id'] = self.cert_id
 
@@ -141,4 +138,5 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s}" % (self.endpoint, self.client_id, self.cert_id)
+        return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s}" % \
+               (self.endpoint, self.client_id, self.cert_id)
