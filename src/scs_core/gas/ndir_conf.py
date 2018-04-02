@@ -10,7 +10,6 @@ from abc import abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
-from scs_core.gas.ndir_monitor import NDIRMonitor
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -47,10 +46,9 @@ class NDIRConf(PersistentJSONable):
         pass
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
+    @abstractmethod
     def ndir_monitor(self, host):
-        return NDIRMonitor(self.ndir(host), self)
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
