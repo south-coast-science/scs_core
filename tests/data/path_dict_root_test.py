@@ -59,7 +59,7 @@ path3 = "val.opc.bin1.1"
 print(path3)
 print("-")
 
-target.copy(datum, path1, path2, path3)
+target.copy(datum, path1)
 print(target)
 print("-")
 

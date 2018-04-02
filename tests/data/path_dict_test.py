@@ -47,7 +47,7 @@ has_path = datum.has_path(path2)
 print("has_path:%s" % has_path)
 print("-")
 
-nodes = datum.node(path1, path2)
+nodes = datum.node(path1)
 print("nodes:%s" % str(nodes))
 print("=")
 
@@ -90,7 +90,7 @@ path3 = "val.opc.bin1.1"
 print(path3)
 print("-")
 
-target.copy(datum, path1, path2, path3)
+target.copy(datum, path1)
 print(target)
 print("-")
 

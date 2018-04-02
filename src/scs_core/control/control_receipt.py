@@ -51,8 +51,8 @@ class ControlReceipt(JSONable):
 
 
     @classmethod
-    def construct_from_datum(cls, datum, rec, command, subscriber_sn):
-        digest = ControlReceipt.__hash(datum.attn, rec, command, datum.digest, subscriber_sn)
+    def construct_from_datum(cls, datum, rec, command, key):
+        digest = ControlReceipt.__hash(datum.attn, rec, command, datum.digest, key)
 
         return ControlReceipt(datum.attn, rec, command, datum.digest, digest)
 

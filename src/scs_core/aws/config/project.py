@@ -23,7 +23,7 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                "project.json"
+    __FILENAME =                "aws_project.json"
 
     @classmethod
     def filename(cls, host):

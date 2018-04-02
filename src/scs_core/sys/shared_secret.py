@@ -1,13 +1,18 @@
 """
-Created on 4 Oct 2017
+Created on 2 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://stackoverflow.com/
+questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+
 example document:
-{"host": "asrfh6e5j5ecz.iot.us-west-2.amazonaws.com"}
+{"key": "sxBhncFybpbMwZUa"}
 """
 
 import os
+import random
+import string
 
 from collections import OrderedDict
 
@@ -16,16 +21,26 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(PersistentJSONable):
+class SharedSecret(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "endpoint.json"
+    __FILENAME = "shared_secret.json"
 
     @classmethod
     def filename(cls, host):
-        return os.path.join(host.aws_dir(), cls.__FILENAME)
+        return os.path.join(host.conf_dir(), cls.__FILENAME)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __KEY_LENGTH = 16
+
+    @classmethod
+    def generate(cls):
+        return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits)
+                       for _ in range(cls.__KEY_LENGTH))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,20 +50,20 @@ class Endpoint(PersistentJSONable):
         if not jdict:
             return None
 
-        endpoint_host = jdict.get('host')
+        key = jdict.get('key')
 
-        return Endpoint(endpoint_host)
+        return SharedSecret(key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, endpoint_host):
+    def __init__(self, key):
         """
         Constructor
         """
         super().__init__()
 
-        self.__endpoint_host = endpoint_host                  # String
+        self.__key = key            # String
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -56,7 +71,7 @@ class Endpoint(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['host'] = self.endpoint_host
+        jdict['key'] = self.key
 
         return jdict
 
@@ -64,11 +79,11 @@ class Endpoint(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def endpoint_host(self):
-        return self.__endpoint_host
+    def key(self):
+        return self.__key
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Endpoint:{endpoint_host:%s}" % self.endpoint_host
+        return "SharedSecret:{key:%s}" % self.key

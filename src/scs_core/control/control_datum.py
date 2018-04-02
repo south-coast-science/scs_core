@@ -58,8 +58,8 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __hash(cls, tag, attn, rec, cmd_tokens, subscriber_sn):
-        text = str(tag) + str(attn) + JSONify.dumps(rec) + str(cmd_tokens) + str(subscriber_sn)
+    def __hash(cls, tag, attn, rec, cmd_tokens, key):
+        text = str(tag) + str(attn) + JSONify.dumps(rec) + str(cmd_tokens) + str(key)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -81,8 +81,8 @@ class ControlDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self, subscriber_sn):
-        digest = ControlDatum.__hash(self.tag, self.attn, self.rec, self.cmd_tokens, subscriber_sn)
+    def is_valid(self, key):
+        digest = ControlDatum.__hash(self.tag, self.attn, self.rec, self.cmd_tokens, key)
 
         return digest == self.digest
 
