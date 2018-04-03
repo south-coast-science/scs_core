@@ -32,18 +32,20 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    CHANNELS =  ('C', 'G', 'P', 'S', 'X')
+
     @classmethod
     def is_valid_channel(cls, channel):
-        return channel in ('C', 'G', 'P', 'S', 'X')
+        return channel in cls.CHANNELS
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, org_id, group, location_id):
-        path_root = org_id + '/'
+    def construct(cls, organisation, group, location):
+        path_root = organisation + '/'
 
-        location_path = path_root + group + '/loc/' + str(location_id)
+        location_path = path_root + group + '/loc/' + str(location)
         device_path = path_root + group + '/device'
 
         return Project(location_path, device_path)

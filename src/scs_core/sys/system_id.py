@@ -151,5 +151,5 @@ class SystemID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SystemID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s,  system_serial_number:%s}" % \
+        return "SystemID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s, system_serial_number:%s}" % \
                (self.vendor_id, self.model_id, self.model_name, self.configuration, self.system_serial_number)
