@@ -3,8 +3,7 @@ Created on 2 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://stackoverflow.com/
-questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
 
 example document:
 {"key": "sxBhncFybpbMwZUa"}
