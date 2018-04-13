@@ -15,11 +15,12 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root, subject, localised_timeline_start):
+    def __init__(self, root_path, device_tag, subject, localised_timeline_start):
         """
         Constructor
         """
-        self.__root = root
+        self.__root_path = root_path
+        self.__device_tag = device_tag
         self.__subject = subject
 
         timeline_start = localised_timeline_start.utc()
@@ -36,11 +37,11 @@ class CSVLog(object):
 
 
     def mkdir(self):
-        Filesystem.mkdir(os.path.join(self.root, self.directory_name()))
+        Filesystem.mkdir(os.path.join(self.root_path, self.directory_name()))
 
 
     def abs_file_name(self):
-        return os.path.join(self.root, self.directory_name(), self.file_name())
+        return os.path.join(self.root_path, self.directory_name(), self.file_name())
 
 
     def directory_name(self):
@@ -48,8 +49,9 @@ class CSVLog(object):
 
 
     def file_name(self):
-        return "%4d-%02d-%02d-%02d-%02d-%02d-%s.csv" % \
-               (self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
+        return "%sD%4d-%02d-%02dT%02d-%02d-%02dS%s.csv" % \
+               (self.device_tag,
+                self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
                 self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second,
                 self.subject)
 
@@ -57,8 +59,13 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def root(self):
-        return self.__root
+    def root_path(self):
+        return self.__root_path
+
+
+    @property
+    def device_tag(self):
+        return self.__device_tag
 
 
     @property
@@ -74,4 +81,5 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLog:{root:%s, subject:%s, timeline_start:%s}" % (self.root, self.subject, self.timeline_start)
+        return "CSVLog:{root_path:%s, device_tag:%s, subject:%s, timeline_start:%s}" % \
+               (self.root_path, self.device_tag, self.subject, self.timeline_start)
