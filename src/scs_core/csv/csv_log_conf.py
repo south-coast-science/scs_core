@@ -4,7 +4,7 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"root-path": "/Volumes/SCS/data"}
+{"root-path": "/Volumes/SCS/data", delete-oldest:}
 """
 
 import os
@@ -36,19 +36,21 @@ class CSVLogConf(PersistentJSONable):
             return None
 
         root_path = jdict.get('root-path')
+        delete_oldest = jdict.get('delete-oldest')
 
-        return CSVLogConf(root_path)
+        return CSVLogConf(root_path, delete_oldest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path):
+    def __init__(self, root_path, delete_oldest):
         """
         Constructor
         """
         super().__init__()
 
-        self.__root_path = root_path
+        self.__root_path = root_path                            # string
+        self.__delete_oldest = bool(delete_oldest)              # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,6 +59,7 @@ class CSVLogConf(PersistentJSONable):
         jdict = OrderedDict()
 
         jdict['root-path'] = self.root_path
+        jdict['delete-oldest'] = self.delete_oldest
 
         return jdict
 
@@ -68,7 +71,12 @@ class CSVLogConf(PersistentJSONable):
         return self.__root_path
 
 
+    @property
+    def delete_oldest(self):
+        return self.__delete_oldest
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogConf:{root_path:%s}" %  self.root_path
+        return "CSVLogConf:{root_path:%s, delete_oldest:%s}" %  (self.root_path, self.delete_oldest)
