@@ -3,11 +3,8 @@ Created on 16 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-http://code.activestate.com/recipes/577972-disk-usage/
-
 JSON example:
-{"time": "2017-05-29T12:40:58.619+01:00", "up": {"days": 1, "hours": 19, "minutes": 34, "seconds": 0},
-"total": 0, "used": {"av1": 0.66, "av5": 0.65, "av15": 0.6}}
+{"free": 61745299456, "total": 61749133312, "used": 3833856}
 """
 
 from collections import OrderedDict
@@ -80,5 +77,3 @@ class DiskUsageDatum(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "DiskUsageDatum:{free:%s, total:%s, used:%s}" %  (self.free, self.total, self.used)
-
-
