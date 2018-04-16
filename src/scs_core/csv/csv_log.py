@@ -35,8 +35,12 @@ class CSVLog(object):
         Filesystem.mkdir(os.path.join(self.root_path, self.directory_name()))
 
 
-    def abs_file_name(self):
-        return os.path.join(self.root_path, self.directory_name(), self.file_name())
+    def directory_path(self):
+        return os.path.join(self.root_path, self.directory_name())
+
+
+    def file_path(self):
+        return os.path.join(self.directory_path(), self.file_name())
 
 
     def directory_name(self):

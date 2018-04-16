@@ -19,11 +19,11 @@ now = LocalizedDatetime.now()
 
 path = '/Users/bruno/Python/MacProject/scs_core/tests/csv'
 
-log = CSVLog(path, device_tag, 'gases', now)
+log = CSVLog(path, device_tag, 'gases')
 
 print(log)
 print("file_name: %s" % log.file_name())
-print("abs_file_name: %s" % log.abs_file_name())
+print("file_path: %s" % log.file_path())
 print("-")
 
 log.mkdir()
@@ -39,11 +39,11 @@ print("-")
 
 path = 'data'
 
-log = CSVLog(path, device_tag, 'gases', now)
+log = CSVLog(path, device_tag, 'gases')
 
 print(log)
 print("file_name: %s" % log.file_name())
-print("abs_file_name: %s" % log.abs_file_name())
+print("file_path: %s" % log.file_path())
 print("-")
 
 log.mkdir()
