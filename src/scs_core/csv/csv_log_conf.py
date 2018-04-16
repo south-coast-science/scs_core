@@ -4,7 +4,7 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"root-path": "/Volumes/SCS/data", delete-oldest:}
+{"root-path": "/Volumes/SCS/data", "delete-oldest": true}
 """
 
 import os
