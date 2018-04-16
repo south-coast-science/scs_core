@@ -14,7 +14,6 @@ from collections import OrderedDict
 from scs_core.csv.csv_dict import CSVDict
 
 
-# TODO: why use _csv?
 # TODO: batch mode - where all rows are scanned for header fields and the data not released until input is complete
 
 # --------------------------------------------------------------------------------------------------------------------
