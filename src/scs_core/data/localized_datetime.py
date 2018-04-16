@@ -210,6 +210,13 @@ class LocalizedDatetime(JSONable):
 
 
     @property
+    def utc_datetime(self):
+        utc_localised = self.utc()
+
+        return utc_localised.datetime
+
+
+    @property
     def tzinfo(self):
         return self.__datetime.tzinfo
 
