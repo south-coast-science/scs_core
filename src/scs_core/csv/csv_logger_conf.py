@@ -16,12 +16,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVLogConf(PersistentJSONable):
+class CSVLoggerConf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "csv_log_conf.json"
+    __FILENAME = "csv_logger_conf.json"
 
     @classmethod
     def filename(cls, host):
@@ -38,7 +38,7 @@ class CSVLogConf(PersistentJSONable):
         root_path = jdict.get('root-path')
         delete_oldest = jdict.get('delete-oldest')
 
-        return CSVLogConf(root_path, delete_oldest)
+        return CSVLoggerConf(root_path, delete_oldest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -79,4 +79,4 @@ class CSVLogConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogConf:{root_path:%s, delete_oldest:%s}" %  (self.root_path, self.delete_oldest)
+        return "CSVLoggerConf:{root_path:%s, delete_oldest:%s}" %  (self.root_path, self.delete_oldest)
