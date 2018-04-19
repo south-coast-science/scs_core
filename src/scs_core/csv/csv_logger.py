@@ -27,10 +27,11 @@ class CSVLogger(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, log):
+    def __init__(self, host, log):
         """
         Constructor
         """
+        self.__host = host
         self.__log = log
 
         self.__header = None
@@ -98,8 +99,11 @@ class CSVLogger(object):
             self.__writer.writerow(self.__header)
 
 
-    def __clear_space(self):                    # TODO: check disk usage
-        while self.__delete_oldest():
+    def __clear_space(self):
+        du = self.__host.disk_usage(self.log.root_path)
+        print("du: %s" % du)
+
+        while self.__delete_oldest():                           # TODO: check disk usage
             continue
 
 
@@ -125,4 +129,4 @@ class CSVLogger(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogger:{log:%s}" % self.log
+        return "CSVLogger:{host:%s, log:%s}" % (self.__host, self.log)

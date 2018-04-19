@@ -14,7 +14,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DiskUsageDatum(JSONable):
+class DiskUsage(JSONable):
     """
     classdocs
     """
@@ -26,19 +26,23 @@ class DiskUsageDatum(JSONable):
         if not jdict:
             return None
 
+        volume = jdict.get('volume')
+
         free = jdict.get('free')
         total = jdict.get('total')
         used = jdict.get('used')
 
-        return DiskUsageDatum(free, total, used)
+        return DiskUsage(volume, free, total, used)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, free, total, used):
+    def __init__(self, volume, free, total, used):
         """
         Constructor
         """
+        self.__volume = volume                      # string
+
         self.__free = int(free)                     # int
         self.__total = int(total)                   # int
         self.__used = int(used)                     # int
@@ -49,6 +53,8 @@ class DiskUsageDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['volume'] = self.volume
+
         jdict['free'] = self.free
         jdict['total'] = self.total
         jdict['used'] = self.used
@@ -57,6 +63,11 @@ class DiskUsageDatum(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def volume(self):
+        return self.__volume
+
 
     @property
     def free(self):
@@ -76,4 +87,4 @@ class DiskUsageDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskUsageDatum:{free:%s, total:%s, used:%s}" %  (self.free, self.total, self.used)
+        return "DiskUsage:{volume:%s, free:%s, total:%s, used:%s}" %  (self.volume, self.free, self.total, self.used)
