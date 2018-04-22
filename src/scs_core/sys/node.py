@@ -46,7 +46,7 @@ class Node(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def disk_usage(self, path):
+    def disk_usage(self, volume):
         pass
 
 

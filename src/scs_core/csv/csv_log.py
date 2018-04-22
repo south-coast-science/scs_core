@@ -54,6 +54,12 @@ class CSVLog(object):
         if self.timeline_start is None:
             raise ValueError("timeline_start has not been set")
 
+        if self.device_tag is None:
+            return "%4d-%02d-%02d-%02d-%02d-%02d-%s.csv" % \
+                   (self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
+                    self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second,
+                    self.topic)
+
         return "%s-%4d-%02d-%02d-%02d-%02d-%02d-%s.csv" % \
                (self.device_tag,
                 self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,

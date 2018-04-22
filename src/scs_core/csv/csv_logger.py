@@ -6,6 +6,7 @@ Created on 16 Apr 2018
 
 import csv
 import json
+import sys
 
 from collections import OrderedDict
 
@@ -23,19 +24,23 @@ class CSVLogger(object):
     classdocs
     """
 
-    MIN_FREE_SPACE = 1048576            # 1MB
+    __MIN_FREE_SPACE = 10485760                 # 10MB
+    # __MIN_FREE_SPACE = 2372239264             # test value for RPi
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, log):
+    def __init__(self, host, log, delete_oldest):
         """
         Constructor
         """
         self.__host = host
         self.__log = log
+        self.__delete_oldest = delete_oldest
 
         self.__header = None
         self.__file = None
+        self.__writing_inhibited = False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -45,6 +50,9 @@ class CSVLogger(object):
             return
 
         if self.log is None:
+            return
+
+        if self.writing_inhibited:
             return
 
         jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
@@ -79,13 +87,6 @@ class CSVLogger(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def log(self):
-        return self.__log
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __open_file(self):
         self.log.timeline_start = LocalizedDatetime.now()
 
@@ -100,33 +101,78 @@ class CSVLogger(object):
 
 
     def __clear_space(self):
+        if self.__has_sufficient_space():
+            return
+
+        # stop on no-delete...
+        if not self.delete_oldest:
+            print("CSVLogger.__clear_space: volume full.", file=sys.stderr)
+            self.__writing_inhibited = True
+            return
+
+        # delete until enough free...
+        while not self.__has_sufficient_space():
+            success = self.__delete_oldest_log()
+
+            if not success:
+                print("CSVLogger.__clear_space failed.", file=sys.stderr)
+                self.__writing_inhibited = True
+                return
+
+
+    def __has_sufficient_space(self):
         du = self.__host.disk_usage(self.log.root_path)
-        print("du: %s" % du)
+        print("CSVLogger.__has_sufficient_space: du: %s" % du, file=sys.stderr)
 
-        while self.__delete_oldest():                           # TODO: check disk usage
-            continue
+        return du.free > self.__MIN_FREE_SPACE
 
 
-    def __delete_oldest(self):
+    def __delete_oldest_log(self):
+        # walk the directories...
         containers = Filesystem.ls(self.log.root_path)
 
         for container in containers:
             if not container.is_directory:
                 continue
 
+            # walk the files...
             files = Filesystem.ls(container.path())
 
             for file in files:
                 if not file.is_directory and file.has_suffix('csv'):
+                    print("__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
+
                     success = file.delete()
+
+                    if not success:
+                        return False
+
                     Filesystem.rmdir(container.path())          # remove empty directories
 
-                    return success
+                    return True
 
         return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def log(self):
+        return self.__log
+
+
+    @property
+    def delete_oldest(self):
+        return self.__delete_oldest
+
+
+    @property
+    def writing_inhibited(self):
+        return self.__writing_inhibited
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "CSVLogger:{host:%s, log:%s}" % (self.__host, self.log)
+        return "CSVLogger:{log:%s, delete_oldest:%s, writing_inhibited:%s}" % \
+               (self.log, self.delete_oldest, self.writing_inhibited)
