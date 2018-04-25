@@ -18,15 +18,15 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, device_tag, topic):
+    def __init__(self, root_path, topic, tag):
         """
         Constructor
         """
-        self.__root_path = root_path                                # string
-        self.__device_tag = device_tag                              # string
-        self.__topic = topic                                        # string
+        self.__root_path = root_path                        # string
+        self.__topic = topic                                # string
+        self.__tag = tag                                    # string
 
-        self.__timeline_start = None                                # datetime
+        self.__timeline_start = None                        # datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -54,14 +54,14 @@ class CSVLog(object):
         if self.timeline_start is None:
             raise ValueError("timeline_start has not been set")
 
-        if self.device_tag is None:
+        if self.tag is None:
             return "%4d-%02d-%02d-%02d-%02d-%02d-%s.csv" % \
                    (self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
                     self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second,
                     self.topic)
 
         return "%s-%4d-%02d-%02d-%02d-%02d-%02d-%s.csv" % \
-               (self.device_tag,
+               (self.tag,
                 self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
                 self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second,
                 self.topic)
@@ -84,13 +84,18 @@ class CSVLog(object):
 
 
     @property
-    def device_tag(self):
-        return self.__device_tag
+    def topic(self):
+        return self.__topic
 
 
     @property
-    def topic(self):
-        return self.__topic
+    def tag(self):
+        return self.__tag
+
+
+    @tag.setter
+    def tag(self, tag):
+        self.__tag = tag
 
 
     @property
@@ -106,5 +111,5 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLog:{root_path:%s, device_tag:%s, topic:%s, timeline_start:%s}" % \
-               (self.root_path, self.device_tag, self.topic, self.timeline_start)
+        return "CSVLog:{root_path:%s, tag:%s, topic:%s, timeline_start:%s}" % \
+               (self.root_path, self.tag, self.topic, self.timeline_start)

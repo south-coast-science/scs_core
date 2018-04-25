@@ -25,8 +25,6 @@ class CSVLogger(object):
     """
 
     __MIN_FREE_SPACE = 10485760                 # 10MB
-    # __MIN_FREE_SPACE = 2372239264             # test value for RPi
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -60,6 +58,9 @@ class CSVLogger(object):
 
         # first run...
         if not self.__file:
+            if self.log.tag is None and 'tag' in datum.dictionary:
+                self.log.tag = datum.dictionary['tag']                  # find the tag from the first document
+
             self.__open_file()
 
         # start log for new day...
@@ -115,7 +116,7 @@ class CSVLogger(object):
             success = self.__delete_oldest_log()
 
             if not success:
-                print("CSVLogger.__clear_space failed.", file=sys.stderr)
+                print("CSVLogger.__clear_space: delete failed.", file=sys.stderr)
                 self.__writing_inhibited = True
                 return
 
@@ -140,7 +141,7 @@ class CSVLogger(object):
 
             for file in files:
                 if not file.is_directory and file.has_suffix('csv'):
-                    print("__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
+                    print("CSVLogger.__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
 
                     success = file.delete()
 
