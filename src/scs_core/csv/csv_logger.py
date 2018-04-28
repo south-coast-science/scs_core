@@ -17,6 +17,8 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.filesystem import Filesystem
 
 
+# TODO: make use of the write_interval field
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogger(object):

@@ -18,7 +18,7 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, topic, tag):
+    def __init__(self, root_path, topic, tag=None):
         """
         Constructor
         """
