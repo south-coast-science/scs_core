@@ -28,17 +28,19 @@ class CSVLogger(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, log, delete_oldest):
+    def __init__(self, host, log, delete_oldest, write_interval):
         """
         Constructor
         """
-        self.__host = host
-        self.__log = log
-        self.__delete_oldest = delete_oldest
+        self.__host = host                              # Host
+        self.__log = log                                # CSVLog
+        self.__delete_oldest = delete_oldest            # bool
+        self.__write_interval = write_interval          # int
 
-        self.__header = None
-        self.__file = None
-        self.__writing_inhibited = False
+        self.__header = None                            # array of string
+        self.__file = None                              # file handle
+        self.__latest_write = None                      # timestamp
+        self.__writing_inhibited = False                # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -168,6 +170,11 @@ class CSVLogger(object):
 
 
     @property
+    def write_interval(self):
+        return self.__write_interval
+
+
+    @property
     def writing_inhibited(self):
         return self.__writing_inhibited
 
@@ -175,5 +182,5 @@ class CSVLogger(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogger:{log:%s, delete_oldest:%s, writing_inhibited:%s}" % \
-               (self.log, self.delete_oldest, self.writing_inhibited)
+        return "CSVLogger:{log:%s, delete_oldest:%s, write_interval:%s, writing_inhibited:%s}" % \
+               (self.log, self.delete_oldest, self.write_interval, self.writing_inhibited)

@@ -4,7 +4,7 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"root-path": "/Volumes/SCS/data", "delete-oldest": true}
+{"root-path": "/home/pi/SCS/logs", "delete-oldest": true, "write-interval": 0}
 """
 
 import os
@@ -37,13 +37,14 @@ class CSVLoggerConf(PersistentJSONable):
 
         root_path = jdict.get('root-path')
         delete_oldest = jdict.get('delete-oldest')
+        write_interval = jdict.get('write-interval')
 
-        return CSVLoggerConf(root_path, delete_oldest)
+        return CSVLoggerConf(root_path, delete_oldest, write_interval)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, delete_oldest):
+    def __init__(self, root_path, delete_oldest, write_interval):
         """
         Constructor
         """
@@ -51,6 +52,7 @@ class CSVLoggerConf(PersistentJSONable):
 
         self.__root_path = root_path                            # string
         self.__delete_oldest = bool(delete_oldest)              # bool
+        self.__write_interval = write_interval                  # int
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +62,7 @@ class CSVLoggerConf(PersistentJSONable):
 
         jdict['root-path'] = self.root_path
         jdict['delete-oldest'] = self.delete_oldest
+        jdict['write-interval'] = self.write_interval
 
         return jdict
 
@@ -76,7 +79,13 @@ class CSVLoggerConf(PersistentJSONable):
         return self.__delete_oldest
 
 
+    @property
+    def write_interval(self):
+        return self.__write_interval
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLoggerConf:{root_path:%s, delete_oldest:%s}" %  (self.root_path, self.delete_oldest)
+        return "CSVLoggerConf:{root_path:%s, delete_oldest:%s, write_interval:%s}" %  \
+               (self.root_path, self.delete_oldest, self.write_interval)
