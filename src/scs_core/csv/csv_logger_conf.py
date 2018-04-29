@@ -52,7 +52,7 @@ class CSVLoggerConf(PersistentJSONable):
 
         self.__root_path = root_path                            # string
         self.__delete_oldest = bool(delete_oldest)              # bool
-        self.__write_interval = write_interval                  # int
+        self.__write_interval = int(write_interval)             # int
 
 
     # ----------------------------------------------------------------------------------------------------------------

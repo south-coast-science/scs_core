@@ -7,6 +7,7 @@ Created on 16 Apr 2018
 import csv
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -16,8 +17,6 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.filesystem import Filesystem
 
-
-# TODO: make use of the write_interval field
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -44,22 +43,57 @@ class CSVLogger(object):
         self.__latest_write = None                      # timestamp
         self.__writing_inhibited = False                # bool
 
+        self.__buffer = []                              # array of CSVDict
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def write(self, jstr):
-        if jstr is None:
-            return
-
-        if self.log is None:
-            return
-
         if self.writing_inhibited:
+            return
+
+        if jstr is None or self.log is None:
             return
 
         jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
         datum = CSVDict(jdict)
 
+        # direct write...
+        if not self.write_interval:
+            self.__write(datum)
+            return
+
+        # interval write...
+        now = int(round(time.time()))
+
+        if self.__latest_write is None:
+            self.__latest_write = now
+
+        # append to buffer...
+        if (now - self.__latest_write) < self.write_interval:
+            self.__buffer.append(datum)
+            return
+
+        self.__latest_write = now
+
+        # flush buffer...
+        for datum in self.__buffer:
+            self.__write(datum)
+
+        self.__buffer = []
+
+
+    def close(self):
+        if self.__file is None:
+            return
+
+        self.__file.close()
+        self.__file = None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __write(self, datum):
         # first run...
         if not self.__file:
             if self.log.tag is None and 'tag' in datum.dictionary:
@@ -81,16 +115,6 @@ class CSVLogger(object):
         self.__writer.writerow(datum.row)
         self.__file.flush()
 
-
-    def close(self):
-        if self.__file is None:
-            return
-
-        self.__file.close()
-        self.__file = None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     def __open_file(self):
         self.log.timeline_start = LocalizedDatetime.now()
