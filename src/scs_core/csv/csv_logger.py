@@ -64,13 +64,15 @@ class CSVLogger(object):
             return
 
         # interval write...
-        now = int(round(time.time()))
+        now = time.time()
 
         if self.__latest_write is None:
             self.__latest_write = now
 
+        interval = now - self.__latest_write
+
         # append to buffer...
-        if (now - self.__latest_write) < self.write_interval:
+        if interval < self.write_interval:
             self.__buffer.append(datum)
             return
 
