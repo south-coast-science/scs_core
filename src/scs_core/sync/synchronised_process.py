@@ -52,14 +52,6 @@ class SynchronisedProcess(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # data retrieval for client process...
-
-    @abstractmethod
-    def sample(self):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def _proc(self):
@@ -74,3 +66,8 @@ class SynchronisedProcess(object):
     @property
     def _value(self):
         return self.__value
+
+
+    @_value.setter
+    def _value(self, value):
+        self.__value = value
