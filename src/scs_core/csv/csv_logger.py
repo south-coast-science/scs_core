@@ -153,7 +153,6 @@ class CSVLogger(object):
 
     def __has_sufficient_space(self):
         du = self.__host.disk_usage(self.log.root_path)
-        print("CSVLogger.__has_sufficient_space: du: %s" % du, file=sys.stderr)
 
         return du.free > self.__MIN_FREE_SPACE
 
