@@ -61,6 +61,7 @@ class CSVLogger(object):
         # direct write...
         if not self.write_interval:
             self.__write(datum)
+            self.__file.flush()
             return
 
         # interval write...
@@ -78,9 +79,11 @@ class CSVLogger(object):
 
         self.__latest_write = now
 
-        # flush buffer...
+        # deferred write...
         for datum in self.__buffer:
             self.__write(datum)
+
+        self.__file.flush()
 
         self.__buffer = []
 
@@ -115,7 +118,6 @@ class CSVLogger(object):
 
         # write row...
         self.__writer.writerow(datum.row)
-        self.__file.flush()
 
 
     def __open_file(self):
