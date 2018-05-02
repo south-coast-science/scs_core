@@ -194,6 +194,15 @@ class LocalizedDatetime(JSONable):
         return "%sT%s.%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
 
 
+    def as_time(self):
+        time = self.__datetime.strftime("%H:%M:%S")
+
+        micros = float(self.__datetime.strftime("%f"))
+        millis = "%03d" % (micros // 1000)
+
+        return "%s.%s" % (time, millis)
+
+
     def as_json(self):
         return self.as_iso8601()
 
