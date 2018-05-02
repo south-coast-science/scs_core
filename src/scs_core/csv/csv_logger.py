@@ -138,7 +138,7 @@ class CSVLogger(object):
         # stop on no-delete...
         if not self.delete_oldest:
             print("CSVLogger.__clear_space: volume full.", file=sys.stderr)
-            self.__writing_inhibited = True
+            self.writing_inhibited = True
             return
 
         # delete until enough free...
@@ -147,7 +147,7 @@ class CSVLogger(object):
 
             if not success:
                 print("CSVLogger.__clear_space: delete failed.", file=sys.stderr)
-                self.__writing_inhibited = True
+                self.writing_inhibited = True
                 return
 
 
@@ -205,6 +205,11 @@ class CSVLogger(object):
     @property
     def writing_inhibited(self):
         return self.__writing_inhibited
+
+
+    @writing_inhibited.setter
+    def writing_inhibited(self, writing_inhibited):
+        self.__writing_inhibited = writing_inhibited
 
 
     # ----------------------------------------------------------------------------------------------------------------
