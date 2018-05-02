@@ -7,6 +7,8 @@ Created on 11 Jul 2016
 import time
 
 
+# TODO: check that this skips lost ticks (and does not race)
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class IntervalTimer(object):
@@ -48,7 +50,7 @@ class IntervalTimer(object):
 
         sleep_time = (self.__next_yield - time.time()) % self.__interval        # this prevents negative intervals!
 
-        if sleep_time > 0:
+        if sleep_time > 0:                  # TODO: check that this does not cause a race when time is not moving
             time.sleep(sleep_time)
 
         self.__next_yield += self.__interval
