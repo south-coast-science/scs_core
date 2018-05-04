@@ -46,10 +46,12 @@ class IntervalTimer(object):
         if self.__interval == 0:
             return
 
-        sleep_time = (self.__next_yield - time.time()) % self.__interval        # this prevents negative intervals!
+        sleep_time = (self.__next_yield - time.time()) % self.__interval        # prevents negative intervals
 
-        if sleep_time > 0:
-            time.sleep(sleep_time)
+        if sleep_time == 0:
+            sleep_time = self.__interval        # prevents zero intervals
+
+        time.sleep(sleep_time)
 
         self.__next_yield += self.__interval
 

@@ -4,7 +4,7 @@ Created on 4 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import _csv
+import csv
 import sys
 
 from scs_core.csv.csv_dict import CSVDict
@@ -44,7 +44,7 @@ class CSVReader(object):
         self.__filename = filename
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 
-        self.__reader = _csv.reader(self.__file)
+        self.__reader = csv.reader(self.__file)
         self.__header = next(self.__reader)
 
 

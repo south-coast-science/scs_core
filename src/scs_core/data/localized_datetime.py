@@ -141,14 +141,14 @@ class LocalizedDatetime(JSONable):
         """
         Constructor
         """
-        self.__datetime = localized            # datetime
+        self.__datetime = localized             # datetime
 
 
-    def __add__(self, other: datetime):
+    def __add__(self, other: datetime):         # TODO: check validity of __add__(..)
         return LocalizedDatetime(self.__datetime + other)
 
 
-    def __sub__(self, other):
+    def __sub__(self, other):                   # TODO: check validity of __sub__(..)
         other_datetime = other.__datetime if type(other) == LocalizedDatetime else other
 
         return self.__datetime - other_datetime
@@ -194,6 +194,15 @@ class LocalizedDatetime(JSONable):
         return "%sT%s.%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
 
 
+    def as_time(self):
+        time = self.__datetime.strftime("%H:%M:%S")
+
+        micros = float(self.__datetime.strftime("%f"))
+        millis = "%03d" % (micros // 1000)
+
+        return "%s.%s" % (time, millis)
+
+
     def as_json(self):
         return self.as_iso8601()
 
@@ -207,6 +216,13 @@ class LocalizedDatetime(JSONable):
     @property
     def datetime(self):
         return self.__datetime
+
+
+    @property
+    def utc_datetime(self):
+        utc_localised = self.utc()
+
+        return utc_localised.datetime
 
 
     @property
