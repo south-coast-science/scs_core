@@ -35,7 +35,7 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return MQTTConf(True)
+            return MQTTConf(False)
 
         inhibit_publishing = jdict.get('inhibit-publishing')
 
