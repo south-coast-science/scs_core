@@ -4,7 +4,7 @@ Created on 16 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"free": 61745299456, "total": 61749133312, "used": 3833856}
+{"volume": "/etc", "free": 2375217152, "used": 4958257152, "total": 7710990336}
 """
 
 from collections import OrderedDict
@@ -29,23 +29,23 @@ class DiskUsage(JSONable):
         volume = jdict.get('volume')
 
         free = jdict.get('free')
-        total = jdict.get('total')
         used = jdict.get('used')
+        total = jdict.get('total')
 
-        return DiskUsage(volume, free, total, used)
+        return DiskUsage(volume, free, used, total)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, volume, free, total, used):
+    def __init__(self, volume, free, used, total):
         """
         Constructor
         """
         self.__volume = volume                      # string
 
         self.__free = int(free)                     # int
-        self.__total = int(total)                   # int
         self.__used = int(used)                     # int
+        self.__total = int(total)                   # int
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -56,8 +56,8 @@ class DiskUsage(JSONable):
         jdict['volume'] = self.volume
 
         jdict['free'] = self.free
-        jdict['total'] = self.total
         jdict['used'] = self.used
+        jdict['total'] = self.total
 
         return jdict
 
@@ -75,16 +75,16 @@ class DiskUsage(JSONable):
 
 
     @property
-    def total(self):
-        return self.__total
+    def used(self):
+        return self.__used
 
 
     @property
-    def used(self):
-        return self.__used
+    def total(self):
+        return self.__total
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskUsage:{volume:%s, free:%s, total:%s, used:%s}" %  (self.volume, self.free, self.total, self.used)
+        return "DiskUsage:{volume:%s, free:%s, used:%s, total:%s}" %  (self.volume, self.free, self.used, self.total)
