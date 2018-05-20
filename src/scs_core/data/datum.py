@@ -66,6 +66,12 @@ class Datum(object):
 
 
     @staticmethod
+    def decode_long(byte_values):
+        packed = struct.unpack('l', struct.pack('BBBB', *byte_values))
+        return packed[0]
+
+
+    @staticmethod
     def decode_unsigned_long(byte_values):
         packed = struct.unpack('L', struct.pack('BBBB', *byte_values))
         return packed[0]
