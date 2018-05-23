@@ -161,7 +161,6 @@ class AFECalib(PersistentJSONable):
 
     def gas_names(self):
         names = []
-
         for sensor_calib in self.__sensor_calibs:
             if sensor_calib is None:
                 continue
