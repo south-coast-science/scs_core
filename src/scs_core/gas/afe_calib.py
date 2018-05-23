@@ -159,6 +159,8 @@ class AFECalib(PersistentJSONable):
         return sensors
 
 
+    # TODO: problem - sensor_calib may be None!
+
     def gas_names(self):
         names = []
 
