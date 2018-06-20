@@ -13,6 +13,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: add altitude
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPSLocation(JSONable):
