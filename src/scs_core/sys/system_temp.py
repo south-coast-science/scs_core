@@ -42,7 +42,9 @@ class SystemTemp(JSONable):
         jdict = OrderedDict()
 
         jdict['brd'] = self.board
-        jdict['hst'] = self.host
+
+        if self.host is not None:
+            jdict['hst'] = self.host
 
         return jdict
 
