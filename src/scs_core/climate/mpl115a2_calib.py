@@ -20,7 +20,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 class MPL115A2Calib(PersistentJSONable):
     """
-    classdocs
+    NXP MPL115A2 digital barometer - temperature calibration
     """
 
     DEFAULT_C25 = 472                                 # T adc counts at 25 ºC

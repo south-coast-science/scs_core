@@ -18,7 +18,7 @@ from scs_core.data.json import JSONable
 
 class MPL115A2Datum(JSONable):
     """
-    classdocs
+    NXP MPL115A2 digital barometer - data interpretation
     """
 
     # ----------------------------------------------------------------------------------------------------------------
