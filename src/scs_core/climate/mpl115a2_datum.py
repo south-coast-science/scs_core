@@ -38,6 +38,9 @@ class MPL115A2Datum(JSONable):
 
     @classmethod
     def __temp(cls, c25, t_adc):
+        if c25 is None:
+            return None
+
         return (t_adc - c25) / cls.__COUNTS_PER_DEGREE + 25.0
 
 
@@ -75,8 +78,10 @@ class MPL115A2Datum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['prs'] = self.press
-        jdict['tmp'] = self.temp
+        jdict['pA'] = self.press
+
+        if self.temp is not None:
+            jdict['tmp'] = self.temp
 
         return jdict
 
