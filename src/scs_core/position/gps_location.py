@@ -10,7 +10,6 @@ example use:
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
