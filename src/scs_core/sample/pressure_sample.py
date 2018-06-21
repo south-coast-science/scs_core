@@ -4,6 +4,7 @@ Created on 21 Jun 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
+{"tag": "scs-be2-3", "rec": "2018-06-21T16:13:52.675+00:00", "val": {"pA": 102.2, "p0": 113.8, "tmp": 25.6}}
 """
 
 from scs_core.sample.sample import Sample

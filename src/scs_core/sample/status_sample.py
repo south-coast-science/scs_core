@@ -19,7 +19,7 @@ example document:
 from scs_core.sample.sample import Sample
 
 
-# TODO: reporting GPS / PSU should depend on conf, not value
+# TODO: reporting GPS / PSU should depend on conf, not value?
 
 # --------------------------------------------------------------------------------------------------------------------
 
