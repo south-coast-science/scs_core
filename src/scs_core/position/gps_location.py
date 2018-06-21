@@ -42,10 +42,9 @@ class GPSLocation(JSONable):
         if gga is None:
             return None
 
+        loc = gga.loc
         alt = None if gga.alt is None else round(gga.alt)
         quality = gga.quality
-
-        loc = gga.loc
 
         if loc is None:
             return GPSLocation(None, None, alt, quality)
