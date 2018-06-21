@@ -12,6 +12,8 @@ example document:
 from scs_core.sample.sample import Sample
 
 
+# TODO: add pressure
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class ClimateSample(Sample):

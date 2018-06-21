@@ -1,10 +1,10 @@
 """
-Created on 30 Sep 2016
+Created on 20 Jun 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"calibrated-on": "2017-07-19T13:56:48.289+00:00", "v20": 0.002891}
+{"calibrated-on": "2018-06-20T10:25:39.045+00:00", "c25": 511}
 """
 
 import os
@@ -18,16 +18,16 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Pt1000Calib(PersistentJSONable):
+class MPL115A2Calib(PersistentJSONable):
     """
-    classdocs
+    NXP MPL115A2 digital barometer - temperature calibration
     """
 
-    DEFAULT_V20 = 0.295                         # Volts at 20 ºC
+    DEFAULT_C25 = 472                                 # T adc counts at 25 ºC
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME = "pt1000_calib.json"
+    __FILENAME = "mpl115a2_calib.json"
 
     @classmethod
     def filename(cls, host):
@@ -41,28 +41,22 @@ class Pt1000Calib(PersistentJSONable):
         if not jdict:
             return None
 
-        if 'calibrated_on' in jdict:                            # TODO: deprecated
-            date = Datum.date(jdict.get('calibrated_on'))
-            calibrated_on = LocalizedDatetime.construct_from_date(date)
+        calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+        c25 = jdict.get('c25')
 
-        else:
-            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
-
-        v20 = jdict.get('v20')
-
-        return Pt1000Calib(calibrated_on, v20)
+        return MPL115A2Calib(calibrated_on, c25)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, calibrated_on, v20):
+    def __init__(self, calibrated_on, c25):
         """
         Constructor
         """
         super().__init__()
 
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
-        self.__v20 = Datum.float(v20, 6)            # voltage at 20 ºC
+        self.__c25 = Datum.int(c25)                 # T adc count at 25 ºC
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,7 +74,7 @@ class Pt1000Calib(PersistentJSONable):
         jdict = OrderedDict()
 
         jdict['calibrated-on'] = self.calibrated_on
-        jdict['v20'] = self.v20
+        jdict['c25'] = self.c25
 
         return jdict
 
@@ -93,11 +87,11 @@ class Pt1000Calib(PersistentJSONable):
 
 
     @property
-    def v20(self):
-        return self.__v20
+    def c25(self):
+        return self.__c25
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Pt1000Calib:{calibrated_on:%s, v20:%s}" % (self.calibrated_on, self.v20)
+        return "MPL115A2Calib:{calibrated_on:%s, c25:%s}" % (self.calibrated_on, self.c25)

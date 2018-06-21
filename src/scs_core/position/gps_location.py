@@ -29,9 +29,11 @@ class GPSLocation(JSONable):
 
         lat = jdict.get('lat')
         lng = jdict.get('lng')
+        alt = jdict.get('alt')
+
         quality = jdict.get('qual')
 
-        return GPSLocation(lat, lng, quality)
+        return GPSLocation(lat, lng, alt, quality)
 
 
     @classmethod
@@ -39,28 +41,30 @@ class GPSLocation(JSONable):
         if gga is None:
             return None
 
+        loc = gga.loc
+        alt = None if gga.alt is None else round(gga.alt)
         quality = gga.quality
 
-        loc = gga.loc
-
         if loc is None:
-            return GPSLocation(None, None, quality)
+            return GPSLocation(None, None, alt, quality)
 
         lat = loc.deg_lat()
         lng = loc.deg_lng()
 
-        return GPSLocation(lat, lng, quality)
+        return GPSLocation(lat, lng, alt, quality)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lat, lng, quality):
+    def __init__(self, lat, lng, alt, quality):
         """
         Constructor
         """
-        self.__lat = lat
-        self.__lng = lng
-        self.__quality = quality
+        self.__lat = lat                    # degrees north of the equator
+        self.__lng = lng                    # degrees east of Greenwich
+        self.__alt = alt                    # metres above sea level
+
+        self.__quality = quality            # 0, 2 or 3
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,6 +74,8 @@ class GPSLocation(JSONable):
 
         jdict['lat'] = self.lat
         jdict['lng'] = self.lng
+        jdict['alt'] = self.alt
+
         jdict['qual'] = self.quality
 
         return jdict
@@ -88,6 +94,11 @@ class GPSLocation(JSONable):
 
 
     @property
+    def alt(self):
+        return self.__alt
+
+
+    @property
     def quality(self):
         return self.__quality
 
@@ -95,4 +106,4 @@ class GPSLocation(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPSLocation:{lat:%s, lng:%s, quality:%s}" % (self.lat, self.lng, self.quality)
+        return "GPSLocation:{lat:%s, lng:%s, alt:%s, quality:%s}" % (self.lat, self.lng, self.alt, self.quality)
