@@ -32,8 +32,16 @@ class MPL115A2Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __press(cls, p_comp):
+    def __actual_press(cls, p_comp):
         return p_comp * cls.__PRESSURE_CONV + 50.0
+
+
+    @classmethod
+    def __sl_press(cls, actual_press, temp, altitude):
+        if temp is None or altitude is None:
+            return None
+
+        return (actual_press * 9.80665 * altitude) / (287 * (273 + temp + (altitude / 400))) + actual_press
 
 
     @classmethod
@@ -52,25 +60,29 @@ class MPL115A2Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, c25, p_comp, t_adc):
+    def construct(cls, c25, p_comp, t_adc, altitude):
         if p_comp is None or t_adc is None:
             return None
 
-        press = cls.__press(p_comp)
         temp = cls.__temp(c25, t_adc)
 
-        return MPL115A2Datum(t_adc, press, temp)
+        actual_press = cls.__actual_press(p_comp)
+        sl_press = cls.__sl_press(actual_press, temp, altitude)
+
+        return MPL115A2Datum(actual_press, sl_press, t_adc, temp)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, t_adc, press, temp):
+    def __init__(self, actual_press, sl_press, t_adc, temp):
         """
         Constructor
         """
-        self.__t_adc = Datum.int(t_adc)                     # T adc count
-        self.__press = Datum.float(press, 1)                # kPa
-        self.__temp = Datum.float(temp, 1)                  # ºC
+        self.__actual_press = Datum.float(actual_press, 1)      # kPa
+        self.__sl_press = Datum.float(sl_press, 1)              # kPa
+
+        self.__t_adc = Datum.int(t_adc)                         # T adc count
+        self.__temp = Datum.float(temp, 1)                      # ºC
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,7 +90,10 @@ class MPL115A2Datum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['pA'] = self.press
+        jdict['pA'] = self.actual_press
+
+        if self.sl_press is not None:
+            jdict['p0'] = self.sl_press
 
         if self.temp is not None:
             jdict['tmp'] = self.temp
@@ -95,8 +110,13 @@ class MPL115A2Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def press(self):
-        return self.__press
+    def actual_press(self):
+        return self.__actual_press
+
+
+    @property
+    def sl_press(self):
+        return self.__sl_press
 
 
     @property
@@ -107,4 +127,5 @@ class MPL115A2Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPL115A2Datum:{t_adc:%s, press:%s, temp:%s}" % (self.__t_adc, self.press, self.temp)
+        return "MPL115A2Datum:{actual_press:%s, sl_press:%s, t_adc:%s, temp:%s}" % \
+               (self.actual_press, self.sl_press, self.__t_adc, self.temp)
