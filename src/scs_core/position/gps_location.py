@@ -61,7 +61,7 @@ class GPSLocation(JSONable):
         Constructor
         """
         self.__lat = lat                    # degrees north of the equator
-        self.__lng = lng                    # degrees west of Greenwich
+        self.__lng = lng                    # degrees east of Greenwich
         self.__alt = alt                    # metres above sea level
 
         self.__quality = quality            # 0, 2 or 3
