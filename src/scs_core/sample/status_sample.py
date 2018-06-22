@@ -36,17 +36,17 @@ class StatusSample(Sample):
         """
         val = []
 
-        if timezone:
+        if timezone is not None:
             val.append(('tz', timezone))
 
-        if position:
+        if position is not None:
             val.append(('pos', position))
 
         val.append(('sch', schedule))
         val.append(('tmp', temperature))
         val.append(('up', uptime))
 
-        if psu_status:
+        if psu_status is not None:
             val.append(('psu', psu_status))
 
         super().__init__(tag, rec, *val)
