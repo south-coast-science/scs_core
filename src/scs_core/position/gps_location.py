@@ -64,7 +64,7 @@ class GPSLocation(JSONable):
         self.__lng = lng                    # degrees east of Greenwich
         self.__alt = alt                    # metres above sea level
 
-        self.__quality = quality            # 0, 2 or 3
+        self.__quality = quality            # 0 to 3
 
 
     # ----------------------------------------------------------------------------------------------------------------

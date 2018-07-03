@@ -33,16 +33,16 @@ class GasesSample(Sample):
         """
         val = []
 
-        if ndir_datum:
+        if ndir_datum is not None:
             val.append(('CO2', ndir_datum))
 
-        if afe_datum:
+        if afe_datum is not None:
             val.extend([(key, afe_datum.sns[key]) for key in afe_datum.sns])
 
-            if afe_datum.pt1000:
+            if afe_datum.pt1000 is not None:
                 val.append(('pt1', afe_datum.pt1000))
 
-            if sht_datum:
-                val.append(('sht', sht_datum))
+        if sht_datum is not None:
+            val.append(('sht', sht_datum))
 
         super().__init__(tag, rec, *val)
