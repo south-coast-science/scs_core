@@ -83,7 +83,7 @@ class MQTTClient(object):
     def publish(self, publication):
         payload = JSONify.dumps(publication.payload)
 
-        self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+        return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -126,4 +126,4 @@ class MQTTSubscriber(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler)
+        return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler.__self__)
