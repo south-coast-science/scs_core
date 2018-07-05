@@ -4,6 +4,7 @@ Created on 6 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://github.com/aws/aws-iot-device-sdk-python
+https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
