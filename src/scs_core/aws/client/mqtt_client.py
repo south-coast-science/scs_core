@@ -4,6 +4,7 @@ Created on 6 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://github.com/aws/aws-iot-device-sdk-python
+https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
@@ -83,7 +84,7 @@ class MQTTClient(object):
     def publish(self, publication):
         payload = JSONify.dumps(publication.payload)
 
-        self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+        return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -126,4 +127,4 @@ class MQTTSubscriber(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler)
+        return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler.__self__)
