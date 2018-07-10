@@ -26,6 +26,8 @@ class RESTClient(object):
 
     __HOST = "api.opensensors.io"               # hard-coded URL
 
+    __VERIFIED = False                          # False - ignore invalid SSL certificates
+
     __HEADER_ACCEPT = "application/json"
     __HEADER_AUTHORIZATION = "api-key "
 
@@ -43,7 +45,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self, timeout=None):
-        self.__http_client.connect(RESTClient.__HOST, timeout=timeout)
+        self.__http_client.connect(self.__HOST, verified=self.__VERIFIED, timeout=timeout)
 
 
     def close(self):
@@ -123,8 +125,8 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": RESTClient.__HEADER_ACCEPT,
-                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__api_key}
+        return {"Accept": self.__HEADER_ACCEPT,
+                "Authorization": self.__HEADER_AUTHORIZATION + self.__api_key}
 
 
     # ----------------------------------------------------------------------------------------------------------------
