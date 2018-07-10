@@ -45,7 +45,6 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self, timeout=None):
-        # print("verified: %s" % self.__VERIFIED)
         self.__http_client.connect(self.__HOST, verified=self.__VERIFIED, timeout=timeout)
 
 
