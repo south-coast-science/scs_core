@@ -12,8 +12,6 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.particulate.pmx_datum import PMxDatum
 
 
-# TODO: remove rec field from OPCDatum
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class OPCDatum(PMxDatum):

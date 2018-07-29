@@ -7,6 +7,8 @@ https://github.com/aws/aws-iot-device-sdk-python
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
+import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
+
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -76,7 +78,11 @@ class MQTTClient(object):
 
 
     def disconnect(self):
-        self.__client.disconnect()
+        try:
+            self.__client.disconnect()
+
+        except AWSIoTExceptions.disconnectError:
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -84,7 +90,11 @@ class MQTTClient(object):
     def publish(self, publication):
         payload = JSONify.dumps(publication.payload)
 
-        return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+        try:
+            return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+
+        except AWSIoTExceptions.publishTimeoutException as ex:
+            raise TimeoutError(ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -128,3 +138,4 @@ class MQTTSubscriber(object):
 
     def __str__(self, *args, **kwargs):
         return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler.__self__)
+
