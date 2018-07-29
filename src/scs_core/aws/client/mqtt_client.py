@@ -80,6 +80,7 @@ class MQTTClient(object):
     def disconnect(self):
         try:
             self.__client.disconnect()
+
         except AWSIoTExceptions.disconnectError:
             pass
 
@@ -89,7 +90,11 @@ class MQTTClient(object):
     def publish(self, publication):
         payload = JSONify.dumps(publication.payload)
 
-        return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+        try:
+            return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+
+        except AWSIoTExceptions.publishTimeoutException as ex:
+            raise TimeoutError(ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -133,3 +138,4 @@ class MQTTSubscriber(object):
 
     def __str__(self, *args, **kwargs):
         return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler.__self__)
+
