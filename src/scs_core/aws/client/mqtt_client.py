@@ -7,6 +7,8 @@ https://github.com/aws/aws-iot-device-sdk-python
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
+import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
+
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -76,7 +78,10 @@ class MQTTClient(object):
 
 
     def disconnect(self):
-        self.__client.disconnect()
+        try:
+            self.__client.disconnect()
+        except AWSIoTExceptions.disconnectError:
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
