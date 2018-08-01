@@ -23,6 +23,8 @@ class MQTTClient(object):
     classdocs
     """
 
+    __KEEP_ALIVE_INTERVAL =         600                     # seconds
+
     __PORT =                        8883
 
     __QUEUE_SIZE =                  -1                      # recommended: infinite
@@ -74,7 +76,12 @@ class MQTTClient(object):
             self.__client.subscribe(subscriber.topic, self.__SUB_QOS, subscriber.handler)
 
         # connect...
-        self.__client.connect()
+        try:
+            self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
+            return True
+
+        except AWSIoTExceptions.connectTimeoutException:
+            return False
 
 
     def disconnect(self):
@@ -138,4 +145,3 @@ class MQTTSubscriber(object):
 
     def __str__(self, *args, **kwargs):
         return "MQTTSubscriber:{topic:%s, handler:%s}" % (self.topic, self.handler.__self__)
-
