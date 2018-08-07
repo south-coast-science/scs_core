@@ -32,8 +32,8 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    1                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  16                      # recommended: 32 (sec)
-    __RECONN_STABLE =               10                       # recommended: 20 (sec)
+    __RECONN_MAX =                  32                      # recommended: 32 (sec)
+    __RECONN_STABLE =               10                      # recommended: 20 (sec)
 
     __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)     was 20, 30, 120
     __OPERATION_TIMEOUT =           20                      # recommended: 5 (sec)      was 20, 30, 60
