@@ -33,10 +33,10 @@ class MQTTClient(object):
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
     __RECONN_MAX =                  32                      # recommended: 32 (sec)
-    __RECONN_STABLE =               10                      # recommended: 20 (sec)
+    __RECONN_STABLE =               20                      # recommended: 20 (sec)
 
-    __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)     was 20, 30, 120
-    __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)      was 20, 30, 60
+    __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)
+    __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)
 
     __PUB_QOS =                     1
     __SUB_QOS =                     1
