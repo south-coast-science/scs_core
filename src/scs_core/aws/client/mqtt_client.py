@@ -23,20 +23,20 @@ class MQTTClient(object):
     classdocs
     """
 
-    __KEEP_ALIVE_INTERVAL =         600                     # recommended: 600 (sec)
+    __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 (sec)
 
     __PORT =                        8883
 
     __QUEUE_SIZE =                  -1                      # recommended: infinite
     __QUEUE_DROP_BEHAVIOUR =        MQTTLib.DROP_OLDEST     # not required for infinite queue
-    __QUEUE_DRAINING_FREQUENCY =    1                       # recommended: 2 (Hz)
+    __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
     __RECONN_MAX =                  32                      # recommended: 32 (sec)
     __RECONN_STABLE =               20                      # recommended: 20 (sec)
 
-    __DISCONNECT_TIMEOUT =          120                     # recommended: 10 (sec)     was 30
-    __OPERATION_TIMEOUT =           60                      # recommended: 5 (sec)      was 30
+    __DISCONNECT_TIMEOUT =          60                      # recommended: 10 (sec)     was 30, 120
+    __OPERATION_TIMEOUT =           30                      # recommended: 5 (sec)      was 30, 60
 
     __PUB_QOS =                     1
     __SUB_QOS =                     1
@@ -91,8 +91,11 @@ class MQTTClient(object):
         except AWSIoTExceptions.disconnectError:
             pass
 
+        except AWSIoTExceptions.disconnectTimeoutException:
+            pass
 
-    # ----------------------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------------------
 
     def publish(self, publication):
         payload = JSONify.dumps(publication.payload)
