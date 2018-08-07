@@ -36,7 +36,7 @@ class MQTTClient(object):
     __RECONN_STABLE =               10                       # recommended: 20 (sec)
 
     __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)     was 20, 30, 120
-    __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)      was 20, 30, 60
+    __OPERATION_TIMEOUT =           20                      # recommended: 5 (sec)      was 20, 30, 60
 
     __PUB_QOS =                     1
     __SUB_QOS =                     1
@@ -102,6 +102,9 @@ class MQTTClient(object):
 
         try:
             return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
+
+        except AWSIoTExceptions.publishError:
+            return False
 
         except AWSIoTExceptions.publishTimeoutException as ex:
             raise TimeoutError(ex)
