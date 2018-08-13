@@ -165,9 +165,45 @@ class AFECalib(PersistentJSONable):
             if sensor_calib is None:
                 continue
 
-            names.append(Sensor.find(sensor_calib.serial_number).gas_name)
+            sensor = Sensor.find(sensor_calib.serial_number)
+            name = sensor.gas_name
+
+            names.append(name)
 
         return names
+
+
+    def has_unique_gas_names(self):
+        names = set()
+
+        for sensor_calib in self.__sensor_calibs:
+            if sensor_calib is None:
+                continue
+
+            sensor = Sensor.find(sensor_calib.serial_number)
+            name = sensor.gas_name
+
+            if name in names:
+                return False
+
+            names.add(name)
+
+        return True
+
+
+    def sensor_index(self, gas_name):
+        for i in range(len(self.__sensor_calibs)):
+            sensor_calib = self.__sensor_calibs[i]
+
+            if sensor_calib is None:
+                continue
+
+            sensor = Sensor.find(sensor_calib.serial_number)
+
+            if sensor.gas_name == gas_name:
+                return i
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
