@@ -75,8 +75,8 @@ class NDIRDatum(JSONable):
             raise TypeError(other)
 
         temp = self.temp / other
-        cnc = self.cnc / other
-        cnc_igl = self.cnc_igl / other
+        cnc = None if self.cnc is None else self.cnc / other
+        cnc_igl = None if self.cnc_igl is None else self.cnc_igl / other
 
         return NDIRDatum(temp, cnc, cnc_igl)
 
