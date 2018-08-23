@@ -113,5 +113,5 @@ class NDIRDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NDIRDatum:{temp:%0.1f, cnc:%0.1f, cnc_igl:%0.1f}" % \
+        return "NDIRDatum:{temp:%s, cnc:%s, cnc_igl:%s}" % \
                (self.temp, self.cnc, self.cnc_igl)

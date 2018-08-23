@@ -41,5 +41,5 @@ class NDIR(object):
 
 
     @abstractmethod
-    def sample_interval(self):
+    def get_sample_interval(self):
         pass
