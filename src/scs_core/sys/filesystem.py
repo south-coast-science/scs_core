@@ -25,7 +25,7 @@ class Filesystem(object):
         if head and not os.path.exists(head):
             cls.mkdir(head)
 
-        if os.path.exists(path):        # handles case of trailing /
+        if not os.path.exists(path):        # handles case of trailing /
             os.mkdir(path)
 
 
