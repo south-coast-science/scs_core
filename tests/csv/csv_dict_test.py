@@ -33,15 +33,19 @@ print(datum)
 print("-")
 
 header = datum.header
-print(header)
+print("header: %s" % header)
 print("-")
 
-row = datum.row
-print(row)
+row = datum.row(None)
+print("row: %s" % row)
+print("-")
+
+dictionary = datum.dictionary
+print("dictionary: %s" % dictionary)
 print("-")
 
 jdict = CSVDict.as_dict(header, row)
-print(jdict)
+print("jdict: %s" % jdict)
 print("-")
 
 jstr = JSONify.dumps(jdict)

@@ -46,7 +46,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint)
+        self.__http_client.connect(self.__auth.endpoint, timeout=3000)
 
 
     def close(self):
@@ -56,6 +56,8 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, path, params=None):
+        # print("RESTClient.get: path: %s params: %s" % (path, params))
+
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
         except HTTPException as exc:
@@ -126,10 +128,8 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        # return {"Accept": RESTClient.__HEADER_ACCEPT,
-        #         "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__auth.api_key}
-
-        return {"Accept": RESTClient.__HEADER_ACCEPT}
+        return {"Accept": RESTClient.__HEADER_ACCEPT,
+                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__auth.api_key}
 
 
     # ----------------------------------------------------------------------------------------------------------------
