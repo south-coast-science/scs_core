@@ -74,7 +74,8 @@ class CSVDict(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def row(self, header):                                  # TODO: step through the keys of the header
+    @property
+    def row(self):                                  # TODO: step through the keys of the header
         # TODO: use a PathDict here to get the fields?
 
         return self.__row(self.__dictionary)
