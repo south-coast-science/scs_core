@@ -62,7 +62,10 @@ class CSVReader(object):
     @property
     def rows(self):
         for row in self.__reader:
-            datum = CSVDict.as_dict(self.__header, [CSVReader.__recast(cell) for cell in row])
+            try:
+                datum = CSVDict.as_dict(self.__header, [CSVReader.__recast(cell) for cell in row])
+            except IndexError:                                                                          # TODO: fix!
+                continue
 
             yield JSONify.dumps(datum)
 

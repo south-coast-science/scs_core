@@ -76,6 +76,10 @@ class PathDict(JSONable):
             return False
 
 
+    def paths(self):            # TODO: implement paths()?
+        pass
+
+
     def node(self, path=None):
         if path is None:
             return self.__dictionary

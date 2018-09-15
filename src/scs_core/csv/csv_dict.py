@@ -20,7 +20,7 @@ class CSVDict(object):
         dictionary = OrderedDict()
 
         for i in range(len(header)):
-            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)
+            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)     # TODO: fail if row was is too short!
 
         return dictionary
 
@@ -74,6 +74,14 @@ class CSVDict(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def row(self, header):                                  # TODO: step through the keys of the header
+        # TODO: use a PathDict here to get the fields?
+
+        return self.__row(self.__dictionary)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def dictionary(self):
         return self.__dictionary
@@ -82,11 +90,6 @@ class CSVDict(object):
     @property
     def header(self):
         return self.__header(self.__dictionary)
-
-
-    @property
-    def row(self):
-        return self.__row(self.__dictionary)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,6 +116,7 @@ class CSVDict(object):
 
     def __row(self, dictionary):
         row = []
+
         for key in dictionary:
             # object...
             if isinstance(dictionary[key], dict):

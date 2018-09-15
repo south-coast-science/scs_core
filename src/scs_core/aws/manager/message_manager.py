@@ -31,14 +31,13 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_topic(self, topic, start_date, end_date):
-        request_path = '/staging/topicMessages'
-        params = {'topic': topic, 'startTime': start_date.utc().as_iso8601(), 'endTime': end_date.utc().as_iso8601()}
+        request_path = '/' + topic + '/' + start_date.utc().as_iso8601() + '/' + end_date.utc().as_iso8601()
 
         # request...
         self.__rest_client.connect()
 
         try:
-            jdict = self.__rest_client.get(request_path, params)
+            jdict = self.__rest_client.get(request_path)
 
             # messages...
             collection = MessageCollection.construct_from_jdict(jdict)
