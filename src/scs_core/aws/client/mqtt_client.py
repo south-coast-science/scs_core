@@ -77,11 +77,13 @@ class MQTTClient(object):
 
         # connect...
         try:
-            self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
-            return True
+            return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
 
-        except AWSIoTExceptions.connectTimeoutException as ex:
-            raise TimeoutError(ex)
+        except AWSIoTExceptions.connectTimeoutException:
+            return False
+
+        except AWSIoTExceptions.connectError:
+            return False
 
 
     def disconnect(self):
@@ -106,8 +108,8 @@ class MQTTClient(object):
         except AWSIoTExceptions.publishError:
             return False
 
-        except AWSIoTExceptions.publishTimeoutException as ex:
-            raise TimeoutError(ex)
+        except AWSIoTExceptions.publishTimeoutException:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
