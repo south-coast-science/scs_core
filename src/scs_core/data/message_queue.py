@@ -78,7 +78,7 @@ class MessageQueue(SynchronisedProcess):
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
 
-                time.sleep(0.001)
+                # time.sleep(0.001)
 
         except KeyboardInterrupt:
             pass
