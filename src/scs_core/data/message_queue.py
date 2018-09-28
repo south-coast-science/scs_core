@@ -6,8 +6,6 @@ Created on 27 Sep 2018
 https://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
 """
 
-import time
-
 from multiprocessing import Manager
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
