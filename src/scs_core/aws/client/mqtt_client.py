@@ -100,6 +100,9 @@ class MQTTClient(object):
 # ----------------------------------------------------------------------------------------------------------------
 
     def publish(self, publication):
+        if not self.__client:
+            return False
+
         payload = JSONify.dumps(publication.payload)
 
         try:

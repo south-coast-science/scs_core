@@ -23,6 +23,11 @@ class MQTTConf(PersistentJSONable):
     classdocs
     """
 
+    DEFAULT_QUEUE_SIZE = 21000              # 14 messages per minute * 60 * 24 = 20,160
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     __FILENAME = "mqtt_conf.json"
 
     @classmethod
@@ -35,22 +40,27 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return MQTTConf(False)
+            return MQTTConf(False, cls.DEFAULT_QUEUE_SIZE)
 
         inhibit_publishing = jdict.get('inhibit-publishing')
+        queue_size = jdict.get('queue-size')
 
-        return MQTTConf(inhibit_publishing)
+        if queue_size is None:
+            queue_size = cls.DEFAULT_QUEUE_SIZE
+
+        return MQTTConf(inhibit_publishing, queue_size)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, inhibit_publishing):
+    def __init__(self, inhibit_publishing, queue_size):
         """
         Constructor
         """
         super().__init__()
 
         self.__inhibit_publishing = bool(inhibit_publishing)
+        self.__queue_size = int(queue_size)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,12 +70,18 @@ class MQTTConf(PersistentJSONable):
         return self.__inhibit_publishing
 
 
+    @property
+    def queue_size(self):
+        return self.__queue_size
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['inhibit-publishing'] = self.inhibit_publishing
+        jdict['queue-size'] = self.queue_size
 
         return jdict
 
@@ -73,4 +89,4 @@ class MQTTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTConf:{inhibit_publishing:%s}" %  self.inhibit_publishing
+        return "MQTTConf:{inhibit_publishing:%s, queue_size:%s}" %  (self.inhibit_publishing, self.queue_size)
