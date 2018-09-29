@@ -6,6 +6,8 @@ Created on 27 Sep 2018
 https://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
 """
 
+import time
+
 from multiprocessing import Manager
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
@@ -60,6 +62,8 @@ class MessageQueue(SynchronisedProcess):
         try:
             while True:
                 with self._lock:
+                    time.sleep(0.1)                     # don't thrash the CPU
+
                     cmd = self._value[self.__CMD]
 
                     if not cmd:
@@ -75,8 +79,6 @@ class MessageQueue(SynchronisedProcess):
 
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
-
-                # time.sleep(0.001)
 
         except KeyboardInterrupt:
             pass
