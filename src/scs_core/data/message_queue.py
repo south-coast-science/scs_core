@@ -6,7 +6,6 @@ Created on 27 Sep 2018
 https://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
 """
 
-import sys
 import time
 
 from multiprocessing import Manager
@@ -62,7 +61,7 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
-                time.sleep(0.01)
+                time.sleep(0.01)                            # release the lock
 
                 with self._lock:
                     cmd = self._value[self.__CMD]
@@ -82,9 +81,6 @@ class MessageQueue(SynchronisedProcess):
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
 
-                    print("queue cmd done: %s" % cmd, file=sys.stderr)
-                    sys.stderr.flush()
-
         except KeyboardInterrupt:
             pass
 
@@ -98,16 +94,7 @@ class MessageQueue(SynchronisedProcess):
                 self._value[self.__NEWEST] = message
                 self._value[self.__CMD] = self.__CMD_ENQUEUE
 
-            time.sleep(0.2)
-
-        except BaseException:
-            pass
-
-
-    def oldest(self):
-        try:
-            with self._lock:
-                return self._value[self.__OLDEST]
+            time.sleep(0.2)         # prevent further commands until run command loop has cycled
 
         except BaseException:
             pass
@@ -118,7 +105,16 @@ class MessageQueue(SynchronisedProcess):
             with self._lock:
                 self._value[self.__CMD] = self.__CMD_REMOVE
 
-            time.sleep(0.2)
+            time.sleep(0.2)         # prevent further commands until run command loop has cycled
+
+        except BaseException:
+            pass
+
+
+    def oldest(self):
+        try:
+            with self._lock:
+                return self._value[self.__OLDEST]
 
         except BaseException:
             pass
