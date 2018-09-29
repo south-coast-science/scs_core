@@ -27,9 +27,9 @@ class MessageQueue(SynchronisedProcess):
     __CMD_REMOVE =      'rem'
 
     __CMD =             'cmd'
+    __LENGTH =          'len'
     __NEWEST =          'new'
     __OLDEST =          'old'
-    __LENGTH =          'len'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -47,9 +47,9 @@ class MessageQueue(SynchronisedProcess):
         self.__messages = []
 
         self._value[self.__CMD] = None
+        self._value[self.__LENGTH] = 0
         self._value[self.__NEWEST] = None
         self._value[self.__OLDEST] = None
-        self._value[self.__LENGTH] = 0
 
 
     def __len__(self):
@@ -62,7 +62,7 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
-                time.sleep(0.1)
+                time.sleep(0.01)
 
                 with self._lock:
                     cmd = self._value[self.__CMD]
@@ -82,7 +82,7 @@ class MessageQueue(SynchronisedProcess):
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
 
-                    print("cmd done: %s" % cmd, file=sys.stderr)
+                    print("queue cmd done: %s" % cmd, file=sys.stderr)
                     sys.stderr.flush()
 
         except KeyboardInterrupt:
@@ -167,4 +167,6 @@ class MessageQueue(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageQueue:{max_size:%s, value:%s}" % (self.__max_size, self._value)
+        return "MessageQueue:{max_size:%s, value:{cmd:%s, len:%s, old:%s, new:%s}}" % \
+               (self.__max_size, self._value[self.__CMD], self._value[self.__LENGTH],
+                self._value[self.__NEWEST], self._value[self.__OLDEST])
