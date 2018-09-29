@@ -88,8 +88,8 @@ class MessageQueue(SynchronisedProcess):
     def enqueue(self, message):
         try:
             with self._lock:
-                self._value[self.__CMD] = self.__CMD_ENQUEUE
                 self._value[self.__NEWEST] = message
+                self._value[self.__CMD] = self.__CMD_ENQUEUE
 
         except BaseException:
             pass
