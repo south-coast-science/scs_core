@@ -62,6 +62,8 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
+                time.sleep(0.1)
+
                 with self._lock:
                     cmd = self._value[self.__CMD]
 
@@ -96,7 +98,7 @@ class MessageQueue(SynchronisedProcess):
                 self._value[self.__NEWEST] = message
                 self._value[self.__CMD] = self.__CMD_ENQUEUE
 
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         except BaseException:
             pass
@@ -116,7 +118,7 @@ class MessageQueue(SynchronisedProcess):
             with self._lock:
                 self._value[self.__CMD] = self.__CMD_REMOVE
 
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         except BaseException:
             pass
