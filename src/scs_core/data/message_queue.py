@@ -22,10 +22,10 @@ class MessageQueue(SynchronisedProcess):
     classdocs
     """
 
-    __CMD_ENQUEUE =     'enq'
-    __CMD_REMOVE =      'rem'
+    LOCK_RELEASE_TIME =     0.2
 
-    __CMD =             'cmd'
+    __DO_ENQ =          'do_enq'
+    __DO_DEQ =          'do_deq'
     __LENGTH =          'len'
     __NEWEST =          'new'
     __OLDEST =          'old'
@@ -45,10 +45,11 @@ class MessageQueue(SynchronisedProcess):
 
         self.__messages = []
 
-        self._value[self.__CMD] = None
-        self._value[self.__LENGTH] = 0
+        self._value[self.__DO_ENQ] = False
+        self._value[self.__DO_DEQ] = False
         self._value[self.__NEWEST] = None
         self._value[self.__OLDEST] = None
+        self._value[self.__LENGTH] = 0
 
 
     def __len__(self):
@@ -61,22 +62,19 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
-                time.sleep(0.05)                            # release the lock
+                time.sleep(self.LOCK_RELEASE_TIME)
 
                 with self._lock:
-                    cmd = self._value[self.__CMD]
-
-                    if not cmd:
-                        time.sleep(0.1)                     # don't thrash the CPU
+                    if not (self._value[self.__DO_ENQ] or self._value[self.__DO_DEQ]):
                         continue
 
-                    self._value[self.__CMD] = None
-
-                    if cmd == self.__CMD_ENQUEUE:
+                    if self._value[self.__DO_ENQ]:
                         self.__set_newest(self._value[self.__NEWEST])
+                        self._value[self.__DO_ENQ] = False
 
-                    elif cmd == self.__CMD_REMOVE:
+                    if self._value[self.__DO_DEQ]:
                         self.__pop_oldest()
+                        self._value[self.__DO_DEQ] = False
 
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
@@ -91,27 +89,27 @@ class MessageQueue(SynchronisedProcess):
     def enqueue(self, message):
         try:
             with self._lock:
+                self._value[self.__DO_ENQ] = True
                 self._value[self.__NEWEST] = message
-                self._value[self.__CMD] = self.__CMD_ENQUEUE
 
-            time.sleep(0.2)         # prevent further commands until run command loop has cycled
+            time.sleep(self.LOCK_RELEASE_TIME)              # wait for run loop to regain lock
 
         except BaseException:
             pass
 
 
-    def remove_oldest(self):
+    def dequeue(self):
         try:
             with self._lock:
-                self._value[self.__CMD] = self.__CMD_REMOVE
+                self._value[self.__DO_DEQ] = True
 
-            time.sleep(0.2)         # prevent further commands until run command loop has cycled
+            time.sleep(self.LOCK_RELEASE_TIME)              # wait for run loop to regain lock
 
         except BaseException:
             pass
 
 
-    def oldest(self):
+    def next(self):
         try:
             with self._lock:
                 return self._value[self.__OLDEST]
@@ -133,7 +131,7 @@ class MessageQueue(SynchronisedProcess):
 
     def __set_newest(self, message):
         if self.__is_full():
-            self.__messages.pop(0)
+            return
 
         self.__messages.append(message)
 
@@ -163,6 +161,6 @@ class MessageQueue(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageQueue:{max_size:%s, value:{cmd:%s, len:%s, old:%s, new:%s}}" % \
-               (self.__max_size, self._value[self.__CMD], self._value[self.__LENGTH],
+        return "MessageQueue:{max_size:%s, value:{do_enq:%s, do_deq:%s, len:%s, old:%s, new:%s}}" % \
+               (self.__max_size, self._value[self.__DO_ENQ], self._value[self.__DO_DEQ], self._value[self.__LENGTH],
                 self._value[self.__OLDEST], self._value[self.__NEWEST])
