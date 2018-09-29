@@ -61,7 +61,7 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
-                time.sleep(0.01)                            # release the lock
+                time.sleep(0.05)                            # release the lock
 
                 with self._lock:
                     cmd = self._value[self.__CMD]
@@ -165,4 +165,4 @@ class MessageQueue(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         return "MessageQueue:{max_size:%s, value:{cmd:%s, len:%s, old:%s, new:%s}}" % \
                (self.__max_size, self._value[self.__CMD], self._value[self.__LENGTH],
-                self._value[self.__NEWEST], self._value[self.__OLDEST])
+                self._value[self.__OLDEST], self._value[self.__NEWEST])
