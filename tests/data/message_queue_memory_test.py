@@ -34,7 +34,7 @@ print("-")
 
 print("queue: %s" % queue)
 print("length: %s" % queue.length())
-print("oldest: %s" % queue.oldest())
+print("next: %s" % queue.next())
 print("-")
 
 for _ in range(queue_size):
@@ -42,7 +42,7 @@ for _ in range(queue_size):
 
 print("queue: %s" % queue)
 print("length: %s" % queue.length())
-print("oldest: %s" % queue.oldest())
+print("next: %s" % queue.next())
 
 vm = psutil.virtual_memory()
 print("vm: %s" % str(vm))
