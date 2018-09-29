@@ -62,11 +62,10 @@ class MessageQueue(SynchronisedProcess):
         try:
             while True:
                 with self._lock:
-                    time.sleep(0.1)                     # don't thrash the CPU
-
                     cmd = self._value[self.__CMD]
 
                     if not cmd:
+                        time.sleep(0.1)                     # don't thrash the CPU
                         continue
 
                     self._value[self.__CMD] = None
