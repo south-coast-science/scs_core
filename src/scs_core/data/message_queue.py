@@ -62,6 +62,8 @@ class MessageQueue(SynchronisedProcess):
         try:
             while True:
                 with self._lock:
+                    time.sleep(0.1)                     # don't thrash the CPU
+
                     cmd = self._value[self.__CMD]
 
                     if not cmd:
@@ -78,8 +80,6 @@ class MessageQueue(SynchronisedProcess):
                     self._value[self.__OLDEST] = self.__get_oldest()
                     self._value[self.__LENGTH] = len(self)
 
-                time.sleep(0.001)
-
         except KeyboardInterrupt:
             pass
 
@@ -90,8 +90,8 @@ class MessageQueue(SynchronisedProcess):
     def enqueue(self, message):
         try:
             with self._lock:
-                self._value[self.__CMD] = self.__CMD_ENQUEUE
                 self._value[self.__NEWEST] = message
+                self._value[self.__CMD] = self.__CMD_ENQUEUE
 
         except BaseException:
             pass
