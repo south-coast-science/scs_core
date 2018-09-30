@@ -3,7 +3,7 @@ Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
+A shared queue supporting a single producer process and a single consumer process.
 """
 
 import time
@@ -24,13 +24,6 @@ class MessageQueue(SynchronisedProcess):
 
     LOCK_RELEASE_TIME =     0.2
 
-    __DO_ENQ =          'do_enq'
-    __DO_DEQ =          'do_deq'
-    __LENGTH =          'len'
-    __NEWEST =          'new'
-    __OLDEST =          'old'
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, max_size):
@@ -39,17 +32,10 @@ class MessageQueue(SynchronisedProcess):
         """
         manager = Manager()
 
-        SynchronisedProcess.__init__(self, manager.dict())
+        SynchronisedProcess.__init__(self, MessageQueueInterface(manager.dict()))
 
         self.__max_size = max_size
-
         self.__messages = []
-
-        self._value[self.__DO_ENQ] = False
-        self._value[self.__DO_DEQ] = False
-        self._value[self.__NEWEST] = None
-        self._value[self.__OLDEST] = None
-        self._value[self.__LENGTH] = 0
 
 
     def __len__(self):
@@ -65,45 +51,45 @@ class MessageQueue(SynchronisedProcess):
                 time.sleep(self.LOCK_RELEASE_TIME)
 
                 with self._lock:
-                    if not (self._value[self.__DO_ENQ] or self._value[self.__DO_DEQ]):
+                    if not self._value.has_cmd():
                         continue
 
-                    if self._value[self.__DO_ENQ]:
-                        self.__set_newest(self._value[self.__NEWEST])
-                        self._value[self.__DO_ENQ] = False
+                    if self._value.cmd_enq:
+                        self.__set_newest(self._value.newest)
 
-                    if self._value[self.__DO_DEQ]:
+                    if self._value.cmd_deq:
                         self.__pop_oldest()
-                        self._value[self.__DO_DEQ] = False
 
-                    self._value[self.__OLDEST] = self.__get_oldest()
-                    self._value[self.__LENGTH] = len(self)
+                    self._value.clear_cmds()
+                    self._value.oldest = self.__get_oldest()
+                    self._value.length = len(self)
 
         except KeyboardInterrupt:
             pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # client accessors...
+    # producer interface...
 
     def enqueue(self, message):
         try:
             with self._lock:
-                self._value[self.__DO_ENQ] = True
-                self._value[self.__NEWEST] = message
+                self._value.cmd_enq = True
+                self._value.newest = message
 
-            time.sleep(self.LOCK_RELEASE_TIME)              # wait for run loop to regain lock
+            time.sleep(self.LOCK_RELEASE_TIME)              # wait for queue to regain lock
 
         except BaseException:
             pass
 
 
-    def dequeue(self):
+    # ----------------------------------------------------------------------------------------------------------------
+    # consumer interface...
+
+    def length(self):
         try:
             with self._lock:
-                self._value[self.__DO_DEQ] = True
-
-            time.sleep(self.LOCK_RELEASE_TIME)              # wait for run loop to regain lock
+                return self._value.length
 
         except BaseException:
             pass
@@ -112,16 +98,18 @@ class MessageQueue(SynchronisedProcess):
     def next(self):
         try:
             with self._lock:
-                return self._value[self.__OLDEST]
+                return self._value.oldest
 
         except BaseException:
             pass
 
 
-    def length(self):
+    def dequeue(self):
         try:
             with self._lock:
-                return self._value[self.__LENGTH]
+                self._value.cmd_deq = True
+
+            time.sleep(self.LOCK_RELEASE_TIME)              # wait for queue to regain lock
 
         except BaseException:
             pass
@@ -161,6 +149,103 @@ class MessageQueue(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageQueue:{max_size:%s, value:{do_enq:%s, do_deq:%s, len:%s, old:%s, new:%s}}" % \
-               (self.__max_size, self._value[self.__DO_ENQ], self._value[self.__DO_DEQ], self._value[self.__LENGTH],
-                self._value[self.__OLDEST], self._value[self.__NEWEST])
+        return "MessageQueue:{max_size:%s, interface:%s}" %  (self.__max_size, self._value)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class MessageQueueInterface(object):
+    """
+    classdocs
+    """
+
+    __ENQ =         'enq'
+    __DEQ =         'deq'
+    __LENGTH =      'len'
+    __NEWEST =      'new'
+    __OLDEST =      'old'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, value):
+        """
+        Constructor
+        """
+        self.__value = value
+
+        self.clear_cmds()
+
+        self.newest = None
+        self.oldest = None
+        self.length = 0
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def has_cmd(self):
+        return self.cmd_enq or self.cmd_deq
+
+
+    def clear_cmds(self):
+        self.cmd_enq = False
+        self.cmd_deq = False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def cmd_enq(self):
+        return self.__value[self.__ENQ]
+
+
+    @cmd_enq.setter
+    def cmd_enq(self, enq):
+        self.__value[self.__ENQ] = enq
+
+
+    @property
+    def cmd_deq(self):
+        return self.__value[self.__DEQ]
+
+
+    @cmd_deq.setter
+    def cmd_deq(self, deq):
+        self.__value[self.__DEQ] = deq
+
+
+    @property
+    def length(self):
+        return self.__value[self.__LENGTH]
+
+
+    @length.setter
+    def length(self, length):
+        self.__value[self.__LENGTH] = length
+
+
+    @property
+    def oldest(self):
+        return self.__value[self.__OLDEST]
+
+
+    @oldest.setter
+    def oldest(self, oldest):
+        self.__value[self.__OLDEST] = oldest
+
+
+    @property
+    def newest(self):
+        return self.__value[self.__NEWEST]
+
+
+    @newest.setter
+    def newest(self, newest):
+        self.__value[self.__NEWEST] = newest
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "MessageQueueInterface:{cmd_enq:%s, cmd_deq:%s, length:%s, oldest:%s, newest:%s}}" % \
+               (self.cmd_enq, self.cmd_deq, self.length, self.oldest, self.newest)
