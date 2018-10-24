@@ -114,7 +114,7 @@ class CheckpointUnit(object):
 
     @classmethod
     def construct(cls, specification, size):
-        if not 2 <= len(specification) <= 3:
+        if not 1 < len(specification) < 4:
             raise ValueError(specification)
 
         # all ticks...
@@ -125,7 +125,7 @@ class CheckpointUnit(object):
         if specification[0] == '/':
             step = int(specification[1:])
 
-            if step >= size:
+            if not 0 < step < size:
                 raise ValueError(specification)
 
             return CheckpointUnit([tick for tick in range(0, size, step)])
@@ -133,7 +133,7 @@ class CheckpointUnit(object):
         # one tick...
         tick = int(specification)
 
-        if tick >= size:
+        if not 0 <= tick < size:
             raise ValueError(specification)
 
         return CheckpointUnit([tick])
