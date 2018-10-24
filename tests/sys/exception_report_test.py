@@ -4,9 +4,6 @@
 Created on 9 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-command line example:
-./test/exception_report_test.py 2>> ex.log
 """
 
 import sys

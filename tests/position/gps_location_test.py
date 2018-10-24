@@ -4,9 +4,6 @@
 Created on 10 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-command line example:
-./test/exception_report_test.py 2>> ex.log
 """
 
 from scs_core.data.json import JSONify
