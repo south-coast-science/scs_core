@@ -19,7 +19,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Checkpoint(object):
+class CheckpointGenerator(object):
     """
     classdocs
     """
@@ -33,11 +33,11 @@ class Checkpoint(object):
         if len(pieces) != 3:
             raise ValueError(specification)
 
-        hour = CheckpointUnit.construct(pieces[0], 24)
-        minute = CheckpointUnit.construct(pieces[1], 60)
-        second = CheckpointUnit.construct(pieces[2], 60)
+        hour = CheckpointField.construct(pieces[0], 24)
+        minute = CheckpointField.construct(pieces[1], 60)
+        second = CheckpointField.construct(pieces[2], 60)
 
-        return Checkpoint(hour, minute, second)
+        return CheckpointGenerator(hour, minute, second)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,9 +46,9 @@ class Checkpoint(object):
         """
         Constructor
         """
-        self.__hour = hour                    # CheckpointUnit
-        self.__minute = minute                # CheckpointUnit
-        self.__second = second                # CheckpointUnit
+        self.__hour = hour                    # CheckpointField
+        self.__minute = minute                # CheckpointField
+        self.__second = second                # CheckpointField
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,13 +99,13 @@ class Checkpoint(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Checkpoint:{hour:%s, minute:%s, second:%s}" % \
+        return "CheckpointGenerator:{hour:%s, minute:%s, second:%s}" % \
                (self.__hour, self.__minute, self.__second)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CheckpointUnit(object):
+class CheckpointField(object):
     """
     classdocs
     """
@@ -119,7 +119,7 @@ class CheckpointUnit(object):
 
         # all ticks...
         if specification == "**":
-            return CheckpointUnit([tick for tick in range(0, size, 1)])
+            return CheckpointField([tick for tick in range(0, size, 1)])
 
         # stepped ticks...
         if specification[0] == '/':
@@ -128,7 +128,7 @@ class CheckpointUnit(object):
             if not 0 < step < size:
                 raise ValueError(specification)
 
-            return CheckpointUnit([tick for tick in range(0, size, step)])
+            return CheckpointField([tick for tick in range(0, size, step)])
 
         # one tick...
         tick = int(specification)
@@ -136,7 +136,7 @@ class CheckpointUnit(object):
         if not 0 <= tick < size:
             raise ValueError(specification)
 
-        return CheckpointUnit([tick])
+        return CheckpointField([tick])
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -161,4 +161,4 @@ class CheckpointUnit(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CheckpointUnit:{ticks:%s}" % self.__ticks
+        return "CheckpointField:{ticks:%s}" % self.__ticks

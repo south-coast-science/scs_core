@@ -38,17 +38,19 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_populated(self):
+        return len(self) >= self.MIN_DATA_POINTS
+
+
     def has_tally(self):
-        count = len(self)
-
         if self.__tally is None:
-            return count >= self.MIN_DATA_POINTS
+            return self.is_populated()
 
-        return count >= self.__tally
+        return len(self) >= self.__tally
 
 
     def append(self, rec: LocalizedDatetime, value):
-        count = len(self.__data)
+        count = len(self)
 
         if count == 0:
             self.__start_timestamp = rec.timestamp()
@@ -65,14 +67,20 @@ class LinearRegression(object):
         self.__tzinfo = rec.tzinfo
 
 
+    def reset(self):
+        self.__start_timestamp = None
+        self.__tzinfo = None
+        self.__data = []
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def compute(self):
-        n = len(self)
-
         # validate...
-        if n < self.MIN_DATA_POINTS:
+        if not self.is_populated():
             return None, None
+
+        n = len(self)
 
         # init...
         sum_x = Decimal(0.0)
@@ -103,11 +111,11 @@ class LinearRegression(object):
 
 
     def midpoint(self):
-        slope, intercept = self.compute()
-
         # validate...
-        if slope is None:
+        if not self.is_populated():
             return None, None
+
+        slope, intercept = self.compute()
 
         # x domain...
         x_data = [x for x, _ in self.__data]
