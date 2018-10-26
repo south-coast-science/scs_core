@@ -5,10 +5,13 @@ Created on 24 Oct 2018
 
 A tool to specify time intervals that are aligned to the clock - a little bit like crontab.
 
-Example specifications:
-**:/15:00   -   every 15 minutes
-00:/15:00   -   every 15 minutes between midnight and 1am
-**:15:00    -   every hour, at 15 minutes past the hour
+Checkpoints are specified in the form HH:MM:SS, in a format similar to that for crontab:
+
+** - all values
+NN - exactly matching NN
+/NN - every match of NN
+
+For example, **:/5:30 is used to indicate 30 seconds past the minute, every 5 minutes, during every hour.
 """
 
 from datetime import datetime
