@@ -38,13 +38,17 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_populated(self):
-        return len(self) >= self.MIN_DATA_POINTS
+    def has_midpoint(self):
+        return len(self) > 0
+
+
+    def has_regression(self):
+        return len(self) > self.MIN_DATA_POINTS
 
 
     def has_tally(self):
         if self.__tally is None:
-            return self.is_populated()
+            raise ValueError("no tally set")
 
         return len(self) >= self.__tally
 
@@ -77,7 +81,7 @@ class LinearRegression(object):
 
     def compute(self):
         # validate...
-        if not self.is_populated():
+        if not self.has_regression():
             return None, None
 
         n = len(self)
@@ -112,9 +116,15 @@ class LinearRegression(object):
 
     def midpoint(self):
         # validate...
-        if not self.is_populated():
+        if not self.has_midpoint():
             return None, None
 
+        # single value...
+        if len(self) == 1:
+            for timestamp, value in self.__data:
+                return LocalizedDatetime.construct_from_timestamp(timestamp, self.__tzinfo), float(value)
+
+        # multiple values...
         slope, intercept = self.compute()
 
         # x domain...
