@@ -46,13 +46,6 @@ class LinearRegression(object):
         return len(self) > self.MIN_DATA_POINTS
 
 
-    def has_tally(self):
-        if self.__tally is None:
-            raise ValueError("no tally set")
-
-        return len(self) >= self.__tally
-
-
     def append(self, rec: LocalizedDatetime, value):
         count = len(self)
 
