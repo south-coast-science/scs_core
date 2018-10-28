@@ -38,17 +38,16 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def has_tally(self):
-        count = len(self)
+    def has_midpoint(self):
+        return len(self) > 0
 
-        if self.__tally is None:
-            return count >= self.MIN_DATA_POINTS
 
-        return count >= self.__tally
+    def has_regression(self):
+        return len(self) > self.MIN_DATA_POINTS
 
 
     def append(self, rec: LocalizedDatetime, value):
-        count = len(self.__data)
+        count = len(self)
 
         if count == 0:
             self.__start_timestamp = rec.timestamp()
@@ -65,14 +64,20 @@ class LinearRegression(object):
         self.__tzinfo = rec.tzinfo
 
 
+    def reset(self):
+        self.__start_timestamp = None
+        self.__tzinfo = None
+        self.__data = []
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def compute(self):
-        n = len(self)
-
         # validate...
-        if n < self.MIN_DATA_POINTS:
+        if not self.has_regression():
             return None, None
+
+        n = len(self)
 
         # init...
         sum_x = Decimal(0.0)
@@ -103,11 +108,17 @@ class LinearRegression(object):
 
 
     def midpoint(self):
-        slope, intercept = self.compute()
-
         # validate...
-        if slope is None:
+        if not self.has_midpoint():
             return None, None
+
+        # single value...
+        if len(self) == 1:
+            for timestamp, value in self.__data:
+                return LocalizedDatetime.construct_from_timestamp(timestamp, self.__tzinfo), float(value)
+
+        # multiple values...
+        slope, intercept = self.compute()
 
         # x domain...
         x_data = [x for x, _ in self.__data]
