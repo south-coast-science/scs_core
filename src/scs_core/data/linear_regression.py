@@ -43,7 +43,7 @@ class LinearRegression(object):
 
 
     def has_regression(self):
-        return len(self) > self.MIN_DATA_POINTS
+        return len(self) >= self.MIN_DATA_POINTS
 
 
     def append(self, rec: LocalizedDatetime, value):
