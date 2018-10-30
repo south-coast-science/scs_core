@@ -133,7 +133,7 @@ class LinearRegression(object):
         # y val...
         val = slope * float(mid_x) + intercept
 
-        return rec, float(val)
+        return rec, val
 
 
     # ----------------------------------------------------------------------------------------------------------------
