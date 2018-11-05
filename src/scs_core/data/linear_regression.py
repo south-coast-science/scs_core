@@ -139,11 +139,11 @@ class LinearRegression(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def min(self):
-        return min([y for _, y in self.__data])
+        return float(min([y for _, y in self.__data]))
 
 
     def max(self):
-        return max([y for _, y in self.__data])
+        return float(max([y for _, y in self.__data]))
 
 
     # ----------------------------------------------------------------------------------------------------------------
