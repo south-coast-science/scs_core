@@ -6,8 +6,8 @@ Created on 21 Sep 2016
 
 from collections import OrderedDict
 
+from scs_core.data.path_dict import PathDict
 
-# TODO: deal with numeric index dictionaries
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,10 +17,13 @@ class CSVDict(object):
 
     @classmethod
     def as_dict(cls, header, row):
+        if len(header) != len(row):
+            raise ValueError("unmatched lengths: header: %s row: %s" % (header, row))
+
         dictionary = OrderedDict()
 
         for i in range(len(header)):
-            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)     # TODO: fail if row was is too short!
+            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)
 
         return dictionary
 
@@ -65,76 +68,44 @@ class CSVDict(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, dictionary):
+    @classmethod
+    def construct(cls, dictionary):
+        return CSVDict(PathDict(dictionary))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, path_dict):
         """
         Constructor
         """
-        self.__dictionary = dictionary
+        self.__path_dict = path_dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def row(self):                                  # TODO: step through the keys of the header
-        # TODO: use a PathDict here to get the fields?
-
-        return self.__row(self.__dictionary)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def dictionary(self):
-        return self.__dictionary
-
-
-    @property
-    def header(self):
-        return self.__header(self.__dictionary)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __header(self, dictionary, prefix=None):
-        dot_prefix = prefix + '.' if prefix else ''
-
-        header = []
-        for key in dictionary:
-            # object...
-            if isinstance(dictionary[key], dict):
-                header.extend(self.__header(dictionary[key], dot_prefix + key))
-
-            # list...
-            elif isinstance(dictionary[key], list):
-                header.extend([dot_prefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
-
-            # scalar...
-            else:
-                header.append(dot_prefix + key)
-
-        return header
-
-
-    def __row(self, dictionary):
+    def row(self, header):
         row = []
-
-        for key in dictionary:
-            # object...
-            if isinstance(dictionary[key], dict):
-                row.extend(self.__row(dictionary[key]))
-
-            # list...
-            elif isinstance(dictionary[key], list):
-                row.extend(dictionary[key])
-
-            # scalar...
-            else:
-                row.append(dictionary[key])
+        for key in header:
+            value = self.__path_dict.node(key) if self.__path_dict.has_path(key) else None
+            row.append(value)
 
         return row
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def dictionary(self):
+        return self.__path_dict.dictionary
+
+
+    @property
+    def header(self):
+        return self.__path_dict.paths()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "CSVDict:{dictionary:%s}" % self.dictionary
+        return "CSVDict:{path_dict:%s}" % self.__path_dict

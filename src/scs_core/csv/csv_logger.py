@@ -56,7 +56,7 @@ class CSVLogger(object):
             return
 
         jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        datum = CSVDict(jdict)
+        datum = CSVDict.construct(jdict)
 
         # direct write...
         if not self.write_interval:
@@ -117,7 +117,7 @@ class CSVLogger(object):
             self.__writer.writerow(self.__header)
 
         # write row...
-        self.__writer.writerow(datum.row)
+        self.__writer.writerow(datum.row(self.__header))
 
 
     def __open_file(self):

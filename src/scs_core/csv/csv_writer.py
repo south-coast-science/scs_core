@@ -28,13 +28,13 @@ class CSVWriter(object):
         Constructor
         """
         self.__filename = filename
-        self.__has_header = False
+        self.__header = None
 
         if self.__filename is None:
             self.__append = append
 
             self.__file = sys.stdout
-            self.__writer = csv.writer(self.__file)
+            self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
         else:
             self.__append = append and os.path.exists(self.__filename)
 
@@ -49,13 +49,15 @@ class CSVWriter(object):
             return
 
         jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        datum = CSVDict(jdict)
+        datum = CSVDict.construct(jdict)
 
-        if not self.__has_header and not self.__append:
-            self.__writer.writerow(datum.header)
-            self.__has_header = True
+        if self.__header is None:
+            self.__header = datum.header
 
-        self.__writer.writerow(datum.row)
+            if not self.__append:
+                self.__writer.writerow(self.__header)
+
+        self.__writer.writerow(datum.row(self.__header))
         self.__file.flush()
 
 
@@ -76,4 +78,4 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, append:%s}" % (self.filename, self.__append)
+        return "CSVWriter:{filename:%s, append:%s, header:%s}" % (self.filename, self.__append, self.__header)

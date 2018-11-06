@@ -65,6 +65,10 @@ class PathDict(JSONable):
     # -----------------------------------------------------------------------------------------------------------------
     # source...
 
+    def paths(self):
+        return self.__paths(self.__dictionary)
+
+
     def has_path(self, path):
         if path is None:
             return True
@@ -74,10 +78,6 @@ class PathDict(JSONable):
 
         except TypeError:
             return False
-
-
-    def paths(self):            # TODO: implement paths()?
-        pass
 
 
     def node(self, path=None):
@@ -103,6 +103,26 @@ class PathDict(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def __paths(self, dictionary, prefix=None):
+        dot_prefix = prefix + '.' if prefix else ''
+
+        paths = []
+        for key in dictionary:
+            # object...
+            if isinstance(dictionary[key], dict):
+                paths.extend(self.__paths(dictionary[key], dot_prefix + key))
+
+            # list...
+            elif isinstance(dictionary[key], list):
+                paths.extend([dot_prefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
+
+            # scalar...
+            else:
+                paths.append(dot_prefix + key)
+
+        return paths
+
 
     def __has_path(self, dictionary, nodes):
         key = nodes[0]
@@ -163,6 +183,13 @@ class PathDict(JSONable):
                 dictionary[key] = OrderedDict()
 
             self.__append(dictionary[key], nodes[1:], value)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def dictionary(self):
+        return self.node()
 
 
     # ----------------------------------------------------------------------------------------------------------------
