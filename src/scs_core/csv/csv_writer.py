@@ -18,6 +18,8 @@ class CSVWriter(object):
     classdocs
     """
 
+    QUOTING = csv.QUOTE_MINIMAL
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, filename=None, append=False):
@@ -31,7 +33,7 @@ class CSVWriter(object):
             self.__append = append
 
             self.__file = sys.stdout
-            self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
+            self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
         else:
             self.__append = append and os.path.exists(self.__filename)
 
@@ -39,7 +41,7 @@ class CSVWriter(object):
                 self.__paths = self.__append_paths()
 
             self.__file = open(self.__filename, "a" if self.__append else "w")
-            self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
+            self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
 
 
     # ----------------------------------------------------------------------------------------------------------------

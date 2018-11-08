@@ -162,12 +162,12 @@ class CSVHeaderCell(object):
         if isinstance(container, list):
             key = int(self._name(i))
 
-            # scalar...
+            # leaf node...
             if self._is_leaf_node(i):
                 container.append(value)
                 return
 
-            # dict or list...
+            # sub-container...
             item = [] if self._is_list(i) else OrderedDict()
 
             while len(container) < key + 1:
@@ -176,12 +176,12 @@ class CSVHeaderCell(object):
         else:
             key = self._name(i)
 
-            # scalar...
+            # leaf node...
             if self._is_leaf_node(i):
                 container[key] = value
                 return
 
-            # dict or list...
+            # sub-container...
             item = [] if self._is_list(i) else OrderedDict()
 
             if key not in container:
