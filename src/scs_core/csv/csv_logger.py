@@ -5,11 +5,8 @@ Created on 16 Apr 2018
 """
 
 import csv
-import json
 import sys
 import time
-
-from collections import OrderedDict
 
 from scs_core.csv.csv_dict import CSVDict
 
@@ -38,7 +35,7 @@ class CSVLogger(object):
         self.__delete_oldest = delete_oldest            # bool
         self.__write_interval = write_interval          # int
 
-        self.__header = None                            # array of string
+        self.__paths = None                             # array of string
         self.__file = None                              # file handle
         self.__latest_write = None                      # timestamp
         self.__writing_inhibited = False                # bool
@@ -55,8 +52,10 @@ class CSVLogger(object):
         if jstr is None or self.log is None:
             return
 
-        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        datum = CSVDict(jdict)
+        datum = CSVDict.construct_from_jstr(jstr)
+
+        if datum is None:
+            return
 
         # direct write...
         if not self.write_interval:
@@ -112,12 +111,12 @@ class CSVLogger(object):
             self.__open_file()
 
         # write header...
-        if not self.__header:
-            self.__header = datum.header
-            self.__writer.writerow(self.__header)
+        if not self.__paths:
+            self.__paths = datum.header.paths
+            self.__writer.writerow(self.__paths)
 
         # write row...
-        self.__writer.writerow(datum.row)
+        self.__writer.writerow(datum.row(self.__paths))
 
 
     def __open_file(self):
@@ -129,8 +128,8 @@ class CSVLogger(object):
         self.__file = open(self.log.file_path(), "w")
         self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
 
-        if self.__header:
-            self.__writer.writerow(self.__header)
+        if self.__paths:
+            self.__writer.writerow(self.__paths)
 
 
     def __clear_space(self):

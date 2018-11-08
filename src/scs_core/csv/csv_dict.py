@@ -4,137 +4,216 @@ Created on 21 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
+import re
+
 from collections import OrderedDict
 
+from scs_core.data.path_dict import PathDict
 
-# TODO: deal with numeric index dictionaries
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVDict(object):
+    """
+    classdocs
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def as_dict(cls, header, row):
-        dictionary = OrderedDict()
-
-        for i in range(len(header)):
-            cls.__as_dict(header[i].strip().split("."), row[i], dictionary)     # TODO: fail if row was is too short!
-
-        return dictionary
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def __as_dict(cls, nodes, cell, dictionary):
-        key = nodes[0]
-
-        # scalar...
-        if len(nodes) == 1:
-            dictionary[key] = cell
-            return
-
-        # list...
-        if cls.__is_list_path(nodes):
-            if key not in dictionary:
-                dictionary[key] = []
-
-            dictionary[key].append(cell)
-            return
-
-        # object...
-        if key not in dictionary:
-            dictionary[key] = OrderedDict()
-
-        cls.__as_dict(nodes[1:], cell, dictionary[key])
-
-
-    @classmethod
-    def __is_list_path(cls, nodes):
-        if len(nodes) != 2:
-            return False
-
+    def construct_from_jstr(cls, jstr):
         try:
-            leaf_node = float(nodes[1])
-            return leaf_node.is_integer()
+            jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
         except ValueError:
-            return False
+            return None
+
+        return CSVDict(PathDict(jdict))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, dictionary):
+    def __init__(self, path_dict):
         """
         Constructor
         """
-        self.__dictionary = dictionary
+        self.__path_dict = path_dict
+
+
+    def __len__(self):
+        return len(self.__path_dict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def row(self):                                  # TODO: step through the keys of the header
-        # TODO: use a PathDict here to get the fields?
-
-        return self.__row(self.__dictionary)
+    def row(self, paths):
+        return [self.__path_dict.node(path) if self.__path_dict.has_path(path) else None for path in paths]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def dictionary(self):
-        return self.__dictionary
+        return self.__path_dict.dictionary
 
 
     @property
     def header(self):
-        return self.__header(self.__dictionary)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __header(self, dictionary, prefix=None):
-        dot_prefix = prefix + '.' if prefix else ''
-
-        header = []
-        for key in dictionary:
-            # object...
-            if isinstance(dictionary[key], dict):
-                header.extend(self.__header(dictionary[key], dot_prefix + key))
-
-            # list...
-            elif isinstance(dictionary[key], list):
-                header.extend([dot_prefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
-
-            # scalar...
-            else:
-                header.append(dot_prefix + key)
-
-        return header
-
-
-    def __row(self, dictionary):
-        row = []
-
-        for key in dictionary:
-            # object...
-            if isinstance(dictionary[key], dict):
-                row.extend(self.__row(dictionary[key]))
-
-            # list...
-            elif isinstance(dictionary[key], list):
-                row.extend(dictionary[key])
-
-            # scalar...
-            else:
-                row.append(dictionary[key])
-
-        return row
+        return CSVHeader.construct_from_paths(self.__path_dict.paths())
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVDict:{dictionary:%s}" % self.dictionary
+        return "CSVDict:{path_dict:%s}" % self.__path_dict
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVHeader(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_paths(cls, paths):
+        cells = [CSVHeaderCell.construct_from_path(path) for path in paths]
+
+        return CSVHeader(cells)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, cells):
+        """
+        Constructor
+        """
+        self.__cells = cells
+
+
+    def __len__(self):
+        return len(self.__cells)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_dict(self, row):
+        if len(row) != len(self):
+            raise ValueError("unmatched lengths: header: %s row: %s" % (self, row))
+
+        dictionary = OrderedDict()
+
+        for i in range(len(row)):
+            self.__cells[i].insert(dictionary, row[i])
+
+        return dictionary
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def paths(self):
+        return [cell.path for cell in self.__cells]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        cells = [str(cell) for cell in self.__cells]
+
+        return "CSVHeader:{cells:%s}" % cells
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVHeaderCell(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_path(cls, path):
+        p = re.compile("([^.:]+)([.:])?")
+        nodes = p.findall(path)
+
+        return CSVHeaderCell(nodes)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, nodes):
+        """
+        Constructor
+        """
+        self.__nodes = nodes
+
+
+    def __len__(self):
+        return len(self.__nodes)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def insert(self, container, value, i=0):
+        if isinstance(container, list):
+            key = int(self._name(i))
+
+            # scalar...
+            if self._is_leaf_node(i):
+                container.append(value)
+                return
+
+            # dict or list...
+            item = [] if self._is_list(i) else OrderedDict()
+
+            while len(container) < key + 1:
+                container.append(item)
+
+        else:
+            key = self._name(i)
+
+            # scalar...
+            if self._is_leaf_node(i):
+                container[key] = value
+                return
+
+            # dict or list...
+            item = [] if self._is_list(i) else OrderedDict()
+
+            if key not in container:
+                container[key] = item
+
+        self.insert(container[key], value, i + 1)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def _name(self, i):
+        return self.__nodes[i][0]
+
+
+    def _is_list(self, i):
+        return self.__nodes[i][1] == ':'
+
+
+    def _is_leaf_node(self, i):
+        return i == len(self) - 1
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def path(self):
+        nodes = [node[0] + node[1] for node in self.__nodes]
+
+        return ''.join(nodes)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CSVHeaderCell:{nodes:%s}" % self.__nodes

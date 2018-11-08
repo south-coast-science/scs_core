@@ -5,11 +5,8 @@ Created on 2 Aug 2016
 """
 
 import csv
-import json
 import os
 import sys
-
-from collections import OrderedDict
 
 from scs_core.csv.csv_dict import CSVDict
 
@@ -28,15 +25,18 @@ class CSVWriter(object):
         Constructor
         """
         self.__filename = filename
-        self.__has_header = False
+        self.__paths = None
 
         if self.__filename is None:
             self.__append = append
 
             self.__file = sys.stdout
-            self.__writer = csv.writer(self.__file)
+            self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
         else:
             self.__append = append and os.path.exists(self.__filename)
+
+            if self.__append:
+                self.__paths = self.__append_paths()
 
             self.__file = open(self.__filename, "a" if self.__append else "w")
             self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
@@ -44,18 +44,35 @@ class CSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __append_paths(self):
+        file = sys.stdin if self.__filename is None else open(self.__filename, "r")
+        reader = csv.reader(file)
+
+        paths = next(reader)
+
+        file.close()
+
+        return paths
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def write(self, jstr):
-        if not jstr:
+        if jstr is None:
             return
 
-        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        datum = CSVDict(jdict)
+        datum = CSVDict.construct_from_jstr(jstr)
 
-        if not self.__has_header and not self.__append:
-            self.__writer.writerow(datum.header)
-            self.__has_header = True
+        if datum is None:
+            return
 
-        self.__writer.writerow(datum.row)
+        if self.__paths is None:
+            self.__paths = datum.header.paths
+
+            if not self.__append:
+                self.__writer.writerow(self.__paths)
+
+        self.__writer.writerow(datum.row(self.__paths))
         self.__file.flush()
 
 
@@ -76,4 +93,4 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, append:%s}" % (self.filename, self.__append)
+        return "CSVWriter:{filename:%s, append:%s, paths:%s}" % (self.filename, self.__append, self.__paths)
