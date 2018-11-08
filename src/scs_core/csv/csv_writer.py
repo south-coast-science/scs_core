@@ -11,8 +11,6 @@ import sys
 from scs_core.csv.csv_dict import CSVDict
 
 
-# TODO: for an append, use the header in the existing file
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVWriter(object):
@@ -37,8 +35,24 @@ class CSVWriter(object):
         else:
             self.__append = append and os.path.exists(self.__filename)
 
+            if self.__append:
+                self.__paths = self.__append_paths()
+
             self.__file = open(self.__filename, "a" if self.__append else "w")
             self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __append_paths(self):
+        file = sys.stdin if self.__filename is None else open(self.__filename, "r")
+        reader = csv.reader(file)
+
+        paths = next(reader)
+
+        file.close()
+
+        return paths
 
 
     # ----------------------------------------------------------------------------------------------------------------
