@@ -5,14 +5,13 @@ Created on 2 Aug 2016
 """
 
 import csv
-import json
 import os
 import sys
 
-from collections import OrderedDict
-
 from scs_core.csv.csv_dict import CSVDict
 
+
+# TODO: for an append, use the header in the existing file
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -28,7 +27,7 @@ class CSVWriter(object):
         Constructor
         """
         self.__filename = filename
-        self.__header = None
+        self.__paths = None
 
         if self.__filename is None:
             self.__append = append
@@ -45,19 +44,21 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def write(self, jstr):
-        if not jstr:
+        if jstr is None:
             return
 
-        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
-        datum = CSVDict.construct(jdict)
+        datum = CSVDict.construct_from_jstr(jstr)
 
-        if self.__header is None:
-            self.__header = datum.header
+        if datum is None:
+            return
+
+        if self.__paths is None:
+            self.__paths = datum.header.paths
 
             if not self.__append:
-                self.__writer.writerow(self.__header)
+                self.__writer.writerow(self.__paths)
 
-        self.__writer.writerow(datum.row(self.__header))
+        self.__writer.writerow(datum.row(self.__paths))
         self.__file.flush()
 
 
@@ -78,4 +79,4 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, append:%s, header:%s}" % (self.filename, self.__append, self.__header)
+        return "CSVWriter:{filename:%s, append:%s, paths:%s}" % (self.filename, self.__append, self.__paths)

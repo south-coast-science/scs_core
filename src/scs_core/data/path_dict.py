@@ -4,6 +4,7 @@ Created on 27 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import re
 import json
 
 from collections import OrderedDict
@@ -33,33 +34,15 @@ class PathDict(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def __is_list_item(cls, item, nodes):
-        if not isinstance(item, list):
-            return False
-
-        return cls.__is_list_path(nodes)
-
-
-    @classmethod
-    def __is_list_path(cls, nodes):
-        if len(nodes) != 2:
-            return False
-
-        try:
-            leaf_node = float(nodes[1])
-            return leaf_node.is_integer()
-        except ValueError:
-            return False
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __init__(self, dictionary=None):
         """
         Constructor
         """
-        self.__dictionary = dictionary if dictionary else OrderedDict()
+        self.__dictionary = OrderedDict() if dictionary is None else dictionary
+
+
+    def __len__(self):
+        return len(self.__dictionary)
 
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -73,116 +56,97 @@ class PathDict(JSONable):
         if path is None:
             return True
 
-        try:
-            return self.__has_path(self.__dictionary, path.split("."))
-
-        except TypeError:
-            return False
+        return path in self.paths()
 
 
     def node(self, path=None):
         if path is None:
             return self.__dictionary
 
-        return self.__node(self.__dictionary, path.split("."))
+        return self.__node(self.__dictionary, re.split(r"[.:]", path))
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # target...
+
+    # Warning: copying nodes within arrays yields numerically-indexed dictionaries
 
     def copy(self, other, path=None):
         if path is None:
             self.__dictionary = deepcopy(other.__dictionary)
             return
 
-        self.__append(self.__dictionary, path.split("."), other.node(path))
+        self.__append(self.__dictionary, re.split(r"[.:]", path), other.node(path))
 
+
+    # Warning: appending within an array is only permitted within the array's existing bounds
 
     def append(self, path, value):
-        self.__append(self.__dictionary, path.split("."), value)
+        self.__append(self.__dictionary, re.split(r"[.:]", path), value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __paths(self, dictionary, prefix=None):
-        dot_prefix = prefix + '.' if prefix else ''
+    def __paths(self, container, prefix=None):
+        if isinstance(container, list):
+            separator = ':'
+            keys = range(len(container))
+
+        else:
+            separator = '.'
+            keys = container.keys()
+
+        prefix = prefix + separator if prefix else ''
 
         paths = []
-        for key in dictionary:
-            # object...
-            if isinstance(dictionary[key], dict):
-                paths.extend(self.__paths(dictionary[key], dot_prefix + key))
+        for key in keys:
+            path = prefix + str(key)
+            value = container[key]
+
+            # dict...
+            if isinstance(value, dict):
+                paths.extend(self.__paths(value, path))
 
             # list...
-            elif isinstance(dictionary[key], list):
-                paths.extend([dot_prefix + key + '.' + str(i) for i in range(len(dictionary[key]))])
+            elif isinstance(value, list):
+                for i in range(len(value)):
+                    if isinstance(value[i], (list, dict)):
+                        paths.extend(self.__paths(value[i], path + ':' + str(i)))
+                    else:
+                        paths.append(path + ':' + str(i))
 
             # scalar...
             else:
-                paths.append(dot_prefix + key)
+                paths.append(path)
 
         return paths
 
 
-    def __has_path(self, dictionary, nodes):
-        key = nodes[0]
-
-        if key not in dictionary:
-            return False
+    def __node(self, container, nodes):
+        key = int(nodes[0]) if isinstance(container, list) else nodes[0]
+        value = container[key]
 
         # scalar...
         if len(nodes) == 1:
-            return True
+            return value
 
-        item = dictionary[key]
-
-        # list...
-        if PathDict.__is_list_item(item, nodes):
-            index = int(nodes[1])
-            return 0 <= index < len(item)
-
-        # object...
-        return self.__has_path(item, nodes[1:])
+        # dict or list...
+        return self.__node(value, nodes[1:])
 
 
-    def __node(self, dictionary, nodes):
-        key = nodes[0]
-
-        item = dictionary[key]
+    def __append(self, container, nodes, value):
+        key = int(nodes[0]) if isinstance(container, list) else nodes[0]
 
         # scalar...
         if len(nodes) == 1:
-            return item
+            container[key] = deepcopy(value)
 
-        # list...
-        if PathDict.__is_list_item(item, nodes):
-            index = int(nodes[1])
-            return item[index]
-
-        # object...
-        return self.__node(item, nodes[1:])
-
-
-    def __append(self, dictionary, nodes, value):
-        key = nodes[0]
-
-        # scalar...
-        if len(nodes) == 1:
-            dictionary[key] = deepcopy(value)
-
-        # list...
-        elif PathDict.__is_list_path(nodes):
-            if key not in dictionary:
-                dictionary[key] = []
-
-            dictionary[key].append(value)
-
-        # object...
+        # dict or list...
         else:
-            if key not in dictionary:
-                dictionary[key] = OrderedDict()
+            if key not in container:
+                container[key] = OrderedDict()
 
-            self.__append(dictionary[key], nodes[1:], value)
+            self.__append(container[key], nodes[1:], value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
