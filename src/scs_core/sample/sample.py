@@ -39,7 +39,7 @@ class Sample(JSONable):
             jdict['tag'] = self.tag
 
         if self.src is not None:
-            jdict['src'] = self.tag
+            jdict['src'] = self.src
 
         jdict['rec'] = self.rec.as_json()
         jdict['val'] = self.val
