@@ -26,6 +26,8 @@ class OPCDatum(PMxDatum):
         if not jdict:
             return None
 
+        source = jdict.get('src')
+
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         period = jdict.get('per')
@@ -41,16 +43,18 @@ class OPCDatum(PMxDatum):
         bin_5_mtof = jdict.get('mtf5')
         bin_7_mtof = jdict.get('mtf7')
 
-        return OPCDatum(rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof)
+        return OPCDatum(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof):
+    def __init__(self, source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof):
         """
         Constructor
         """
         PMxDatum.__init__(self, rec, pm1, pm2p5, pm10)
+
+        self.__source = source                              # string
 
         self.__period = Datum.float(period, 1)              # seconds
 
@@ -66,6 +70,8 @@ class OPCDatum(PMxDatum):
 
     def as_json(self):
         jdict = OrderedDict()
+
+        jdict['src'] = self.source
 
         jdict['rec'] = self.rec.as_json()
 
@@ -92,6 +98,11 @@ class OPCDatum(PMxDatum):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def source(self):
+        return self.__source
+
 
     @property
     def period(self):
@@ -126,7 +137,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OPCDatum:{rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
+        return "OPCDatum:{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
                "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s}" % \
-                    (self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
+                    (self.source, self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
                      self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof)
