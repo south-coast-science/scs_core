@@ -49,4 +49,4 @@ class StatusSample(Sample):
         if psu_status is not None:
             val.append(('psu', psu_status))
 
-        super().__init__(tag, rec, *val)
+        super().__init__(tag, None, rec, *val)

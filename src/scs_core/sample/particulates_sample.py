@@ -38,7 +38,7 @@ class ParticulatesSample(Sample):
         """
         Constructor
         """
-        super().__init__(tag, rec, ('src', sample.source), ('per', sample.period),
+        super().__init__(tag, sample.source, rec, ('per', sample.period),
                          ('pm1', sample.pm1), ('pm2p5', sample.pm2p5), ('pm10', sample.pm10), ('bins', sample.bins),
                          ('mtf1', sample.bin_1_mtof), ('mtf3', sample.bin_3_mtof), ('mtf5', sample.bin_5_mtof),
                          ('mtf7', sample.bin_7_mtof))

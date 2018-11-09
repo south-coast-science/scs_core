@@ -31,4 +31,4 @@ class PressureSample(Sample):
         if barometer_datum.temp is not None:
             val.append(('tmp', barometer_datum.temp))
 
-        super().__init__(tag, rec, *val)
+        super().__init__(tag, None, rec, *val)
