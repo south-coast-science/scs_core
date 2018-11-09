@@ -18,6 +18,8 @@ example document:
 from scs_core.sample.sample import Sample
 
 
+# TODO: get src from AFE data interpretation
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GasesSample(Sample):
@@ -45,4 +47,4 @@ class GasesSample(Sample):
         if sht_datum is not None:
             val.append(('sht', sht_datum))
 
-        super().__init__(tag, rec, *val)
+        super().__init__(tag, None, rec, *val)

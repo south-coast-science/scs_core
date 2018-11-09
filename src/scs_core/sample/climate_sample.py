@@ -25,4 +25,4 @@ class ClimateSample(Sample):
         """
         Constructor
         """
-        super().__init__(tag, rec, ('hmd', sample.humid), ('tmp', sample.temp))
+        super().__init__(tag, None, rec, ('hmd', sample.humid), ('tmp', sample.temp))

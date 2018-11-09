@@ -33,7 +33,7 @@ value = "hello"
 print(value)
 print("-")
 
-datum = Sample(tag, now, ("greeting", "hello"))
+datum = Sample(tag, None, now, ("greeting", "hello"))
 print(datum)
 print("-")
 
