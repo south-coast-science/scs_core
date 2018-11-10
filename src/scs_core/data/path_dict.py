@@ -48,6 +48,7 @@ class PathDict(JSONable):
     # -----------------------------------------------------------------------------------------------------------------
     # source...
 
+    @property
     def paths(self):
         return self.__paths(self.__dictionary)
 
@@ -56,7 +57,7 @@ class PathDict(JSONable):
         if path is None:
             return True
 
-        return path in self.paths()
+        return path in self.paths
 
 
     def node(self, path=None):

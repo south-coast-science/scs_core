@@ -37,7 +37,7 @@ jstr = JSONify.dumps(datum)
 print(jstr)
 print("-")
 
-paths = datum.paths()
+paths = datum.paths
 print(paths)
 print("=")
 
