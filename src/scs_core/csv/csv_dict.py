@@ -58,6 +58,11 @@ class CSVDict(object):
 
 
     @property
+    def paths(self):
+        return self.__path_dict.paths
+
+
+    @property
     def header(self):
         return CSVHeader.construct_from_paths(self.__path_dict.paths())
 
