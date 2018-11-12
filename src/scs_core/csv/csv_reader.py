@@ -62,7 +62,9 @@ class CSVReader(object):
     @property
     def rows(self):
         for row in self.__reader:
-            print("row:>%s<" % row)
+            if len(row) == 0:
+                continue
+
             datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
 
             yield JSONify.dumps(datum)
