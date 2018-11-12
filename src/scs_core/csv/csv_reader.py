@@ -47,10 +47,11 @@ class CSVReader(object):
         self.__reader = csv.reader(self.__file)
 
         try:
-            self.__header = CSVHeader.construct_from_paths(next(self.__reader))
+            paths = next(self.__reader)
+        except StopIteration:                   # no input
+            paths = []
 
-        except StopIteration:
-            self.__header = None
+        self.__header = CSVHeader.construct_from_paths(paths)
 
 
     # ----------------------------------------------------------------------------------------------------------------
