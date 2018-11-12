@@ -45,7 +45,13 @@ class CSVReader(object):
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 
         self.__reader = csv.reader(self.__file)
-        self.__header = CSVHeader.construct_from_paths(next(self.__reader))
+
+        try:
+            paths = next(self.__reader)
+        except StopIteration:                   # no input
+            paths = []
+
+        self.__header = CSVHeader.construct_from_paths(paths)
 
 
     # ----------------------------------------------------------------------------------------------------------------
