@@ -124,7 +124,18 @@ class PathDict(JSONable):
 
 
     def __node(self, container, nodes):
-        key = int(nodes[0]) if isinstance(container, list) else nodes[0]
+        # key...
+        if isinstance(container, list):
+            try:
+                key = int(nodes[0])
+
+            except ValueError:
+                raise KeyError(nodes[0])
+
+        else:
+            key = nodes[0]
+
+        # value...
         value = container[key]
 
         # scalar...
@@ -136,7 +147,16 @@ class PathDict(JSONable):
 
 
     def __append(self, container, nodes, value):
-        key = int(nodes[0]) if isinstance(container, list) else nodes[0]
+        # key...
+        if isinstance(container, list):
+            try:
+                key = int(nodes[0])
+
+            except ValueError:
+                raise KeyError(nodes[0])
+
+        else:
+            key = nodes[0]
 
         # scalar...
         if len(nodes) == 1:
