@@ -37,9 +37,7 @@ class GPGSA(object):
         op_mode = s.str(1)
         nav_mode = s.int(2)
 
-        sv = []
-        for i in range(12):
-            sv.append(s.int(3 + i))
+        sv = [s.int(i + 3) for i in range(12)]
 
         pdop = s.float(15, 2)
         hdop = s.float(16, 2)
@@ -56,7 +54,7 @@ class GPGSA(object):
         """
         self.__op_mode = op_mode            # string
         self.__nav_mode = nav_mode          # int
-        
+
         self.__sv = sv                      # list of int
 
         self.__pdop = pdop                  # float(2)
