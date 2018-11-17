@@ -4,6 +4,8 @@ Created on 18 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
+
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -40,7 +42,8 @@ class OPCDatum(PMxDatum):
         bins = jdict.get('bin')
 
         if bins is None:
-            print("*** OPCDatum fail: %s" % jdict)          # TODO: check for occurrences of this condition
+            print("*** OPCDatum fail: %s" % jdict, file=sys.stderr)          # TODO: check for occurrences of this
+            sys.stderr.flush()
 
         bin_1_mtof = jdict.get('mtf1')
         bin_3_mtof = jdict.get('mtf3')
@@ -51,6 +54,10 @@ class OPCDatum(PMxDatum):
 
         return OPCDatum(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
                         sht)
+
+    @classmethod
+    def null_datum(cls):
+        return OPCDatum(None, LocalizedDatetime.now(), None, None, None, 0.0, [], 0, 0, 0, 0)
 
 
     # ----------------------------------------------------------------------------------------------------------------
