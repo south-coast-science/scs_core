@@ -19,6 +19,19 @@ class SHTDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        humid = jdict.get('hmd')
+        temp = jdict.get('tmp')
+
+        return SHTDatum(humid, temp)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, humid, temp):
         """
         Constructor
