@@ -130,7 +130,7 @@ class PathDict(JSONable):
                 key = int(nodes[0])
 
             except ValueError:
-                raise KeyError(nodes[0])
+                raise KeyError(nodes[0])            # a non-integer key on an array is a KeyError
 
         else:
             key = nodes[0]
@@ -153,7 +153,7 @@ class PathDict(JSONable):
                 key = int(nodes[0])
 
             except ValueError:
-                raise KeyError(nodes[0])
+                raise KeyError(nodes[0])            # a non-integer key on an array is a KeyError
 
         else:
             key = nodes[0]
