@@ -89,6 +89,11 @@ class Timezone(JSONable):
         return self.__name
 
 
+    @property
+    def zone(self):
+        return pytz.timezone(self.__name)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

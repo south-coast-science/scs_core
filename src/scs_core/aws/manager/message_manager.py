@@ -42,7 +42,8 @@ class MessageManager(object):
             # messages...
             collection = MessageCollection.construct_from_jdict(jdict)
 
-            messages = collection.items
+            messages = [] if collection is None else collection.items
+
         finally:
             self.__rest_client.close()
 
