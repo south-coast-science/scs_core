@@ -12,6 +12,8 @@ from abc import abstractmethod
 from collections import OrderedDict
 
 
+# TODO: remove host field from PersistentJSONable
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class JSONable(object):
