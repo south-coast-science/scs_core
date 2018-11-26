@@ -46,8 +46,9 @@ class MessageManager(object):
 
         request_path = '/staging/topicMessages'
 
-        params = {self.__TOPIC: topic, self.__START: start_date.utc().as_iso8601(),
-                  self.__END: end_date.utc().as_iso8601()}
+        params = {self.__TOPIC: topic,
+                  self.__START: start_date.utc().as_iso8601(),
+                  self.__END:   end_date.utc().as_iso8601()}
 
         # request...
         self.__rest_client.connect()
