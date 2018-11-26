@@ -22,12 +22,11 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, api_key, reporter=None):
+    def __init__(self, http_client, api_key, _=None):
         """
         Constructor
         """
         self.__rest_client = RESTClient(http_client, api_key)
-        self.__reporter = reporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -55,7 +54,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageManager:{rest_client:%s, reporter:%s}" % (self.__rest_client, self.__reporter)
+        return "MessageManager:{rest_client:%s}" % self.__rest_client
 
 
 # --------------------------------------------------------------------------------------------------------------------
