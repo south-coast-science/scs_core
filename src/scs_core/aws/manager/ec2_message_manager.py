@@ -3,7 +3,7 @@ Created on 6 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-This version of MessageManager for AWS EC2 server with single-part response.
+DEPRECATED: this version of MessageManager for AWS EC2 server with single-part response.
 
 https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/staging/topicMessages?
 topic=south-coast-science-dev/production-test/loc/1/gases&startTime=2018-03-31T10:45:50Z&endTime=2018-03-31T10:46:50Z

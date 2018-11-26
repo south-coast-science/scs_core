@@ -62,7 +62,7 @@ class MessageManager(object):
                 for item in block.items:
                     yield item
 
-                # progress...
+                # report...
                 if self.__reporter:
                     self.__reporter.print(params[self.__START], len(block))
 
