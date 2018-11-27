@@ -8,13 +8,11 @@ Note that, for the ISO 8601 constructors, milliseconds are optional.
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 """
 
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
-
 import pytz
 import re
 import tzlocal
+
+from datetime import datetime, timedelta, timezone
 
 from scs_core.data.json import JSONable
 
@@ -35,7 +33,7 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
-    def construct_from_date(cls, date):
+    def construct_from_date(cls, date):             # TODO: deprecated
         zone = tzlocal.get_localzone()
         localized = zone.localize(datetime(date.year, date.month, date.day))
 
@@ -66,7 +64,7 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict):           # TODO: deprecated
         return cls.construct_from_iso8601(jdict)
 
 
@@ -179,7 +177,7 @@ class LocalizedDatetime(JSONable):
 
     def as_iso8601(self):
         """
-        example: 2016-08-13T00:38:05.210+00:00
+        example: 2016-08-13T00:38:05.210+01:00
         """
         date = self.__datetime.strftime("%Y-%m-%d")
         time = self.__datetime.strftime("%H:%M:%S")
@@ -188,6 +186,12 @@ class LocalizedDatetime(JSONable):
         millis = "%03d" % (micros // 1000)
 
         zone = self.__datetime.strftime("%z")
+
+        # Z format...
+        if float(zone[1:]) == 0.0:
+            return "%sT%s.%sZ" % (date, time, millis)
+
+        # numeric format...
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
