@@ -13,6 +13,8 @@ from multiprocessing import Manager
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
+# TODO: can the run method be re-implemented as a co-routine with (yield)?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 # noinspection PyBroadException
