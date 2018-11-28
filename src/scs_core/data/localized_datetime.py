@@ -17,6 +17,8 @@ from datetime import datetime, timedelta, timezone
 from scs_core.data.json import JSONable
 
 
+# TODO: do rounding on seconds?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class LocalizedDatetime(JSONable):
