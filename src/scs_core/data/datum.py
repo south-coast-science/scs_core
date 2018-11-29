@@ -143,7 +143,7 @@ class Datum(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # encode / decode byte array...
+    # encode byte array...
 
     @staticmethod
     def encode_int(value):
