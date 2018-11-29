@@ -59,7 +59,7 @@ if precision is not None:
     print("rounded:%s" % rounded)
 print("-")
 
-value = "2.4"
+value = "2."
 precision = Datum.precision(value)
 print("value:%s precision:%s" % (value, precision))
 print("is_numeric:%s is_int:%s is_float:%s" % (Datum.is_numeric(value), Datum.is_int(value), Datum.is_float(value)))

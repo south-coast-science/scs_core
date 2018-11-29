@@ -61,10 +61,10 @@ class Datum(object):
 
         # int...
         if len(pieces) == 1:
-            return 0                        # warning: round(123, 0) returns 123.0 - use round(123)
+            return 0                            # warning: round(123, 0) returns 123.0 - use round(123)
 
         # float...
-        return len(pieces[1])
+        return len(pieces[1])                   # warning: interprets 1. as precision 0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ class Datum(object):
         except ValueError:
             return None
 
-        return round(value, ndigits)
+        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
 
 
     @staticmethod
@@ -143,7 +143,7 @@ class Datum(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # encode byte array...
+    # encode / decode byte array...
 
     @staticmethod
     def encode_int(value):
@@ -179,24 +179,28 @@ class Datum(object):
     @staticmethod
     def decode_int(byte_values):
         packed = struct.unpack('h', struct.pack('BB', *byte_values))
+
         return packed[0]
 
 
     @staticmethod
     def decode_unsigned_int(byte_values):
         packed = struct.unpack('H', struct.pack('BB', *byte_values))
+
         return packed[0]
 
 
     @staticmethod
     def decode_long(byte_values):
         packed = struct.unpack('l', struct.pack('BBBB', *byte_values))
+
         return packed[0]
 
 
     @staticmethod
     def decode_unsigned_long(byte_values):
         packed = struct.unpack('L', struct.pack('BBBB', *byte_values))
+
         return packed[0]
 
 

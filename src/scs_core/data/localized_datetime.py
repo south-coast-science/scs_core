@@ -177,7 +177,7 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_iso8601(self):
+    def as_iso8601(self):                                       # TODO: add millis control
         """
         example: 2016-08-13T00:38:05.210+01:00
         """
@@ -209,7 +209,7 @@ class LocalizedDatetime(JSONable):
         return "%s.%s" % (time, millis)
 
 
-    def as_json(self):
+    def as_json(self):                                          # TODO: remove this method
         return self.as_iso8601()
 
 
