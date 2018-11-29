@@ -20,75 +20,51 @@ class Datum(object):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-    # encode byte array...
+    # morphological numeracy...
 
-    @staticmethod
-    def encode_int(value):
-        unpacked = struct.unpack('BB', struct.pack('h', int(value)))
-
-        return unpacked
+    @classmethod
+    def is_numeric(cls, value):
+        return cls.precision(value) is not None
 
 
-    @staticmethod
-    def encode_unsigned_int(value):
-        unpacked = struct.unpack('BB', struct.pack('H', int(value)))
+    @classmethod
+    def is_int(cls, value):
+        precision = cls.precision(value)
 
-        return unpacked
+        if precision is None:
+            return False
 
-
-    @staticmethod
-    def encode_unsigned_long(value):
-        unpacked = struct.unpack('BBBB', struct.pack('L', int(value)))
-
-        return unpacked
+        return precision == 0
 
 
-    @staticmethod
-    def encode_float(value):
-        unpacked = struct.unpack('BBBB', struct.pack('f', float(value)))
+    @classmethod
+    def is_float(cls, value):
+        precision = cls.precision(value)
 
-        return unpacked
+        if precision is None:
+            return False
 
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # decode byte array...
-
-    @staticmethod
-    def decode_int(byte_values):
-        packed = struct.unpack('h', struct.pack('BB', *byte_values))
-        return packed[0]
+        return precision > 0
 
 
     @staticmethod
-    def decode_unsigned_int(byte_values):
-        packed = struct.unpack('H', struct.pack('BB', *byte_values))
-        return packed[0]
+    def precision(value):
+        if value is None:
+            return None
 
+        try:
+            float(value)
+        except ValueError:
+            return None
 
-    @staticmethod
-    def decode_long(byte_values):
-        packed = struct.unpack('l', struct.pack('BBBB', *byte_values))
-        return packed[0]
+        pieces = str(value).split('.')
 
+        # int...
+        if len(pieces) == 1:
+            return 0                        # warning: round(123, 0) returns 123.0 - use round(123)
 
-    @staticmethod
-    def decode_unsigned_long(byte_values):
-        packed = struct.unpack('L', struct.pack('BBBB', *byte_values))
-        return packed[0]
-
-
-    @staticmethod
-    def decode_float(byte_values):
-        packed = struct.unpack('f', struct.pack('BBBB', *byte_values))
-
-        return None if math.isnan(packed[0]) else packed[0]
-
-
-    @staticmethod
-    def decode_double(byte_values):
-        packed = struct.unpack('d', struct.pack('BBBBBBBB', *byte_values))
-
-        return None if math.isnan(packed[0]) else packed[0]
+        # float...
+        return len(pieces[1])
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -164,3 +140,75 @@ class Datum(object):
             return None
 
         return value
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # encode byte array...
+
+    @staticmethod
+    def encode_int(value):
+        unpacked = struct.unpack('BB', struct.pack('h', int(value)))
+
+        return unpacked
+
+
+    @staticmethod
+    def encode_unsigned_int(value):
+        unpacked = struct.unpack('BB', struct.pack('H', int(value)))
+
+        return unpacked
+
+
+    @staticmethod
+    def encode_unsigned_long(value):
+        unpacked = struct.unpack('BBBB', struct.pack('L', int(value)))
+
+        return unpacked
+
+
+    @staticmethod
+    def encode_float(value):
+        unpacked = struct.unpack('BBBB', struct.pack('f', float(value)))
+
+        return unpacked
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # decode byte array...
+
+    @staticmethod
+    def decode_int(byte_values):
+        packed = struct.unpack('h', struct.pack('BB', *byte_values))
+        return packed[0]
+
+
+    @staticmethod
+    def decode_unsigned_int(byte_values):
+        packed = struct.unpack('H', struct.pack('BB', *byte_values))
+        return packed[0]
+
+
+    @staticmethod
+    def decode_long(byte_values):
+        packed = struct.unpack('l', struct.pack('BBBB', *byte_values))
+        return packed[0]
+
+
+    @staticmethod
+    def decode_unsigned_long(byte_values):
+        packed = struct.unpack('L', struct.pack('BBBB', *byte_values))
+        return packed[0]
+
+
+    @staticmethod
+    def decode_float(byte_values):
+        packed = struct.unpack('f', struct.pack('BBBB', *byte_values))
+
+        return None if math.isnan(packed[0]) else packed[0]
+
+
+    @staticmethod
+    def decode_double(byte_values):
+        packed = struct.unpack('d', struct.pack('BBBBBBBB', *byte_values))
+
+        return None if math.isnan(packed[0]) else packed[0]
