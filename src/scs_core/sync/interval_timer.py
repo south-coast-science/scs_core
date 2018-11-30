@@ -65,7 +65,7 @@ class IntervalTimer(object):
 
     @property
     def time_to_next_yield(self):
-        return self.__next_yield - time.time()
+        return abs(self.__next_yield - time.time())         # time to next must always be positive
 
 
     # ----------------------------------------------------------------------------------------------------------------
