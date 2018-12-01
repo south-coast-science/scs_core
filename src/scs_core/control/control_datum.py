@@ -18,6 +18,7 @@ import hashlib
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sample.sample import Sample
@@ -60,7 +61,9 @@ class ControlDatum(JSONable):
 
     @classmethod
     def __hash(cls, tag, attn, rec, cmd_tokens, key):
-        text = str(tag) + str(attn) + rec.as_iso8601(Sample.INCLUDE_MILLIS) + str(cmd_tokens) + str(key)
+        rec_iso8601 = rec.as_iso8601(Sample.INCLUDE_MILLIS)
+
+        text = str(tag) + str(attn) + JSONify.dumps(rec_iso8601) + str(cmd_tokens) + str(key)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
