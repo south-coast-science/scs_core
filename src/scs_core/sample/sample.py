@@ -16,6 +16,8 @@ class Sample(JSONable):
     classdocs
     """
 
+    INCLUDE_MILLIS = False
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag, src, rec, *values):
@@ -41,7 +43,7 @@ class Sample(JSONable):
         if self.src is not None:
             jdict['src'] = self.src
 
-        jdict['rec'] = self.rec.as_json()
+        jdict['rec'] = self.rec.as_iso8601(self.INCLUDE_MILLIS)
         jdict['val'] = self.val
 
         return jdict

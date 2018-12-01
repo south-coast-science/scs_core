@@ -13,6 +13,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.climate.sht_datum import SHTDatum
 from scs_core.particulate.pmx_datum import PMxDatum
+from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ class OPCDatum(PMxDatum):
 
         jdict['src'] = self.source
 
-        jdict['rec'] = self.rec.as_json()
+        jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
 
         jdict['per'] = self.period
 
