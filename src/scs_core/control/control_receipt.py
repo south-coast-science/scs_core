@@ -23,6 +23,8 @@ from scs_core.data.json import JSONable
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.sample.sample import Sample
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -61,7 +63,9 @@ class ControlReceipt(JSONable):
 
     @classmethod
     def __hash(cls, tag, rec, command, omd, subscriber_sn):
-        text = str(tag) + JSONify.dumps(rec) + JSONify.dumps(command) + str(omd) + str(subscriber_sn)
+        rec_iso8601 = rec.as_iso8601(Sample.INCLUDE_MILLIS)
+
+        text = str(tag) + JSONify.dumps(rec_iso8601) + JSONify.dumps(command) + str(omd) + str(subscriber_sn)
         hash_object = hashlib.sha256(text.encode())
 
         return hash_object.hexdigest()
@@ -96,7 +100,8 @@ class ControlReceipt(JSONable):
 
         jdict['tag'] = self.tag
 
-        jdict['rec'] = self.rec
+        jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
+
         jdict['cmd'] = self.command
         jdict['omd'] = self.omd
         jdict['digest'] = self.__digest
