@@ -14,14 +14,10 @@ import tzlocal
 
 from datetime import datetime, timedelta, timezone
 
-from scs_core.data.json import JSONable
-
-
-# TODO: do rounding on seconds?
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class LocalizedDatetime(JSONable):
+class LocalizedDatetime(object):
     """
     classdocs
     """
@@ -177,27 +173,33 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_iso8601(self):
+    def as_iso8601(self, include_millis=False):
         """
         example: 2016-08-13T00:38:05.210+01:00
         """
         date = self.__datetime.strftime("%Y-%m-%d")
         time = self.__datetime.strftime("%H:%M:%S")
 
-        micros = float(self.__datetime.strftime("%f"))
-        millis = "%03d" % (micros // 1000)
+        # millis...
+        if include_millis:
+            micros = float(self.__datetime.strftime("%f"))
+            millis = ".%03d" % (micros // 1000)
 
+        else:
+            millis = ""
+
+        # time zone...
         zone = self.__datetime.strftime("%z")
 
         # Z format...
         if float(zone[1:]) == 0.0:
-            return "%sT%s.%sZ" % (date, time, millis)
+            return "%sT%s%sZ" % (date, time, millis)
 
         # numeric format...
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
-        return "%sT%s.%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
+        return "%sT%s%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
 
 
     def as_time(self):
@@ -207,10 +209,6 @@ class LocalizedDatetime(JSONable):
         millis = "%03d" % (micros // 1000)
 
         return "%s.%s" % (time, millis)
-
-
-    def as_json(self):
-        return self.as_iso8601()
 
 
     def timestamp(self):

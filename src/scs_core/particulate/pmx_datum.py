@@ -9,6 +9,8 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
+from scs_core.sample.sample import Sample
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +37,7 @@ class PMxDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rec'] = self.rec.as_json()
+        jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
 
         jdict['pm1'] = self.pm1
         jdict['pm2.5'] = self.pm2p5
