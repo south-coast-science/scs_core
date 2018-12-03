@@ -73,7 +73,7 @@ class MPL115A2Calib(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated-on'] = self.calibrated_on
+        jdict['calibrated-on'] = self.calibrated_on.as_iso8601(False)
         jdict['c25'] = self.c25
 
         return jdict
