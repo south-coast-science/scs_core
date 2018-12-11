@@ -2,6 +2,9 @@
 Created on 11 Dec 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+A leaf node of a JSON document, appropriate for numeric processing. This class be used to preserve the precision of
+the original value.
 """
 
 from scs_core.data.datum import Datum
@@ -9,7 +12,7 @@ from scs_core.data.datum import Datum
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Topic(object):
+class Leaf(object):
     """
     classdocs
    """
@@ -51,4 +54,4 @@ class Topic(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, precision:%s}" % (self.path, self.precision)
+        return "Leaf:{path:%s, precision:%s}" % (self.path, self.precision)
