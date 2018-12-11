@@ -89,7 +89,7 @@ class TimezoneConf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['set-on'] = self.set_on
+        jdict['set-on'] = self.set_on.as_iso8601(False)
         jdict['name'] = self.name
 
         return jdict

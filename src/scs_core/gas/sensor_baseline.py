@@ -55,7 +55,7 @@ class SensorBaseline(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated-on'] = self.calibrated_on
+        jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601(False)
         jdict['offset'] = self.offset
 
         return jdict
