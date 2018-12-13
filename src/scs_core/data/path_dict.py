@@ -93,7 +93,9 @@ class PathDict(JSONable):
             self.__dictionary = deepcopy(other.__dictionary)
             return
 
-        self.__append(self.__dictionary, re.split(r"[.:]", sub_path), other.node(sub_path))
+        nodes = re.findall('([^.:]+)([.:]*)', sub_path)
+
+        self.__append(self.__dictionary, nodes, other.node(sub_path))
 
 
     def append(self, sub_path, value):
