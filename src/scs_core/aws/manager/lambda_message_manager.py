@@ -5,8 +5,9 @@ Created on 26 Nov 2018
 
 This version of MessageManager for AWS lambda function with multi-part response.
 
-
-curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
+Equivalent to cURL:
+curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
+&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from urllib.parse import urlparse, parse_qs
