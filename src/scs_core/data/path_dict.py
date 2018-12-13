@@ -193,10 +193,10 @@ class PathDict(JSONable):
         # leaf...
         if len(nodes) == 1:
             container[key] = deepcopy(value)
+            return
 
         # deep...
-        else:
-            self.__append(container[key], nodes[1:], value)
+        self.__append(container[key], nodes[1:], value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
