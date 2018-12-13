@@ -186,9 +186,10 @@ class PathDict(JSONable):
             except ValueError:
                 raise KeyError(key)
 
-            if key >= len(container):
-                container.append([] if separator == ':' else OrderedDict())
-                key = len(container) - 1
+            while key >= len(container):
+                container.append(None)
+
+            container[key] = [] if separator == ':' else OrderedDict()
 
         # leaf...
         if len(nodes) == 1:
