@@ -48,23 +48,41 @@ class PathDict(JSONable):
     # -----------------------------------------------------------------------------------------------------------------
     # source...
 
-    @property
-    def paths(self):
-        return self.__paths(self.__dictionary)
-
+    # Tests whether a leaf-node path is present...
 
     def has_path(self, path):
-        if path is None:
+        return path in self.paths()
+
+
+    # Tests whether a leaf-node or internal path is present...
+
+    def has_sub_path(self, sub_path=None):
+        if sub_path is None:
             return True
 
-        return path in self.paths
+        try:
+            self.node(sub_path)
+            return True
+
+        except KeyError:
+            return False
 
 
-    def node(self, path=None):
-        if path is None:
+    # Returns all the leaf-node paths...
+
+    def paths(self, sub_path=None):
+        node = self if sub_path is None else PathDict(self.node(sub_path))
+
+        return node.__paths(node.__dictionary, sub_path)
+
+
+    # Returns a leaf-node or internal node...
+
+    def node(self, sub_path=None):
+        if sub_path is None:
             return self.__dictionary
 
-        return self.__node(self.__dictionary, re.split(r"[.:]", path))
+        return self.__node(self.__dictionary, re.split(r"[.:]", sub_path))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -89,17 +107,24 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __paths(self, container, prefix=None):
-        if isinstance(container, list):
+        # dict...
+        if isinstance(container, dict):
+            separator = '.'
+            keys = container.keys()
+
+        # list...
+        elif isinstance(container, list):
             separator = ':'
             keys = range(len(container))
 
+        # scalar...
         else:
-            separator = '.'
-            keys = container.keys()
+            return [prefix]
 
         prefix = prefix + separator if prefix else ''
 
         paths = []
+
         for key in keys:
             path = prefix + str(key)
             value = container[key]

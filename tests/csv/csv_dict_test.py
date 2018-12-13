@@ -41,7 +41,7 @@ header = datum.header
 print("header: %s" % header)
 print("-")
 
-paths = header.paths
+paths = header.paths()
 print("paths: %s" % paths)
 print("-")
 
