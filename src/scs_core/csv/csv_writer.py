@@ -69,7 +69,7 @@ class CSVWriter(object):
             return
 
         if self.__paths is None:
-            self.__paths = datum.paths
+            self.__paths = datum.paths()
 
             if not self.__append:
                 self.__writer.writerow(self.__paths)

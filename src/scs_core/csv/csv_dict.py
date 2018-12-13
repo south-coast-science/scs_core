@@ -52,19 +52,20 @@ class CSVDict(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def paths(self):
+        return self.__path_dict.paths()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def dictionary(self):
         return self.__path_dict.dictionary
 
 
     @property
-    def paths(self):
-        return self.__path_dict.paths
-
-
-    @property
     def header(self):
-        return CSVHeader.construct_from_paths(self.__path_dict.paths)
+        return CSVHeader.construct_from_paths(self.__path_dict.paths())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -118,7 +119,6 @@ class CSVHeader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
     def paths(self):
         return [cell.path for cell in self.__cells]
 

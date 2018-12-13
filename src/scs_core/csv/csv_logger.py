@@ -112,7 +112,7 @@ class CSVLogger(object):
 
         # write header...
         if not self.__paths:
-            self.__paths = datum.paths
+            self.__paths = datum.paths()
             self.__writer.writerow(self.__paths)
 
         # write row...
