@@ -88,20 +88,18 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
     # target...
 
-    # Warning: copying nodes within arrays yields numerically-indexed dictionaries
-
-    def copy(self, other, path=None):
-        if path is None:
+    def copy(self, other, sub_path=None):
+        if sub_path is None:
             self.__dictionary = deepcopy(other.__dictionary)
             return
 
-        self.__append(self.__dictionary, re.split(r"[.:]", path), other.node(path))
+        self.__append(self.__dictionary, re.split(r"[.:]", sub_path), other.node(sub_path))
 
 
-    # Warning: appending within an array is only permitted within the array's existing bounds
+    def append(self, sub_path, value):
+        nodes = re.findall('([^.:]+)([.:]*)', sub_path)
 
-    def append(self, path, value):
-        self.__append(self.__dictionary, re.split(r"[.:]", path), value)
+        self.__append(self.__dictionary, nodes, value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -163,35 +161,41 @@ class PathDict(JSONable):
         # value...
         value = container[key]
 
-        # scalar...
+        # leaf...
         if len(nodes) == 1:
             return value
 
-        # dict or list...
+        # deep...
         return self.__node(value, nodes[1:])
 
 
     def __append(self, container, nodes, value):
         # key...
-        if isinstance(container, list):
+        key = nodes[0][0]
+        separator = nodes[0][1]
+
+        # dict...
+        if isinstance(container, dict):
+            if key not in container:
+                container[key] = [] if separator == ':' else OrderedDict()
+
+        # list...
+        elif isinstance(container, list):
             try:
-                key = int(nodes[0])
-
+                key = int(key)
             except ValueError:
-                raise KeyError(nodes[0])            # a non-integer key on an array is a KeyError
+                raise KeyError(key)
 
-        else:
-            key = nodes[0]
+            if key >= len(container):
+                container.append([] if separator == ':' else OrderedDict())
+                key = len(container) - 1
 
-        # scalar...
+        # leaf...
         if len(nodes) == 1:
             container[key] = deepcopy(value)
 
-        # dict or list...
+        # deep...
         else:
-            if key not in container:
-                container[key] = OrderedDict()
-
             self.__append(container[key], nodes[1:], value)
 
 
