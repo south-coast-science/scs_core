@@ -5,10 +5,9 @@ Created on 26 Nov 2018
 
 This version of MessageManager for AWS lambda function with multi-part response.
 
-https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/staging/topicMessages?
-topic=south-coast-science-dev/production-test/loc/1/gases&
-startTime=2018-11-23T14:37:10.393Z&
-endTime=2018-11-23T15:10:59.712Z"
+Equivalent to cURL:
+curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
+&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from urllib.parse import urlparse, parse_qs
@@ -42,9 +41,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_topic(self, topic, start_date, end_date):
-        # request_path = '/' + topic + '/' + start_date.utc().as_iso8601() + '/' + end_date.utc().as_iso8601()
-
-        request_path = '/staging/topicMessages'
+        request_path = '/topicMessages'
 
         params = {self.__TOPIC: topic,
                   self.__START: start_date.utc().as_iso8601(),
