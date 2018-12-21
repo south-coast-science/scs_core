@@ -48,13 +48,13 @@ class PathDict(JSONable):
     # -----------------------------------------------------------------------------------------------------------------
     # source...
 
-    # Tests whether a leaf-node path is present...
+    # Tests whether a leaf node path is present...
 
     def has_path(self, path):
         return path in self.paths()
 
 
-    # Tests whether a leaf-node or internal path is present...
+    # Tests whether a leaf node or internal path is present...
 
     def has_sub_path(self, sub_path=None):
         if sub_path is None:
@@ -68,7 +68,7 @@ class PathDict(JSONable):
             return False
 
 
-    # Returns all the leaf-node paths...
+    # Returns all the leaf node paths...
 
     def paths(self, sub_path=None):
         node = self if sub_path is None else PathDict(self.node(sub_path))
@@ -76,7 +76,7 @@ class PathDict(JSONable):
         return node.__paths(node.__dictionary, sub_path)
 
 
-    # Returns a leaf-node or internal node...
+    # Returns a leaf node or internal node...
 
     def node(self, sub_path=None):
         if sub_path is None:
@@ -88,6 +88,8 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
     # target...
 
+    # Copies from other at sub_path...
+
     def copy(self, other, sub_path=None):
         if sub_path is None:
             self.__dictionary = deepcopy(other.__dictionary)
@@ -97,6 +99,8 @@ class PathDict(JSONable):
 
         self.__append(self.__dictionary, nodes, other.node(sub_path))
 
+
+    # Appends value at sub_path...
 
     def append(self, sub_path, value):
         nodes = re.findall('([^.:]+)([.:]*)', sub_path)

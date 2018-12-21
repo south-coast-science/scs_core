@@ -22,7 +22,8 @@ class CSVLogger(object):
     classdocs
     """
 
-    __MIN_FREE_SPACE = 10485760                 # 10MB
+    __MIN_FREE_SPACE = 10485760                         # 10MB
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ class CSVLogger(object):
         # first run...
         if not self.__file:
             if self.log.tag is None and 'tag' in datum.dictionary:
-                self.log.tag = datum.dictionary['tag']                  # find the tag from the first document
+                self.log.tag = datum.dictionary['tag']                  # TODO: use node(..)?
 
             self.__open_file()
 
