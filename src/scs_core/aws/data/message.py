@@ -36,6 +36,8 @@ class Message(JSONable):
     classdocs
     """
 
+    INCLUDE_MILLIS = False
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -72,7 +74,7 @@ class Message(JSONable):
 
         jdict['device'] = self.device
         jdict['topic'] = self.topic
-        jdict['upload'] = self.upload
+        jdict['upload'] = self.upload.as_iso8601(self.INCLUDE_MILLIS)
 
         jdict['payload'] = self.payload
 
