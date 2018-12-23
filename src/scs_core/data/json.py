@@ -136,7 +136,9 @@ class PersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PersistentJSONable:{host:%s}" % self.host
+        host_name = None if self.host is None else self.host.name()
+
+        return "PersistentJSONable:{host:%s}" % host_name
 
 
 # --------------------------------------------------------------------------------------------------------------------
