@@ -43,8 +43,10 @@ class OPCDatum(PMxDatum):
         bins = jdict.get('bin')
 
         if bins is None:
-            print("*** OPCDatum fail: %s" % jdict, file=sys.stderr)          # TODO: check for occurrences of this
+            print("OPCDatum fail: %s" % jdict, file=sys.stderr)
             sys.stderr.flush()
+
+            return None
 
         bin_1_mtof = jdict.get('mtf1')
         bin_3_mtof = jdict.get('mtf3')
