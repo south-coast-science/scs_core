@@ -31,9 +31,9 @@ class MQTTClient(object):
     __QUEUE_DROP_BEHAVIOUR =        MQTTLib.DROP_OLDEST     # not required for infinite queue
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
-    __RECONN_BASE =                 2                       # recommended: 1 (sec)
-    __RECONN_MAX =                  64                      # recommended: 32 (sec)
-    __RECONN_STABLE =               40                      # recommended: 20 (sec)
+    __RECONN_BASE =                 1                       # recommended: 1 (sec)
+    __RECONN_MAX =                  32                      # recommended: 32 (sec)
+    __RECONN_STABLE =               20                      # recommended: 20 (sec)
 
     __DISCONNECT_TIMEOUT =          20                      # recommended: 10 (sec)
     __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)
