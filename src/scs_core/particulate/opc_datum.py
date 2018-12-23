@@ -43,7 +43,7 @@ class OPCDatum(PMxDatum):
         bins = jdict.get('bin')
 
         if bins is None:
-            print("OPCDatum fail: %s" % jdict, file=sys.stderr)
+            print("OPCDatum incomplete: %s" % jdict, file=sys.stderr)
             sys.stderr.flush()
 
             return None
