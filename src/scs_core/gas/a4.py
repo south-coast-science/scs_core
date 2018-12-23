@@ -65,5 +65,5 @@ class A4(Sensor):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4:{sensor_code:%s, gas_name:%s, adc_gain_index:0x%04x, calib:%s, baseline:%s, tc:%s}" %  \
-               (self.sensor_code, self.gas_name, self.adc_gain_index, self.calib, self.baseline, self.__tc)
+        return "A4:{sensor_code:%s, gas_name:%s, calib:%s, baseline:%s}" %  \
+               (self.sensor_code, self.gas_name, self.calib, self.baseline)
