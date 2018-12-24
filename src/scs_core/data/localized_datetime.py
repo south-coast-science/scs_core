@@ -15,6 +15,8 @@ import tzlocal
 from datetime import datetime, timedelta, timezone
 
 
+# TODO: object should carry a flag indicating presence of millis - for "preserve millis" mode
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class LocalizedDatetime(object):
