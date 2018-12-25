@@ -9,7 +9,7 @@ startTime=2018-03-31T07:50:59.712Z&
 endTime=2018-03-31T07:55:59.712Z
 
 header:
-CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key ' . AOC_OPENSENSORS_API_KEY),
+CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key ' . AWS_API_KEY),
 """
 
 import json
@@ -17,7 +17,6 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
-from scs_core.osio.client.client_exception import ClientException
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
 
@@ -63,8 +62,9 @@ class RESTClient(object):
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
                 return None
+
             else:
-                raise ClientException.construct(exc) from exc
+                raise exc
 
         try:
             response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
@@ -79,10 +79,7 @@ class RESTClient(object):
 
         # print("RESTClient.post: path: %s payload: %s" % (path, payload_jstr))
 
-        try:
-            response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
-        except HTTPException as ex:
-            raise ClientException.construct(ex) from ex
+        response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
 
         try:
             response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
@@ -97,10 +94,7 @@ class RESTClient(object):
 
         # print("RESTClient.put: path: %s payload: %s" % (path, payload_jstr))
 
-        try:
-            response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
-        except HTTPException as ex:
-            raise ClientException.construct(ex) from ex
+        response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
 
         try:
             response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
@@ -111,10 +105,7 @@ class RESTClient(object):
 
 
     def delete(self, path):
-        try:
-            response_jstr = self.__http_client.delete(path, self.__headers)
-        except HTTPException as ex:
-            raise ClientException.construct(ex) from ex
+        response_jstr = self.__http_client.delete(path, self.__headers)
 
         try:
             response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
