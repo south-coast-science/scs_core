@@ -142,6 +142,10 @@ class LocalizedDatetime(object):
         self.__datetime = localized             # datetime
 
 
+    def __lt__(self, other):
+        return self.__datetime < other.__datetime
+
+
     def __add__(self, other: datetime):         # TODO: check validity of __add__(..)
         return LocalizedDatetime(self.__datetime + other)
 
