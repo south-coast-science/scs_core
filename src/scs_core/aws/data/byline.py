@@ -4,8 +4,7 @@ Created on 25 Dec 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases",
-"latest-rec": "2018-12-25T20:31:04Z"}
+{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases", "rec": "2018-12-25T20:31:04Z"}
 """
 
 from collections import OrderedDict
@@ -31,21 +30,21 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-        latest_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))  # TODO: change to latest-rec
+        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))     # TODO: change to latest-rec
 
-        return Byline(device, topic, latest_rec)
+        return Byline(device, topic, rec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, latest_rec):
+    def __init__(self, device, topic, rec):
         """
         Constructor
         """
         self.__device = device                      # string tag
         self.__topic = topic                        # string path
 
-        self.__latest_rec = latest_rec              # LocalizedDatetime
+        self.__rec = rec                            # LocalizedDatetime
 
 
     def __lt__(self, other):
@@ -63,8 +62,8 @@ class Byline(JSONable):
         if self.__topic > other.__topic:
             return False
 
-        # latest_rec...
-        if self.__latest_rec < other.__latest_rec:
+        # rec...
+        if self.__rec < other.__rec:
             return True
 
         return False
@@ -78,7 +77,7 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['latest-rec'] = self.latest_rec.as_iso8601()
+        jdict['rec'] = self.rec.as_iso8601()
 
         return jdict
 
@@ -96,12 +95,11 @@ class Byline(JSONable):
 
 
     @property
-    def latest_rec(self):
-        return self.__latest_rec
+    def rec(self):
+        return self.__rec
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Byline:{device:%s, topic:%s, latest_rec:%s}" % \
-               (self.device, self.topic, self.latest_rec)
+        return "Byline:{device:%s, topic:%s, rec:%s}" %  (self.device, self.topic, self.rec)
