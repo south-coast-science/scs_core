@@ -4,8 +4,7 @@ Created on 25 Dec 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases",
-"rec": "2018-12-25T20:31:04Z"}
+{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases", "rec": "2018-12-25T20:31:04Z"}
 """
 
 from collections import OrderedDict
