@@ -1,0 +1,107 @@
+"""
+Created on 25 Dec 2018
+
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases",
+"latest-rec": "2018-12-25T20:31:04Z"}
+"""
+
+from collections import OrderedDict
+
+from scs_core.data.json import JSONable
+from scs_core.data.localized_datetime import LocalizedDatetime
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Byline(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        device = jdict.get('device')
+        topic = jdict.get('topic')
+
+        latest_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))  # TODO: change to latest-rec
+
+        return Byline(device, topic, latest_rec)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device, topic, latest_rec):
+        """
+        Constructor
+        """
+        self.__device = device                      # string tag
+        self.__topic = topic                        # string path
+
+        self.__latest_rec = latest_rec              # LocalizedDatetime
+
+
+    def __lt__(self, other):
+        # device...
+        if self.__device < other.__device:
+            return True
+
+        if self.__device > other.__device:
+            return False
+
+        # topic...
+        if self.__topic < other.__topic:
+            return True
+
+        if self.__topic > other.__topic:
+            return False
+
+        # latest_rec...
+        if self.__latest_rec < other.__latest_rec:
+            return True
+
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['device'] = self.device
+        jdict['topic'] = self.topic
+
+        jdict['latest-rec'] = self.latest_rec.as_iso8601()
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device(self):
+        return self.__device
+
+
+    @property
+    def topic(self):
+        return self.__topic
+
+
+    @property
+    def latest_rec(self):
+        return self.__latest_rec
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "Byline:{device:%s, topic:%s, latest_rec:%s}" % \
+               (self.device, self.topic, self.latest_rec)
