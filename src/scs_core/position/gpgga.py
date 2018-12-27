@@ -17,6 +17,8 @@ GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:
 hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
 """
 
+import sys
+
 from scs_core.position.gploc import GPLoc
 from scs_core.position.gptime import GPTime
 
@@ -52,6 +54,10 @@ class GPGGA(object):
         ew = s.str(5)
 
         loc = GPLoc(lat, ns, lng, ew)
+
+        print("GPGGA: loc:%s" % loc, file=sys.stderr)
+        sys.stderr.flush()
+
 
         quality = s.int(6)
         num_sv = s.int(7)
