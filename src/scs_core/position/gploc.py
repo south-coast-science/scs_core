@@ -17,9 +17,9 @@ class GPLoc(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __deg(cls, composite):
-        whole_deg = float(composite[:-2])
-        mins = float(composite[-2:])
+    def __deg(cls, composite, degrees):
+        whole_deg = float(composite[:degrees])
+        mins = float(composite[degrees:])
 
         print("GPLoc: composite:%s whole_deg:%s mins:%s" % (composite, whole_deg, mins), file=sys.stderr)
         sys.stderr.flush()
@@ -54,7 +54,7 @@ class GPLoc(object):
         if self.__lat is None or self.__ns is None:
             return None
 
-        deg = GPLoc.__deg(self.__lat)
+        deg = GPLoc.__deg(self.__lat, 2)
 
         if self.__ns == "S":
             deg = -deg
@@ -66,7 +66,7 @@ class GPLoc(object):
         if self.__lng is None or self.__ew is None:
             return None
 
-        deg = GPLoc.__deg(self.__lng)
+        deg = GPLoc.__deg(self.__lng, 3)
 
         if self.__ew == "W":
             deg = -deg
