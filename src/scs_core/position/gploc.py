@@ -4,8 +4,6 @@ Created on 1 Jan 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -20,9 +18,6 @@ class GPLoc(object):
     def __deg(cls, composite, degrees):
         whole_deg = float(composite[:degrees])
         mins = float(composite[degrees:])
-
-        print("GPLoc: composite:%s whole_deg:%s mins:%s" % (composite, whole_deg, mins), file=sys.stderr)
-        sys.stderr.flush()
 
         deg = whole_deg + (mins / 60)
 
