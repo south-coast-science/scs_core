@@ -18,8 +18,8 @@ class GPLoc(object):
 
     @classmethod
     def __deg(cls, composite):
-        whole_deg = float(composite[:2])
-        mins = float(composite[2:])
+        whole_deg = float(composite[:-2])
+        mins = float(composite[-2:])
 
         print("GPLoc: composite:%s whole_deg:%s mins:%s" % (composite, whole_deg, mins), file=sys.stderr)
         sys.stderr.flush()
