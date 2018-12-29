@@ -5,6 +5,8 @@ Created on 1 Jan 2017
 """
 
 
+# TODO: deg / min / sec: 8°59'47.2 N
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPLoc(object):
@@ -30,7 +32,7 @@ class GPLoc(object):
         """
         Constructor
         """
-        self.__lat = lat                # string - ddmm.mmmmm
+        self.__lat = lat                # string -  ddmm.mmmmm
         self.__ns = ns                  # string - { N | S}
 
         self.__lng = lng                # string - dddmm.mmmmm

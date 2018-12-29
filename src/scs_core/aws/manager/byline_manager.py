@@ -34,6 +34,35 @@ class BylineManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def find_latest_byline_for_topic(self, topic):
+        request_path = '/device-topics'
+
+        params = {self.__TOPIC: topic}
+
+        # request...
+        self.__rest_client.connect()
+
+        try:
+            jdict = self.__rest_client.get(request_path, params)
+
+            # bylines...
+            if jdict is None:
+                return None
+
+            latest_byline = None
+
+            for item in jdict:
+                byline = Byline.construct_from_jdict(item)
+
+                if latest_byline is None or latest_byline.rec < byline.rec:
+                    latest_byline = byline
+
+            return latest_byline
+
+        finally:
+            self.__rest_client.close()
+
+
     def find_bylines_for_topic(self, topic):
         request_path = '/device-topics'
 

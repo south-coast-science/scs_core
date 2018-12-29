@@ -32,7 +32,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_topic(self, topic, start_date, end_date):
-        request_path = '/' + topic + '/' + start_date.utc().as_iso8601() + '/' + end_date.utc().as_iso8601()
+        request_path = '/' + topic + '/' + start_date.utc().as_iso8601(True) + '/' + end_date.utc().as_iso8601(True)
 
         # request...
         self.__rest_client.connect()
