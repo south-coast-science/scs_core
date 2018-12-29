@@ -44,8 +44,8 @@ class MessageManager(object):
         request_path = '/topicMessages'
 
         params = {self.__TOPIC: topic,
-                  self.__START: start_date.utc().as_iso8601(),
-                  self.__END:   end_date.utc().as_iso8601()}
+                  self.__START: start_date.utc().as_iso8601(True),
+                  self.__END:   end_date.utc().as_iso8601(True)}
 
         # request...
         self.__rest_client.connect()

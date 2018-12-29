@@ -139,18 +139,14 @@ class LocalizedDatetime(object):
         """
         Constructor
         """
-        self.__datetime = localized             # datetime
+        self.__datetime = localized                     # datetime
 
 
     def __lt__(self, other):
         return self.__datetime < other.__datetime
 
 
-    def __add__(self, other: datetime):         # TODO: check validity of __add__(..)
-        return LocalizedDatetime(self.__datetime + other)
-
-
-    def __sub__(self, other):                   # TODO: check validity of __sub__(..)
+    def __sub__(self, other):
         other_datetime = other.__datetime if type(other) == LocalizedDatetime else other
 
         return self.__datetime - other_datetime
