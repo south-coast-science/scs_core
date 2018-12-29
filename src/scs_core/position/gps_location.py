@@ -9,6 +9,8 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: rename as GPSReport?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GPSLocation(JSONable):
@@ -56,11 +58,11 @@ class GPSLocation(JSONable):
         """
         Constructor
         """
-        self.__lat = lat                    # degrees north of the equator
-        self.__lng = lng                    # degrees east of Greenwich
-        self.__alt = alt                    # metres above sea level
+        self.__lat = lat                    # degrees north of equator
+        self.__lng = lng                    # degrees east of Greenwich meridian
+        self.__alt = alt                    # metres above mean sea level
 
-        self.__quality = quality            # 0 to 3
+        self.__quality = quality            # 0 to 6 (?)
 
 
     # ----------------------------------------------------------------------------------------------------------------

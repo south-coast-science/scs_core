@@ -32,7 +32,7 @@ class GPLoc(object):
         """
         Constructor
         """
-        self.__lat = lat                # string - ddmm.mmmmm
+        self.__lat = lat                # string -  ddmm.mmmmm
         self.__ns = ns                  # string - { N | S}
 
         self.__lng = lng                # string - dddmm.mmmmm
