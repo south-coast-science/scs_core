@@ -25,7 +25,7 @@ class MPL115A2Datum(JSONable):
 
     __PRESSURE_CONV = (115.0 - 50.0) / 1023.0
 
-    __DEFAULT_C25 = 472                                 # T adc counts at 25 ºC
+    __DEFAULT_C25 = 472                                 # T adc counts at 25 °C
     __COUNTS_PER_DEGREE = -5.35                         # T adc counts per degree centigrade
 
 
@@ -82,7 +82,7 @@ class MPL115A2Datum(JSONable):
         self.__sl_press = Datum.float(sl_press, 1)              # kPa
 
         self.__t_adc = Datum.int(t_adc)                         # T adc count
-        self.__temp = Datum.float(temp, 1)                      # ºC
+        self.__temp = Datum.float(temp, 1)                      # °C
 
 
     # ----------------------------------------------------------------------------------------------------------------

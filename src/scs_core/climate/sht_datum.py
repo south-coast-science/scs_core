@@ -37,7 +37,7 @@ class SHTDatum(JSONable):
         Constructor
         """
         self.__humid = Datum.float(humid, 1)        # relative humidity       %
-        self.__temp = Datum.float(temp, 1)          # temperature             ºC
+        self.__temp = Datum.float(temp, 1)          # temperature             °C
 
 
     # ----------------------------------------------------------------------------------------------------------------

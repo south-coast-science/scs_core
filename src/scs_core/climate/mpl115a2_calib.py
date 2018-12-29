@@ -23,7 +23,7 @@ class MPL115A2Calib(PersistentJSONable):
     NXP MPL115A2 digital barometer - temperature calibration
     """
 
-    DEFAULT_C25 = 472                                 # T adc counts at 25 ºC
+    DEFAULT_C25 = 472                                 # T adc counts at 25 °C
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ class MPL115A2Calib(PersistentJSONable):
         super().__init__()
 
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
-        self.__c25 = Datum.int(c25)                 # T adc count at 25 ºC
+        self.__c25 = Datum.int(c25)                 # T adc count at 25 °C
 
 
     # ----------------------------------------------------------------------------------------------------------------

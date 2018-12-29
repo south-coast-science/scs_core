@@ -38,7 +38,7 @@ class NDIRDatum(JSONable):
         """
         Constructor
         """
-        self.__temp = Datum.float(temp, 1)              # temperature                               ºC
+        self.__temp = Datum.float(temp, 1)              # temperature                               °C
         self.__cnc = Datum.float(cnc, 1)                # concentration                             ppm
         self.__cnc_igl = Datum.float(cnc_igl, 1)        # concentration (ideal gas law corrected)   ppm
 
