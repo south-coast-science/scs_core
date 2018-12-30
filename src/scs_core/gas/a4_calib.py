@@ -57,11 +57,11 @@ class A4Calib(SensorCalib):
         SensorCalib.__init__(self, serial_number, sensor_type)
 
         self.__we_elc_mv = Datum.int(we_elc_mv)                     # WE electronic zero                    mV
-        self.__we_cal_mv = Datum.int(we_cal_mv)                     # WE sensor zero at 23 ºC               mV
+        self.__we_cal_mv = Datum.int(we_cal_mv)                     # WE sensor zero at 23 °C               mV
         self.__we_tot_mv = Datum.int(we_tot_mv)                     # total WE zero                         mV
 
         self.__ae_elc_mv = Datum.int(ae_elc_mv)                     # Aux electronic zero                   mV
-        self.__ae_cal_mv = Datum.int(ae_cal_mv)                     # Aux sensor zero at 23 ºC              mV
+        self.__ae_cal_mv = Datum.int(ae_cal_mv)                     # Aux sensor zero at 23 °C              mV
         self.__ae_tot_mv = Datum.int(ae_tot_mv)                     # total Aux zero                        mV
 
         self.__we_sens_na = Datum.float(we_sens_na, 3)              # WE sensitivity                        nA

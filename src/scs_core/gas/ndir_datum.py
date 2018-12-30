@@ -4,8 +4,8 @@ Created on 20 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from numbers import Number
 from collections import OrderedDict
+from numbers import Number
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -38,7 +38,7 @@ class NDIRDatum(JSONable):
         """
         Constructor
         """
-        self.__temp = Datum.float(temp, 1)              # temperature                               ºC
+        self.__temp = Datum.float(temp, 1)              # temperature                               °C
         self.__cnc = Datum.float(cnc, 1)                # concentration                             ppm
         self.__cnc_igl = Datum.float(cnc_igl, 1)        # concentration (ideal gas law corrected)   ppm
 
@@ -58,6 +58,9 @@ class NDIRDatum(JSONable):
 
         return True
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # Support for averaging...
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):

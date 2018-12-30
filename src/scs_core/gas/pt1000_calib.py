@@ -23,7 +23,7 @@ class Pt1000Calib(PersistentJSONable):
     classdocs
     """
 
-    DEFAULT_V20 = 0.295                         # Volts at 20 ºC
+    DEFAULT_V20 = 0.295                         # Volts at 20 °C
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ class Pt1000Calib(PersistentJSONable):
         super().__init__()
 
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
-        self.__v20 = Datum.float(v20, 6)            # voltage at 20 ºC
+        self.__v20 = Datum.float(v20, 6)            # voltage at 20 °C
 
 
     # ----------------------------------------------------------------------------------------------------------------

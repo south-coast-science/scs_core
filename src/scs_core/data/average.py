@@ -86,4 +86,4 @@ class Average(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Average:{tally:%s, data:%s}" % (self.__tally, self.__data)
+        return "Average:{tally:%s, items:%s}" % (self.__tally, len(self))

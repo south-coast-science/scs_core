@@ -52,7 +52,7 @@ class Pt1000Datum(JSONable):
         Constructor
         """
         self.__v = Datum.float(v, 6)                # Volts
-        self.__temp = Datum.float(temp, 1)          # temperature ºC
+        self.__temp = Datum.float(temp, 1)          # temperature °C
 
 
     # ----------------------------------------------------------------------------------------------------------------
