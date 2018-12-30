@@ -4,8 +4,8 @@ Created on 20 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from numbers import Number
 from collections import OrderedDict
+from numbers import Number
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -58,6 +58,9 @@ class NDIRDatum(JSONable):
 
         return True
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # Support for averaging...
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):

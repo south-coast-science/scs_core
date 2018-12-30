@@ -5,11 +5,12 @@ Created on 10 Jan 2017
 """
 
 from collections import OrderedDict
+from numbers import Number
 
 from scs_core.data.json import JSONable
 
 
-# TODO: rename as GPSReport?
+# TODO: rename as GPSDatum?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -66,15 +67,44 @@ class GPSLocation(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # Support for averaging...
+
+    def __add__(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError(other)
+
+        lat = None if self.lat is None or other.lat is None else self.lat + other.lat
+        lng = None if self.lng is None or other.lng is None else self.lng + other.lng
+        alt = None if self.alt is None or other.alt is None else self.alt + other.alt
+
+        quality = None if self.quality is None or other.quality is None else self.quality + other.quality
+
+        return GPSLocation(lat, lng, alt, quality)
+
+
+    def __truediv__(self, other):
+        if not isinstance(other, Number):
+            raise TypeError(other)
+
+        lat = None if self.lat is None else self.lat / other
+        lng = None if self.lng is None else self.lng / other
+        alt = None if self.alt is None else self.alt / other
+
+        quality = None if self.quality is None else self.quality / other
+
+        return GPSLocation(lat, lng, alt, quality)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['lat'] = self.lat
-        jdict['lng'] = self.lng
-        jdict['alt'] = self.alt
+        jdict['lat'] = round(self.lat, 7)
+        jdict['lng'] = round(self.lng, 7)
+        jdict['alt'] = round(self.alt, 1)
 
-        jdict['qual'] = self.quality
+        jdict['qual'] = int(round(self.quality))
 
         return jdict
 
