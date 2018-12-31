@@ -55,6 +55,19 @@ class GPSLocation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def __add(a, b):
+        if a is None:
+            return b
+
+        if b is None:
+            return a
+
+        return a + b
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, lat, lng, alt, quality):
         """
         Constructor
@@ -73,9 +86,13 @@ class GPSLocation(JSONable):
         if not isinstance(other, self.__class__):
             raise TypeError(other)
 
-        lat = None if self.lat is None or other.lat is None else self.lat + other.lat
-        lng = None if self.lng is None or other.lng is None else self.lng + other.lng
-        alt = None if self.alt is None or other.alt is None else self.alt + other.alt
+        lat = self.__add(self.lat, other.lat)
+        lng = self.__add(self.lng, other.lng)
+        alt = self.__add(self.alt, other.alt)
+
+        # lat = None if self.lat is None or other.lat is None else self.lat + other.lat
+        # lng = None if self.lng is None or other.lng is None else self.lng + other.lng
+        # alt = None if self.alt is None or other.alt is None else self.alt + other.alt
 
         quality = self.quality + other.quality
 
