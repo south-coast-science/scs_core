@@ -10,11 +10,9 @@ from numbers import Number
 from scs_core.data.json import JSONable
 
 
-# TODO: rename as GPSDatum?
-
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPSLocation(JSONable):
+class GPSDatum(JSONable):
     """
     classdocs
     """
@@ -32,7 +30,7 @@ class GPSLocation(JSONable):
 
         quality = jdict.get('qual')
 
-        return GPSLocation(lat, lng, alt, quality)
+        return GPSDatum(lat, lng, alt, quality)
 
 
     @classmethod
@@ -45,25 +43,12 @@ class GPSLocation(JSONable):
         quality = gga.quality
 
         if loc is None:
-            return GPSLocation(None, None, alt, quality)
+            return GPSDatum(None, None, alt, quality)
 
         lat = loc.deg_lat()
         lng = loc.deg_lng()
 
-        return GPSLocation(lat, lng, alt, quality)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @staticmethod
-    def __add(a, b):
-        if a is None:
-            return b
-
-        if b is None:
-            return a
-
-        return a + b
+        return GPSDatum(lat, lng, alt, quality)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -86,17 +71,13 @@ class GPSLocation(JSONable):
         if not isinstance(other, self.__class__):
             raise TypeError(other)
 
-        lat = self.__add(self.lat, other.lat)
-        lng = self.__add(self.lng, other.lng)
-        alt = self.__add(self.alt, other.alt)
-
-        # lat = None if self.lat is None or other.lat is None else self.lat + other.lat
-        # lng = None if self.lng is None or other.lng is None else self.lng + other.lng
-        # alt = None if self.alt is None or other.alt is None else self.alt + other.alt
+        lat = self.lat + other.lat
+        lng = self.lng + other.lng
+        alt = self.alt + other.alt
 
         quality = self.quality + other.quality
 
-        return GPSLocation(lat, lng, alt, quality)
+        return GPSDatum(lat, lng, alt, quality)
 
 
     def __truediv__(self, other):
@@ -109,7 +90,7 @@ class GPSLocation(JSONable):
 
         quality = self.quality / other
 
-        return GPSLocation(lat, lng, alt, quality)
+        return GPSDatum(lat, lng, alt, quality)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -151,4 +132,4 @@ class GPSLocation(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPSLocation:{lat:%s, lng:%s, alt:%s, quality:%s}" % (self.lat, self.lng, self.alt, self.quality)
+        return "GPSDatum:{lat:%s, lng:%s, alt:%s, quality:%s}" % (self.lat, self.lng, self.alt, self.quality)
