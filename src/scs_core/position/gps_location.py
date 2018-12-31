@@ -77,7 +77,7 @@ class GPSLocation(JSONable):
         lng = None if self.lng is None or other.lng is None else self.lng + other.lng
         alt = None if self.alt is None or other.alt is None else self.alt + other.alt
 
-        quality = None if self.quality is None or other.quality is None else self.quality + other.quality
+        quality = self.quality + other.quality
 
         return GPSLocation(lat, lng, alt, quality)
 
@@ -90,7 +90,7 @@ class GPSLocation(JSONable):
         lng = None if self.lng is None else self.lng / other
         alt = None if self.alt is None else self.alt / other
 
-        quality = None if self.quality is None else self.quality / other
+        quality = self.quality / other
 
         return GPSLocation(lat, lng, alt, quality)
 
@@ -104,7 +104,7 @@ class GPSLocation(JSONable):
         jdict['lng'] = None if self.lng is None else round(self.lng, 7)
         jdict['alt'] = None if self.alt is None else round(self.alt, 1)
 
-        jdict['qual'] = None if self.quality is None else int(round(self.quality))
+        jdict['qual'] = int(round(self.quality))
 
         return jdict
 
