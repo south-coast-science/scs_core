@@ -84,9 +84,9 @@ class GPSDatum(JSONable):
         if not isinstance(other, Number):
             raise TypeError(other)
 
-        lat = None if self.lat is None else self.lat / other
-        lng = None if self.lng is None else self.lng / other
-        alt = None if self.alt is None else self.alt / other
+        lat = self.lat / other
+        lng = self.lng / other
+        alt = self.alt / other
 
         quality = self.quality / other
 
@@ -98,9 +98,9 @@ class GPSDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['lat'] = None if self.lat is None else round(self.lat, 7)
-        jdict['lng'] = None if self.lng is None else round(self.lng, 7)
-        jdict['alt'] = None if self.alt is None else round(self.alt, 1)
+        jdict['lat'] = round(self.lat, 7)
+        jdict['lng'] = round(self.lng, 7)
+        jdict['alt'] = round(self.alt, 1)
 
         jdict['qual'] = int(round(self.quality))
 
