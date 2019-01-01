@@ -98,11 +98,11 @@ class GPSDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['lat'] = round(self.lat, 7)
-        jdict['lng'] = round(self.lng, 7)
-        jdict['alt'] = round(self.alt, 1)
+        jdict['lat'] = None if self.lat is None else round(self.lat, 7)
+        jdict['lng'] = None if self.lng is None else round(self.lng, 7)
+        jdict['alt'] = None if self.alt is None else round(self.alt, 1)
 
-        jdict['qual'] = int(round(self.quality))
+        jdict['qual'] = None if self.quality is None else int(round(self.quality))
 
         return jdict
 
