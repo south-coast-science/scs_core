@@ -12,6 +12,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.path_dict import PathDict
+from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -55,8 +56,8 @@ class UploadInterval(JSONable):
             raise ValueError(rec_node)
 
         # offset...
-        offset_timedelta = upload - rec
-        offset = int(round(offset_timedelta.total_seconds()))
+        td = upload - rec
+        offset = Timedelta(days=td.days, seconds=td.seconds)
 
         return UploadInterval(upload, rec, offset)
 
@@ -70,7 +71,7 @@ class UploadInterval(JSONable):
         self.__upload = upload              # LocalizedDatetime
         self.__rec = rec                    # LocalizedDatetime
 
-        self.__offset = offset              # int
+        self.__offset = offset              # Timedelta
 
 
     # ----------------------------------------------------------------------------------------------------------------
