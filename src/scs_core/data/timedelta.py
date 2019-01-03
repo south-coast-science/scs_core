@@ -112,7 +112,7 @@ class Timedelta(JSONable):
         if not jdict:
             return None
 
-        match = re.match('(\d{2})-(\d{2}):(\d{2}):(\d{2}).(\d{3})', jdict)
+        match = re.match('(\d{2})-(\d{2}):(\d{2}):(\d{2})(.(\d{3}))?', jdict)
 
         if match is None:
             return None
@@ -123,7 +123,7 @@ class Timedelta(JSONable):
         hours = int(fields[1])
         minutes = int(fields[2])
         seconds = int(fields[3])
-        milliseconds = int(fields[4])
+        milliseconds = 0 if fields[5] is None else int(fields[5])
 
         return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
 
@@ -141,14 +141,18 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return "%02d-%02d:%02d:%02d.%03d" % (self.days, self.hours, self.minutes, self.seconds, self.milliseconds)
+        jstr = "%02d-%02d:%02d:%02d" % (self.days, self.hours, self.minutes, self.seconds)
+
+        if self.milliseconds != 0:
+            jstr = "%s.%03d" % (jstr, self.milliseconds)
+
+        return jstr
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def delta(self):
-        return self.__td
+    def total_seconds(self):
+        return self.__td.total_seconds()
 
 
     # ----------------------------------------------------------------------------------------------------------------
