@@ -134,5 +134,4 @@ class GPSAT(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPSAT:{sv:%s, elv:%s, az:%s, cno:%s}" % \
-                    (self.sv, self.elv, self.az, self.cno)
+        return "GPSAT:{sv:%s, elv:%s, az:%s, cno:%s}" % (self.sv, self.elv, self.az, self.cno)

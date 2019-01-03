@@ -88,5 +88,4 @@ class GPGLL(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPGLL:{loc:%s, time:%s, status:%s, pos_mode:%s}" % \
-                    (self.loc, self.time, self.status, self.pos_mode)
+        return "GPGLL:{loc:%s, time:%s, status:%s, pos_mode:%s}" % (self.loc, self.time, self.status, self.pos_mode)

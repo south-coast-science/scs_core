@@ -80,5 +80,4 @@ class TopicContributor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicContributor:{name:%s, id:%s, gravatar_hash:%s}" % \
-                    (self.name, self.id, self.gravatar_hash)
+        return "TopicContributor:{name:%s, id:%s, gravatar_hash:%s}" % (self.name, self.id, self.gravatar_hash)
