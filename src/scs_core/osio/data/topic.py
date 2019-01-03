@@ -93,7 +93,5 @@ class Topic(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
-               "rollups_enabled:%s, schema_id:%s}" % \
-               (self.path, self.name, self.description, self.is_public, self.info,
-                self.rollups_enabled, self.schema_id)
+        return "Topic:{path:%s, name:%s, description:%s, is_public:%s, info:%s, rollups_enabled:%s, schema_id:%s}" % \
+               (self.path, self.name, self.description, self.is_public, self.info, self.rollups_enabled, self.schema_id)

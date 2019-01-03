@@ -102,8 +102,7 @@ class CheckpointGenerator(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CheckpointGenerator:{hour:%s, minute:%s, second:%s}" % \
-               (self.__hour, self.__minute, self.__second)
+        return "CheckpointGenerator:{hour:%s, minute:%s, second:%s}" % (self.__hour, self.__minute, self.__second)
 
 
 # --------------------------------------------------------------------------------------------------------------------

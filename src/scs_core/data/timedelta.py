@@ -141,12 +141,12 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jstr = "%02d-%02d:%02d:%02d" % (self.days, self.hours, self.minutes, self.seconds)
+        json = "%02d-%02d:%02d:%02d" % (self.days, self.hours, self.minutes, self.seconds)
 
         if self.milliseconds != 0:
-            jstr = "%s.%03d" % (jstr, self.milliseconds)
+            json += ".%03d" % self.milliseconds
 
-        return jstr
+        return json
 
 
     # ----------------------------------------------------------------------------------------------------------------

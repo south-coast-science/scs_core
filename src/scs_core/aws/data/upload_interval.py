@@ -107,5 +107,4 @@ class UploadInterval(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "UploadInterval:{upload:%s, rec:%s, offset:%s}" % \
-               (self.upload, self.rec, self.offset)
+        return "UploadInterval:{upload:%s, rec:%s, offset:%s}" % (self.upload, self.rec, self.offset)

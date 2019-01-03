@@ -213,5 +213,4 @@ class ScheduleItem(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ScheduleItem:{name:%s, interval:%0.1f, tally:%d}" % \
-               (self.name, self.interval, self.tally)
+        return "ScheduleItem:{name:%s, interval:%0.1f, tally:%d}" % (self.name, self.interval, self.tally)

@@ -80,11 +80,6 @@ class ExceptionReport(JSONable):
 
 
     @property
-    def args(self):
-        return self.__args
-
-
-    @property
     def trace(self):
         return self.__trace
 
@@ -92,6 +87,11 @@ class ExceptionReport(JSONable):
     @property
     def summary(self):
         return self.__summary
+
+
+    @property
+    def args(self):
+        return self.__args
 
 
     # ----------------------------------------------------------------------------------------------------------------
