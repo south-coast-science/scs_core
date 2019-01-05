@@ -84,19 +84,6 @@ class Datum(object):
 
 
     @staticmethod
-    def float(number, ndigits):
-        if number is None:
-            return None
-
-        try:
-            value = float(number)
-        except ValueError:
-            return None
-
-        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
-
-
-    @staticmethod
     def int(number):
         if number is None:
             return None
@@ -107,6 +94,19 @@ class Datum(object):
             return None
 
         return int(value)
+
+
+    @staticmethod
+    def float(number, ndigits):
+        if number is None:
+            return None
+
+        try:
+            value = float(number)
+        except ValueError:
+            return None
+
+        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
 
 
     @staticmethod

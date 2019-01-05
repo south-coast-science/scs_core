@@ -2,6 +2,9 @@
 Created on 10 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 from collections import OrderedDict

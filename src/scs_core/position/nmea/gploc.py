@@ -2,6 +2,9 @@
 Created on 1 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 
@@ -17,7 +20,7 @@ class GPLoc(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __deg(cls, composite, degrees):
+    def __deg(cls, composite, degrees):                 # ndeg
         whole_deg = float(composite[:degrees])
         mins = float(composite[degrees:])
 

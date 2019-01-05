@@ -8,9 +8,10 @@ Created on 10 Jan 2017
 
 from scs_core.data.json import JSONify
 
-from scs_core.position.gpgga import GPGGA
 from scs_core.position.gps_datum import GPSDatum
-from scs_core.position.nmea_sentence import NMEASentence
+
+from scs_core.position.nmea.gpgga import GPGGA
+from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------

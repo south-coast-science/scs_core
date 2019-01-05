@@ -15,6 +15,9 @@ GPSAT:{sv:05, elv:70, az:230, cno:39}, GPSAT:{sv:07, elv:38, az:057, cno:None},
 GPSAT:{sv:08, elv:00, az:060, cno:None}]}
 
 GPGSV:{num_msg:1, msg_num:1, num_sv:01, sats:[GPSAT:{sv:02, elv:None, az:None, cno:26}]}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 

@@ -15,6 +15,9 @@ hdop:3.10, vdop:3.41}
 
 GPGSA:{op_mode:A, nav_mode:1, sv:[None, None, None, None, None, None, None, None, None, None, None, None], pdop:99.99,
 hdop:99.99, vdop:99.99}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 

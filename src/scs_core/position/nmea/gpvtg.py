@@ -12,6 +12,9 @@ $GPVTG,77.52,T,,M,0.004,N,0.008,K,A*06
 example values:
 GPVTG:{cogt:None, cogm:None, knots:0.005, kph:0.010, pos_mode:D}
 GPVTG:{cogt:None, cogm:None, knots:None, kph:None, pos_mode:N}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 

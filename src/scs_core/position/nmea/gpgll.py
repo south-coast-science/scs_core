@@ -12,10 +12,13 @@ $GPGLL,5049.37823,N,00007.37872,W,103228.00,A,D*7F
 example values:
 GPGLL:{loc:GPLoc:{lat:5049.38432, ns:N, lng:00007.37801, ew:W}, time:GPTime:{time:141058.00}, status:A, pos_mode:D}
 GPGLL:{loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, time:GPTime:{time:140047.00}, status:V, pos_mode:N}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
-from scs_core.position.gploc import GPLoc
-from scs_core.position.gptime import GPTime
+from scs_core.position.nmea.gploc import GPLoc
+from scs_core.position.nmea.gptime import GPTime
 
 
 # --------------------------------------------------------------------------------------------------------------------
