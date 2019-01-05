@@ -25,7 +25,7 @@ gga = GPGGA.construct(s)
 print(gga)
 print("-")
 
-loc = GPSDatum.construct(gga)
+loc = GPSDatum.construct_from_gga(gga)
 print(loc)
 print("-")
 
