@@ -50,8 +50,8 @@ class Position(JSONable):
         """
         Constructor
         """
-        self.__lat = lat                    # float     degrees north of equator
-        self.__lng = lng                    # float     degrees east of Greenwich meridian
+        self.__lat = lat                    # float     degrees north of equator (±90)
+        self.__lng = lng                    # float     degrees east of Greenwich meridian (±180)
 
 
     # ----------------------------------------------------------------------------------------------------------------

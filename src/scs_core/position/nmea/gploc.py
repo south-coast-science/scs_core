@@ -8,7 +8,7 @@ https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 
-# TODO: deg / min / sec: 8°59'47.2 N
+# TODO: deg / min / sec: 8°59'47.2"N
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -20,9 +20,9 @@ class GPLoc(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __deg(cls, composite, degrees):                 # ndeg
-        whole_deg = float(composite[:degrees])
-        mins = float(composite[degrees:])
+    def __deg(cls, composite, ndeg):
+        whole_deg = float(composite[:ndeg])
+        mins = float(composite[ndeg:])
 
         deg = whole_deg + (mins / 60)
 
