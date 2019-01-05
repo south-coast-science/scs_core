@@ -2,12 +2,16 @@
 Created on 10 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
 from collections import OrderedDict
 from numbers import Number
 
 from scs_core.data.json import JSONable
+from scs_core.position.position import Position
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -24,42 +28,40 @@ class GPSDatum(JSONable):
         if not jdict:
             return None
 
-        lat = jdict.get('lat')
-        lng = jdict.get('lng')
-        alt = jdict.get('alt')
+        if 'alt' in jdict:
+            pos = Position(jdict.get('lat'), jdict.get('lng'))
+            elv = jdict.get('alt')
+
+        else:
+            pos = Position.construct_from_jdict(jdict.get('pos'))
+            elv = jdict.get('elv')
 
         quality = jdict.get('qual')
 
-        return GPSDatum(lat, lng, alt, quality)
+        return GPSDatum(pos, elv, quality)
 
 
     @classmethod
-    def construct(cls, gga):
+    def construct_from_gga(cls, gga):
         if gga is None:
             return None
 
-        loc = gga.loc
-        alt = None if gga.alt is None else round(gga.alt)
+        pos = Position.construct_from_gga(gga)
+        elv = None if gga.alt is None else round(gga.alt)
+
         quality = gga.quality
 
-        if loc is None:
-            return GPSDatum(None, None, alt, quality)
-
-        lat = loc.deg_lat()
-        lng = loc.deg_lng()
-
-        return GPSDatum(lat, lng, alt, quality)
+        return GPSDatum(pos, elv, quality)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lat, lng, alt, quality):
+    def __init__(self, pos, elv, quality):
         """
         Constructor
         """
-        self.__lat = lat                    # degrees north of equator
-        self.__lng = lng                    # degrees east of Greenwich meridian
-        self.__alt = alt                    # metres above mean sea level
+        self.__pos = pos                    # Position
+        self.__elv = elv                    # metres above mean sea level
 
         self.__quality = quality            # 0 to 6 (?)
 
@@ -71,26 +73,24 @@ class GPSDatum(JSONable):
         if not isinstance(other, self.__class__):
             raise TypeError(other)
 
-        lat = self.lat + other.lat
-        lng = self.lng + other.lng
-        alt = self.alt + other.alt
+        pos = self.pos + other.pos
+        elv = self.elv + other.elv
 
         quality = self.quality + other.quality
 
-        return GPSDatum(lat, lng, alt, quality)
+        return GPSDatum(pos, elv, quality)
 
 
     def __truediv__(self, other):
         if not isinstance(other, Number):
             raise TypeError(other)
 
-        lat = self.lat / other
-        lng = self.lng / other
-        alt = self.alt / other
+        pos = self.pos / other
+        elv = self.elv / other
 
         quality = self.quality / other
 
-        return GPSDatum(lat, lng, alt, quality)
+        return GPSDatum(pos, elv, quality)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -98,9 +98,8 @@ class GPSDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['lat'] = None if self.lat is None else round(self.lat, 7)
-        jdict['lng'] = None if self.lng is None else round(self.lng, 7)
-        jdict['alt'] = None if self.alt is None else round(self.alt, 1)
+        jdict['pos'] = self.pos.as_json()
+        jdict['elv'] = None if self.elv is None else round(self.elv, 1)
 
         jdict['qual'] = None if self.quality is None else int(round(self.quality))
 
@@ -110,18 +109,13 @@ class GPSDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def lat(self):
-        return self.__lat
+    def pos(self):
+        return self.__pos
 
 
     @property
-    def lng(self):
-        return self.__lng
-
-
-    @property
-    def alt(self):
-        return self.__alt
+    def elv(self):
+        return self.__elv
 
 
     @property
@@ -132,4 +126,4 @@ class GPSDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPSDatum:{lat:%s, lng:%s, alt:%s, quality:%s}" % (self.lat, self.lng, self.alt, self.quality)
+        return "GPSDatum:{pos:%s, elv:%s, quality:%s}" % (self.pos, self.elv, self.quality)

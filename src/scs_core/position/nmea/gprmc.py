@@ -15,10 +15,13 @@ GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A,
 
 GPRMC:{datetime:GPDateTime:{date:110117, time:140047.00}, status:V,
         loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, spd:None, cog:None, mv:None, mv_ew:None, pos_mode:N}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
-from scs_core.position.gpdatetime import GPDateTime
-from scs_core.position.gploc import GPLoc
+from scs_core.position.nmea.gpdatetime import GPDateTime
+from scs_core.position.nmea.gploc import GPLoc
 
 
 # --------------------------------------------------------------------------------------------------------------------

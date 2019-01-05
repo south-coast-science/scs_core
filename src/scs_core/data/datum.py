@@ -84,19 +84,6 @@ class Datum(object):
 
 
     @staticmethod
-    def float(number, ndigits):
-        if number is None:
-            return None
-
-        try:
-            value = float(number)
-        except ValueError:
-            return None
-
-        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
-
-
-    @staticmethod
     def int(number):
         if number is None:
             return None
@@ -107,6 +94,19 @@ class Datum(object):
             return None
 
         return int(value)
+
+
+    @staticmethod
+    def float(number, ndigits):
+        if number is None:
+            return None
+
+        try:
+            value = float(number)
+        except ValueError:
+            return None
+
+        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
 
 
     @staticmethod
@@ -142,77 +142,91 @@ class Datum(object):
         return value
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
+class Encode(object):
+    """
+    classdocs
+    """
+
     # ----------------------------------------------------------------------------------------------------------------
     # encode byte array...
 
     @staticmethod
-    def encode_int(value):
+    def int(value):
         unpacked = struct.unpack('BB', struct.pack('h', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def encode_unsigned_int(value):
+    def unsigned_int(value):
         unpacked = struct.unpack('BB', struct.pack('H', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def encode_unsigned_long(value):
+    def unsigned_long(value):
         unpacked = struct.unpack('BBBB', struct.pack('L', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def encode_float(value):
+    def float(value):
         unpacked = struct.unpack('BBBB', struct.pack('f', float(value)))
 
         return unpacked
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
+class Decode(object):
+    """
+    classdocs
+    """
+
     # ----------------------------------------------------------------------------------------------------------------
     # decode byte array...
 
     @staticmethod
-    def decode_int(byte_values):
+    def int(byte_values):
         packed = struct.unpack('h', struct.pack('BB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def decode_unsigned_int(byte_values):
+    def unsigned_int(byte_values):
         packed = struct.unpack('H', struct.pack('BB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def decode_long(byte_values):
+    def long(byte_values):
         packed = struct.unpack('l', struct.pack('BBBB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def decode_unsigned_long(byte_values):
+    def unsigned_long(byte_values):
         packed = struct.unpack('L', struct.pack('BBBB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def decode_float(byte_values):
+    def float(byte_values):
         packed = struct.unpack('f', struct.pack('BBBB', *byte_values))
 
         return None if math.isnan(packed[0]) else packed[0]
 
 
     @staticmethod
-    def decode_double(byte_values):
+    def double(byte_values):
         packed = struct.unpack('d', struct.pack('BBBBBBBB', *byte_values))
 
         return None if math.isnan(packed[0]) else packed[0]

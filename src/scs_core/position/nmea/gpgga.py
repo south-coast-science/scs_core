@@ -15,10 +15,13 @@ hdop:3.10, alt:37.5, sep:45.4, diff_age:None, diff_station:0000}
 
 GPGGA:{time:GPTime:{time:140047.00}, loc:GPLoc:{lat:None, ns:None, lng:None, ew:None}, quality:0, num_sv:00,
 hdop:99.99, alt:None, sep:None, diff_age:None, diff_station:None}
+
+https://www.nmea.org
+https://en.wikipedia.org/wiki/NMEA_0183
 """
 
-from scs_core.position.gploc import GPLoc
-from scs_core.position.gptime import GPTime
+from scs_core.position.nmea.gploc import GPLoc
+from scs_core.position.nmea.gptime import GPTime
 
 
 # --------------------------------------------------------------------------------------------------------------------
