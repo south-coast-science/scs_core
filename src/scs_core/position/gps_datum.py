@@ -24,6 +24,19 @@ class GPSDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        pos = Position.construct_from_jdict(jdict.get('pos'))
+        elv = jdict.get('elv')
+
+        quality = jdict.get('qual')
+
+        return GPSDatum(pos, elv, quality)
+
+
+    @classmethod
     def construct_from_gga(cls, gga):
         if gga is None:
             return None
