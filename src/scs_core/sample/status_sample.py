@@ -19,8 +19,6 @@ example document:
 from scs_core.sample.sample import Sample
 
 
-# TODO: reporting GPS / PSU should depend on conf, not value?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSample(Sample):
@@ -40,7 +38,7 @@ class StatusSample(Sample):
             val.append(('tz', timezone))
 
         if position is not None:
-            val.append(('pos', position))
+            val.append(('gps', position))
 
         val.append(('sch', schedule))
         val.append(('tmp', temperature))
