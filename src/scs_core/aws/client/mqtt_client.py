@@ -4,6 +4,10 @@ Created on 6 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://github.com/aws/aws-iot-device-sdk-python
+https://s3.amazonaws.com/aws-iot-device-sdk-python-docs/sphinx/html/index.html
+
+https://github.com/aws/aws-iot-device-sdk-python/issues/57
+
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
@@ -23,7 +27,7 @@ class MQTTClient(object):
     classdocs
     """
 
-    __KEEP_ALIVE_INTERVAL =         30                      # recommended: 30 (sec)
+    __KEEP_ALIVE_INTERVAL =         600                     # recommended: 30 default: 600 (sec)
 
     __PORT =                        8883
 
@@ -32,10 +36,10 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  32                      # recommended: 32 (sec)
+    __RECONN_MAX =                  128                     # recommended: 32 or 128 (sec)
     __RECONN_STABLE =               20                      # recommended: 20 (sec)
 
-    __DISCONNECT_TIMEOUT =          20                      # recommended: 10 (sec)
+    __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)
     __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)
 
     __PUB_QOS =                     1
