@@ -83,10 +83,7 @@ class MQTTClient(object):
         try:
             return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
 
-        except AWSIoTExceptions.connectTimeoutException:
-            return False
-
-        except AWSIoTExceptions.connectError:
+        except (AWSIoTExceptions.connectTimeoutException, AWSIoTExceptions.connectError):
             return False
 
 
@@ -94,10 +91,7 @@ class MQTTClient(object):
         try:
             self.__client.disconnect()
 
-        except AWSIoTExceptions.disconnectError:
-            pass
-
-        except AWSIoTExceptions.disconnectTimeoutException:
+        except (AWSIoTExceptions.disconnectError, AWSIoTExceptions.disconnectTimeoutException):
             pass
 
 
@@ -112,10 +106,7 @@ class MQTTClient(object):
         try:
             return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
-        except AWSIoTExceptions.publishError:
-            return False
-
-        except AWSIoTExceptions.publishTimeoutException:
+        except (AWSIoTExceptions.publishError, AWSIoTExceptions.publishTimeoutException):
             return False
 
 
