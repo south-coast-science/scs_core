@@ -14,6 +14,7 @@ JSON example:
 """
 
 import re
+
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -83,7 +84,7 @@ class UptimeDatum(JSONable):
         jdict = OrderedDict()
 
         if self.time:
-            jdict['time'] = self.time
+            jdict['time'] = self.time.as_iso8601(False)
 
         jdict['period'] = self.period
         jdict['users'] = self.users
