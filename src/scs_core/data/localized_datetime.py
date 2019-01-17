@@ -14,8 +14,10 @@ import tzlocal
 
 from datetime import datetime, timedelta, timezone
 
+from scs_core.data.timedelta import Timedelta
 
-# TODO: object should carry a flag indicating presence of millis - for "preserve millis" mode
+
+# TODO: object should carry a flag indicating presence of millis - for "preserve millis" mode?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -143,13 +145,20 @@ class LocalizedDatetime(object):
 
 
     def __lt__(self, other):
-        return self.__datetime < other.__datetime
+        return self.datetime < other.datetime
 
 
     def __sub__(self, other):
-        other_datetime = other.__datetime if type(other) == LocalizedDatetime else other
+        if type(other) == LocalizedDatetime:
+            operand = other.datetime
 
-        return self.__datetime - other_datetime
+        elif type(other) == Timedelta:
+            operand = other.delta
+
+        else:
+            operand = other
+
+        return LocalizedDatetime(self.datetime - operand)
 
 
     # ----------------------------------------------------------------------------------------------------------------
