@@ -158,7 +158,7 @@ class LocalizedDatetime(object):
         else:
             operand = other
 
-        return LocalizedDatetime(self.datetime - operand)
+        return self.datetime - operand
 
 
     # ----------------------------------------------------------------------------------------------------------------
