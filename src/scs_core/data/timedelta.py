@@ -29,6 +29,9 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_flag(cls, report):
+        if report is None:
+            return None
+
         # command-line utility flag...
         match = re.match('^(((\d+)-)?(\d{1,2}):)?(\d{1,2})$', report)
 
@@ -46,6 +49,9 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_time_report(cls, report):
+        if report is None:
+            return None
+
         # CPU time...
         match = re.match('(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
 
@@ -64,6 +70,9 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_ps_elapsed_report(cls, report):
+        if report is None:
+            return None
+
         # elapsed time...
         match = re.match('(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
@@ -91,6 +100,9 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_uptime_report(cls, report):
+        if report is None:
+            return None
+
         # uptime...
         match = re.match('.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d+)?(?::)?(\d+)?,',
                          report)
@@ -130,7 +142,7 @@ class Timedelta(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        if not jdict:
+        if jdict is None:
             return None
 
         match = re.match('(\d+)-(\d{2}):(\d{2}):(\d{2})(.(\d{3}))?', jdict)
