@@ -28,6 +28,23 @@ class Timedelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_flag(cls, report):
+        # command-line utility flag...
+        match = re.match('^(((\d+)-)?(\d{1,2}):)?(\d{1,2})$', report)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        days = 0 if fields[2] is None else int(fields[2])
+        hours = 0 if fields[3] is None else int(fields[3])
+        minutes = int(fields[4])
+
+        return Timedelta(days=days, hours=hours, minutes=minutes)
+
+
+    @classmethod
     def construct_from_ps_time_report(cls, report):
         # CPU time...
         match = re.match('(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
@@ -50,10 +67,14 @@ class Timedelta(JSONable):
         # elapsed time...
         match = re.match('(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
+        print("report: %s" % report)
+
         if match is None:
             return None
 
         fields = match.groups()
+
+        print("fields: %s" % str(fields))
 
         if fields[1] == "-":
             days = int(fields[0])
@@ -112,7 +133,7 @@ class Timedelta(JSONable):
         if not jdict:
             return None
 
-        match = re.match('(\d{2})-(\d{2}):(\d{2}):(\d{2})(.(\d{3}))?', jdict)
+        match = re.match('(\d+)-(\d{2}):(\d{2}):(\d{2})(.(\d{3}))?', jdict)
 
         if match is None:
             return None
@@ -156,6 +177,11 @@ class Timedelta(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def delta(self):
+        return self.__td
+
 
     @property
     def days(self):
