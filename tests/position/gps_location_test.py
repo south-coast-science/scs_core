@@ -11,13 +11,13 @@ from scs_core.data.json import JSONify
 from scs_core.position.gps_datum import GPSDatum
 
 from scs_core.position.nmea.gpgga import GPGGA
-from scs_core.position.nmea.nmea_sentence import NMEASentence
+from scs_core.position.nmea.nmea_report import NMEAReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-s = NMEASentence.construct("$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,08,1.01,499.6,M,48.0,M,,*5B")
+s = NMEAReport.construct("$GPGGA,092725.00,4717.11399,N,00833.91590,E,1,08,1.01,499.6,M,48.0,M,,*5B")
 print(s)
 print("-")
 

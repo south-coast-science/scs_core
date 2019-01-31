@@ -19,46 +19,49 @@ https://en.wikipedia.org/wiki/NMEA_0183
 
 from scs_core.position.nmea.gploc import GPLoc
 from scs_core.position.nmea.gptime import GPTime
+from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPGLL(object):
+class GPGLL(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPGLL"
+    MESSAGE_IDS = ("$GNGLL", "$GPGLL")
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        lat = s.str(1)
-        ns = s.str(2)
+        lat = r.str(1)
+        ns = r.str(2)
 
-        lng = s.str(3)
-        ew = s.str(4)
+        lng = r.str(3)
+        ew = r.str(4)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        time = GPTime(s.str(5))
+        time = GPTime(r.str(5))
 
-        status = s.str(6)
-        pos_mode = s.str(7)
+        status = r.str(6)
+        pos_mode = r.str(7)
 
-        return GPGLL(loc, time, status, pos_mode)
+        return GPGLL(r.message_id, loc, time, status, pos_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, loc, time, status, pos_mode):
+    def __init__(self, message_id, loc, time, status, pos_mode):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__loc = loc                    # GPLoc
         self.__time = time                  # GPTime
 
@@ -91,4 +94,5 @@ class GPGLL(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPGLL:{loc:%s, time:%s, status:%s, pos_mode:%s}" % (self.loc, self.time, self.status, self.pos_mode)
+        return "GPGLL:{source:%s, loc:%s, time:%s, status:%s, pos_mode:%s}" % \
+               (self.source, self.loc, self.time, self.status, self.pos_mode)

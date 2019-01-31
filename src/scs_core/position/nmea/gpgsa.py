@@ -20,41 +20,45 @@ https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
 """
 
+from scs_core.position.nmea.nmea_sentence import NMEASentence
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPGSA(object):
+class GPGSA(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPGSA"
+    MESSAGE_IDS = ("$GNGSA", "$GPGSA")
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        op_mode = s.str(1)
-        nav_mode = s.int(2)
+        op_mode = r.str(1)
+        nav_mode = r.int(2)
 
-        sv = [s.int(i + 3) for i in range(12)]
+        sv = [r.int(i + 3) for i in range(12)]
 
-        pdop = s.float(15, 2)
-        hdop = s.float(16, 2)
-        vdop = s.float(17, 2)
+        pdop = r.float(15, 2)
+        hdop = r.float(16, 2)
+        vdop = r.float(17, 2)
 
-        return GPGSA(op_mode, nav_mode, sv, pdop, hdop, vdop)
+        return GPGSA(r.message_id, op_mode, nav_mode, sv, pdop, hdop, vdop)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, op_mode, nav_mode, sv, pdop, hdop, vdop):
+    def __init__(self, message_id, op_mode, nav_mode, sv, pdop, hdop, vdop):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__op_mode = op_mode            # string
         self.__nav_mode = nav_mode          # int
 
@@ -133,5 +137,5 @@ class GPGSA(object):
     def __str__(self, *args, **kwargs):
         svs = '[' + ', '.join(str(sv) for sv in self.__sv) + ']'
 
-        return "GPGSA:{op_mode:%s, nav_mode:%s, sv:%s, pdop:%s, hdop:%s, vdop:%s}" % \
-               (self.op_mode, self.nav_mode, svs, self.pdop, self.hdop, self.vdop)
+        return "GPGSA:{source:%s, op_mode:%s, nav_mode:%s, sv:%s, pdop:%s, hdop:%s, vdop:%s}" % \
+               (self.source, self.op_mode, self.nav_mode, svs, self.pdop, self.hdop, self.vdop)

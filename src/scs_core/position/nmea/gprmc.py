@@ -8,6 +8,7 @@ $xxRMC,datetime,status,lat,NS,long,EW,spd,cog,date,mv,mv_ew,pos_mode*cs
 
 example sentence:
 $GPRMC,083559.00,A,4717.11437,N,00833.91522,E,0.004,77.52,091202,,,A*57
+$GNRMC,103953.00,A,5049.38023,N,00007.38608,W,0.195,,310119,,,D*72
 
 example values:
 GPRMC:{datetime:GPDateTime:{date:110117, time:141101.00}, status:A,
@@ -22,54 +23,57 @@ https://en.wikipedia.org/wiki/NMEA_0183
 
 from scs_core.position.nmea.gpdatetime import GPDateTime
 from scs_core.position.nmea.gploc import GPLoc
+from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPRMC(object):
+class GPRMC(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPRMC"
+    MESSAGE_IDS = ("$GNRMC", "$GPRMC")
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        time = s.str(1)
-        status = s.str(2)
+        time = r.str(1)
+        status = r.str(2)
 
-        lat = s.str(3)
-        ns = s.str(4)
+        lat = r.str(3)
+        ns = r.str(4)
 
-        lng = s.str(5)
-        ew = s.str(6)
+        lng = r.str(5)
+        ew = r.str(6)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        spd = s.float(7, 3)
-        cog = s.float(8, 2)
-        date = s.str(9)
-        mv = s.float(10, 2)
-        mv_ew = s.str(11)
+        spd = r.float(7, 3)
+        cog = r.float(8, 2)
+        date = r.str(9)
+        mv = r.float(10, 2)
+        mv_ew = r.str(11)
 
-        pos_mode = s.str(12)
+        pos_mode = r.str(12)
 
         datetime = GPDateTime(date, time)
 
-        return GPRMC(datetime, status, loc, spd, cog, mv, mv_ew, pos_mode)
+        return GPRMC(r.message_id, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode):
+    def __init__(self, message_id, datetime, status, loc, spd, cog, mv, mv_ew, pos_mode):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__datetime = datetime          # GPDateTime
 
         self.__status = status              # string
@@ -134,5 +138,6 @@ class GPRMC(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPRMC:{datetime:%s, status:%s, loc:%s, spd:%s, cog:%s, mv:%s, mv_ew:%s, pos_mode:%s}" % \
-                    (self.datetime, self.status, self.loc, self.spd, self.cog, self.mv, self.mv_ew, self.pos_mode)
+        return "GPRMC:{source:%s, datetime:%s, status:%s, loc:%s, spd:%s, cog:%s, mv:%s, mv_ew:%s, pos_mode:%s}" % \
+                    (self.source, self.datetime, self.status, self.loc, self.spd, self.cog, self.mv, self.mv_ew,
+                     self.pos_mode)

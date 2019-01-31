@@ -22,16 +22,17 @@ https://en.wikipedia.org/wiki/NMEA_0183
 
 from scs_core.position.nmea.gploc import GPLoc
 from scs_core.position.nmea.gptime import GPTime
+from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPGGA(object):
+class GPGGA(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPGGA"
+    MESSAGE_IDS = ("$GNGGA", "$GPGGA")
 
     QUALITY_NO_FIX =                0
     QUALITY_AUTONOMOUS_GNSS =       1
@@ -42,38 +43,40 @@ class GPGGA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        time = GPTime(s.str(1))
+        time = GPTime(r.str(1))
 
-        lat = s.str(2)
-        ns = s.str(3)
+        lat = r.str(2)
+        ns = r.str(3)
 
-        lng = s.str(4)
-        ew = s.str(5)
+        lng = r.str(4)
+        ew = r.str(5)
 
         loc = GPLoc(lat, ns, lng, ew)
 
-        quality = s.int(6)
-        num_sv = s.int(7)
-        hdop = s.float(8, 3)
-        alt = s.float(9, 2)
-        sep = s.float(11, 2)
+        quality = r.int(6)
+        num_sv = r.int(7)
+        hdop = r.float(8, 3)
+        alt = r.float(9, 2)
+        sep = r.float(11, 2)
 
-        diff_age = s.float(13, 3)
-        diff_station = s.str(14)
+        diff_age = r.float(13, 3)
+        diff_station = r.str(14)
 
-        return GPGGA(time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station)
+        return GPGGA(r.message_id, time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station):
+    def __init__(self, message_id, time, loc, quality, num_sv, hdop, alt, sep, diff_age, diff_station):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__time = time                          # GPTime
         self.__loc = loc                            # GPLoc
 
@@ -137,7 +140,7 @@ class GPGGA(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPGGA:{time:%s, loc:%s, quality:%s, num_sv:%s, hdop:%s, alt:%s, sep:%s, " \
+        return "GPGGA:{source:%s, time:%s, loc:%s, quality:%s, num_sv:%s, hdop:%s, alt:%s, sep:%s, " \
                "diff_age:%s, diff_station:%s}" % \
-                    (self.time, self.loc, self.quality, self.num_sv, self.hdop, self.alt, self.sep,
+                    (self.source, self.time, self.loc, self.quality, self.num_sv, self.hdop, self.alt, self.sep,
                      self.diff_age, self.diff_station)
