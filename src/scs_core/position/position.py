@@ -81,8 +81,8 @@ class Position(JSONable):
 
     def as_json(self):
         jlist = (
-            None if self.lat is None else round(self.lat, 7),
-            None if self.lng is None else round(self.lng, 7)
+            None if self.lat is None else round(self.lat, 8),
+            None if self.lng is None else round(self.lng, 8)
         )
 
         return jlist

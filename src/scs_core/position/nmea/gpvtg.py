@@ -17,40 +17,44 @@ https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
 """
 
+from scs_core.position.nmea.nmea_sentence import NMEASentence
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPVTG(object):
+class GPVTG(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPVTG"
+    MESSAGE_IDS = ("$GNVTG", "$GPVTG")
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        cogt = s.float(1, 2)
-        cogm = s.float(3, 2)
+        cogt = r.float(1, 2)
+        cogm = r.float(3, 2)
 
-        knots = s.float(5, 3)
-        kph = s.float(7, 3)
+        knots = r.float(5, 3)
+        kph = r.float(7, 3)
 
-        pos_mode = s.str(9)
+        pos_mode = r.str(9)
 
-        return GPVTG(cogt, cogm, knots, kph, pos_mode)
+        return GPVTG(r.message_id, cogt, cogm, knots, kph, pos_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, cogt, cogm, knots, kph, pos_mode):
+    def __init__(self, message_id, cogt, cogm, knots, kph, pos_mode):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__cogt = cogt                      # float(2) - degrees course over ground
         self.__cogm = cogm                      # float(2) - degrees course over ground (magnetic)
 
@@ -90,5 +94,5 @@ class GPVTG(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPVTG:{cogt:%s, cogm:%s, knots:%s, kph:%s, pos_mode:%s}" % \
-                    (self.cogt, self.cogm, self.knots, self.kph, self.pos_mode)
+        return "GPVTG:{source:%s, cogt:%s, cogm:%s, knots:%s, kph:%s, pos_mode:%s}" % \
+                    (self.source, self.cogt, self.cogm, self.knots, self.kph, self.pos_mode)

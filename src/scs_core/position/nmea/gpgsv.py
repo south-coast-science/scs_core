@@ -20,39 +20,43 @@ https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
 """
 
+from scs_core.position.nmea.nmea_sentence import NMEASentence
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPGSV(object):
+class GPGSV(NMEASentence):
     """
     classdocs
     """
 
-    MESSAGE_ID = "$GPGSV"
+    MESSAGE_IDS = ("$GPGSV", )
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, s):
-        if s.str(0) != cls.MESSAGE_ID:
-            raise TypeError("invalid sentence:%s" % s)
+    def construct(cls, r):
+        if r.message_id not in cls.MESSAGE_IDS:
+            raise TypeError("invalid sentence:%s" % r)
 
-        num_msg = s.str(1)
+        num_msg = r.str(1)
 
-        msg_num = s.str(2)
-        num_sv = s.str(3)
+        msg_num = r.str(2)
+        num_sv = r.str(3)
 
-        sats = [GPSAT(s.int(i), s.int(i + 1), s.int(i + 2), s.int(i + 3)) for i in range(4, len(s), 4)]
+        sats = [GPSAT(r.int(i), r.int(i + 1), r.int(i + 2), r.int(i + 3)) for i in range(4, len(r), 4)]
 
-        return GPGSV(num_msg, msg_num, num_sv, sats)
+        return GPGSV(r.message_id, num_msg, msg_num, num_sv, sats)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, num_msg, msg_num, num_sv, sats):
+    def __init__(self, message_id, num_msg, msg_num, num_sv, sats):
         """
         Constructor
         """
+        super().__init__(message_id)
+
         self.__num_msg = num_msg            # int
         self.__msg_num = msg_num            # int
         self.__num_sv = num_sv              # int
@@ -87,8 +91,8 @@ class GPGSV(object):
     def __str__(self, *args, **kwargs):
         sats = '[' + ', '.join(str(sat) for sat in self.__sats) + ']'
 
-        return "GPGSV:{num_msg:%s, msg_num:%s, num_sv:%s, sats:%s}" % \
-               (self.num_msg, self.msg_num, self.num_sv, sats)
+        return "GPGSV:{source:%s, num_msg:%s, msg_num:%s, num_sv:%s, sats:%s}" % \
+               (self.source, self.num_msg, self.msg_num, self.num_sv, sats)
 
 
 # --------------------------------------------------------------------------------------------------------------------
