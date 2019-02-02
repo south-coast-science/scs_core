@@ -49,7 +49,7 @@ class SensorBaseline(JSONable):
         """
         self.__calibrated_on = calibrated_on            # LocalizedDatetime
 
-        self.__offset = Datum.int(offset)               # int                   ppb
+        self.__offset = Datum.int(offset)               # int                       ppb
         self.__environment = environment                # BaselineEnvironment
 
 
@@ -86,7 +86,7 @@ class SensorBaseline(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SensorBaseline:{calibrated_on:%s, offset:%d, environment:%s}" % \
+        return "SensorBaseline:{calibrated_on:%s, offset:%s, environment:%s}" % \
                (self.calibrated_on, self.offset, self.environment)
 
 
@@ -154,4 +154,4 @@ class BaselineEnvironment(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BaselineEnvironment:{humid:%d, temp:%d, press:%d}" % (self.humid, self.temp, self.press)
+        return "BaselineEnvironment:{humid:%s, temp:%s, press:%s}" % (self.humid, self.temp, self.press)
