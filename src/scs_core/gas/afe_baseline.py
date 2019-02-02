@@ -4,8 +4,10 @@ Created on 1 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"sn1": {"calibrated_on": "2017-03-01", "offset": 111}, "sn2": {"calibrated_on": "2017-03-01", "offset": 222},
-"sn3": {"calibrated_on": "2017-03-01", "offset": 333}, "sn4": {"calibrated_on": "2017-03-01", "offset": 444}}
+{"sn1": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}},
+"sn2": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null},
+"sn3": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null},
+"sn4": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null}}
 """
 
 import os
@@ -39,15 +41,15 @@ class AFEBaseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return AFEBaseline([SensorBaseline(None, 0)] * cls.__SENSORS)
+            return AFEBaseline([SensorBaseline(None, 0, None)] * cls.__SENSORS)
 
         sensor_baselines = []
 
         for i in range(len(jdict)):
             key = 'sn' + str(i + 1)
 
-            baseline = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline(None, 0)
-            sensor_baselines.append(baseline)
+            base = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline(None, 0, None)
+            sensor_baselines.append(base)
 
         return AFEBaseline(sensor_baselines)
 
