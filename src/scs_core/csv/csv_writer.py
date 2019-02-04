@@ -2,6 +2,8 @@
 Created on 2 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/3348460/csv-file-written-with-python-has-blank-lines-between-each-row
 """
 
 import csv
@@ -40,7 +42,7 @@ class CSVWriter(object):
             if self.__append:
                 self.__paths = self.__append_paths()
 
-            self.__file = open(self.__filename, "a" if self.__append else "w")
+            self.__file = open(self.__filename, "a" if self.__append else "w", newline='')
             self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
 
 
