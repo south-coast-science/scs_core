@@ -15,8 +15,8 @@ import math
 
 # --------------------------------------------------------------------------------------------------------------------
 
-rh = 20
-t = 0
+rh = 60
+t = 25
 
 print("t: %s rh: %s" % (t, rh))
 print("-")
@@ -24,7 +24,7 @@ print("-")
 
 tk = t + 273.15
 
-tc = 647.096
+tck = 647.096
 
 pc = 22064000
 
@@ -47,13 +47,13 @@ rw = 461.52
 
 # ϑ = (1 − (T ⁄ Tc)),
 
-tc_t = tc / tk
+tc_t = tck / tk
 
 print("tc_t: %s" % tc_t)
 print("-")
 
 
-theta = 1 - (tk / tc)
+theta = 1 - (tk / tck)
 
 print("theta: %s" % theta)
 print("-")
@@ -68,7 +68,7 @@ print("thetas: %s" % thetas)
 print("-")
 
 
-ln_pws_pc = (tc / tk) * thetas
+ln_pws_pc = (tck / tk) * thetas
 
 print("ln_pws_pc: %s" % ln_pws_pc)
 print("-")
@@ -103,7 +103,7 @@ p_sat = 6.112 * math.exp((17.67 * t) / (t + 243.5))
 
 p = p_sat * (rh / 100)
 
-wv_moles = p / (tk * 0.08314)
+wv_moles = p / (tk * 0.083136)
 
 wv_grammes = wv_moles * 18.02
 
