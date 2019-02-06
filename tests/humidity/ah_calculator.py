@@ -47,12 +47,6 @@ rw = 461.52
 
 # ϑ = (1 − (T ⁄ Tc)),
 
-tc_t = tck / tk
-
-print("tc_t: %s" % tc_t)
-print("-")
-
-
 theta = 1 - (tk / tck)
 
 print("theta: %s" % theta)
