@@ -79,3 +79,9 @@ iso = loc.as_iso8601()
 print(iso)
 print("-")
 
+airwatch_date = '14/02/2019'
+airwatch_time = '24:00:00'
+
+print("airwatch: %s %s" % (airwatch_date, airwatch_time))
+loc = LocalizedDatetime.construct_from_date_time(airwatch_date, airwatch_time)
+print(loc)

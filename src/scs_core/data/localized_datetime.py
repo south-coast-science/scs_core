@@ -35,7 +35,7 @@ class LocalizedDatetime(object):
 
 
     @classmethod
-    def construct_from_date(cls, date):             # TODO: deprecated
+    def construct_from_date(cls, date):
         zone = tzlocal.get_localzone()
         localized = zone.localize(datetime(date.year, date.month, date.day))
 
@@ -63,6 +63,47 @@ class LocalizedDatetime(object):
 
         # numeric timezone offset...
         return cls.__construct_from_iso8601_numeric(datetime_str)
+
+
+    @classmethod
+    def construct_from_date_time(cls, date_str, time_str):
+        # date...
+        match = re.match('(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        year = int(fields[0])
+        month = int(fields[1])
+        day = int(fields[2])
+
+        # time...
+        match = re.match('(\d{2}):(\d{2}):(\d{2})', time_str)       # e.g. 24:00:00
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        hours_delta = int(fields[0])
+        minutes_delta = int(fields[1])
+        seconds_delta = int(fields[2])
+
+        # zone...
+        zone_sign = 1
+        zone_hours = int(0)
+        zone_mins = int(0)
+
+        zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
+        zone = timezone(zone_offset)
+
+        # construct...
+        start = LocalizedDatetime(datetime(year, month, day, 0, 0, 0, 0, tzinfo=zone))
+        localized = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
+
+        return localized
 
 
     @classmethod
