@@ -6,6 +6,7 @@ Created on 13 Aug 2016
 Note that, for the ISO 8601 constructors, milliseconds are optional.
 
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-timezone-offset
 """
 
 import pytz
@@ -66,7 +67,7 @@ class LocalizedDatetime(object):
 
 
     @classmethod
-    def construct_from_date_time(cls, date_str, time_str):
+    def construct_from_date_time(cls, date_str, time_str, tz=None):
         # date...
         match = re.match('(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
 
@@ -80,7 +81,7 @@ class LocalizedDatetime(object):
         day = int(fields[2])
 
         # time...
-        match = re.match('(\d{2}):(\d{2}):(\d{2})', time_str)       # e.g. 24:00:00
+        match = re.match('(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
@@ -89,21 +90,18 @@ class LocalizedDatetime(object):
 
         hours_delta = int(fields[0])
         minutes_delta = int(fields[1])
-        seconds_delta = int(fields[2])
+        seconds_delta = 0 if fields[3] is None else int(fields[3])
 
         # zone...
-        zone_sign = 1
-        zone_hours = int(0)
-        zone_mins = int(0)
-
-        zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
-        zone = timezone(zone_offset)
+        zone = pytz.timezone('Etc/UTC') if tz is None else tz
 
         # construct...
-        start = LocalizedDatetime(datetime(year, month, day, 0, 0, 0, 0, tzinfo=zone))
-        localized = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
+        localized = zone.localize(datetime(year, month, day, 0, 0, 0, 0))
 
-        return localized
+        start = LocalizedDatetime(localized)
+        corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
+
+        return corrected
 
 
     @classmethod

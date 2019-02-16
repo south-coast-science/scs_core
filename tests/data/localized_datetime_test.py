@@ -79,7 +79,7 @@ iso = loc.as_iso8601()
 print(iso)
 print("-")
 
-airwatch_date = '14/02/2019'
+airwatch_date = '2019-02-14'
 airwatch_time = '24:00:00'
 
 print("airwatch: %s %s" % (airwatch_date, airwatch_time))

@@ -11,6 +11,8 @@ from scs_core.csv.csv_dict import CSVHeader
 from scs_core.data.json import JSONify
 
 
+# TODO: deal with comma-terminated line dialect
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVReader(object):
@@ -19,6 +21,11 @@ class CSVReader(object):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def list_dialects():
+        return csv.list_dialects()
+
 
     @staticmethod
     def __recast(value):
