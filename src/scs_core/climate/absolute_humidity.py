@@ -16,17 +16,17 @@ class AbsoluteHumidity(object):
     classdocs
     """
 
-    __TCK = 647.096                         # critical temperature (K)
-    __PC = 22064000                         # critical pressure (P)
+    __TCK =     647.096                     # critical temperature (K)
+    __PC = 22064000.0                       # critical pressure (Pa)
 
-    __RW = 461.52                           # specific gas constant for water vapour
+    __RW =      461.52                      # specific gas constant for water vapour
 
-    __A1 =   -7.85951783
-    __A2 =    1.84408259
-    __A3 =  -11.7866497
-    __A4 =   22.6807411
-    __A5 =  -15.9618719
-    __A6 =    1.80122502
+    __A1 =       -7.85951783
+    __A2 =        1.84408259
+    __A3 =      -11.7866497
+    __A4 =       22.6807411
+    __A5 =      -15.9618719
+    __A6 =        1.80122502
 
 
     # ----------------------------------------------------------------------------------------------------------------
