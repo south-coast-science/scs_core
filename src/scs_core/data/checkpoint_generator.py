@@ -56,10 +56,6 @@ class CheckpointGenerator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def next_checkpoint(self):
-        pass
-
-
     def next_localised_datetime(self, localised_datetime):
         # parse...
         date_time = localised_datetime.datetime

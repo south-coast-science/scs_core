@@ -187,6 +187,10 @@ class LocalizedDatetime(object):
         return self.datetime < other.datetime
 
 
+    def __eq__(self, other):
+        return self.datetime == other.datetime
+
+
     def __sub__(self, other):
         if type(other) == LocalizedDatetime:
             operand = other.datetime
