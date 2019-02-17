@@ -56,6 +56,13 @@ class CheckpointGenerator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def enclosing_localised_datetime(self, localised_datetime):
+        if self.aligns(localised_datetime):
+            return localised_datetime
+
+        return self.next_localised_datetime(localised_datetime)
+
+
     def next_localised_datetime(self, localised_datetime):
         # parse...
         date_time = localised_datetime.datetime
@@ -75,6 +82,15 @@ class CheckpointGenerator(object):
             checkpoint += timedelta(days=1)
 
         return LocalizedDatetime(checkpoint)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def aligns(self, localised_datetime):
+        date_time = localised_datetime.datetime
+        t = date_time.time()
+
+        return self.__hour.aligns(t.hour) and self.__minute.aligns(t.minute) and self.__second.aligns(t.second)
 
 
     def next(self, hour, minute, second):
@@ -151,6 +167,10 @@ class CheckpointField(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def aligns(self, value):
+        return bool(value in self.__ticks)
+
 
     def next(self, value):
         for tick in self.__ticks:
