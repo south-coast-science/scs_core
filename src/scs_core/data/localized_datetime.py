@@ -183,12 +183,24 @@ class LocalizedDatetime(object):
         self.__datetime = localized                     # datetime
 
 
-    def __lt__(self, other):
-        return self.datetime < other.datetime
-
-
     def __eq__(self, other):
         return self.datetime == other.datetime
+
+
+    def __ge__(self, other):
+        return self.datetime >= other.datetime
+
+
+    def __gt__(self, other):
+        return self.datetime > other.datetime
+
+
+    def __le__(self, other):
+        return self.datetime <= other.datetime
+
+
+    def __lt__(self, other):
+        return self.datetime < other.datetime
 
 
     def __sub__(self, other):
