@@ -6,6 +6,7 @@ Created on 13 Aug 2016
 Note that, for the ISO 8601 constructors, milliseconds are optional.
 
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-timezone-offset
 """
 
 import pytz
@@ -35,7 +36,7 @@ class LocalizedDatetime(object):
 
 
     @classmethod
-    def construct_from_date(cls, date):             # TODO: deprecated
+    def construct_from_date(cls, date):
         zone = tzlocal.get_localzone()
         localized = zone.localize(datetime(date.year, date.month, date.day))
 
@@ -63,6 +64,44 @@ class LocalizedDatetime(object):
 
         # numeric timezone offset...
         return cls.__construct_from_iso8601_numeric(datetime_str)
+
+
+    @classmethod
+    def construct_from_date_time(cls, date_str, time_str, tz=None):
+        # date...
+        match = re.match('(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        year = int(fields[0])
+        month = int(fields[1])
+        day = int(fields[2])
+
+        # time...
+        match = re.match('(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        hours_delta = int(fields[0])
+        minutes_delta = int(fields[1])
+        seconds_delta = 0 if fields[3] is None else int(fields[3])
+
+        # zone...
+        zone = pytz.timezone('Etc/UTC') if tz is None else tz
+
+        # construct...
+        localized = zone.localize(datetime(year, month, day, 0, 0, 0, 0))
+
+        start = LocalizedDatetime(localized)
+        corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
+
+        return corrected
 
 
     @classmethod
@@ -146,6 +185,10 @@ class LocalizedDatetime(object):
 
     def __lt__(self, other):
         return self.datetime < other.datetime
+
+
+    def __eq__(self, other):
+        return self.datetime == other.datetime
 
 
     def __sub__(self, other):
