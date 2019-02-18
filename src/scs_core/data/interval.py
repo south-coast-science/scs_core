@@ -40,7 +40,7 @@ class Interval(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['time'] = self.time
+        jdict['time'] = self.time.as_iso8601()
         jdict['diff'] = self.diff
 
         return jdict
