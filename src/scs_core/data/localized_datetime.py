@@ -129,7 +129,7 @@ class LocalizedDatetime(object):
         hour = int(fields[3])
         minute = int(fields[4])
         second = int(fields[5])
-        micros = int(fields[6]) * 1000 if fields[6] else 0
+        micros = 0  # int(fields[6]) * 1000 if fields[6] else 0
 
         # construct...
         zone_offset = timedelta(hours=0, minutes=0)
