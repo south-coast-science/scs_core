@@ -90,7 +90,8 @@ class CheckpointGenerator(object):
         date_time = localised_datetime.datetime
         t = date_time.time()
 
-        return self.__hour.aligns(t.hour) and self.__minute.aligns(t.minute) and self.__second.aligns(t.second)
+        return self.__hour.aligns(t.hour) and self.__minute.aligns(t.minute) and self.__second.aligns(t.second) \
+            and t.microsecond == 0
 
 
     def next(self, hour, minute, second):
