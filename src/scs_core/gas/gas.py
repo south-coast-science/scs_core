@@ -127,6 +127,8 @@ class Gas(object):
         return p_alt / cls.__hypsometric(t, alt)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def __hypsometric(cls, t, alt):
         tk = t + 273.15
