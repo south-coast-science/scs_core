@@ -15,6 +15,7 @@ import tzlocal
 
 from datetime import datetime, timedelta, timezone
 
+from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
 
 
@@ -22,7 +23,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class LocalizedDatetime(object):
+class LocalizedDatetime(JSONable):
     """
     classdocs
     """
@@ -183,6 +184,10 @@ class LocalizedDatetime(object):
         self.__datetime = localized                     # datetime
 
 
+    def __hash__(self):
+        return hash(self.datetime)
+
+
     def __eq__(self, other):
         return self.datetime == other.datetime
 
@@ -238,6 +243,10 @@ class LocalizedDatetime(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        return self.as_iso8601()
+
 
     def as_iso8601(self, include_millis=False):
         """

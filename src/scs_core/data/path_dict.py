@@ -13,12 +13,26 @@ from copy import deepcopy
 from scs_core.data.json import JSONable
 
 
+# TODO: add node.remove(path)
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PathDict(JSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def union(*pairs):
+        union = PathDict()
+
+        for name, value in pairs:
+            union.append(name, value)
+
+        return union
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
