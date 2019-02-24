@@ -19,10 +19,10 @@ class Gas(object):
     STP_PRESSURE =         101.3                                # kPa
     STP_MOLAR_VOLUME =      22.41                               # l
 
-    ST_LAPSE_RATE =         0.0065                              # K/m
-    GRAVITY =               9.80665                             # m/s2
-    MOLAR_MASS_OF_AIR =    28.9644                              # g/mol
-    GAS_CONSTANT =          8.3144598                           # J/(mol*K)
+    ST_LAPSE_RATE =          0.0065                             # K/m
+    GRAVITY =                9.80665                            # m/s2
+    MOLAR_MASS_OF_AIR =     28.9644                             # g/mol
+    GAS_CONSTANT =           8.3144598                          # J/(mol*K)
 
 
     # ----------------------------------------------------------------------------------------------------------------
