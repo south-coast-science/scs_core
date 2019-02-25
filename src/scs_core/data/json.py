@@ -87,7 +87,7 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def filename(cls, _):
+    def file_dir_name(cls, _):
         return ''
 
 
