@@ -25,7 +25,7 @@ class ClientAuth(PersistentJSONable):
 
     @classmethod
     def persistence_location(cls, host):
-        host.aws_dir(), cls.__FILENAME
+        return host.aws_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
