@@ -96,4 +96,6 @@ class CSVReader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVReader:{filename:%s, header:%s}" % (self.filename, self.header)
+        header = '[' + ', '.join(self.header.paths()) + ']'
+
+        return "CSVReader:{filename:%s, header:%s}" % (self.filename, header)
