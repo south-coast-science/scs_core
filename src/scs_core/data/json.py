@@ -14,8 +14,6 @@ from collections import OrderedDict
 from scs_core.sys.filesystem import Filesystem
 
 
-# TODO: remove host field from PersistentJSONable
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class JSONable(object):
@@ -55,7 +53,10 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def load(cls, host):
-        return cls.load_from_file(os.path.join(*cls.persistence_location(host)))
+        instance = cls.load_from_file(os.path.join(*cls.persistence_location(host)))
+        instance.__host = host
+
+        return instance
 
 
     @classmethod
@@ -135,9 +136,9 @@ class PersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        host_name = None if self.host is None else self.host.name()
+        hostname = None if self.host is None else self.host.name()
 
-        return "PersistentJSONable:{host:%s}" % host_name
+        return "PersistentJSONable:{host:%s}" % hostname
 
 
 # --------------------------------------------------------------------------------------------------------------------
