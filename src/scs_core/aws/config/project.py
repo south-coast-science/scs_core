@@ -7,8 +7,6 @@ example document:
 {"location-path": "southcoastscience-dev/test/loc/1", "device-path": "southcoastscience-dev/test/device"}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -26,8 +24,8 @@ class Project(PersistentJSONable):
     __FILENAME =                "aws_project.json"
 
     @classmethod
-    def filename(cls, host):
-        return os.path.join(host.aws_dir(), cls.__FILENAME)
+    def persistence_location(cls, host):
+        return host.aws_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -11,8 +11,6 @@ example JSON:
 "sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0","ae_sensor_zero_mv":"9.0","sensor_ae_zero_na":"7.2","sensor_we_zero_na":"4.8","we_sensor_zero_mv":"6.0","ae_electronic_zero_mv":"304.0","we_electronic_zero_mv":"299.0","we_sensitivity_mv_ppb":"400.0","sensor_we_sensitivity_na_ppm":"500.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"}}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.gas.sensor import Sensor
@@ -65,8 +63,8 @@ class AFECalib(PersistentJSONable):
     __FILENAME =    "afe_calib.json"
 
     @classmethod
-    def filename(cls, host):
-        return os.path.join(host.conf_dir(), cls.__FILENAME)
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

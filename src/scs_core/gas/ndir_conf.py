@@ -22,8 +22,8 @@ class NDIRConf(PersistentJSONable):
     _FILENAME = "ndir_conf.json"
 
     @classmethod
-    def filename(cls, host):
-        return None             # prevent instances of this class from constructing real NDIRs
+    def persistence_location(cls, host):
+        raise NotImplementedError()
 
 
     # ----------------------------------------------------------------------------------------------------------------
