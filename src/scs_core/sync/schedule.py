@@ -8,8 +8,6 @@ document example:
 "scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -29,8 +27,8 @@ class Schedule(PersistentJSONable):
     __FILENAME =    "schedule.json"
 
     @classmethod
-    def filename(cls, host):
-        return os.path.join(host.conf_dir(), cls.__FILENAME)
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

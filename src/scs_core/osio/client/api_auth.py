@@ -7,8 +7,6 @@ example document:
 {"org-id": "south-coast-science-test-user", "api-key": "9fdfb841-3433-45b8-b223-3f5a283ceb8e"}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -24,8 +22,8 @@ class APIAuth(PersistentJSONable):
     __FILENAME = "osio_api_auth.json"
 
     @classmethod
-    def filename(cls, host):
-        return os.path.join(host.osio_dir(), cls.__FILENAME)
+    def persistence_location(cls, host):
+        return host.osio_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

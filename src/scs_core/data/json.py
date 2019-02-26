@@ -11,6 +11,8 @@ from abc import abstractmethod
 
 from collections import OrderedDict
 
+from scs_core.sys.filesystem import Filesystem
+
 
 # TODO: remove host field from PersistentJSONable
 
@@ -53,14 +55,7 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def load(cls, host):
-        filename = cls.filename(host)
-
-        instance = None if filename is None else cls.load_from_file(filename)
-
-        if instance is not None:
-            instance.__host = host      # TODO: remove host management from PersistentJSONable subclasses
-
-        return instance
+        return cls.load_from_file(os.path.join(*cls.persistence_location(host)))
 
 
     @classmethod
@@ -80,15 +75,15 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def delete(cls, host):
-        os.remove(cls.filename(host))
+        os.remove(os.path.join(*cls.persistence_location(host)))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     @abstractmethod
-    def file_dir_name(cls, _):
-        return ''
+    def persistence_location(cls, _):
+        return None, None
 
 
     @classmethod
@@ -108,13 +103,17 @@ class PersistentJSONable(JSONable):
     def save(self, host):
         self.__host = host
 
-        self.save_to_file(self.filename(host))
+        self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, filename):
+    def save_to_file(self, directory, file):
+        # directory...
+        Filesystem.mkdir(directory)
+
+        # file...
         jstr = JSONify.dumps(self)
 
-        f = open(filename, "w")
+        f = open(os.path.join(directory, file), "w")
         f.write(jstr + '\n')
         f.close()
 
