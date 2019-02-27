@@ -78,6 +78,9 @@ class CSVWriter(object):
 
         self.__writer.writerow(datum.row(self.__paths))
 
+        if self.filename is None:
+            self.__file.flush()
+
 
     def close(self):
         if self.filename is None:
