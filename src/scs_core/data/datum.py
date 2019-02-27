@@ -97,7 +97,7 @@ class Datum(object):
 
 
     @staticmethod
-    def float(number, ndigits):
+    def float(number, ndigits=None):
         if number is None:
             return None
 
@@ -106,7 +106,7 @@ class Datum(object):
         except ValueError:
             return None
 
-        return round(value, ndigits)            # warning: round(123, 0) returns 123.0
+        return value if ndigits is None else round(value, ndigits)      # warning: round(123, 0) returns 123.0
 
 
     @staticmethod
@@ -136,7 +136,7 @@ class Datum(object):
 
         try:
             value = LocalizedDatetime.construct_from_iso8601(iso_datetime)
-        except ValueError:
+        except (TypeError, ValueError):
             return None
 
         return value
