@@ -13,8 +13,6 @@ from copy import deepcopy
 from scs_core.data.json import JSONable
 
 
-# TODO: add node.remove(path)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PathDict(JSONable):
@@ -209,7 +207,8 @@ class PathDict(JSONable):
             while key >= len(container):
                 container.append(None)
 
-            container[key] = [] if separator == ':' else OrderedDict()
+            if container[key] is None:
+                container[key] = [] if separator == ':' else OrderedDict()
 
         # leaf...
         if len(nodes) == 1:
