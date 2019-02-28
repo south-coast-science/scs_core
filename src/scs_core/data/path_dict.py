@@ -13,8 +13,6 @@ from copy import deepcopy
 from scs_core.data.json import JSONable
 
 
-# TODO: add node.remove(path)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PathDict(JSONable):
