@@ -20,6 +20,28 @@ class Datum(object):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+    # formatting...
+
+    @classmethod
+    def format(cls, value, leading_zeros=False):
+        # string...
+        if not cls.is_numeric(value):
+            return "%s"
+
+        # numeric...
+        prefix = "0" if leading_zeros else ""
+        length = str(len((str(value))))
+
+        if cls.is_int(value):
+            return "%" + prefix + length + "d"
+
+        # float...
+        precision = str(cls.precision(value))
+
+        return "%" + prefix + length + "." + precision + "f"
+
+
+    # ----------------------------------------------------------------------------------------------------------------
     # morphological numeracy...
 
     @classmethod
