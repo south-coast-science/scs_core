@@ -9,54 +9,30 @@ example:
 {"code": "1", "definition": "Adjusted"}
 """
 
-import json
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_persisted import CSVPersisted
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class QC(JSONable):
+class QC(JSONable, CSVPersisted):
     """
     classdocs
     """
 
-    __qcs = {}
+    _persisted = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls):
+    def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/qcs.csv"
 
-        reader = CSVReader(filename, cast=False)
-
-        try:
-            for row in reader.rows:
-                qc = cls.construct_from_jdict(json.loads(row))
-                cls.__qcs[qc.code] = qc
-
-        finally:
-            reader.close()
-
-
-    @classmethod
-    def qcs(cls):
-        for qc in cls.__qcs.values():
-            yield qc
-
-
-    @classmethod
-    def find_by_code(cls, code):
-        if code not in cls.__qcs:
-            return None
-
-        return cls.__qcs[code]
+        return os.path.join(dirname, 'specifications', 'qcs.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,6 +67,13 @@ class QC(JSONable):
         jdict['definition'] = self.definition
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def pk(self):
+        return self.code
 
 
     # ----------------------------------------------------------------------------------------------------------------

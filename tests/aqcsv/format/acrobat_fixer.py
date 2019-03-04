@@ -13,20 +13,19 @@ import sys
 
 # --------------------------------------------------------------------------------------------------------------------
 
-colls = 4
+columns = 3
 
 
-
-coll = 0
 cells = []
+col = 0
 
 for line in sys.stdin:
     cell = line.strip()
 
     cells.append(cell)
-    coll += 1
+    col += 1
 
-    if coll < colls:
+    if col < columns:
         continue
 
     row = '' + ','.join(['"' + cell + '"' for cell in cells])
@@ -34,5 +33,5 @@ for line in sys.stdin:
     print(row)
     sys.stdout.flush()
 
-    coll = 0
     cells = []
+    col = 0

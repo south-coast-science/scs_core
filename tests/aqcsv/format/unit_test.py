@@ -15,19 +15,19 @@ from scs_core.data.json import JSONify
 Unit.load()
 
 print("list...")
-for unit in Unit.units():
+for unit in Unit.instances():
     print(unit)
 print("-")
 
 print("find...")
 code = "096"
-unit = Unit.find_by_code(code)
+unit = Unit.find(code)
 print("code:%s unit:%s" % (code, unit))
 print(JSONify.dumps(unit))
 print("-")
 
 code = "999"
-unit = Unit.find_by_code(code)
+unit = Unit.find(code)
 print("code:%s unit:%s" % (code, unit))
 print("-")
 

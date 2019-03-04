@@ -92,16 +92,11 @@ ENV/
 .idea/
 
 # South Coast Science
-**/*.csv
 **/*.log
 **/*.numbers
 **/*.xls
 **/*.xlsx
-!/scs_core/aqcsv/format/specifications/country_codes.csv
-!/scs_core/aqcsv/format/specifications/parameters.csv
-!/scs_core/aqcsv/format/specifications/unit.csv
-!/scs_core/aqcsv/format/specifications/units.csv
-!/src/scs_core/aqcsv/format/specifications/country_codes.csv
+!/src/scs_core/aqcsv/format/specifications/countries.csv
 !/src/scs_core/aqcsv/format/specifications/units.csv
 !/src/scs_core/aqcsv/format/specifications/parameters.csv
 !/src/scs_core/aqcsv/format/specifications/mcps.csv

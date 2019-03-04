@@ -9,54 +9,30 @@ example:
 {"code": "88502", "type": "Acceptable PM2.5 AQI & Mass", "type_description": "105"}
 """
 
-import json
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_persisted import CSVPersisted
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Qualifier(JSONable):
+class Qualifier(JSONable, CSVPersisted):
     """
     classdocs
     """
 
-    __qualifiers = {}
+    _persisted = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls):
+    def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/qualifiers.csv"
 
-        reader = CSVReader(filename=filename, cast=False)
-
-        try:
-            for row in reader.rows:
-                qualifier = cls.construct_from_jdict(json.loads(row))
-                cls.__qualifiers[qualifier.code] = qualifier
-
-        finally:
-            reader.close()
-
-
-    @classmethod
-    def qualifiers(cls):
-        for qualifier in cls.__qualifiers.values():
-            yield qualifier
-
-
-    @classmethod
-    def find_by_code(cls, code):
-        if code not in cls.__qualifiers:
-            return None
-
-        return cls.__qualifiers[code]
+        return os.path.join(dirname, 'specifications', 'qualifiers.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,7 +47,6 @@ class Qualifier(JSONable):
 
         type_code = jdict.get('type-code')
         type_description = str(jdict.get('type-description'))
-
 
         return Qualifier(code, description, type_code, type_description)
 
@@ -101,6 +76,13 @@ class Qualifier(JSONable):
         jdict['type-description'] = self.type_description
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def pk(self):
+        return self.code
 
 
     # ----------------------------------------------------------------------------------------------------------------

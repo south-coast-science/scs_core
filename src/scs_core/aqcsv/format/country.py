@@ -11,54 +11,30 @@ example:
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 """
 
-import json
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_persisted import CSVPersisted
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CountryCode(JSONable):
+class Country(JSONable, CSVPersisted):
     """
     classdocs
     """
 
-    __codes = {}
+    _persisted = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls):
+    def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/country_codes.csv"
 
-        reader = CSVReader(filename=filename, cast=False)
-
-        try:
-            for row in reader.rows:
-                country = cls.construct_from_jdict(json.loads(row))
-                cls.__codes[country.iso] = country
-
-        finally:
-            reader.close()
-
-
-    @classmethod
-    def codes(cls):
-        for country in cls.__codes.values():
-            yield country
-
-
-    @classmethod
-    def find_by_iso(cls, iso):
-        if iso not in cls.__codes:
-            return None
-
-        return cls.__codes[iso]
+        return os.path.join(dirname, 'specifications', 'countries.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,8 +48,7 @@ class CountryCode(JSONable):
         name = jdict.get('name')
         iso = jdict.get('iso')
 
-
-        return CountryCode(numeric, name, iso)
+        return Country(numeric, name, iso)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -102,6 +77,13 @@ class CountryCode(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def pk(self):
+        return self.iso
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
     def numeric(self):
         return self.__numeric
 
@@ -119,4 +101,4 @@ class CountryCode(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CountryCode:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)
+        return "Country:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)

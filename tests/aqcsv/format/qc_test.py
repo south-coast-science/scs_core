@@ -15,19 +15,19 @@ from scs_core.data.json import JSONify
 QC.load()
 
 print("list...")
-for qc in QC.qcs():
+for qc in QC.instances():
     print(qc)
 print("-")
 
 print("find...")
 code = "0"
-qc = QC.find_by_code(code)
+qc = QC.find(code)
 print("code:%s qc:%s" % (code, qc))
 print(JSONify.dumps(qc))
 print("-")
 
 code = "a"
-qc = QC.find_by_code(code)
+qc = QC.find(code)
 print("code:%s unit:%s" % (code, qc))
 print("-")
 

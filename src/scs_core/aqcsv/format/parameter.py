@@ -6,60 +6,35 @@ Created on 4 Mar 2019
 AQCSV Parameter codes and associated standard units
 
 example:
-{"code": "88502", "description": "Acceptable PM2.5 AQI & Speciation Mass", "unit_code": "105"}
+{"code": "88502", "description": "Acceptable PM2.5 AQI Mass", "unit_code": "105"}
 """
 
-import json
 import os
 
 from collections import OrderedDict
 
 from scs_core.aqcsv.format.unit import Unit
-from scs_core.csv.csv_reader import CSVReader
+
+from scs_core.csv.csv_persisted import CSVPersisted
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Parameter(JSONable):
+class Parameter(JSONable, CSVPersisted):
     """
     classdocs
     """
 
-    __parameters = {}
+    _persisted = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls):
-        Unit.load()
-
+    def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/parameters.csv"
 
-        reader = CSVReader(filename=filename, cast=False)
-
-        try:
-            for row in reader.rows:
-                parameter = cls.construct_from_jdict(json.loads(row))
-                cls.__parameters[parameter.code] = parameter
-
-        finally:
-            reader.close()
-
-
-    @classmethod
-    def parameters(cls):
-        for code in cls.__parameters.values():
-            yield code
-
-
-    @classmethod
-    def find_by_code(cls, code):
-        if code not in cls.__parameters:
-            return None
-
-        return cls.__parameters[code]
+        return os.path.join(dirname, 'specifications', 'parameters.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,7 +47,6 @@ class Parameter(JSONable):
         code = jdict.get('code')
         description = jdict.get('description')
         unit_code = str(jdict.get('unit-code'))
-
 
         return Parameter(code, description, unit_code)
 
@@ -103,8 +77,13 @@ class Parameter(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def pk(self):
+        return self.code
+
+
+    @property
     def unit(self):
-        return Unit.find_by_code(self.unit_code)
+        return Unit.find(self.unit_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
