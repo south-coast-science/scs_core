@@ -34,7 +34,7 @@ class CountryCode(JSONable):
         dirname = os.path.dirname(os.path.realpath(__file__))
         filename = dirname + "/codes/country_codes.csv"
 
-        reader = CSVReader(filename)
+        reader = CSVReader(filename=filename, cast=False)
 
         try:
             for row in reader.rows:

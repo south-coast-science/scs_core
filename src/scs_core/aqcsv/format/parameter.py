@@ -12,6 +12,7 @@ import os
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.format.unit import Unit
 from scs_core.csv.csv_reader import CSVReader
 from scs_core.data.json import JSONable
 
@@ -29,10 +30,12 @@ class Parameter(JSONable):
 
     @classmethod
     def load(cls):
+        Unit.load()
+
         dirname = os.path.dirname(os.path.realpath(__file__))
         filename = dirname + "/codes/parameters.csv"
 
-        reader = CSVReader(filename, cast=False)
+        reader = CSVReader(filename=filename, cast=False)
 
         try:
             for row in reader.rows:
@@ -93,6 +96,13 @@ class Parameter(JSONable):
         jdict['unit_code'] = self.unit_code
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def unit(self):
+        return Unit.find_by_code(self.unit_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------

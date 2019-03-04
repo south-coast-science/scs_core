@@ -4,9 +4,7 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"code": 788, "description": "Tunisia", "unit_code": "TUN"}
-
-https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+{"code": "083", "description": "Cubic meters/minute STP"}
 """
 
 import json
@@ -20,43 +18,43 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Parameter(JSONable):
+class Unit(JSONable):
     """
     classdocs
     """
 
-    __parameters = {}
+    __units = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def load(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/codes/parameters.csv"
+        filename = dirname + "/codes/units.csv"
 
         reader = CSVReader(filename, cast=False)
 
         try:
             for row in reader.rows:
-                parameter = cls.construct_from_jdict(json.loads(row))
-                cls.__parameters[parameter.code] = parameter
+                unit = cls.construct_from_jdict(json.loads(row))
+                cls.__units[unit.code] = unit
 
         finally:
             reader.close()
 
 
     @classmethod
-    def parameters(cls):
-        for code in cls.__parameters.values():
-            yield code
+    def units(cls):
+        for unit in cls.__units.values():
+            yield unit
 
 
     @classmethod
     def find_by_code(cls, code):
-        if code not in cls.__parameters:
+        if code not in cls.__units:
             return None
 
-        return cls.__parameters[code]
+        return cls.__units[code]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,21 +66,18 @@ class Parameter(JSONable):
 
         code = jdict.get('code')
         description = jdict.get('description')
-        unit_code = str(jdict.get('unit_code'))
 
-
-        return Parameter(code, description, unit_code)
+        return Unit(code, description)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, description, unit_code):
+    def __init__(self, code, description):
         """
         Constructor
         """
         self.__code = code                                  # string
         self.__description = description                    # string
-        self.__unit_code = unit_code                        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -92,7 +87,6 @@ class Parameter(JSONable):
 
         jdict['code'] = self.code
         jdict['description'] = self.description
-        jdict['unit_code'] = self.unit_code
 
         return jdict
 
@@ -109,12 +103,7 @@ class Parameter(JSONable):
         return self.__description
 
 
-    @property
-    def unit_code(self):
-        return self.__unit_code
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Parameter:{code:%s, description:%s, unit_code:%s}" %  (self.code, self.description, self.unit_code)
+        return "Unit:{code:%s, description:%s}" %  (self.code, self.description)

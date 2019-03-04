@@ -16,7 +16,17 @@ Parameter.load()
 print("list...")
 for parameter in Parameter.parameters():
     print(parameter)
-print("-")
+print("=")
+
+print("check...")
+for parameter in Parameter.parameters():
+    unit = parameter.unit
+
+    if unit is None:
+        print(parameter)
+        print(unit)
+        print("-")
+print("=")
 
 print("find...")
 code = "88374"

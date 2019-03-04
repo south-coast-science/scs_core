@@ -5,7 +5,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://www.aqua-calc.com/calculate/humidity
+Converts Acrobat cell-per-line to CSV format
 """
 
 import sys
@@ -13,9 +13,9 @@ import sys
 
 # --------------------------------------------------------------------------------------------------------------------
 
-numeric = ''
-name = ''
-iso = ''
+c1 = ''
+c2 = ''
+c3 = ''
 
 coll = 0
 
@@ -23,17 +23,18 @@ for line in sys.stdin:
     cell = line.strip()
 
     if coll == 0:
-        numeric = cell
+        c1 = cell
         coll = 1
 
-    elif coll == 1:
-        name = cell
-        coll = 2
+    # elif coll == 1:
+    #     name = cell
+    #     coll = 2
 
     else:
-        iso = cell
+        c2 = cell
 
-        print('"%s","%s","%s"' % (numeric, name, iso))
+        print('"%s","%s"' % (c1, c2))
+        # print('"%s","%s","%s"' % (numeric, name, iso))
         sys.stdout.flush()
 
         coll = 0
