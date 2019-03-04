@@ -29,6 +29,10 @@ class CSVArchived(object):
         try:
             for row in reader.rows:
                 instance = cls.construct_from_jdict(json.loads(row))
+
+                if instance.pk in cls._retrieved:
+                    raise ValueError("duplicate pk '%s' for instance:%s" % (instance.pk, instance))
+
                 cls._retrieved[instance.pk] = instance
 
         finally:
