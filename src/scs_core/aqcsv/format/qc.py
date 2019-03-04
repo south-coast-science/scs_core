@@ -3,7 +3,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AirNow quality control (QC) codes
+AQCSV: quality control (QC) codes
 
 example:
 {"code": "1", "definition": "Adjusted"}

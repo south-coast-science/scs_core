@@ -3,7 +3,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-ISO country codes
+AQCSV: ISO country codes
 
 example:
 {"numeric": "716", "name": "Zimbabwe", "iso": "ZWE"}
@@ -35,6 +35,15 @@ class Country(JSONable, CSVPersisted):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
         return os.path.join(dirname, 'specifications', 'countries.csv')
+
+
+    @classmethod
+    def find_by_numeric(cls, numeric):
+        for country in cls._persisted.values():
+            if country.numeric == numeric:
+                return country
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

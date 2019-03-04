@@ -3,10 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Agency codes
+AQCSV: Agency codes
 
 example:
-{"code": "1", "name": "Adjusted"}
+{"code": "LBL", "name": "Lawrence Berkeley National Laboratory"}
 """
 
 import os

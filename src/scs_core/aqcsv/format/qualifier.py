@@ -3,7 +3,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV Qualifiers
+AQCSV: Qualifiers
 
 example:
 Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}

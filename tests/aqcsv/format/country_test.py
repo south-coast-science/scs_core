@@ -26,6 +26,12 @@ print("iso:%s country:%s" % (iso, country))
 print(JSONify.dumps(country))
 print("-")
 
+numeric = country.numeric
+country = Country.find_by_numeric(numeric)
+print("numeric:%s country:%s" % (numeric, country))
+print(JSONify.dumps(country))
+print("-")
+
 iso = "TUX"
 country = Country.find(iso)
 print("iso:%s country:%s" % (iso, country))

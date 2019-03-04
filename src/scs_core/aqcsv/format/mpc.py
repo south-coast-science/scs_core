@@ -3,7 +3,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV Measurement performance characteristics
+AQCSV: Measurement performance characteristics
 
 example:
 {"code": "3", "abbreviation": "XD", "definition": "Minimum Detectable Value",
