@@ -38,8 +38,8 @@ class QC(JSONable):
 
         try:
             for row in reader.rows:
-                unit = cls.construct_from_jdict(json.loads(row))
-                cls.__qcs[unit.code] = unit
+                qc = cls.construct_from_jdict(json.loads(row))
+                cls.__qcs[qc.code] = qc
 
         finally:
             reader.close()
@@ -47,8 +47,8 @@ class QC(JSONable):
 
     @classmethod
     def qcs(cls):
-        for unit in cls.__qcs.values():
-            yield unit
+        for qc in cls.__qcs.values():
+            yield qc
 
 
     @classmethod

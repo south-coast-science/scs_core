@@ -3,11 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV Measurement performance characteristics
+AQCSV Qualifiers
 
 example:
-{"code": "3", "abbreviation": "XD", "definition": "Minimum Detectable Value",
-"description": "The measure of inherent detection capability of a measurement process."}
+{"code": "88502", "type": "Acceptable PM2.5 AQI & Mass", "type_description": "105"}
 """
 
 import json
@@ -21,43 +20,43 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPC(JSONable):
+class Qualifier(JSONable):
     """
     classdocs
     """
 
-    __mcps = {}
+    __qualifiers = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def load(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/mcps.csv"
+        filename = dirname + "/specifications/qualifiers.csv"
 
         reader = CSVReader(filename=filename, cast=False)
 
         try:
             for row in reader.rows:
-                mcp = cls.construct_from_jdict(json.loads(row))
-                cls.__mcps[mcp.code] = mcp
+                qualifier = cls.construct_from_jdict(json.loads(row))
+                cls.__qualifiers[qualifier.code] = qualifier
 
         finally:
             reader.close()
 
 
     @classmethod
-    def mcps(cls):
-        for mcp in cls.__mcps.values():
-            yield mcp
+    def qualifiers(cls):
+        for qualifier in cls.__qualifiers.values():
+            yield qualifier
 
 
     @classmethod
     def find_by_code(cls, code):
-        if code not in cls.__mcps:
+        if code not in cls.__qualifiers:
             return None
 
-        return cls.__mcps[code]
+        return cls.__qualifiers[code]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,24 +67,26 @@ class MPC(JSONable):
             return None
 
         code = jdict.get('code')
-        abbreviation = jdict.get('abbreviation')
-        definition = jdict.get('definition')
-        description = str(jdict.get('description'))
+        description = jdict.get('description')
+
+        type_code = jdict.get('type-code')
+        type_description = str(jdict.get('type-description'))
 
 
-        return MPC(code, abbreviation, definition, description)
+        return Qualifier(code, description, type_code, type_description)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, abbreviation, definition, description):
+    def __init__(self, code, description, type_code, type_description):
         """
         Constructor
         """
         self.__code = code                                      # string
-        self.__abbreviation = abbreviation                      # string
-        self.__definition = definition                          # string
         self.__description = description                        # string
+
+        self.__type_code = type_code                            # string
+        self.__type_description = type_description              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -94,9 +95,10 @@ class MPC(JSONable):
         jdict = OrderedDict()
 
         jdict['code'] = self.code
-        jdict['abbreviation'] = self.abbreviation
-        jdict['definition'] = self.definition
         jdict['description'] = self.description
+
+        jdict['type-code'] = self.type_code
+        jdict['type-description'] = self.type_description
 
         return jdict
 
@@ -109,22 +111,22 @@ class MPC(JSONable):
 
 
     @property
-    def abbreviation(self):
-        return self.__abbreviation
-
-
-    @property
-    def definition(self):
-        return self.__definition
-
-
-    @property
     def description(self):
         return self.__description
+
+
+    @property
+    def type_code(self):
+        return self.__type_code
+
+
+    @property
+    def type_description(self):
+        return self.__type_description
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" %  \
-               (self.code, self.abbreviation, self.definition, self.description)
+        return "Qualifier:{code:%s, description:%s, type_code:%s, type_description:%s}" %  \
+               (self.code, self.description, self.type_code, self.type_description)

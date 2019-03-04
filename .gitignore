@@ -106,3 +106,4 @@ ENV/
 !/src/scs_core/aqcsv/format/specifications/parameters.csv
 !/src/scs_core/aqcsv/format/specifications/mcps.csv
 !/src/scs_core/aqcsv/format/specifications/qcs.csv
+!/src/scs_core/aqcsv/format/specifications/qualifiers.csv

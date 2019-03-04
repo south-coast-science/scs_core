@@ -40,8 +40,8 @@ class CountryCode(JSONable):
 
         try:
             for row in reader.rows:
-                code = cls.construct_from_jdict(json.loads(row))
-                cls.__codes[code.iso] = code
+                country = cls.construct_from_jdict(json.loads(row))
+                cls.__codes[country.iso] = country
 
         finally:
             reader.close()
@@ -49,8 +49,8 @@ class CountryCode(JSONable):
 
     @classmethod
     def codes(cls):
-        for code in cls.__codes.values():
-            yield code
+        for country in cls.__codes.values():
+            yield country
 
 
     @classmethod
