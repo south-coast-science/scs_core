@@ -5,7 +5,7 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Converts Acrobat cell-per-line to CSV format
+Converts Acrobat cell-per-line data to CSV format
 """
 
 import sys
@@ -15,6 +15,8 @@ import sys
 
 columns = 2
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 cells = []
 col = 0

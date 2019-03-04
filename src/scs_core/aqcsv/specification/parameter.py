@@ -15,13 +15,13 @@ from collections import OrderedDict
 
 from scs_core.aqcsv.specification.unit import Unit
 
-from scs_core.csv.csv_archived import CSVArchived
+from scs_core.csv.csv_archive import CSVArchive
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Parameter(JSONable, CSVArchived):
+class Parameter(JSONable, CSVArchive):
     """
     classdocs
     """

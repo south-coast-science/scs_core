@@ -14,13 +14,13 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_archived import CSVArchived
+from scs_core.csv.csv_archive import CSVArchive
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPC(JSONable, CSVArchived):
+class MPC(JSONable, CSVArchive):
     """
     classdocs
     """

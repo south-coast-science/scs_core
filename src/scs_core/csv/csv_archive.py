@@ -13,12 +13,12 @@ from scs_core.csv.csv_reader import CSVReader
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVArchived(object):
+class CSVArchive(object):
     """
     classdocs
     """
 
-    _retrieved = None                # must be overridden - as a {} - by each concrete class
+    _retrieved = None                # must be overridden - as an {} - by each concrete class
 
     # ----------------------------------------------------------------------------------------------------------------
 
