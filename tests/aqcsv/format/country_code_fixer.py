@@ -33,7 +33,7 @@ for line in sys.stdin:
     else:
         iso = cell
 
-        print('%s,"%s",%s' % (numeric, name, iso))
+        print('"%s","%s","%s"' % (numeric, name, iso))
         sys.stdout.flush()
 
         coll = 0

@@ -46,7 +46,7 @@ class CSVReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, cast=True):
         """
         Constructor
         """
@@ -62,6 +62,8 @@ class CSVReader(object):
             paths = []
 
         self.__header = CSVHeader.construct_from_paths(paths)
+
+        self.__cast = cast
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,7 +83,11 @@ class CSVReader(object):
             if len(row) == 0:
                 continue
 
-            datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+            if self.__cast:
+                datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+
+            else:
+                datum = self.__header.as_dict([cell for cell in row])
 
             yield JSONify.dumps(datum)
 
@@ -101,4 +107,4 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
-        return "CSVReader:{filename:%s, header:%s}" % (self.filename, header)
+        return "CSVReader:{filename:%s, cast:%s, header:%s}" % (self.filename, self.__cast, header)

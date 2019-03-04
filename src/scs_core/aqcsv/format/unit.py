@@ -4,7 +4,7 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"numeric": 788, "name": "Tunisia", "iso": "TUN"}
+{"code": 788, "description": "Tunisia", "unit_code": "TUN"}
 
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 """
@@ -20,43 +20,43 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CountryCode(JSONable):
+class Parameter(JSONable):
     """
     classdocs
     """
 
-    __codes = {}
+    __parameters = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def load(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/codes/country_codes.csv"
+        filename = dirname + "/codes/parameters.csv"
 
-        reader = CSVReader(filename)
+        reader = CSVReader(filename, cast=False)
 
         try:
             for row in reader.rows:
-                code = cls.construct_from_jdict(json.loads(row))
-                cls.__codes[code.iso] = code
+                parameter = cls.construct_from_jdict(json.loads(row))
+                cls.__parameters[parameter.code] = parameter
 
         finally:
             reader.close()
 
 
     @classmethod
-    def codes(cls):
-        for code in cls.__codes.values():
+    def parameters(cls):
+        for code in cls.__parameters.values():
             yield code
 
 
     @classmethod
-    def find_by_iso(cls, iso):
-        if iso not in cls.__codes:
+    def find_by_code(cls, code):
+        if code not in cls.__parameters:
             return None
 
-        return cls.__codes[iso]
+        return cls.__parameters[code]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,23 +66,23 @@ class CountryCode(JSONable):
         if not jdict:
             return None
 
-        numeric = jdict.get('numeric')
-        name = jdict.get('name')
-        iso = jdict.get('iso')
+        code = jdict.get('code')
+        description = jdict.get('description')
+        unit_code = str(jdict.get('unit_code'))
 
 
-        return CountryCode(numeric, name, iso)
+        return Parameter(code, description, unit_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, numeric, name, iso):
+    def __init__(self, code, description, unit_code):
         """
         Constructor
         """
-        self.__numeric = numeric                    # string
-        self.__name = name                          # string
-        self.__iso = iso                            # string
+        self.__code = code                                  # string
+        self.__description = description                    # string
+        self.__unit_code = unit_code                        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ class CountryCode(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['numeric'] = self.numeric
-        jdict['name'] = self.name
-        jdict['iso'] = self.iso
+        jdict['code'] = self.code
+        jdict['description'] = self.description
+        jdict['unit_code'] = self.unit_code
 
         return jdict
 
@@ -100,21 +100,21 @@ class CountryCode(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def numeric(self):
-        return self.__numeric
+    def code(self):
+        return self.__code
 
 
     @property
-    def name(self):
-        return self.__name
+    def description(self):
+        return self.__description
 
 
     @property
-    def iso(self):
-        return self.__iso
+    def unit_code(self):
+        return self.__unit_code
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CountryCode:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)
+        return "Parameter:{code:%s, description:%s, unit_code:%s}" %  (self.code, self.description, self.unit_code)
