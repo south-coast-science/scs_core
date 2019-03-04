@@ -2,6 +2,8 @@
 Created on 4 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/43717757/commas-and-double-quotes-in-csv-files
 """
 
 import csv
@@ -51,7 +53,8 @@ class CSVReader(object):
         self.__filename = filename
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 
-        self.__reader = csv.reader(self.__file)
+        self.__reader = csv.reader(self.__file, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
+                                   skipinitialspace=True)
 
         try:
             paths = next(self.__reader)

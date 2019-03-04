@@ -97,3 +97,4 @@ ENV/
 **/*.numbers
 **/*.xls
 **/*.xlsx
+!/src/scs_core/aqcsv/format/codes/country_codes.csv
