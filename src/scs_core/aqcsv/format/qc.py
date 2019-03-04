@@ -3,8 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+AirNow quality control (QC) codes
+
 example:
-{"code": "083", "definition": "Cubic meters/minute STP"}
+{"code": "1", "definition": "Adjusted"}
 """
 
 import json

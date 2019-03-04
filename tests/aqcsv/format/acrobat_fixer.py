@@ -13,28 +13,26 @@ import sys
 
 # --------------------------------------------------------------------------------------------------------------------
 
-c1 = ''
-c2 = ''
-c3 = ''
+colls = 4
+
+
 
 coll = 0
+cells = []
 
 for line in sys.stdin:
     cell = line.strip()
 
-    if coll == 0:
-        c1 = cell
-        coll = 1
+    cells.append(cell)
+    coll += 1
 
-    # elif coll == 1:
-    #     name = cell
-    #     coll = 2
+    if coll < colls:
+        continue
 
-    else:
-        c2 = cell
+    row = '' + ','.join(['"' + cell + '"' for cell in cells])
 
-        print('"%s","%s"' % (c1, c2))
-        # print('"%s","%s","%s"' % (numeric, name, iso))
-        sys.stdout.flush()
+    print(row)
+    sys.stdout.flush()
 
-        coll = 0
+    coll = 0
+    cells = []

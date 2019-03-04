@@ -3,8 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+AQCSV Parameter codes and associated standard units
+
 example:
-{"code": 88379, "description": "OP PM2.5 LC TOT", "unit_code": 105}
+{"code": "88502", "description": "Acceptable PM2.5 AQI & Speciation Mass", "unit_code": "105"}
 """
 
 import json
@@ -69,7 +71,7 @@ class Parameter(JSONable):
 
         code = jdict.get('code')
         description = jdict.get('description')
-        unit_code = str(jdict.get('unit_code'))
+        unit_code = str(jdict.get('unit-code'))
 
 
         return Parameter(code, description, unit_code)
@@ -93,7 +95,7 @@ class Parameter(JSONable):
 
         jdict['code'] = self.code
         jdict['description'] = self.description
-        jdict['unit_code'] = self.unit_code
+        jdict['unit-code'] = self.unit_code
 
         return jdict
 

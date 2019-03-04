@@ -3,12 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-ISO country codes
+AQCSV Measurement performance characteristics
 
 example:
-{"numeric": "716", "name": "Zimbabwe", "iso": "ZWE"}
-
-https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+{"code": "88502", "definition": "Acceptable PM2.5 AQI & Mass", "description": "105"}
 """
 
 import json
@@ -16,49 +14,52 @@ import os
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.format.unit import Unit
 from scs_core.csv.csv_reader import CSVReader
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CountryCode(JSONable):
+class MPC(JSONable):
     """
     classdocs
     """
 
-    __codes = {}
+    __mcps = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def load(cls):
+        Unit.load()
+
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/country_codes.csv"
+        filename = dirname + "/specifications/mcps.csv"
 
         reader = CSVReader(filename=filename, cast=False)
 
         try:
             for row in reader.rows:
-                code = cls.construct_from_jdict(json.loads(row))
-                cls.__codes[code.iso] = code
+                parameter = cls.construct_from_jdict(json.loads(row))
+                cls.__mcps[parameter.code] = parameter
 
         finally:
             reader.close()
 
 
     @classmethod
-    def codes(cls):
-        for code in cls.__codes.values():
+    def mcps(cls):
+        for code in cls.__mcps.values():
             yield code
 
 
     @classmethod
-    def find_by_iso(cls, iso):
-        if iso not in cls.__codes:
+    def find_by_code(cls, code):
+        if code not in cls.__mcps:
             return None
 
-        return cls.__codes[iso]
+        return cls.__mcps[code]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,23 +69,25 @@ class CountryCode(JSONable):
         if not jdict:
             return None
 
-        numeric = jdict.get('numeric')
-        name = jdict.get('name')
-        iso = jdict.get('iso')
+        code = jdict.get('code')
+        abbreviation = jdict.get('abbreviation')
+        definition = jdict.get('definition')
+        description = str(jdict.get('description'))
 
 
-        return CountryCode(numeric, name, iso)
+        return MPC(code, abbreviation, definition, description)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, numeric, name, iso):
+    def __init__(self, code, abbreviation, definition, description):
         """
         Constructor
         """
-        self.__numeric = numeric                    # string
-        self.__name = name                          # string
-        self.__iso = iso                            # string
+        self.__code = code                                      # string
+        self.__abbreviation = abbreviation                      # string
+        self.__definition = definition                          # string
+        self.__description = description                        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -92,9 +95,10 @@ class CountryCode(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['numeric'] = self.numeric
-        jdict['name'] = self.name
-        jdict['iso'] = self.iso
+        jdict['code'] = self.code
+        jdict['abbreviation'] = self.abbreviation
+        jdict['definition'] = self.definition
+        jdict['description'] = self.description
 
         return jdict
 
@@ -102,21 +106,27 @@ class CountryCode(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def numeric(self):
-        return self.__numeric
+    def code(self):
+        return self.__code
 
 
     @property
-    def name(self):
-        return self.__name
+    def abbreviation(self):
+        return self.__abbreviation
 
 
     @property
-    def iso(self):
-        return self.__iso
+    def definition(self):
+        return self.__definition
+
+
+    @property
+    def description(self):
+        return self.__description
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CountryCode:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)
+        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" %  \
+               (self.code, self.abbreviation, self.definition, self.description)
