@@ -18,7 +18,7 @@ class CSVArchived(object):
     classdocs
     """
 
-    _retrieved = None                # MUST be overridden by each concrete class
+    _retrieved = None                # must be overridden - as a {} - by each concrete class
 
     # ----------------------------------------------------------------------------------------------------------------
 
