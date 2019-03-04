@@ -18,18 +18,18 @@ class CSVArchived(object):
     classdocs
     """
 
-    _persisted = None                # MUST be overridden by concrete classes!
+    _retrieved = None                # MUST be overridden by concrete classes!
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls):
-        reader = CSVReader(filename=cls.persistence_location(), cast=False)
+    def retrieve(cls):
+        reader = CSVReader(filename=cls.archive_location(), cast=False)
 
         try:
             for row in reader.rows:
                 instance = cls.construct_from_jdict(json.loads(row))
-                cls._persisted[instance.pk] = instance
+                cls._retrieved[instance.pk] = instance
 
         finally:
             reader.close()
@@ -37,22 +37,22 @@ class CSVArchived(object):
 
     @classmethod
     def instances(cls):
-        return cls._persisted.values()
+        return cls._retrieved.values()
 
 
     @classmethod
-    def find(cls, pk):
-        if pk not in cls._persisted:
+    def instance(cls, pk):
+        if pk not in cls._retrieved:
             return None
 
-        return cls._persisted[pk]
+        return cls._retrieved[pk]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls):
+    def archive_location(cls):
         return ''
 
 

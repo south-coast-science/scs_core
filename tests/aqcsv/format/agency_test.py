@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Agency.load()
+Agency.retrieve()
 
 print("list...")
 for agency in Agency.instances():
@@ -21,12 +21,12 @@ print("-")
 
 print("find...")
 code = "LBL"
-agency = Agency.find(code)
+agency = Agency.instance(code)
 print("code:%s agency:%s" % (code, agency))
 print(JSONify.dumps(agency))
 print("-")
 
 code = "XXX"
-agency = Agency.find(code)
+agency = Agency.instance(code)
 print("code:%s agency:%s" % (code, agency))
 print("-")

@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Country.load()
+Country.retrieve()
 
 print("list...")
 for country in Country.instances():
@@ -21,7 +21,7 @@ print("-")
 
 print("find...")
 iso = "TUN"
-country = Country.find(iso)
+country = Country.instance(iso)
 print("iso:%s country:%s" % (iso, country))
 print(JSONify.dumps(country))
 print("-")
@@ -33,6 +33,6 @@ print(JSONify.dumps(country))
 print("-")
 
 iso = "TUX"
-country = Country.find(iso)
+country = Country.instance(iso)
 print("iso:%s country:%s" % (iso, country))
 print("-")

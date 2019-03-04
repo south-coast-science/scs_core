@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-MPC.load()
+MPC.retrieve()
 
 print("list...")
 for mcp in MPC.instances():
@@ -21,12 +21,12 @@ print("-")
 
 print("find...")
 code = "2"
-mcp = MPC.find(code)
+mcp = MPC.instance(code)
 print("code:%s mcp:%s" % (code, mcp))
 print(JSONify.dumps(mcp))
 print("-")
 
 code = "9"
-mcp = MPC.find(code)
+mcp = MPC.instance(code)
 print("code:%s mcp:%s" % (code, mcp))
 print("-")

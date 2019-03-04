@@ -25,15 +25,13 @@ class MPC(JSONable, CSVArchived):
     classdocs
     """
 
-    _persisted = {}
+    _retrieved = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def persistence_location(cls):
-        dirname = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(dirname, 'archive', 'mcps.csv')
+    def archive_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'mcps.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------

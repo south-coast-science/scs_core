@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-QC.load()
+QC.retrieve()
 
 print("list...")
 for qc in QC.instances():
@@ -21,13 +21,13 @@ print("-")
 
 print("find...")
 code = "0"
-qc = QC.find(code)
+qc = QC.instance(code)
 print("code:%s qc:%s" % (code, qc))
 print(JSONify.dumps(qc))
 print("-")
 
 code = "a"
-qc = QC.find(code)
+qc = QC.instance(code)
 print("code:%s qc:%s" % (code, qc))
 print("-")
 

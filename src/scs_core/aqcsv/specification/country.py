@@ -26,20 +26,18 @@ class Country(JSONable, CSVArchived):
     classdocs
     """
 
-    _persisted = {}
+    _retrieved = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def persistence_location(cls):
-        dirname = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(dirname, 'archive', 'countries.csv')
+    def archive_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'countries.csv')
 
 
     @classmethod
     def find_by_numeric(cls, numeric):
-        for country in cls._persisted.values():
+        for country in cls._retrieved.values():
             if country.numeric == numeric:
                 return country
 

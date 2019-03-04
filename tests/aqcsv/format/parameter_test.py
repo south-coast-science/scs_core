@@ -15,8 +15,8 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 parameter = None
 
-Parameter.load()
-Unit.load()
+Parameter.retrieve()
+Unit.retrieve()
 
 print("list...")
 for parameter in Parameter.instances():
@@ -35,12 +35,12 @@ print("=")
 
 print("find...")
 code = "88374"
-parameter = Parameter.find(code)
+parameter = Parameter.instance(code)
 print("iso:%s parameter:%s" % (code, parameter))
 print(JSONify.dumps(parameter))
 print("-")
 
 code = "TUX"
-parameter = Parameter.find(code)
+parameter = Parameter.instance(code)
 print("iso:%s parameter:%s" % (code, parameter))
 print("-")
