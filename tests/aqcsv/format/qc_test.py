@@ -6,27 +6,28 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.format.country_code import CountryCode
+from scs_core.aqcsv.format.qc import QC
 from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-CountryCode.load()
+QC.load()
 
 print("list...")
-for code in CountryCode.codes():
-    print(code)
+for qc in QC.qcs():
+    print(qc)
 print("-")
 
 print("find...")
-iso = "TUN"
-code = CountryCode.find_by_iso(iso)
-print("iso:%s code:%s" % (iso, code))
-print(JSONify.dumps(code))
+code = "0"
+qc = QC.find_by_code(code)
+print("code:%s qc:%s" % (code, qc))
+print(JSONify.dumps(qc))
 print("-")
 
-iso = "TUX"
-code = CountryCode.find_by_iso(iso)
-print("iso:%s code:%s" % (iso, code))
+code = "a"
+qc = QC.find_by_code(code)
+print("code:%s unit:%s" % (code, qc))
 print("-")
+

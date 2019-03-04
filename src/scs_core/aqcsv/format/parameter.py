@@ -33,7 +33,7 @@ class Parameter(JSONable):
         Unit.load()
 
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/codes/parameters.csv"
+        filename = dirname + "/specifications/parameters.csv"
 
         reader = CSVReader(filename=filename, cast=False)
 

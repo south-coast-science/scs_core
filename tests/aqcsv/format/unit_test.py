@@ -7,6 +7,7 @@ Created on 4 Mar 2019
 """
 
 from scs_core.aqcsv.format.unit import Unit
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -19,13 +20,14 @@ for unit in Unit.units():
 print("-")
 
 print("find...")
-iso = "TUN"
-code = CountryCode.find_by_iso(iso)
-print("iso:%s code:%s" % (iso, code))
+code = "096"
+unit = Unit.find_by_code(code)
+print("code:%s unit:%s" % (code, unit))
+print(JSONify.dumps(unit))
 print("-")
 
-iso = "TUX"
-code = CountryCode.find_by_iso(iso)
-print("iso:%s code:%s" % (iso, code))
+code = "999"
+unit = Unit.find_by_code(code)
+print("code:%s unit:%s" % (code, unit))
 print("-")
 

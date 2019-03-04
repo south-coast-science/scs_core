@@ -97,7 +97,7 @@ ENV/
 **/*.numbers
 **/*.xls
 **/*.xlsx
-!/src/scs_core/aqcsv/format/codes/country_codes.csv
-!/src/scs_core/aqcsv/format/codes/parameters.csv
-!/src/scs_core/aqcsv/format/codes/unit.csv
-!/src/scs_core/aqcsv/format/codes/units.csv
+!/scs_core/aqcsv/format/specifications/country_codes.csv
+!/scs_core/aqcsv/format/specifications/parameters.csv
+!/scs_core/aqcsv/format/specifications/unit.csv
+!/scs_core/aqcsv/format/specifications/units.csv

@@ -4,9 +4,7 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"numeric": 788, "name": "Tunisia", "iso": "TUN"}
-
-https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+{"code": "083", "definition": "Cubic meters/minute STP"}
 """
 
 import json
@@ -20,43 +18,43 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CountryCode(JSONable):
+class QC(JSONable):
     """
     classdocs
     """
 
-    __codes = {}
+    __qcs = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def load(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/specifications/country_codes.csv"
+        filename = dirname + "/specifications/qcs.csv"
 
-        reader = CSVReader(filename=filename, cast=False)
+        reader = CSVReader(filename, cast=False)
 
         try:
             for row in reader.rows:
-                code = cls.construct_from_jdict(json.loads(row))
-                cls.__codes[code.iso] = code
+                unit = cls.construct_from_jdict(json.loads(row))
+                cls.__qcs[unit.code] = unit
 
         finally:
             reader.close()
 
 
     @classmethod
-    def codes(cls):
-        for code in cls.__codes.values():
-            yield code
+    def qcs(cls):
+        for unit in cls.__qcs.values():
+            yield unit
 
 
     @classmethod
-    def find_by_iso(cls, iso):
-        if iso not in cls.__codes:
+    def find_by_code(cls, code):
+        if code not in cls.__qcs:
             return None
 
-        return cls.__codes[iso]
+        return cls.__qcs[code]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,23 +64,20 @@ class CountryCode(JSONable):
         if not jdict:
             return None
 
-        numeric = jdict.get('numeric')
-        name = jdict.get('name')
-        iso = jdict.get('iso')
+        code = jdict.get('code')
+        definition = jdict.get('definition')
 
-
-        return CountryCode(numeric, name, iso)
+        return QC(code, definition)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, numeric, name, iso):
+    def __init__(self, code, definition):
         """
         Constructor
         """
-        self.__numeric = numeric                    # string
-        self.__name = name                          # string
-        self.__iso = iso                            # string
+        self.__code = code                                  # string
+        self.__definition = definition                      # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -90,9 +85,8 @@ class CountryCode(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['numeric'] = self.numeric
-        jdict['name'] = self.name
-        jdict['iso'] = self.iso
+        jdict['code'] = self.code
+        jdict['definition'] = self.definition
 
         return jdict
 
@@ -100,21 +94,16 @@ class CountryCode(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def numeric(self):
-        return self.__numeric
+    def code(self):
+        return self.__code
 
 
     @property
-    def name(self):
-        return self.__name
-
-
-    @property
-    def iso(self):
-        return self.__iso
+    def definition(self):
+        return self.__definition
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CountryCode:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)
+        return "QC:{code:%s, definition:%s}" %  (self.code, self.definition)

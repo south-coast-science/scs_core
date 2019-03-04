@@ -30,7 +30,7 @@ class Unit(JSONable):
     @classmethod
     def load(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
-        filename = dirname + "/codes/units.csv"
+        filename = dirname + "/specifications/units.csv"
 
         reader = CSVReader(filename, cast=False)
 
