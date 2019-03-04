@@ -101,3 +101,8 @@ ENV/
 !/scs_core/aqcsv/format/specifications/parameters.csv
 !/scs_core/aqcsv/format/specifications/unit.csv
 !/scs_core/aqcsv/format/specifications/units.csv
+!/src/scs_core/aqcsv/format/specifications/country_codes.csv
+!/src/scs_core/aqcsv/format/specifications/units.csv
+!/src/scs_core/aqcsv/format/specifications/parameters.csv
+!/src/scs_core/aqcsv/format/specifications/mcps.csv
+!/src/scs_core/aqcsv/format/specifications/qcs.csv

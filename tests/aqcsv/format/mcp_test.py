@@ -30,4 +30,3 @@ code = "9"
 mcp = MPC.find_by_code(code)
 print("code:%s unit:%s" % (code, mcp))
 print("-")
-
