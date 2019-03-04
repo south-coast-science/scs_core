@@ -4,9 +4,7 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"code": 788, "description": "Tunisia", "unit_code": "TUN"}
-
-https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+{"code": 88379, "description": "OP PM2.5 LC TOT", "unit_code": 105}
 """
 
 import json
