@@ -101,4 +101,4 @@ class Country(JSONable, CSVPersisted):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Country:{numeric:%s, name:%s, iso:%s}" %  (self.numeric, self.name, self.iso)
+        return "Country:{numeric:%s, name:%s, iso:%s}" % (self.numeric, self.name, self.iso)

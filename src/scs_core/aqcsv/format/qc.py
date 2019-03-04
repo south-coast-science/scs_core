@@ -91,4 +91,4 @@ class QC(JSONable, CSVPersisted):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "QC:{code:%s, definition:%s}" %  (self.code, self.definition)
+        return "QC:{code:%s, definition:%s}" % (self.code, self.definition)

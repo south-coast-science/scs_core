@@ -28,5 +28,5 @@ print("-")
 
 iso = "TUX"
 country = Country.find(iso)
-print("iso:%s code:%s" % (iso, country))
+print("iso:%s country:%s" % (iso, country))
 print("-")

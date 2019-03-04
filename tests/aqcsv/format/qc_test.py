@@ -28,6 +28,6 @@ print("-")
 
 code = "a"
 qc = QC.find(code)
-print("code:%s unit:%s" % (code, qc))
+print("code:%s qc:%s" % (code, qc))
 print("-")
 

@@ -36,11 +36,11 @@ print("=")
 print("find...")
 code = "88374"
 parameter = Parameter.find(code)
-print("iso:%s code:%s" % (code, parameter))
+print("iso:%s parameter:%s" % (code, parameter))
 print(JSONify.dumps(parameter))
 print("-")
 
 code = "TUX"
 parameter = Parameter.find(code)
-print("iso:%s code:%s" % (code, parameter))
+print("iso:%s parameter:%s" % (code, parameter))
 print("-")

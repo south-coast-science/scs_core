@@ -106,4 +106,4 @@ class Parameter(JSONable, CSVPersisted):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Parameter:{code:%s, description:%s, unit_code:%s}" %  (self.code, self.description, self.unit_code)
+        return "Parameter:{code:%s, description:%s, unit_code:%s}" % (self.code, self.description, self.unit_code)

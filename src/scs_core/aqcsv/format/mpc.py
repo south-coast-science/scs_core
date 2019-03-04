@@ -108,5 +108,5 @@ class MPC(JSONable, CSVPersisted):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" %  \
+        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" % \
                (self.code, self.abbreviation, self.definition, self.description)

@@ -6,27 +6,27 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.format.mpc import MPC
+from scs_core.aqcsv.format.agency import Agency
 from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-MPC.load()
+Agency.load()
 
 print("list...")
-for mcp in MPC.instances():
-    print(mcp)
+for agency in Agency.instances():
+    print(agency)
 print("-")
 
 print("find...")
-code = "2"
-mcp = MPC.find(code)
-print("code:%s mcp:%s" % (code, mcp))
-print(JSONify.dumps(mcp))
+code = "LBL"
+agency = Agency.find(code)
+print("code:%s agency:%s" % (code, agency))
+print(JSONify.dumps(agency))
 print("-")
 
-code = "9"
-mcp = MPC.find(code)
-print("code:%s mcp:%s" % (code, mcp))
+code = "XXX"
+agency = Agency.find(code)
+print("code:%s agency:%s" % (code, agency))
 print("-")

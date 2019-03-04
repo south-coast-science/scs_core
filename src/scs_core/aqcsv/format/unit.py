@@ -89,4 +89,4 @@ class Unit(JSONable, CSVPersisted):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Unit:{code:%s, description:%s}" %  (self.code, self.description)
+        return "Unit:{code:%s, description:%s}" % (self.code, self.description)

@@ -3,10 +3,10 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV Qualifiers
+Agency codes
 
 example:
-Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}
+{"code": "1", "name": "Adjusted"}
 """
 
 import os
@@ -19,7 +19,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Qualifier(JSONable, CSVPersisted):
+class Agency(JSONable, CSVPersisted):
     """
     classdocs
     """
@@ -32,7 +32,7 @@ class Qualifier(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'qualifiers.csv')
+        return os.path.join(dirname, 'specifications', 'agencies.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,25 +43,19 @@ class Qualifier(JSONable, CSVPersisted):
             return None
 
         code = jdict.get('code')
-        description = jdict.get('description')
+        name = jdict.get('name')
 
-        type_code = jdict.get('type-code')
-        type_description = str(jdict.get('type-description'))
-
-        return Qualifier(code, description, type_code, type_description)
+        return Agency(code, name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, description, type_code, type_description):
+    def __init__(self, code, name):
         """
         Constructor
         """
-        self.__code = code                                      # string
-        self.__description = description                        # string
-
-        self.__type_code = type_code                            # string
-        self.__type_description = type_description              # string
+        self.__code = code                                  # string
+        self.__name = name                                  # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,10 +64,7 @@ class Qualifier(JSONable, CSVPersisted):
         jdict = OrderedDict()
 
         jdict['code'] = self.code
-        jdict['description'] = self.description
-
-        jdict['type-code'] = self.type_code
-        jdict['type-description'] = self.type_description
+        jdict['name'] = self.name
 
         return jdict
 
@@ -93,22 +84,11 @@ class Qualifier(JSONable, CSVPersisted):
 
 
     @property
-    def description(self):
-        return self.__description
-
-
-    @property
-    def type_code(self):
-        return self.__type_code
-
-
-    @property
-    def type_description(self):
-        return self.__type_description
+    def name(self):
+        return self.__name
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Qualifier:{code:%s, description:%s, type_code:%s, type_description:%s}" % \
-               (self.code, self.description, self.type_code, self.type_description)
+        return "Agency:{code:%s, name:%s}" % (self.code, self.name)

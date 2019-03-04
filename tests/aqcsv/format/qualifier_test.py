@@ -22,12 +22,12 @@ print("-")
 print("find...")
 code = "BL"
 qualifier = Qualifier.find(code)
-print("code:%s qc:%s" % (code, qualifier))
+print("code:%s qualifier:%s" % (code, qualifier))
 print(JSONify.dumps(qualifier))
 print("-")
 
 code = "a"
 qualifier = Qualifier.find(code)
-print("code:%s unit:%s" % (code, qualifier))
+print("code:%s qualifier:%s" % (code, qualifier))
 print("-")
 
