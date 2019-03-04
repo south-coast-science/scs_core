@@ -11,7 +11,7 @@ from scs_core.csv.csv_reader import CSVReader
 
 # --------------------------------------------------------------------------------------------------------------------
 
-reader = CSVReader('test.csv')
+reader = CSVReader(filename='test.csv')
 print(reader)
 print("=")
 
