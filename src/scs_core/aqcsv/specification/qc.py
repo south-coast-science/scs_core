@@ -3,23 +3,23 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV: Units
+AQCSV: quality control (QC) codes
 
 example:
-{"code": "083", "description": "Cubic meters/minute STP"}
+{"code": "1", "definition": "Adjusted"}
 """
 
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_persisted import CSVPersisted
+from scs_core.csv.csv_archived import CSVArchived
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Unit(JSONable, CSVPersisted):
+class QC(JSONable, CSVArchived):
     """
     classdocs
     """
@@ -32,7 +32,7 @@ class Unit(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'units.csv')
+        return os.path.join(dirname, 'archive', 'qcs.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,19 +43,19 @@ class Unit(JSONable, CSVPersisted):
             return None
 
         code = jdict.get('code')
-        description = jdict.get('description')
+        definition = jdict.get('definition')
 
-        return Unit(code, description)
+        return QC(code, definition)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, description):
+    def __init__(self, code, definition):
         """
         Constructor
         """
         self.__code = code                                  # string
-        self.__description = description                    # string
+        self.__definition = definition                      # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ class Unit(JSONable, CSVPersisted):
         jdict = OrderedDict()
 
         jdict['code'] = self.code
-        jdict['description'] = self.description
+        jdict['definition'] = self.definition
 
         return jdict
 
@@ -84,11 +84,11 @@ class Unit(JSONable, CSVPersisted):
 
 
     @property
-    def description(self):
-        return self.__description
+    def definition(self):
+        return self.__definition
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Unit:{code:%s, description:%s}" % (self.code, self.description)
+        return "QC:{code:%s, definition:%s}" % (self.code, self.definition)

@@ -13,13 +13,13 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_persisted import CSVPersisted
+from scs_core.csv.csv_archived import CSVArchived
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Agency(JSONable, CSVPersisted):
+class Agency(JSONable, CSVArchived):
     """
     classdocs
     """
@@ -32,7 +32,7 @@ class Agency(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'agencies.csv')
+        return os.path.join(dirname, 'archive', 'agencies.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ Created on 4 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.format.unit import Unit
+from scs_core.aqcsv.specification.unit import Unit
 from scs_core.data.json import JSONify
 
 

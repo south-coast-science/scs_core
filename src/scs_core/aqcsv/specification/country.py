@@ -3,23 +3,25 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV: Qualifiers
+AQCSV: ISO country codes
 
 example:
-Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}
+{"numeric": "716", "name": "Zimbabwe", "iso": "ZWE"}
+
+https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 """
 
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_persisted import CSVPersisted
+from scs_core.csv.csv_archived import CSVArchived
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Qualifier(JSONable, CSVPersisted):
+class Country(JSONable, CSVArchived):
     """
     classdocs
     """
@@ -32,7 +34,16 @@ class Qualifier(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'qualifiers.csv')
+        return os.path.join(dirname, 'archive', 'countries.csv')
+
+
+    @classmethod
+    def find_by_numeric(cls, numeric):
+        for country in cls._persisted.values():
+            if country.numeric == numeric:
+                return country
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -42,26 +53,22 @@ class Qualifier(JSONable, CSVPersisted):
         if not jdict:
             return None
 
-        code = jdict.get('code')
-        description = jdict.get('description')
+        numeric = jdict.get('numeric')
+        name = jdict.get('name')
+        iso = jdict.get('iso')
 
-        type_code = jdict.get('type-code')
-        type_description = str(jdict.get('type-description'))
-
-        return Qualifier(code, description, type_code, type_description)
+        return Country(numeric, name, iso)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, description, type_code, type_description):
+    def __init__(self, numeric, name, iso):
         """
         Constructor
         """
-        self.__code = code                                      # string
-        self.__description = description                        # string
-
-        self.__type_code = type_code                            # string
-        self.__type_description = type_description              # string
+        self.__numeric = numeric                    # string
+        self.__name = name                          # string
+        self.__iso = iso                            # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,11 +76,9 @@ class Qualifier(JSONable, CSVPersisted):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['code'] = self.code
-        jdict['description'] = self.description
-
-        jdict['type-code'] = self.type_code
-        jdict['type-description'] = self.type_description
+        jdict['numeric'] = self.numeric
+        jdict['name'] = self.name
+        jdict['iso'] = self.iso
 
         return jdict
 
@@ -82,33 +87,27 @@ class Qualifier(JSONable, CSVPersisted):
 
     @property
     def pk(self):
-        return self.code
+        return self.iso
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def code(self):
-        return self.__code
+    def numeric(self):
+        return self.__numeric
 
 
     @property
-    def description(self):
-        return self.__description
+    def name(self):
+        return self.__name
 
 
     @property
-    def type_code(self):
-        return self.__type_code
-
-
-    @property
-    def type_description(self):
-        return self.__type_description
+    def iso(self):
+        return self.__iso
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Qualifier:{code:%s, description:%s, type_code:%s, type_description:%s}" % \
-               (self.code, self.description, self.type_code, self.type_description)
+        return "Country:{numeric:%s, name:%s, iso:%s}" % (self.numeric, self.name, self.iso)

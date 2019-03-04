@@ -3,23 +3,25 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV: quality control (QC) codes
+AQCSV: Parameter codes and associated standard units
 
 example:
-{"code": "1", "definition": "Adjusted"}
+{"code": "88502", "description": "Acceptable PM2.5 AQI Mass", "unit_code": "105"}
 """
 
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_persisted import CSVPersisted
+from scs_core.aqcsv.specification.unit import Unit
+
+from scs_core.csv.csv_archived import CSVArchived
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class QC(JSONable, CSVPersisted):
+class Parameter(JSONable, CSVArchived):
     """
     classdocs
     """
@@ -32,7 +34,7 @@ class QC(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'qcs.csv')
+        return os.path.join(dirname, 'archive', 'parameters.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,19 +45,21 @@ class QC(JSONable, CSVPersisted):
             return None
 
         code = jdict.get('code')
-        definition = jdict.get('definition')
+        description = jdict.get('description')
+        unit_code = str(jdict.get('unit-code'))
 
-        return QC(code, definition)
+        return Parameter(code, description, unit_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, definition):
+    def __init__(self, code, description, unit_code):
         """
         Constructor
         """
         self.__code = code                                  # string
-        self.__definition = definition                      # string
+        self.__description = description                    # string
+        self.__unit_code = unit_code                        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,7 +68,8 @@ class QC(JSONable, CSVPersisted):
         jdict = OrderedDict()
 
         jdict['code'] = self.code
-        jdict['definition'] = self.definition
+        jdict['description'] = self.description
+        jdict['unit-code'] = self.unit_code
 
         return jdict
 
@@ -76,6 +81,11 @@ class QC(JSONable, CSVPersisted):
         return self.code
 
 
+    @property
+    def unit(self):
+        return Unit.find(self.unit_code)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
@@ -84,11 +94,16 @@ class QC(JSONable, CSVPersisted):
 
 
     @property
-    def definition(self):
-        return self.__definition
+    def description(self):
+        return self.__description
+
+
+    @property
+    def unit_code(self):
+        return self.__unit_code
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "QC:{code:%s, definition:%s}" % (self.code, self.definition)
+        return "Parameter:{code:%s, description:%s, unit_code:%s}" % (self.code, self.description, self.unit_code)

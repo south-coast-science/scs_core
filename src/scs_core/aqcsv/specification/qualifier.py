@@ -3,24 +3,23 @@ Created on 4 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV: Measurement performance characteristics
+AQCSV: Qualifiers
 
 example:
-{"code": "3", "abbreviation": "XD", "definition": "Minimum Detectable Value",
-"description": "The measure of inherent detection capability of a measurement process."}
+Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}
 """
 
 import os
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_persisted import CSVPersisted
+from scs_core.csv.csv_archived import CSVArchived
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPC(JSONable, CSVPersisted):
+class Qualifier(JSONable, CSVArchived):
     """
     classdocs
     """
@@ -33,7 +32,7 @@ class MPC(JSONable, CSVPersisted):
     def persistence_location(cls):
         dirname = os.path.dirname(os.path.realpath(__file__))
 
-        return os.path.join(dirname, 'specifications', 'mcps.csv')
+        return os.path.join(dirname, 'archive', 'qualifiers.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -44,23 +43,25 @@ class MPC(JSONable, CSVPersisted):
             return None
 
         code = jdict.get('code')
-        abbreviation = jdict.get('abbreviation')
-        definition = jdict.get('definition')
-        description = str(jdict.get('description'))
+        description = jdict.get('description')
 
-        return MPC(code, abbreviation, definition, description)
+        type_code = jdict.get('type-code')
+        type_description = str(jdict.get('type-description'))
+
+        return Qualifier(code, description, type_code, type_description)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, abbreviation, definition, description):
+    def __init__(self, code, description, type_code, type_description):
         """
         Constructor
         """
         self.__code = code                                      # string
-        self.__abbreviation = abbreviation                      # string
-        self.__definition = definition                          # string
         self.__description = description                        # string
+
+        self.__type_code = type_code                            # string
+        self.__type_description = type_description              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,9 +70,10 @@ class MPC(JSONable, CSVPersisted):
         jdict = OrderedDict()
 
         jdict['code'] = self.code
-        jdict['abbreviation'] = self.abbreviation
-        jdict['definition'] = self.definition
         jdict['description'] = self.description
+
+        jdict['type-code'] = self.type_code
+        jdict['type-description'] = self.type_description
 
         return jdict
 
@@ -91,22 +93,22 @@ class MPC(JSONable, CSVPersisted):
 
 
     @property
-    def abbreviation(self):
-        return self.__abbreviation
-
-
-    @property
-    def definition(self):
-        return self.__definition
-
-
-    @property
     def description(self):
         return self.__description
+
+
+    @property
+    def type_code(self):
+        return self.__type_code
+
+
+    @property
+    def type_description(self):
+        return self.__type_description
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" % \
-               (self.code, self.abbreviation, self.definition, self.description)
+        return "Qualifier:{code:%s, description:%s, type_code:%s, type_description:%s}" % \
+               (self.code, self.description, self.type_code, self.type_description)

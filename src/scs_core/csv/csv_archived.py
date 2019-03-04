@@ -13,7 +13,7 @@ from scs_core.csv.csv_reader import CSVReader
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVPersisted(object):
+class CSVArchived(object):
     """
     classdocs
     """

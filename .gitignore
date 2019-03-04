@@ -96,9 +96,9 @@ ENV/
 **/*.numbers
 **/*.xls
 **/*.xlsx
-!/src/scs_core/aqcsv/format/specifications/countries.csv
-!/src/scs_core/aqcsv/format/specifications/units.csv
-!/src/scs_core/aqcsv/format/specifications/parameters.csv
-!/src/scs_core/aqcsv/format/specifications/mcps.csv
-!/src/scs_core/aqcsv/format/specifications/qcs.csv
-!/src/scs_core/aqcsv/format/specifications/qualifiers.csv
+!/scs_core/aqcsv/format/archive/countries.csv
+!/scs_core/aqcsv/format/archive/units.csv
+!/scs_core/aqcsv/format/archive/parameters.csv
+!/scs_core/aqcsv/format/archive/mcps.csv
+!/scs_core/aqcsv/format/archive/qcs.csv
+!/scs_core/aqcsv/format/archive/qualifiers.csv
