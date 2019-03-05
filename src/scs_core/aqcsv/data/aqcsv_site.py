@@ -53,6 +53,16 @@ class AQCSVSite(JSONable):
         self.__is_mobile = is_mobile                        # bool
 
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+
+        return \
+            self.country_code == other.country_code and \
+            self.location_code == other.location_code and \
+            self.is_mobile == other.is_mobile
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_code(self):

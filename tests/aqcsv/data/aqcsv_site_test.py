@@ -15,29 +15,36 @@ from scs_core.data.json import JSONify
 code = "120456789123"
 print("code: %s" % code)
 
-site = AQCSVSite.construct_from_code(code)
-print("site: %s" % site)
-print("country: %s" % site.country())
-print("code: %s" % site.as_code())
-print("json: %s" % JSONify.dumps(site.as_json()))
+site1 = AQCSVSite.construct_from_code(code)
+print("site1: %s" % site1)
+print("country: %s" % site1.country())
+print("code: %s" % site1.as_code())
+print("json: %s" % JSONify.dumps(site1.as_json()))
 print("-")
 
 code = "124MM456789123"
 print("code: %s" % code)
 
-site = AQCSVSite.construct_from_code(code)
-print("site: %s" % site)
-print("country: %s" % site.country())
-print("code: %s" % site.as_code())
-print("json: %s" % JSONify.dumps(site.as_json()))
+site2 = AQCSVSite.construct_from_code(code)
+print("site2: %s" % site2)
+print("country: %s" % site2.country())
+print("code: %s" % site2.as_code())
+print("json: %s" % JSONify.dumps(site2.as_json()))
 print("-")
 
 code = "999MM456789123"
 print("code: %s" % code)
 
-site = AQCSVSite.construct_from_code(code)
-print("site: %s" % site)
-print("country: %s" % site.country())
-print("code: %s" % site.as_code())
-print("json: %s" % JSONify.dumps(site.as_json()))
+site3 = AQCSVSite.construct_from_code(code)
+print("site3: %s" % site3)
+print("country: %s" % site3.country())
+print("code: %s" % site3.as_code())
+print("json: %s" % JSONify.dumps(site3.as_json()))
+
+equality = site1 == site1
+print("site1 == site1: %s" % equality)
+print("-")
+
+equality = site1 == site2
+print("site1 == site2: %s" % equality)
 print("-")
