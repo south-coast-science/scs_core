@@ -68,12 +68,12 @@ class AQCSVDatetime(JSONable):
         """
         Constructor
         """
-        self.__utc_datetime = utc_datetime
+        self.__utc_datetime = utc_datetime.replace(tzinfo=None)
         self.__zone = zone
 
 
     def __hash__(self):
-        return hash(self.utc_datetime)
+        return hash(self.localised())
 
 
     def __eq__(self, other):

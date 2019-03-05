@@ -74,3 +74,11 @@ print("-")
 
 jstr = JSONify.dumps(utc_aqcsv).strip('"')
 print(jstr)
+print("=")
+print("")
+print("")
+
+print("equality...")
+equality = local_aqcsv == utc_aqcsv
+print("equality: %s" % equality)
+print("-")
