@@ -24,6 +24,8 @@ from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 from scs_core.data.json import JSONable
 
 
+# TODO: parameter -> parameter_code
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class AQCSVRecord(JSONable):
