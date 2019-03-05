@@ -7,16 +7,13 @@ Created on 4 Mar 2019
 """
 
 from scs_core.aqcsv.specification.parameter import Parameter
-from scs_core.aqcsv.specification.unit import Unit
 
 from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
-parameter = None
 
-Parameter.retrieve()
-Unit.retrieve()
+parameter = None
 
 print("list...")
 for parameter in Parameter.instances():

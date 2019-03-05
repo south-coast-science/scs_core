@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: Qualifiers
 
+NB: initialisation is performed at the foot of this class
+
 example:
 Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}
 """
@@ -110,3 +112,9 @@ class Qualifier(JSONable, CSVArchive):
     def __str__(self, *args, **kwargs):
         return "Qualifier:{code:%s, description:%s, type_code:%s, type_description:%s}" % \
                (self.code, self.description, self.type_code, self.type_description)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+Qualifier.retrieve()

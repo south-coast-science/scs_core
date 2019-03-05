@@ -12,8 +12,6 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Unit.retrieve()
-
 print("list...")
 for unit in Unit.instances():
     print(unit)
@@ -30,4 +28,3 @@ code = "999"
 unit = Unit.instance(code)
 print("code:%s unit:%s" % (code, unit))
 print("-")
-

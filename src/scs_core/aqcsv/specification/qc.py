@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: quality control (QC) codes
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"code": "1", "definition": "Adjusted"}
 """
@@ -90,3 +92,9 @@ class QC(JSONable, CSVArchive):
 
     def __str__(self, *args, **kwargs):
         return "QC:{code:%s, definition:%s}" % (self.code, self.definition)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+QC.retrieve()

@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: Parameter codes and associated standard units
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"code": "88502", "description": "Acceptable PM2.5 AQI Mass", "unit_code": "105"}
 """
@@ -105,3 +107,9 @@ class Parameter(JSONable, CSVArchive):
 
     def __str__(self, *args, **kwargs):
         return "Parameter:{code:%s, description:%s, unit_code:%s}" % (self.code, self.description, self.unit_code)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+Parameter.retrieve()

@@ -21,19 +21,23 @@ columns = 2
 cells = []
 col = 0
 
-for line in sys.stdin:
-    cell = line.strip()
+try:
+    for line in sys.stdin:
+        cell = line.strip()
 
-    cells.append(cell)
-    col += 1
+        cells.append(cell)
+        col += 1
 
-    if col < columns:
-        continue
+        if col < columns:
+            continue
 
-    row = '' + ','.join(['"' + cell + '"' for cell in cells])
+        row = '' + ','.join(['"' + cell + '"' for cell in cells])
 
-    print(row)
-    sys.stdout.flush()
+        print(row)
+        sys.stdout.flush()
 
-    cells = []
-    col = 0
+        cells = []
+        col = 0
+
+except KeyboardInterrupt:
+    pass

@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: Agency codes
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"code": "LBL", "name": "Lawrence Berkeley National Laboratory"}
 """
@@ -90,3 +92,9 @@ class Agency(JSONable, CSVArchive):
 
     def __str__(self, *args, **kwargs):
         return "Agency:{code:%s, name:%s}" % (self.code, self.name)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+Agency.retrieve()

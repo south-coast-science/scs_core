@@ -12,8 +12,6 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-MPC.retrieve()
-
 print("list...")
 for mcp in MPC.instances():
     print(mcp)

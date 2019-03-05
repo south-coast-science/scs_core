@@ -12,8 +12,6 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Country.retrieve()
-
 print("list...")
 for country in Country.instances():
     print(country)

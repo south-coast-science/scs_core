@@ -12,8 +12,6 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-QC.retrieve()
-
 print("list...")
 for qc in QC.instances():
     print(qc)
@@ -30,4 +28,3 @@ code = "a"
 qc = QC.instance(code)
 print("code:%s qc:%s" % (code, qc))
 print("-")
-

@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: Measurement performance characteristics
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"code": "3", "abbreviation": "XD", "definition": "Minimum Detectable Value",
 "description": "The measure of inherent detection capability of a measurement process."}
@@ -108,3 +110,9 @@ class MPC(JSONable, CSVArchive):
     def __str__(self, *args, **kwargs):
         return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" % \
                (self.code, self.abbreviation, self.definition, self.description)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+MPC.retrieve()

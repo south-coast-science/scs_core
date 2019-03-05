@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: ISO country codes
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"numeric": "716", "name": "Zimbabwe", "iso": "ZWE"}
 
@@ -109,3 +111,9 @@ class Country(JSONable, CSVArchive):
 
     def __str__(self, *args, **kwargs):
         return "Country:{numeric:%s, name:%s, iso:%s}" % (self.numeric, self.name, self.iso)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+Country.retrieve()

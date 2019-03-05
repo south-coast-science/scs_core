@@ -5,6 +5,8 @@ Created on 4 Mar 2019
 
 AQCSV: Units
 
+NB: initialisation is performed at the foot of this class
+
 example:
 {"code": "083", "description": "Cubic meters/minute STP"}
 """
@@ -90,3 +92,9 @@ class Unit(JSONable, CSVArchive):
 
     def __str__(self, *args, **kwargs):
         return "Unit:{code:%s, description:%s}" % (self.code, self.description)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# initialisation...
+
+Unit.retrieve()
