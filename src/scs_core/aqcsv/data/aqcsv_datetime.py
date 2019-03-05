@@ -20,11 +20,14 @@ class AQCSVDatetime(JSONable):
     """
 
     @classmethod
-    def construct_from_jstr(cls, jstr):
-        match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([+\-])(\d{2})(\d{2}))?', jstr)
+    def construct_from_code(cls, code):
+        try:
+            match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([+\-])(\d{2})(\d{2}))?', code)
+        except TypeError:
+            match = None
 
         if match is None:
-            return None
+            raise ValueError(code)
 
         fields = match.groups()
 
@@ -48,11 +51,11 @@ class AQCSVDatetime(JSONable):
         zone_mins = int(fields[8])
 
         zone_offset = zone_sign * td(hours=zone_hours, minutes=zone_mins)
-        zone = tz(zone_offset)
+        reporting_zone = tz(zone_offset)
 
-        datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=zone)
+        datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=reporting_zone)
 
-        return AQCSVDatetime(datetime, zone)
+        return AQCSVDatetime(datetime, reporting_zone)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,8 +64,8 @@ class AQCSVDatetime(JSONable):
         """
         Constructor
         """
-        self.__datetime = datetime
-        self.__reporting_zone = reporting_zone
+        self.__datetime = datetime                              # datetime
+        self.__reporting_zone = reporting_zone                  # timezone
 
 
     def __hash__(self):

@@ -48,10 +48,10 @@ print("-")
 print("utc_aqcsv localised: %s" % utc_aqcsv.localised())
 print("-")
 
-jstr = JSONify.dumps(utc_aqcsv).strip('"')
-print(jstr)
+code = JSONify.dumps(utc_aqcsv).strip('"')
+print(code)
 
-utc_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
+utc_aqcsv = AQCSVDatetime.construct_from_code(code)
 print("utc_aqcsv: %s" % utc_aqcsv)
 print("-")
 
@@ -71,10 +71,10 @@ print("-")
 print("local_aqcsv localised: %s" % local_aqcsv.localised())
 print("-")
 
-jstr = JSONify.dumps(local_aqcsv).strip('"')
-print(jstr)
+code = JSONify.dumps(local_aqcsv).strip('"')
+print(code)
 
-local_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
+local_aqcsv = AQCSVDatetime.construct_from_code(code)
 print("local_aqcsv: %s" % local_aqcsv)
 print("-")
 
@@ -94,10 +94,10 @@ print("-")
 print("nrz_aqcsv localised: %s" % nrz_aqcsv.localised())
 print("-")
 
-jstr = JSONify.dumps(nrz_aqcsv).strip('"')
-print(jstr)
+code = JSONify.dumps(nrz_aqcsv).strip('"')
+print(code)
 
-nrz_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
+nrz_aqcsv = AQCSVDatetime.construct_from_code(code)
 print("nrz_aqcsv: %s" % nrz_aqcsv)
 print("-")
 
