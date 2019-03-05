@@ -21,7 +21,7 @@ class AQCSVDatetime(JSONable):
 
     @classmethod
     def construct_from_jstr(cls, jstr):
-        match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([ +\-])(\d{2})(\d{2}))?', jstr)
+        match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([+\-])(\d{2})(\d{2}))?', jstr)
 
         if match is None:
             return None
@@ -105,6 +105,11 @@ class AQCSVDatetime(JSONable):
 
     def localised(self):
         return self.datetime.astimezone(self.__reporting_zone)
+
+
+    def filename(self):
+        datetime = self.datetime.astimezone(pytz.timezone('Etc/UTC'))
+        return datetime.strftime("%Y%m%d%H%M")
 
 
     # ----------------------------------------------------------------------------------------------------------------

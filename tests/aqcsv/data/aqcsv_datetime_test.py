@@ -38,9 +38,11 @@ print("=")
 print("")
 print("")
 
+
 print("AQCSVDatetime without zone...")
 utc_aqcsv = AQCSVDatetime(now.datetime)
 print("utc_aqcsv: %s" % utc_aqcsv)
+print("filename: %s" % utc_aqcsv.filename())
 print("-")
 
 print("utc_aqcsv localised: %s" % utc_aqcsv.localised())
@@ -59,9 +61,11 @@ print("=")
 print("")
 print("")
 
+
 print("AQCSVDatetime with zone...")
 local_aqcsv = AQCSVDatetime(localised.datetime, timezone)
 print("local_aqcsv: %s" % local_aqcsv)
+print("filename: %s" % local_aqcsv.filename())
 print("-")
 
 print("local_aqcsv localised: %s" % local_aqcsv.localised())
@@ -84,6 +88,7 @@ print("")
 print("AQCSVDatetime with unreported zone...")
 nrz_aqcsv = AQCSVDatetime(localised.datetime)
 print("nrz_aqcsv: %s" % nrz_aqcsv)
+print("filename: %s" % nrz_aqcsv.filename())
 print("-")
 
 print("nrz_aqcsv localised: %s" % nrz_aqcsv.localised())
