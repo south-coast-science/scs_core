@@ -25,6 +25,10 @@ datetime = now.datetime
 print("datetime: %s" % datetime)
 print("-")
 
+tzinfo = now.tzinfo
+print("tzinfo: %s" % tzinfo)
+print("-")
+
 timezone = pytz.timezone('Europe/Athens')
 print("timezone: %s" % timezone)
 
@@ -34,32 +38,9 @@ print("=")
 print("")
 print("")
 
-print("AQCSVDatetime with zone...")
-local_aqcsv = AQCSVDatetime.construct_from_datetime(localised.datetime, timezone)
-print("local_aqcsv: %s" % local_aqcsv)
-print("is_utc: %s" % local_aqcsv.is_utc())
-print("-")
-
-print("local_aqcsv localised: %s" % local_aqcsv.localised())
-print("-")
-
-jstr = JSONify.dumps(local_aqcsv).strip('"')
-print(jstr)
-
-local_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
-print("local_aqcsv: %s" % local_aqcsv)
-print("-")
-
-jstr = JSONify.dumps(local_aqcsv).strip('"')
-print(jstr)
-print("=")
-print("")
-print("")
-
 print("AQCSVDatetime without zone...")
-utc_aqcsv = AQCSVDatetime.construct_from_datetime(localised.datetime, None)
+utc_aqcsv = AQCSVDatetime(now.datetime)
 print("utc_aqcsv: %s" % utc_aqcsv)
-print("is_utc: %s" % utc_aqcsv.is_utc())
 print("-")
 
 print("utc_aqcsv localised: %s" % utc_aqcsv.localised())
@@ -78,7 +59,55 @@ print("=")
 print("")
 print("")
 
-print("equality...")
+print("AQCSVDatetime with zone...")
+local_aqcsv = AQCSVDatetime(localised.datetime, timezone)
+print("local_aqcsv: %s" % local_aqcsv)
+print("-")
+
+print("local_aqcsv localised: %s" % local_aqcsv.localised())
+print("-")
+
+jstr = JSONify.dumps(local_aqcsv).strip('"')
+print(jstr)
+
+local_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
+print("local_aqcsv: %s" % local_aqcsv)
+print("-")
+
+jstr = JSONify.dumps(local_aqcsv).strip('"')
+print(jstr)
+print("=")
+print("")
+print("")
+
+
+print("AQCSVDatetime with unreported zone...")
+nrz_aqcsv = AQCSVDatetime(localised.datetime)
+print("nrz_aqcsv: %s" % nrz_aqcsv)
+print("-")
+
+print("nrz_aqcsv localised: %s" % nrz_aqcsv.localised())
+print("-")
+
+jstr = JSONify.dumps(nrz_aqcsv).strip('"')
+print(jstr)
+
+nrz_aqcsv = AQCSVDatetime.construct_from_jstr(jstr)
+print("nrz_aqcsv: %s" % nrz_aqcsv)
+print("-")
+
+jstr = JSONify.dumps(nrz_aqcsv).strip('"')
+print(jstr)
+print("=")
+print("")
+print("")
+
+print("utc_aqcsv == local_aqcsv...")
 equality = local_aqcsv == utc_aqcsv
+print("equality: %s" % equality)
+print("-")
+
+print("utc_aqcsv == nrz_aqcsv...")
+equality = utc_aqcsv == nrz_aqcsv
 print("equality: %s" % equality)
 print("-")

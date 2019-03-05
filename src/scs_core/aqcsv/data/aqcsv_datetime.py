@@ -7,7 +7,7 @@ Created on 5 Mar 2019
 import pytz
 import re
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime as dt, timedelta as td, timezone as tz
 
 from scs_core.data.json import JSONable
 
@@ -38,38 +38,31 @@ class AQCSVDatetime(JSONable):
 
         # no zone...
         if fields[5] is None:
-            utc_datetime = datetime(year, month, day, hour, minute, 0, 0)
+            datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=pytz.timezone('Etc/UTC'))
 
-            return AQCSVDatetime(utc_datetime, None)
+            return AQCSVDatetime(datetime, None)
 
         # zone...
         zone_sign = -1 if fields[6] == '-' else 1
         zone_hours = int(fields[7])
         zone_mins = int(fields[8])
 
-        zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
-        zone = timezone(zone_offset)
+        zone_offset = zone_sign * td(hours=zone_hours, minutes=zone_mins)
+        zone = tz(zone_offset)
 
-        localised_datetime = datetime(year, month, day, hour, minute, 0, 0, tzinfo=zone)
+        datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=zone)
 
-        return cls.construct_from_datetime(localised_datetime, zone)
-
-
-    @classmethod
-    def construct_from_datetime(cls, localised_datetime, zone):
-        utc_datetime = localised_datetime.astimezone(pytz.timezone('Etc/UTC'))
-
-        return AQCSVDatetime(utc_datetime, zone)
+        return AQCSVDatetime(datetime, zone)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, utc_datetime, zone):
+    def __init__(self, datetime, reporting_zone=None):
         """
         Constructor
         """
-        self.__utc_datetime = utc_datetime.replace(tzinfo=None)
-        self.__zone = zone
+        self.__datetime = datetime
+        self.__reporting_zone = reporting_zone
 
 
     def __hash__(self):
@@ -77,59 +70,56 @@ class AQCSVDatetime(JSONable):
 
 
     def __eq__(self, other):
-        return self.utc_datetime == other.utc_datetime
+        return self.datetime == other.datetime
 
 
     def __ge__(self, other):
-        return self.utc_datetime >= other.utc_datetime
+        return self.datetime >= other.datetime
 
 
     def __gt__(self, other):
-        return self.utc_datetime > other.utc_datetime
+        return self.datetime > other.datetime
 
 
     def __le__(self, other):
-        return self.utc_datetime <= other.utc_datetime
+        return self.datetime <= other.datetime
 
 
     def __lt__(self, other):
-        return self.utc_datetime < other.utc_datetime
+        return self.datetime < other.datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        if self.zone is None:
-            return self.utc_datetime.strftime("%Y%m%dT%H%M")
+        if self.reporting_zone is None:
+            datetime = self.datetime.astimezone(pytz.timezone('Etc/UTC'))
+            return datetime.strftime("%Y%m%dT%H%M")
 
-        localised = self.localised()
+        datetime = self.localised()
 
-        return localised.strftime("%Y%m%dT%H%M%z")
+        return datetime.strftime("%Y%m%dT%H%M%z")
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def is_utc(self):
-        return self.zone is None
-
 
     def localised(self):
-        return self.utc_datetime.astimezone(self.__zone)
+        return self.datetime.astimezone(self.__reporting_zone)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def utc_datetime(self):
-        return self.__utc_datetime
+    def datetime(self):
+        return self.__datetime
 
 
     @property
-    def zone(self):
-        return self.__zone
+    def reporting_zone(self):
+        return self.__reporting_zone
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVDatetime:{utc_datetime:%s, zone:%s}" % (self.utc_datetime, self.zone)
+        return "AQCSVDatetime:{datetime:%s, reporting_zone:%s}" % (self.datetime, self.reporting_zone)
