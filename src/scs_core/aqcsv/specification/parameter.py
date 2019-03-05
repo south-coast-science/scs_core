@@ -81,7 +81,6 @@ class Parameter(JSONable, CSVArchive):
         return self.code
 
 
-    @property
     def unit(self):
         return Unit.instance(self.unit_code)
 

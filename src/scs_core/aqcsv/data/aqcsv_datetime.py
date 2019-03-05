@@ -24,7 +24,7 @@ class AQCSVDatetime(JSONable):
         try:
             match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([+\-])(\d{2})(\d{2}))?', code)
         except TypeError:
-            match = None
+            raise ValueError(code)
 
         if match is None:
             raise ValueError(code)

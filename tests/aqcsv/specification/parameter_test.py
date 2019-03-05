@@ -22,7 +22,7 @@ print("=")
 
 print("check...")
 for parameter in Parameter.instances():
-    unit = parameter.unit
+    unit = parameter.unit()
 
     if unit is None:
         print(parameter)
