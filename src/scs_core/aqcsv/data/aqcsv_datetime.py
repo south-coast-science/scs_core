@@ -110,7 +110,7 @@ class AQCSVDatetime(JSONable):
         return self.datetime.astimezone(self.__reporting_zone)
 
 
-    def filename(self):
+    def filename_prefix(self):
         datetime = self.datetime.astimezone(pytz.timezone('Etc/UTC'))
         return datetime.strftime("%Y%m%d%H%M")
 
