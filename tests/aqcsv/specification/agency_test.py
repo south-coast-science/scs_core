@@ -10,6 +10,8 @@ from scs_core.aqcsv.specification.agency import Agency
 from scs_core.data.json import JSONify
 
 
+# TODO: test init() for class
+
 # --------------------------------------------------------------------------------------------------------------------
 
 Agency.retrieve()
