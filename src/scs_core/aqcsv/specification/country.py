@@ -6,7 +6,7 @@ Created on 4 Mar 2019
 AQCSV: ISO country codes
 
 example:
-Country:{numeric:324, name:Guinea, iso:GIN}
+{"numeric": 788, "name": "Tunisia", "iso": "TUN"}
 
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 """

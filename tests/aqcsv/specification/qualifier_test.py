@@ -18,7 +18,7 @@ for qualifier in Qualifier.instances():
 print("-")
 
 print("find...")
-code = "a"
+code = None
 qualifier = Qualifier.instance(code)
 print("code:%s qualifier:%s" % (code, qualifier))
 print("-")
