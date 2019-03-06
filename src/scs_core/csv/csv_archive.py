@@ -31,7 +31,7 @@ class CSVArchive(ABC):
                 instance = cls.construct_from_jdict(json.loads(row))
 
                 if instance.pk in cls._retrieved:
-                    raise ValueError("duplicate pk '%s' for instance:%s" % (instance.pk, instance))
+                    raise KeyError("duplicate pk '%s' for instance:%s" % (instance.pk, instance))
 
                 cls._retrieved[instance.pk] = instance
 
@@ -48,9 +48,6 @@ class CSVArchive(ABC):
     def instance(cls, pk):
         if pk is None:
             return None
-
-        if pk not in cls._retrieved:
-            raise ValueError(pk)
 
         return cls._retrieved[pk]
 
