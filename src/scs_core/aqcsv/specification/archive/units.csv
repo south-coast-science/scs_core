@@ -1,0 +1,107 @@
+code,description
+1,Micrograms/cubic meter (25°C)
+2,Micrograms/cubic meter (0°C)
+3,Nanograms/cubic meter (25°C)
+4,Nanograms/cubic meter (0°C)
+5,Milligrams/cubic meter (25°C)
+6,Milligrams/cubic meter (0°C)
+7,Parts per million
+8,Parts per billion
+9,"COHS/1,000 linear feet"
+10,"RUDS/10,000 linear feet"
+11,Meters/second
+12,Miles/hour
+13,Knots
+14,Degrees Compass
+15,Degrees Fahrenheit
+16,Millibars
+17,Degrees Centigrade
+18,Langleys
+19,Percent relative humidity
+20,Microns
+21,Inches (rainfall)
+22,Inches (mercury)
+23,Mcal/sq cm/min
+24,Miles (visibility)
+25,Langleys/minute
+26,Degrees Rankine
+27,Beta Scatter
+28,Degrees Centigrade/100m
+29,Millimeters (rainfall)
+30,Picocuries/cubic meter
+31,Microcuries/cubic meter
+32,Picocuries/sq meter
+33,Microcuries/square meter
+34,Picocuries/cubic centimeter
+35,Microcuries/cubic centimeter
+36,Calories/sq centimeter/hour
+37,Degrees Kelvin
+38,"10,000 Fibers/cubic meter"
+39,Tenths of sky cover
+40,Parts per 100 million
+41,MG S03/100 sq cm/month
+43,"RUS/1,000 linear ft"
+44,μg/sq mile/month
+45,Tons/sq mile/day
+46,Grams/sq meter/day
+47,μg/sq meter/day
+48,1000 Particles/sq inch
+49,100 Particles/sq inch
+50,Number threshold levels
+51,% Loss in reflectance/ month
+52,Microns/week
+53,# Defects/7.7 sq inches/month
+54,Particles/sq millimeter/week
+55,NBS color difference units
+56,Microns/year
+57,Condensation nuclei/cu centimeter
+58,Meters
+59,Millimeters (mercury)
+60,Kilometers/hour
+61,pH Units
+62,Milligrams/liter
+63,Micrograms/liter
+64,Micrograms/milliliter
+65,Cubic meter
+66,Millisiemens/meter
+67,Microequivalence/liter
+68,Millisiemens/centimeter
+69,Microsiemens/centimeter
+70,Mg F/100 sq cm/day
+71,μg F/100 sq cm/day
+72,Cubic feet/minute
+73,liters/minute STP
+74,Pg/cubic meter(25 C)
+75,Micromoles/liter
+76,Liters
+77,Micrograms
+78,Parts per billion Carbon
+79,Watts/sq meter
+80,Mg S03/100 sq cm/day
+81,μg S02/sq cm/day
+82,μg S02/sq meter/day
+83,Cubic meters/minute STP
+84,Micrograms/gram
+85,Pasquill-Gifford stability class
+86,Kilometers (visibility)
+87,Parts per ten million
+88,Ccal/sq cm/minute
+89,Mg/sq meter/hour
+90,Tons/sq mile/month
+91,Mg/sq cm/month
+92,μg/sq meter/month
+93,Grams/sq meter/month
+94,Pounds/sq mile/month
+95,Mg/sq meter/week
+96,μg/sq meter/hour
+97,μg/sq cm/30 days
+98,Mg S04/sq cm/30 days
+99,Mg/sq cm/30 days
+100,Percent hours with precip
+101,Parts per million Carbon
+102,Parts per billion - Mole
+103,Parts per ten million Carbon
+104,Parts per 100 million Carbon
+105,Micrograms/cubic meter (LC)
+106,Minutes
+107,Percent

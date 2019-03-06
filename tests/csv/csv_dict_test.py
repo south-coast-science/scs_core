@@ -75,7 +75,7 @@ print("=")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jdict = json.loads(jstr2, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr2)
 print("jdict2: %s" % jdict)
 print("-")
 
@@ -102,7 +102,7 @@ print("=")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jdict = json.loads(jstr3, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr3)
 print("jdict3: %s" % jdict)
 print("-")
 

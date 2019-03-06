@@ -9,8 +9,6 @@ Created on 14 Oct 2016
 import json
 import time
 
-from collections import OrderedDict
-
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
 from scs_core.data.json import JSONify
@@ -30,7 +28,7 @@ jstr = JSONify.dumps(datum)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 datum = ControlDatum.construct_from_jdict(jdict)
 print(datum)
@@ -56,7 +54,7 @@ jstr = JSONify.dumps(receipt)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 receipt = ControlReceipt.construct_from_jdict(jdict)
 print(receipt)

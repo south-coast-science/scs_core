@@ -70,27 +70,12 @@ class GPGSA(NMEASentence):
 
 
     def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return NotImplemented
+        try:
+            return self.op_mode == other.op_mode and self.nav_mode == other.nav_mode and self.sv == other.sv and \
+                   self.pdop == other.pdop and self.hdop == other.hdop and self.vdop == other.vdop
 
-        return self.__dict__ == other.__dict__
-
-        # if self.op_mode != other.op_mode:
-        #     return False
-        #
-        # if self.nav_mode != other.nav_mode:
-        #     return False
-        #
-        # if self.pdop != other.pdop:
-        #     return False
-        #
-        # if self.hdop != other.hdop:
-        #     return False
-        #
-        # if self.vdop != other.vdop:
-        #     return False
-        #
-        # return True
+        except AttributeError:
+            return False
 
 
     def __ne__(self, other):

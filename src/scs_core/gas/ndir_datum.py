@@ -44,19 +44,11 @@ class NDIRDatum(JSONable):
 
 
     def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
+        try:
+            return self.temp == other.temp and self.cnc == other.cnc and self.cnc_igl == other.cnc_igl
 
-        if self.temp != other.temp:
+        except AttributeError:
             return False
-
-        if self.cnc != other.cnc:
-            return False
-
-        if self.cnc_igl != other.cnc_igl:
-            return False
-
-        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,8 @@
 Created on 4 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/43717757/commas-and-double-quotes-in-csv-files
 """
 
 import csv
@@ -44,14 +46,15 @@ class CSVReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, cast=True):
         """
         Constructor
         """
         self.__filename = filename
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 
-        self.__reader = csv.reader(self.__file)
+        self.__reader = csv.reader(self.__file, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
+                                   skipinitialspace=True)
 
         try:
             paths = next(self.__reader)
@@ -59,6 +62,8 @@ class CSVReader(object):
             paths = []
 
         self.__header = CSVHeader.construct_from_paths(paths)
+
+        self.__cast = cast
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,7 +83,11 @@ class CSVReader(object):
             if len(row) == 0:
                 continue
 
-            datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+            if self.__cast:
+                datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+
+            else:
+                datum = self.__header.as_dict([cell for cell in row])
 
             yield JSONify.dumps(datum)
 
@@ -98,4 +107,4 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
-        return "CSVReader:{filename:%s, header:%s}" % (self.filename, header)
+        return "CSVReader:{filename:%s, cast:%s, header:%s}" % (self.filename, self.__cast, header)

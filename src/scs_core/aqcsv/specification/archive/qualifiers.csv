@@ -1,0 +1,121 @@
+code,description,type-code,type-description
+RC,Chem. spills & indust. accidents,EE,Exceptional Event
+RD,Cleanup after a major disaster,EE,Exceptional Event
+RE,Demolition,EE,Exceptional Event
+RH,Fireworks,EE,Exceptional Event
+RK,Infrequent large gatherings,EE,Exceptional Event
+RL,Other,EE,Exceptional Event
+RM,Prescribed fire,EE,Exceptional Event
+RP,Structural fire,EE,Exceptional Event
+RQ,Terrorist act,EE,Exceptional Event
+RR,Unique traffic disruption,EE,Exceptional Event
+IA,African dust,IO,Informational Only
+IB,Asian dust,IO,Informational Only
+IC,Chem. spills & industrial accidents,IO,Informational Only
+ID,Cleanup after a major disaster,IO,Informational Only
+IE,Demolition,IO,Informational Only
+IF,Fire - Canadian,IO,Informational Only
+IG,Fire - Mexico/Central America,IO,Informational Only
+IH,Fireworks,IO,Informational Only
+II,High pollen count,IO,Informational Only
+IJ,High winds,IO,Informational Only
+IK,Infrequent large gatherings,IO,Informational Only
+IL,Other,IO,Informational Only
+IM,Prescribed fire,IO,Informational Only
+IN,Seismic activity,IO,Informational Only
+IO,Stratospheric ozone intrusion,IO,Informational Only
+IP,Structural fire,IO,Informational Only
+IQ,Terrorist act,IO,Informational Only
+IR,Unique traffic disruption,IO,Informational Only
+IS,Volcanic eruptions,IO,Informational Only
+IT,Wildfire-U.S.,IO,Informational Only
+IU,Wildland fire use fire-U.S.,IO,Informational Only
+J,Construction/demolition,IO,Informational Only
+K,Agricultural tilling,IO,Informational Only
+L,Highway construction,IO,Informational Only
+P,Roofing operations,IO,Informational Only
+RA,African dust,NE,Natural Event
+RB,Asian dust,NE,Natural Event
+RF,Fire - Canadian,NE,Natural Event
+RG,Fire - Mexico/Central America,NE,Natural Event
+RI,High pollen count,NE,Natural Event
+RJ,High winds,NE,Natural Event
+RN,Seismic activity,NE,Natural Event
+RO,Stratospheric ozone intrusion,NE,Natural Event
+RS,Volcanic eruptions,NE,Natural Event
+RT,Wildfire-U.S.,NE,Natural Event
+RU,Wildland fire use fire-U.S.,NE,Natural Event
+AA,Sample pressure out of limits,ND,Null Data
+AB,Technician unavailable,ND,Null Data
+AC,Construction/repairs in area,ND,Null Data
+AD,Shelter storm damage,ND,Null Data
+AE,Shelter temperature outside limits,ND,Null Data
+AF,Scheduled but not collected,ND,Null Data
+AG,Sample time out of limits,ND,Null Data
+AH,Sample flow rate out of limits,ND,Null Data
+AI,Insufficient data (cannot calculate),ND,Null Data
+AJ,Filter damage,ND,Null Data
+AK,Filter leak,ND,Null Data
+AL,Voided by operator,ND,Null Data
+AM,Miscellaneous void,ND,Null Data
+AN,Machine malfunction,ND,Null Data
+AO,Bad weather,ND,Null Data
+AP,Vandalism,ND,Null Data
+AQ,Collection error,ND,Null Data
+AR,Lab error,ND,Null Data
+AS,Poor quality assurance results,ND,Null Data
+AT,Calibration,ND,Null Data
+AU,Monitoring Waived,ND,Null Data
+AV,Power failure,ND,Null Data
+AW,Wildlife damage,ND,Null Data
+AX,Precision check,ND,Null Data
+AY,QC control points (zero/span),ND,Null Data
+AZ,QC audit,ND,Null Data
+BA,Maintenance/routine repairs,ND,Null Data
+BB,Unable to reach site,ND,Null Data
+BC,Multi-point calibration,ND,Null Data
+BD,Auto calibration,ND,Null Data
+BE,Building/site repair,ND,Null Data
+BF,Precision/zero/span,ND,Null Data
+BG,Missing ozone data not likely to exceed level of standard,ND,Null Data
+BH,Interference/co-elution/misidentification,ND,Null Data
+BI,Lost or damaged in transit,ND,Null Data
+BJ,Operator error,ND,Null Data
+BK,Site computer/data logger down,ND,Null Data
+BL,QA audit,ND,Null Data
+BM,Accuracy check,ND,Null Data
+CS,Laboratory calibration standard,ND,Null Data
+DA,"Aberrant data (corrupt files, aberrant chromatography, spikes, shifts)",ND,Null Data
+FI,Filter inspection flag,ND,Null Data
+MB,Method blank (analytical),ND,Null Data
+MC,Module end cap missing,ND,Null Data
+SA,Storm approaching,ND,Null Data
+ST,Calibration verification standard,ND,Null Data
+TC,Component check & retention time standard,ND,Null Data
+TS,Holding time or transport temperature is out of specs.,ND,Null Data
+XX,Experimental data,ND,Null Data
+1,Deviation from a CFR/critical criteria requirement,QA,Quality Assurance
+2,Operational deviation,QA,Quality Assurance
+3,Field issue,QA,Quality Assurance
+4,Lab issue,QA,Quality Assurance
+5,Outlier,QA,Quality Assurance
+6,QAPP issue,QA,Quality Assurance
+7,Below lowest calibration level,QA,Quality Assurance
+9,Negative value detected - zero reported,QA,Quality Assurance
+CC,Clean canister residue,QA,Quality Assurance
+EH,Estimated; exceeds upper range,QA,Quality Assurance
+FB,Field blank value above acceptable limit,QA,Quality Assurance
+HT,Sample pick-up hold time exceeded; data questionable,QA,Quality Assurance
+LB,Lab blank value above acceptable limit,QA,Quality Assurance
+LJ,Identification of analyte is acceptable; reported value is an estimate,QA,Quality Assurance
+LK,Analyte identified; reported value may be biased high,QA,Quality Assurance
+LL,Analyte identified; reported value may be biased low,QA,Quality Assurance
+MD,Value between MDL and IDL,QA,Quality Assurance
+ND,No value detected,QA,Quality Assurance
+SQ,Values between SQL and MDL,QA,Quality Assurance
+TB,Trip blank value above acceptable limit,QA,Quality Assurance
+V,Validated value,QA,Quality Assurance
+VB,Value below normal; no reason to invalidate,QA,Quality Assurance
+W,Flow rate average out of spec.,QA,Quality Assurance
+X,Filter temperature difference out of spec.,QA,Quality Assurance
+Y,Elapsed sample time out of spec.,QA,Quality Assurance

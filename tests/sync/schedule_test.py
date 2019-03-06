@@ -54,7 +54,7 @@ print(jstr, file=sys.stderr)
 print("-")
 
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 schedule = Schedule.construct_from_jdict(jdict)
 print(schedule)

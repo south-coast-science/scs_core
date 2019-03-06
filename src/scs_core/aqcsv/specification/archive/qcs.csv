@@ -1,0 +1,11 @@
+code,definition
+0,Valid
+1,Adjusted
+2,Averaged
+3,Interpolated
+4,Estimated
+5,Suspect
+6,Suspect (audit failure)
+7,Insufficient data
+8,Missing
+9,Invalid

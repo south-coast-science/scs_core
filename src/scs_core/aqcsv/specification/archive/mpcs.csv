@@ -1,0 +1,5 @@
+code,abbreviation,definition,description
+1,MDL,Method Detection Limit,EPA defines the method detection limit as 'the minimum concentration of a substance that can be measured and reported with 99% confidence that the analyte concentration is greater than zero and is determined from analysis of a sample in a given matrix containing the analyte.'
+2,XC,Critical Value,Threshold above which a measurement result is unlikely to result from a true value of zero
+3,XD,Minimum Detectable Value,The measure of inherent detection capability of a measurement process.
+4,XQ,Minimum Quantifiable Value,The measure of the quantification capability of a measurement process. This value indicates the level at which the measurement process has a relative standard deviation of 0.1.

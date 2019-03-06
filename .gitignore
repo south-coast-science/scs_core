@@ -1,6 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *$py.class
 
 # C extensions
@@ -92,8 +91,15 @@ ENV/
 .idea/
 
 # South Coast Science
-**/*.csv
 **/*.log
 **/*.numbers
 **/*.xls
 **/*.xlsx
+!/scs_core/aqcsv/format/archive/countries.csv
+!/scs_core/aqcsv/format/archive/units.csv
+!/scs_core/aqcsv/format/archive/parameters.csv
+!/scs_core/aqcsv/format/archive/mcps.csv
+!/scs_core/aqcsv/format/archive/qcs.csv
+!/scs_core/aqcsv/format/archive/qualifiers.csv
+!/src/scs_core/aqcsv/specification/archive/methods.csv
+!/tests/aqcsv/data/AQDM_2047798397.csv

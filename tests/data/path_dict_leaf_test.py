@@ -8,8 +8,6 @@ Created on 27 Sep 2016
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.path_dict import PathDict
 
 
@@ -28,7 +26,7 @@ print("-")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 datum = PathDict(jdict)
 print(datum)

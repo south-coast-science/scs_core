@@ -8,8 +8,6 @@ Created on 29 May 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
@@ -79,7 +77,7 @@ jstr = JSONify.dumps(uptime)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 print("-")
 

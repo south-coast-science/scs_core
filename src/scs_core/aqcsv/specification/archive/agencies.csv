@@ -1,0 +1,284 @@
+code,name
+AL1,Alabama Department of Environmental Management
+AL2,Jefferson County Department of Health
+CA1,Sacramento Metro. AQMD
+CT1,Connecticut Dept. of Environmental Protection
+DC1,District of Columbia - Department of the Environment
+DC2,Metropolitan Washington COG
+DMC,Data Management Center
+DE1,Delaware Dept. of Natural Resources and Environment
+ESC,ESC Dataloggers
+FL1,Florida Dept. of Environmental Protection
+FL2,Broward County Air Quality Division
+FL3,City of Jacksonville - Environmental Quality Division
+FL4,Hillsborough County - Tampa
+FL5,Pinellas County
+IA1,Iowa DNR
+IA2,Polk Co. Air Quality Division
+IA3,Linn Co. Public Health
+IL1,Illinois EPA
+IN1,Indiana Dept. of Environmental Management
+IN2,Indianapolis OES
+KS1,Kansas Dept. of Health and Environment
+KY1,Kentucky DEP
+KY2,Louisville Metro Air Pollution Control District
+LA1,Louisiana Department of Environmental Quality
+MA1,Massachusetts Dept. of Environmental Protection
+MD1,Maryland Department of Environment
+ME1,Maine Dept. of Environmental Protection
+MI1,Michigan DEQ
+MN1,Minnesota Pollution Control Agency
+MO1,Missouri Department of Natural Resources
+MS1,Mississippi DEQ
+NC1,North Carolina DENR - Division of Air Quality
+NC2,Mecklenburg County Air Quality
+NC3,Forsyth County Environmental Affairs Dept.
+NC4,West North Carolina Regional Air Pollution Agency
+NH1,New Hampshire Dept. of Environmental Services
+NJ1,New Jersey Dept. of Environmental Protection
+NY1,New York Dept. of Environmental Conservation
+OH1,Ohio EPA-DAPC
+PA1,Pennsylvania Dept. of Environmental Protection
+PA2,Philadelphia Air Management Services
+PA3,Allegheny County
+RI1,Rhode Island Dept. of Environmental Management
+SC1,South Carolina DHEC
+TN1,Tennessee Air Pollution Control Division
+TN2,Davidson County PCD
+TN4,Knox County Dept. of Air Quality Management
+AL3,Tennessee Valley Authority RSOE
+TX1,Texas Commission on Environmental Quality
+VA1,Virginia Dept. of Environmental Quality
+VT1,Vermont Air Pollution Control Division
+WI1,Wisconsin Dept. of Natural Resources
+WV1,West Virginia Division of Air Quality
+AR1,Arkansas Dept. of Environmental Quality
+WA1,Washington Department of Ecology
+CN1,Environment Canada
+NL1,Newfoundland & Labrador DEC
+PE1,Canada-Prince Edward Island1
+NS1,Canada-Nova Scotia1
+NB1,Canada-New Brunswick1
+QC2,Canada-Quebec2
+US1,United States1
+QC1,Canada-Quebec1
+QC3,Canada-Quebec3
+AZ3,Pima County Department of Environmental Quality
+NV1,Clark County Department of Air Quality Management
+TN5,Chattanooga-Hamilton County Air Pollution Control Bureau
+OK1,Oklahoma Department of Environmental Quality
+TN3,Memphis and Shelby County Health Department
+OR1,Oregon Dept. of Environmental Quality
+CK1,Cherokee Nation
+HI1,Hawaii State Dept. of Health
+GA1,Georgia Department of Natural Resources
+CA5,Ventura County APCD
+CA3,South Coast AQMD
+AZ2,Maricopa County Air Quality Department
+NV2,Washoe County District Health Dept. - Reno
+CA2,San Francisco Bay Area AQMD
+NP1,National Park Service
+ID1,Idaho Department of Environmental Quality
+NM1,New Mexico Air Quality Bureau
+CA6,San Joaquin Valley Unified APCD
+CA4,San Diego APCD
+CA7,Mojave Desert AQMD
+CO1,Colorado Department of Public Health and Environment
+NM2,Albuquerque Environmental Health Department
+BC2,Greater Vancouver Regional District
+UT1,Utah Department of Environmental Quality
+LA2,Louisiana DEQ - New Orleans
+LA3,Louisiana DEQ - Shreveport
+OR2,Lane Region Air Pollution Authority
+CA8,California Air Resources Board
+CA9,Santa Barbara County Air Pollution Control District
+AZ1,Arizona Department of Environmental Quality
+WV2,West Virginia Division of Air Quality - Wheeling
+BC1,British Columbia Ministry of Environment
+ON1,Ontario Ministry of the Environment
+CN2,Canadian Air and Precipitation Monitoring Network
+NP2,National Park Service 2
+AL4,Huntsville Natural Resources and Environmental Management
+WA4,Northwest Air Pollution Authority
+AB1,Environment Canada - Alberta
+WT1,Wampanoag Tribe
+QT1,Quapaw Tribe
+ND1,North Dakota Department of Health
+PT1,Ponca Tribe Office of Environmental Management
+AC1,Alabama-Coushatta Tribe of Texas
+MT1,Montana DEQ
+NP3,National Park Service 3
+SD1,South Dakota Department of Environmental and Natural Resources
+NE1,Nebraska Department of Environmental Quality
+FS1,Forest Service
+EP1,EPA Region 1
+NE2,Douglas County Health Department (Omaha)
+AIR,AIRSIS
+MM1,Aroostook Band of Micmacs
+AK1,State of Alaska DEC
+ST1,Sonoma Technology
+CN3,Manitoba Conservation Air Quality Section
+JP1,Pueblo of Jemez - Department of Resource Protection
+FL6,Miami-Dade County Department of Environmental Resources Management
+FL7,Orange County Environmental Protection Division
+FL8,Palm Beach County Health Department Division of Environmental Science and Engineering
+MO2,St. Louis Metropolitan Area (American Lung Association)
+MO3,Mid-America Regional Council
+OH6,Hamilton County Environmental Services
+OH2,Northeast Ohio Areawide Coordinating Agency
+OH3,MORPC
+GST,Guest
+CA0,Imperial County Air Pollution Control District
+FL0,City of Lakeland
+OAQ,EPA Office of Air Quality Planning and Standards
+EBM,Ebams Project
+ORD,EPA Office of Research and Development
+PLA,Placer County APCD
+NOA,NOAA
+AMU,Appalachian Mountain Club
+WA2,Olympic Region Clean Air Agency
+OH4,Regional Air Pollution Control Agency – Dayton
+NU1,Northeast States for Coordinated Air Use Management
+MAR,Mid-Atlantic Regional Air Management Association
+NAS,NASA-EPA
+ER9,EPA Region 9 Emergency Responder
+LAD,LADCO
+WON,"Weather or Not, Inc"
+NY2,New York Dept. of Environmental Conservation – PM2.5
+MU1,Millersville University - Department of Meteorology
+WA3,Spokane Regional Clean Air Agency
+FL9,Sarasota County Environmental Services - Air and Water Quality Protection
+OH5,Eastgate Regional Council of Governments
+EP2,EPA Region 2
+EP3,EPA Region 3
+EP4,EPA Region 4
+EP5,EPA Region 5
+EP6,EPA Region 6
+EP7,EPA Region 7
+EP8,EPA Region 8
+EP9,EPA Region 9
+E10,EPA Region 10
+EPA,USEPA-RTP
+OTH,Other Agency
+MX1,Baja California
+KY3,Lexington Area Metropolitan Planning Organization
+WA5,Puget Sound Clean Air Agency
+MDS,MADIS
+NOR,New Orleans EBAMS - Weston Solutions
+IN3,Evansville EPA - Vanderburgh County Health Dept.
+MAH,Massachusetts Department of Public Health
+WV3,Eastern Panhandle Clean Air Connection
+NY3,New York State Department of Health
+DHS,Department of Homeland Security
+LNL,Los Alamos National Laboratory
+MTC,MACTEC
+UTX,University of Texas
+SMT,St. Regis Mohawk Tribe
+YDP,Ysleta Del Sur Pueblo Tribe
+TUL,Tulane University
+PDS,Paladin Data Systems
+OAP,EPA Office of Atmospheric Programs
+UMC,University of Mississippi Medical Center
+NGD,National Guard
+USC,University of Southern California - Keck School of Medicine
+VIC,"City of Victoria, Texas"
+SFN,Sac and Fox Nation
+SK1,Saskatchewan Environment
+IN4,Indiana Dept. of Environmental Management 2
+OH7,Cleveland Division of Air Quality
+TRX,Tribal Environmental Exchange Network
+DN1,Delaware Nation
+SR1,Salt River Pima-Maricopa Indian Community
+URI,University of Rhode Island - Center for Atmospheric Chemistry Studies
+DU1,Dalhousie University
+NGC,Northrop Grumman
+CDC,Centers for Disease Control and Prevention
+BAT,Battelle
+OTC,Ozone Transport Commission
+JCE,UMBC - Joint Center for Earth Systems Technology
+MO4,Springfield Air Quality Control
+MI2,West Michigan Shoreline Regional Development Commission
+SM1,Montana/Idaho Airshed Group - SMU
+EAC,City of Ottawa - Environmental Advisory Committee
+RUT,Rutgers University - Department of Environmental Sciences
+KC1,Kern County Air Pollution Contol District
+WY1,Wyoming Department of Environmental Quality
+OH8,City of Akron
+JSU,Jackson State University
+UDO,"US Department of Agriculture - Portland, OR"
+CO2,Denver Department of Environmental Health
+YS1,Yolo-Solano AQMD
+UCD,University of California - Davis
+PSU,Plymouth State University
+TP1,Taos Pueblo Environmental Office
+OHU,Ohio University
+PNL,Pacific Northwest National Laboratory
+UMD,University of Maryland
+CR1,Confederated Tribes of Colville Reservation
+NPT,Nez Perce Tribe
+WSU,Washington State University
+SSA,"Science Systems and Applications, Inc."
+MAT,Mescalero Apache Tribe
+DUK,Children's Environmental Health Initiative - Duke University
+SHD,Salt lake City Health Department
+PAU,Penn State University Meteorology
+AZ4,Pinal County Air Quality Control District
+UMA,University of Massachusetts Medical School
+UAH,University of Alabama in Huntsville
+ASU,Arizona State University - Geographical Sciences
+LLL,Lawrence Livermore National Laboratory
+NP4,National Park Service 4
+LBL,Lawrence Berkeley National Laboratory
+NMR,New Media Research Institute
+FOR,Foreca Weather
+MSU,Michigan State University - Department of Geography
+NCR,National Center for Atmospheric Research
+GMU,George Mason University - Eastfire Lab
+MTO,MeteoCity
+PIN,Penobscot Indian Nation
+FPA,Fort Peck Assiniboine & Sioux Tribes
+YT1,Yurok Tribe
+CDA,Coeur d'Alene Tribe
+CNC,State Climate Office of North Carolina
+CCW,Carson City Weather
+UAE,United Arab Emirates University
+TPM,T Plus Medical
+NAU,Northern Arizona University - Institute for Tribal Environmental Professionals
+MIT,Massachusetts Institute of Technology
+NAI,NetAlerts Inc.
+DPH,California Department of Public Health
+WSI,WSI Corporation
+GSS,Global Security Services
+FMY,Fort McDowell Yavapai Nation
+MDA,MDA Federal Inc
+TN6,Ozone Action Partnership - NE Tennessee
+TN7,Clean Air Partnership of Middle TN
+EFT,EnviroFlash Test
+NRL,Naval Research Laboratory
+CKU,Clarkson University
+EEA,European Environment Agency
+ARA,Atmospheric Research and Analysis
+BUT,Butte County Air Quality Management District
+EVT,East Valley Tribune
+ELD,El Dorado County AQMD
+MEN,Mendocino County AQMD
+NCA,North Coast Unified Air Quality Management District
+HTB,The Herald-Times Bloomington IN
+LAG,City of La Grande
+THM,Tahama County Air Pollution Control District
+GLC,Glenn County Air Pollution Control District
+FRA,Feather River Air Quality Management District
+BAM,Baron Advanced Meteorological Systems
+SHA,Shasta County Air Quality Management District
+NOS,Northern Sierra AQMD
+GRO,"Grove City, OH"
+MON,Monterey Bay Unified APCD
+IHS,Indian Health Service
+SIS,Siskiyou County APCD
+MOO,Mooretown Rancheria
+GAT,Georgia Tech - School of Earth and Atmospheric Sciences
+WA6,Southwest Clean Air Agency
+PAS,Pascua Yaqui Tribe
+OEI,EPA Office of Environmental Information
+TOR,Torres-Martinez Tribe
+UWA,University of Washington

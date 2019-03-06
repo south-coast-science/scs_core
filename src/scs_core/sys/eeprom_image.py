@@ -56,10 +56,11 @@ class EEPROMImage(object):
 
 
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
+        try:
             return self.content == other.content
 
-        return False
+        except AttributeError:
+            return False
 
 
     def __ne__(self, other):
