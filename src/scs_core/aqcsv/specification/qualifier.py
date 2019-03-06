@@ -64,6 +64,15 @@ class Qualifier(JSONable, CSVArchive):
         self.__type_description = type_description              # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.description == other.description and \
+                   self.type_code == other.type_code and self.type_description == other.type_description
+
+        except AttributeError:
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

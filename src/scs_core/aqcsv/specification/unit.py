@@ -8,7 +8,7 @@ AQCSV: Units
 NB: initialisation is performed at the foot of this class
 
 example:
-{"code": "083", "description": "Cubic meters/minute STP"}
+{"code": 96, "description": "\u03bcg/sq meter/hour"}
 """
 
 import os
@@ -54,8 +54,16 @@ class Unit(JSONable, CSVArchive):
         """
         Constructor
         """
-        self.__code = code                                  # string
+        self.__code = int(code)                             # int(3)
         self.__description = description                    # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.description == other.description
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,7 +99,7 @@ class Unit(JSONable, CSVArchive):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Unit:{code:%s, description:%s}" % (self.code, self.description)
+        return "Unit:{code:%03d, description:%s}" % (self.code, self.description)
 
 
 # --------------------------------------------------------------------------------------------------------------------

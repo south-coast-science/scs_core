@@ -4,15 +4,15 @@ Created on 5 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 all:
-site,data_status,action_code,datetime,parameter,duration,frequency,value,unit,qc,poc,
+site,data_status,action_code,datetime,parameter,duration,frequency,value,unit_code,qc_code,poc,
 lat,lon,GISdatum,elev,method_code,mpc,mpc_value,uncertainty,qualifiers
 
 first time / mobile:
-site,data_status,,datetime1,parameter,duration,,value,unit,qc,poc,
+site,data_status,,datetime1,parameter,duration,,value,unit_code,qc_code,poc,
 lat1,lon1,,,,,,,
 
-subsequent...
-site,data_status,,datetime,parameter,duration,,value,unit,qc,poc,
+subsequent:
+site,data_status,,datetime,parameter,duration,,value,unit_code,qc_code,poc,
 ,,,,,,,,
 """
 
@@ -21,10 +21,13 @@ from collections import OrderedDict
 from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
 from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 
+from scs_core.aqcsv.specification.parameter import Parameter
+from scs_core.aqcsv.specification.qc import QC
+from scs_core.aqcsv.specification.unit import Unit
+
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
-
-# TODO: parameter -> parameter_code
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -57,14 +60,14 @@ class AQCSVRecord(JSONable):
         action_code = jdict.get('action_code')
 
         datetime_code = jdict.get('datetime')
-        parameter = jdict.get('parameter')
+        parameter_code = jdict.get('parameter')
         duration = jdict.get('duration')
 
         frequency = jdict.get('frequency')
 
         value = jdict.get('value')
-        unit = jdict.get('unit')
-        qc = jdict.get('qc')
+        unit_code = jdict.get('unit')
+        qc_code = jdict.get('qc')
         poc = jdict.get('poc')
 
         lat = jdict.get('lat')
@@ -79,74 +82,76 @@ class AQCSVRecord(JSONable):
         qualifiers = jdict.get('qualifiers')
 
         return AQCSVRecord(site_code=site_code, data_status=data_status, action_code=action_code,
-                           datetime_code=datetime_code, parameter=parameter, duration=duration, frequency=frequency,
-                           value=value, unit=unit, qc=qc, poc=poc, lat=lat, lon=lon, gis_datum=gis_datum, elev=elev,
-                           method_code=method_code, mpc=mpc, mpc_value=mpc_value, uncertainty=uncertainty,
-                           qualifiers=qualifiers)
+                           datetime_code=datetime_code, parameter_code=parameter_code, duration=duration,
+                           frequency=frequency, value=value, unit_code=unit_code, qc_code=qc_code, poc=poc,
+                           lat=lat, lon=lon, gis_datum=gis_datum, elev=elev, method_code=method_code,
+                           mpc=mpc, mpc_value=mpc_value, uncertainty=uncertainty, qualifiers=qualifiers)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, site_code=None, data_status=None, action_code=None, datetime_code=None, parameter=None,
-                 duration=None, frequency=None, value=None, unit=None, qc=None,
-                 poc=None, lat=None, lon=None, gis_datum=None, elev=None,
-                 method_code=None, mpc=None, mpc_value=None, uncertainty=None, qualifiers=None):
+    def __init__(self, site_code=None, data_status=None, action_code=None,
+                 datetime_code=None, parameter_code=None, duration=None,
+                 frequency=None, value=None, unit_code=None, qc_code=None, poc=None,
+                 lat=None, lon=None, gis_datum=None, elev=None, method_code=None,
+                 mpc=None, mpc_value=None, uncertainty=None, qualifiers=None):
         """
         Constructor
         """
-        self.__site_code = site_code                            # nvarchar(12)
-        self.__data_status = data_status                        # int(1)
+        self.__site_code = site_code                                # nvarchar(12)      required
+        self.__data_status = Datum.int(data_status)                 # int(1)            required
 
-        self.__action_code = action_code                        # int(1)
+        self.__action_code = Datum.int(action_code)                 # int(1)
 
-        self.__datetime_code = datetime_code                    # nvarchar(20)
-        self.__parameter = parameter                            # int(5)
-        self.__duration = duration                              # int
+        self.__datetime_code = datetime_code                        # nvarchar(20)      required
+        self.__parameter_code = Datum.int(parameter_code)           # int(5)            required
+        self.__duration = Datum.int(duration)                       # int               required
 
-        self.__frequency = frequency                            # int
+        self.__frequency = Datum.int(frequency)                     # int
 
-        self.__value = value                                    # numeric(10,5)
-        self.__unit = unit                                      # int(3)
-        self.__qc = qc                                          # int
-        self.__poc = poc                                        # int
+        self.__value = Datum.float(value, 5)                        # numeric(10,5)     required
+        self.__unit_code = Datum.int(unit_code)                     # int(3)            required
+        self.__qc_code = Datum.int(qc_code)                         # int               required
+        self.__poc = Datum.int(poc)                                 # int               required
 
-        self.__lat = lat                                        # numeric(10,6)
-        self.__lon = lon                                        # numeric(10,6)
-        self.__gis_datum = gis_datum                            # nvarchar(10)
-        self.__elev = elev                                      # int
+        self.__lat = Datum.float(lat, 6)                            # numeric(10,6)
+        self.__lon = Datum.float(lon, 6)                            # numeric(10,6)
+        self.__gis_datum = gis_datum                                # nvarchar(10)
+        self.__elev = Datum.int(elev)                               # int
 
-        self.__method_code = method_code                        # nvarchar(3)
-        self.__mpc = mpc                                        # int
-        self.__mpc_value = mpc_value                            # numeric(10,5)
-        self.__uncertainty = uncertainty                        # numeric(10,5)
-        self.__qualifiers = qualifiers                          # nvarchar(255)
+        self.__method_code = Datum.int(method_code)                 # int(3)
+        self.__mpc = Datum.int(mpc)                                 # int
+        self.__mpc_value = Datum.float(mpc_value, 5)                # numeric(10,5)
+        self.__uncertainty = Datum.float(uncertainty, 5)            # numeric(10,5)
+        self.__qualifiers = qualifiers                              # nvarchar(255)
 
 
     def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
+        try:
+            return \
+                self.site_code == other.site_code and \
+                self.data_status == other.data_status and \
+                self.action_code == other.action_code and \
+                self.datetime_code == other.datetime_code and \
+                self.parameter_code == other.parameter_code and \
+                self.duration == other.duration and \
+                self.frequency == other.frequency and \
+                self.value == other.value and \
+                self.unit_code == other.unit_code and \
+                self.qc_code == other.qc_code and \
+                self.poc == other.poc and \
+                self.lat == other.lat and \
+                self.lon == other.lon and \
+                self.gis_datum == other.gis_datum and \
+                self.elev == other.elev and \
+                self.method_code == other.method_code and \
+                self.mpc == other.mpc and \
+                self.mpc_value == other.mpc_value and \
+                self.uncertainty == other.uncertainty and \
+                self.qualifiers == other.qualifiers
 
-        return \
-            self.site_code == other.site_code and \
-            self.data_status == other.data_status and \
-            self.action_code == other.action_code and \
-            self.datetime_code == other.datetime_code and \
-            self.parameter == other.parameter and \
-            self.duration == other.duration and \
-            self.frequency == other.frequency and \
-            self.value == other.value and \
-            self.unit == other.unit and \
-            self.qc == other.qc and \
-            self.poc == other.poc and \
-            self.lat == other.lat and \
-            self.lon == other.lon and \
-            self.gis_datum == other.gis_datum and \
-            self.elev == other.elev and \
-            self.method_code == other.method_code and \
-            self.mpc == other.mpc and \
-            self.mpc_value == other.mpc_value and \
-            self.uncertainty == other.uncertainty and \
-            self.qualifiers == other.qualifiers
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -160,14 +165,14 @@ class AQCSVRecord(JSONable):
         jdict['action_code'] = self.action_code
 
         jdict['datetime'] = self.datetime_code
-        jdict['parameter'] = self.parameter
+        jdict['parameter'] = self.parameter_code
         jdict['duration'] = self.duration
 
         jdict['frequency'] = self.frequency
 
         jdict['value'] = self.value
-        jdict['unit'] = self.unit
-        jdict['qc'] = self.qc
+        jdict['unit'] = self.unit_code
+        jdict['qc'] = self.qc_code
         jdict['poc'] = self.poc
 
         jdict['lat'] = self.lat
@@ -186,12 +191,24 @@ class AQCSVRecord(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def site(self):
+        return AQCSVSite.construct_from_code(self.site_code)
+
+
     def datetime(self):
         return AQCSVDatetime.construct_from_code(self.datetime_code)
 
 
-    def site(self):
-        return AQCSVSite.construct_from_code(self.site_code)
+    def parameter(self):
+        return Parameter.instance(self.parameter_code)
+
+
+    def unit(self):
+        return Unit.instance(self.unit_code)
+
+
+    def qc(self):
+        return QC.instance(self.qc_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -217,8 +234,8 @@ class AQCSVRecord(JSONable):
 
 
     @property
-    def parameter(self):
-        return self.__parameter
+    def parameter_code(self):
+        return self.__parameter_code
 
 
     @property
@@ -237,13 +254,13 @@ class AQCSVRecord(JSONable):
 
 
     @property
-    def unit(self):
-        return self.__unit
+    def unit_code(self):
+        return self.__unit_code
 
 
     @property
-    def qc(self):
-        return self.__qc
+    def qc_code(self):
+        return self.__qc_code
 
 
     @property
@@ -299,14 +316,14 @@ class AQCSVRecord(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVRecord:{site_code:%s, data_status:%s, action_code:%s, datetime_code:%s, parameter:%s, " \
-               "duration:%s, frequency:%s, value:%s, unit:%s, qc:%s, " \
-               "poc:%s, lat:%s, lon:%s, gis_datum:%s, elev:%s, " \
-               "method_code:%s, code:%s, mpc_value:%s, uncertainty:%s, qualifiers:%s}" % \
-               (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter,
-                self.duration, self.frequency, self.value, self.unit, self.qc,
-                self.poc, self.lat, self.lon, self.gis_datum, self.elev,
-                self.method_code, self.mpc, self.mpc_value, self.uncertainty, self.qualifiers)
+        return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
+               "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, lat:%s, lon:%s, " \
+               "gis_datum:%s, elev:%s, method_code:%s, mpc:%s, mpc_value:%s, " \
+               "uncertainty:%s, qualifiers:%s}" % \
+               (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter_code,
+                self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc, self.lat, self.lon,
+                self.gis_datum, self.elev, self.method_code, self.mpc, self.mpc_value,
+                self.uncertainty, self.qualifiers)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -318,22 +335,23 @@ class AQCSVFirstRecord(AQCSVRecord):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, site_code, data_status, datetime_code, parameter, duration, value, unit, qc, poc, lat, lon):
+    def __init__(self, site_code, data_status, datetime_code, parameter_code, duration, value, unit_code,
+                 qc_code, poc, lat, lon):
         """
         Constructor
         """
         super().__init__(site_code=site_code, data_status=data_status, datetime_code=datetime_code,
-                         parameter=parameter, duration=duration, value=value, unit=unit, qc=qc, poc=poc,
-                         lat=lat, lon=lon)
+                         parameter_code=parameter_code, duration=duration, value=value, unit_code=unit_code,
+                         qc_code=qc_code, poc=poc, lat=lat, lon=lon)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVFirstRecord:{site_code:%s, data_status:%s, datetime_code:%s, parameter:%s, " \
-               "duration:%s, value:%s, unit:%s, qc:%s, poc:%s, lat:%s, lon:%s}" % \
-               (self.site_code, self.data_status, self.datetime_code, self.parameter,
-                self.duration, self.value, self.unit, self.qc, self.poc, self.lat, self.lon)
+        return "AQCSVFirstRecord:{site_code:%s, data_status:%1d, datetime_code:%s, parameter_code:%05d, " \
+               "duration:%d, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, lat:%0.6f, lon:%0.6f}" % \
+               (self.site_code, self.data_status, self.datetime_code, self.parameter_code,
+                self.duration, self.value, self.unit_code, self.qc_code, self.poc, self.lat, self.lon)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -345,18 +363,20 @@ class AQCSVSubsequentRecord(AQCSVRecord):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, site_code, data_status, datetime_code, parameter, duration, value, unit, qc, poc):
+    def __init__(self, site_code, data_status, datetime_code, parameter_code, duration, value, unit_code,
+                 qc_code, poc):
         """
         Constructor
         """
         super().__init__(site_code=site_code, data_status=data_status, datetime_code=datetime_code,
-                         parameter=parameter, duration=duration, value=value, unit=unit, qc=qc, poc=poc)
+                         parameter_code=parameter_code, duration=duration, value=value, unit_code=unit_code,
+                         qc_code=qc_code, poc=poc)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVSubsequentRecord:{site_code:%s, data_status:%s, datetime_code:%s, parameter:%s, " \
-               "duration:%s, value:%s, unit:%s, qc:%s, poc:%s}" % \
-               (self.site_code, self.data_status, self.datetime_code, self.parameter,
-                self.duration, self.value, self.unit, self.qc, self.poc)
+        return "AQCSVSubsequentRecord:{site_code:%s, data_status:%1d, datetime_code:%s, parameter_code:%05d, " \
+               "duration:%d, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d}" % \
+               (self.site_code, self.data_status, self.datetime_code, self.parameter_code,
+                self.duration, self.value, self.unit_code, self.qc_code, self.poc)

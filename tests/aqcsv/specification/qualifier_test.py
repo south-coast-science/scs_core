@@ -18,13 +18,22 @@ for qualifier in Qualifier.instances():
 print("-")
 
 print("find...")
-code = "BL"
-qualifier = Qualifier.instance(code)
-print("code:%s qualifier:%s" % (code, qualifier))
-print(JSONify.dumps(qualifier))
-print("-")
-
 code = "a"
 qualifier = Qualifier.instance(code)
 print("code:%s qualifier:%s" % (code, qualifier))
+print("-")
+
+code = "BL"
+qualifier = Qualifier.instance(code)
+print("code:%s qualifier:%s" % (code, qualifier))
+
+jdict = qualifier.as_json()
+print(JSONify.dumps(qualifier))
+print("-")
+
+remade = Qualifier.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == qualifier
+print("remade == qualifier: %s" % equality)
 print("-")

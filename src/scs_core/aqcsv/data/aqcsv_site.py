@@ -8,7 +8,8 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.aqcsv.specification.country import Country
+from scs_core.aqcsv.specification.country_numeric import CountryNumeric
+
 from scs_core.data.json import JSONable
 
 
@@ -48,19 +49,20 @@ class AQCSVSite(JSONable):
         """
         Constructor
         """
-        self.__country_code = country_code                  # string
+        self.__country_code = int(country_code)             # int(3)
         self.__location_code = location_code                # string
         self.__is_mobile = is_mobile                        # bool
 
 
     def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
+        try:
+            return \
+                self.country_code == other.country_code and \
+                self.location_code == other.location_code and \
+                self.is_mobile == other.is_mobile
 
-        return \
-            self.country_code == other.country_code and \
-            self.location_code == other.location_code and \
-            self.is_mobile == other.is_mobile
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,7 +70,7 @@ class AQCSVSite(JSONable):
     def as_code(self):
         mobility_code = 'MM' if self.is_mobile else ''
 
-        return self.country_code + mobility_code + self.location_code
+        return str(self.country_code) + mobility_code + self.location_code
 
 
     def as_json(self):
@@ -84,7 +86,7 @@ class AQCSVSite(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def country(self):
-        return Country.find_by_numeric(self.country_code)
+        return CountryNumeric.instance(self.country_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -107,5 +109,5 @@ class AQCSVSite(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVSite:{country_code:%s, location_code:%s, is_mobile:%s}" % \
+        return "AQCSVSite:{country_code:%03d, location_code:%s, is_mobile:%s}" % \
                (self.country_code, self.location_code, self.is_mobile)

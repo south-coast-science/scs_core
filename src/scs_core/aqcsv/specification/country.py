@@ -5,16 +5,15 @@ Created on 4 Mar 2019
 
 AQCSV: ISO country codes
 
-NB: initialisation is performed at the foot of this class
-
 example:
-{"numeric": "716", "name": "Zimbabwe", "iso": "ZWE"}
+Country:{numeric:324, name:Guinea, iso:GIN}
 
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 """
 
 import os
 
+from abc import ABCMeta
 from collections import OrderedDict
 
 from scs_core.csv.csv_archive import CSVArchive
@@ -23,12 +22,10 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Country(JSONable, CSVArchive):
+class Country(JSONable, CSVArchive, metaclass=ABCMeta):
     """
     classdocs
     """
-
-    _retrieved = {}
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -37,38 +34,23 @@ class Country(JSONable, CSVArchive):
         return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'countries.csv')
 
 
-    @classmethod
-    def find_by_numeric(cls, numeric):
-        for country in cls._retrieved.values():
-            if country.numeric == numeric:
-                return country
-
-        return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        numeric = jdict.get('numeric')
-        name = jdict.get('name')
-        iso = jdict.get('iso')
-
-        return Country(numeric, name, iso)
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, numeric, name, iso):
         """
         Constructor
         """
-        self.__numeric = numeric                    # string
+        self.__numeric = int(numeric)               # int(3)
         self.__name = name                          # string
         self.__iso = iso                            # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.numeric == other.numeric and self.name == other.name and self.iso == other.iso
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,13 +63,6 @@ class Country(JSONable, CSVArchive):
         jdict['iso'] = self.iso
 
         return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def pk(self):
-        return self.iso
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -110,10 +85,4 @@ class Country(JSONable, CSVArchive):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Country:{numeric:%s, name:%s, iso:%s}" % (self.numeric, self.name, self.iso)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-# initialisation...
-
-Country.retrieve()
+        return "Country:{numeric:%03d, name:%s, iso:%s}" % (self.numeric, self.name, self.iso)

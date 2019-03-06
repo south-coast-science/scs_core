@@ -31,13 +31,23 @@ for parameter in Parameter.instances():
 print("=")
 
 print("find...")
-code = "88374"
+code = 999
 parameter = Parameter.instance(code)
 print("iso:%s parameter:%s" % (code, parameter))
+print("-")
+
+code = 88374
+parameter = Parameter.instance(code)
+print("iso:%s parameter:%s" % (code, parameter))
+print("unit:%s" % parameter.unit())
+
+jdict = parameter.as_json()
 print(JSONify.dumps(parameter))
 print("-")
 
-code = "TUX"
-parameter = Parameter.instance(code)
-print("iso:%s parameter:%s" % (code, parameter))
+remade = Parameter.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == parameter
+print("remade == parameter: %s" % equality)
 print("-")

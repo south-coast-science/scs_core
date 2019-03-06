@@ -6,14 +6,14 @@ Created on 4 Mar 2019
 
 import json
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from scs_core.csv.csv_reader import CSVReader
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVArchive(object):
+class CSVArchive(ABC):
     """
     classdocs
     """

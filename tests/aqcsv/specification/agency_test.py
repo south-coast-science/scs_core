@@ -18,13 +18,24 @@ for agency in Agency.instances():
 print("-")
 
 print("find...")
-code = "LBL"
-agency = Agency.instance(code)
-print("code:%s agency:%s" % (code, agency))
-print(JSONify.dumps(agency))
-print("-")
-
 code = "XXX"
 agency = Agency.instance(code)
 print("code:%s agency:%s" % (code, agency))
+print("-")
+
+code = "LBL"
+agency = Agency.instance(code)
+print("code:%s agency:%s" % (code, agency))
+
+jstr = JSONify.dumps(agency)
+print(jstr)
+print("-")
+
+print("equality...")
+jdict = agency.as_json()
+remade = Agency.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == agency
+print("remade == agency: %s" % equality)
 print("-")

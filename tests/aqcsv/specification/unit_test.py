@@ -18,13 +18,22 @@ for unit in Unit.instances():
 print("-")
 
 print("find...")
-code = "096"
+code = 999
 unit = Unit.instance(code)
 print("code:%s unit:%s" % (code, unit))
+print("-")
+
+code = 96
+unit = Unit.instance(code)
+print("code:%s unit:%s" % (code, unit))
+
+jdict = unit.as_json()
 print(JSONify.dumps(unit))
 print("-")
 
-code = "999"
-unit = Unit.instance(code)
-print("code:%s unit:%s" % (code, unit))
+remade = Unit.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == unit
+print("remade == unit: %s" % equality)
 print("-")

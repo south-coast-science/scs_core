@@ -8,8 +8,8 @@ AQCSV: Measurement performance characteristics
 NB: initialisation is performed at the foot of this class
 
 example:
-{"code": "3", "abbreviation": "XD", "definition": "Minimum Detectable Value",
-"description": "The measure of inherent detection capability of a measurement process."}
+{"code": 2, "abbreviation": "XC", "definition": "Critical Value",
+"description": "Threshold above which a measurement result is unlikely to result from a true value of zero"}
 """
 
 import os
@@ -46,7 +46,7 @@ class MPC(JSONable, CSVArchive):
         code = jdict.get('code')
         abbreviation = jdict.get('abbreviation')
         definition = jdict.get('definition')
-        description = str(jdict.get('description'))
+        description = jdict.get('description')
 
         return MPC(code, abbreviation, definition, description)
 
@@ -57,10 +57,19 @@ class MPC(JSONable, CSVArchive):
         """
         Constructor
         """
-        self.__code = code                                      # string
+        self.__code = int(code)                                 # int
         self.__abbreviation = abbreviation                      # string
         self.__definition = definition                          # string
         self.__description = description                        # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.abbreviation == other.abbreviation and \
+                   self.definition == other.definition and self.description == other.description
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -108,7 +117,7 @@ class MPC(JSONable, CSVArchive):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPC:{code:%s, abbreviation:%s, definition:%s, description:%s}" % \
+        return "MPC:{code:%d, abbreviation:%s, definition:%s, description:%s}" % \
                (self.code, self.abbreviation, self.definition, self.description)
 
 

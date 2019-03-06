@@ -18,13 +18,22 @@ for qc in QC.instances():
 print("-")
 
 print("find...")
-code = "0"
+code = 99
 qc = QC.instance(code)
 print("code:%s qc:%s" % (code, qc))
+print("-")
+
+code = 0
+qc = QC.instance(code)
+print("code:%s qc:%s" % (code, qc))
+
+jdict = qc.as_json()
 print(JSONify.dumps(qc))
 print("-")
 
-code = "a"
-qc = QC.instance(code)
-print("code:%s qc:%s" % (code, qc))
+remade = QC.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == qc
+print("remade == qc: %s" % equality)
 print("-")

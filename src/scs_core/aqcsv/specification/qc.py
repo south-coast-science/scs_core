@@ -8,7 +8,7 @@ AQCSV: quality control (QC) codes
 NB: initialisation is performed at the foot of this class
 
 example:
-{"code": "1", "definition": "Adjusted"}
+{"code": 0, "definition": "Valid"}
 """
 
 import os
@@ -54,8 +54,16 @@ class QC(JSONable, CSVArchive):
         """
         Constructor
         """
-        self.__code = code                                  # string
+        self.__code = int(code)                             # int
         self.__definition = definition                      # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.definition == other.definition
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,7 +99,7 @@ class QC(JSONable, CSVArchive):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "QC:{code:%s, definition:%s}" % (self.code, self.definition)
+        return "QC:{code:%d, definition:%s}" % (self.code, self.definition)
 
 
 # --------------------------------------------------------------------------------------------------------------------

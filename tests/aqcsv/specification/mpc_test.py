@@ -13,18 +13,27 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 
 print("list...")
-for mcp in MPC.instances():
-    print(mcp)
+for mpc in MPC.instances():
+    print(mpc)
 print("-")
 
 print("find...")
-code = "2"
-mcp = MPC.instance(code)
-print("code:%s mcp:%s" % (code, mcp))
-print(JSONify.dumps(mcp))
+code = 9
+mpc = MPC.instance(code)
+print("code:%s mpc:%s" % (code, mpc))
 print("-")
 
-code = "9"
-mcp = MPC.instance(code)
-print("code:%s mcp:%s" % (code, mcp))
+code = 2
+mpc = MPC.instance(code)
+print("code:%s mpc:%s" % (code, mpc))
+
+jdict = mpc.as_json()
+print(JSONify.dumps(mpc))
+print("-")
+
+remade = MPC.construct_from_jdict(jdict)
+print(remade)
+
+equality = remade == mpc
+print("remade == mpc: %s" % equality)
 print("-")

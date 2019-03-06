@@ -101,3 +101,4 @@ ENV/
 !/scs_core/aqcsv/format/archive/mcps.csv
 !/scs_core/aqcsv/format/archive/qcs.csv
 !/scs_core/aqcsv/format/archive/qualifiers.csv
+!/src/scs_core/aqcsv/specification/archive/methods.csv

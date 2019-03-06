@@ -58,6 +58,14 @@ class Agency(JSONable, CSVArchive):
         self.__name = name                                  # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.name == other.name
+
+        except AttributeError:
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

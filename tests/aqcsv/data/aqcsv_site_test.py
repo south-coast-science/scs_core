@@ -40,11 +40,15 @@ print("site3: %s" % site3)
 print("country: %s" % site3.country())
 print("code: %s" % site3.as_code())
 print("json: %s" % JSONify.dumps(site3.as_json()))
-
-equality = site1 == site1
-print("site1 == site1: %s" % equality)
 print("-")
 
-equality = site1 == site2
-print("site1 == site2: %s" % equality)
+print("equality...")
+equality = site2 == site3
+print("site2 == site3: %s" % equality)
+print("-")
+
+code = site3.as_code()
+remade = AQCSVSite.construct_from_code(code)
+equality = remade == site3
+print("remade == site3: %s" % equality)
 print("-")

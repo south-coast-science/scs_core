@@ -8,7 +8,7 @@ AQCSV: Parameter codes and associated standard units
 NB: initialisation is performed at the foot of this class
 
 example:
-{"code": "88502", "description": "Acceptable PM2.5 AQI Mass", "unit_code": "105"}
+{"code": 88374, "description": "OC1 CSN_Rev Unadjusted PM2.5 LC", "unit-code": 105}
 """
 
 import os
@@ -46,7 +46,7 @@ class Parameter(JSONable, CSVArchive):
 
         code = jdict.get('code')
         description = jdict.get('description')
-        unit_code = str(jdict.get('unit-code'))
+        unit_code = jdict.get('unit-code')
 
         return Parameter(code, description, unit_code)
 
@@ -57,9 +57,18 @@ class Parameter(JSONable, CSVArchive):
         """
         Constructor
         """
-        self.__code = code                                  # string
+        self.__code = int(code)                             # int(5)
         self.__description = description                    # string
-        self.__unit_code = unit_code                        # string
+        self.__unit_code = int(unit_code)                   # int(3)
+
+
+    def __eq__(self, other):
+        try:
+            return self.code == other.code and self.description == other.description and \
+                   self.unit_code == other.unit_code
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -105,7 +114,8 @@ class Parameter(JSONable, CSVArchive):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Parameter:{code:%s, description:%s, unit_code:%s}" % (self.code, self.description, self.unit_code)
+        return "Parameter:{code:%05d, description:%s, unit_code:%03d}" % \
+               (self.code, self.description, self.unit_code)
 
 
 # --------------------------------------------------------------------------------------------------------------------
