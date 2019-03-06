@@ -33,7 +33,7 @@ class MPC(JSONable, CSVArchive):
 
     @classmethod
     def archive_location(cls):
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'mcps.csv')
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'mpcs.csv')
 
 
     # ----------------------------------------------------------------------------------------------------------------

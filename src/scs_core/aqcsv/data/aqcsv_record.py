@@ -21,6 +21,8 @@ from collections import OrderedDict
 from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
 from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 
+from scs_core.aqcsv.specification.method import Method
+from scs_core.aqcsv.specification.mpc import MPC
 from scs_core.aqcsv.specification.parameter import Parameter
 from scs_core.aqcsv.specification.qc import QC
 from scs_core.aqcsv.specification.unit import Unit
@@ -72,11 +74,11 @@ class AQCSVRecord(JSONable):
 
         lat = jdict.get('lat')
         lon = jdict.get('lon')
-        gis_datum = jdict.get('GISdatum')
+        gis_datum = jdict.get('GISDatum')
         elev = jdict.get('elev')
 
         method_code = jdict.get('method_code')
-        mpc = jdict.get('mpc')
+        mpc_code = jdict.get('mpc')
         mpc_value = jdict.get('mpc_value')
         uncertainty = jdict.get('uncertainty')
         qualifiers = jdict.get('qualifiers')
@@ -85,7 +87,7 @@ class AQCSVRecord(JSONable):
                            datetime_code=datetime_code, parameter_code=parameter_code, duration=duration,
                            frequency=frequency, value=value, unit_code=unit_code, qc_code=qc_code, poc=poc,
                            lat=lat, lon=lon, gis_datum=gis_datum, elev=elev, method_code=method_code,
-                           mpc=mpc, mpc_value=mpc_value, uncertainty=uncertainty, qualifiers=qualifiers)
+                           mpc_code=mpc_code, mpc_value=mpc_value, uncertainty=uncertainty, qualifiers=qualifiers)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -94,16 +96,16 @@ class AQCSVRecord(JSONable):
                  datetime_code=None, parameter_code=None, duration=None,
                  frequency=None, value=None, unit_code=None, qc_code=None, poc=None,
                  lat=None, lon=None, gis_datum=None, elev=None, method_code=None,
-                 mpc=None, mpc_value=None, uncertainty=None, qualifiers=None):
+                 mpc_code=None, mpc_value=None, uncertainty=None, qualifiers=None):
         """
         Constructor
         """
-        self.__site_code = site_code                                # nvarchar(12)      required
+        self.__site_code = str(site_code)                           # nvarchar(12)      required
         self.__data_status = Datum.int(data_status)                 # int(1)            required
 
         self.__action_code = Datum.int(action_code)                 # int(1)
 
-        self.__datetime_code = datetime_code                        # nvarchar(20)      required
+        self.__datetime_code = str(datetime_code)                   # nvarchar(20)      required
         self.__parameter_code = Datum.int(parameter_code)           # int(5)            required
         self.__duration = Datum.int(duration)                       # int               required
 
@@ -120,10 +122,10 @@ class AQCSVRecord(JSONable):
         self.__elev = Datum.int(elev)                               # int
 
         self.__method_code = Datum.int(method_code)                 # int(3)
-        self.__mpc = Datum.int(mpc)                                 # int
+        self.__mpc_code = Datum.int(mpc_code)                       # int
         self.__mpc_value = Datum.float(mpc_value, 5)                # numeric(10,5)
         self.__uncertainty = Datum.float(uncertainty, 5)            # numeric(10,5)
-        self.__qualifiers = qualifiers                              # nvarchar(255)
+        self.__qualifiers = str(qualifiers)                         # nvarchar(255)
 
 
     def __eq__(self, other):
@@ -145,7 +147,7 @@ class AQCSVRecord(JSONable):
                 self.gis_datum == other.gis_datum and \
                 self.elev == other.elev and \
                 self.method_code == other.method_code and \
-                self.mpc == other.mpc and \
+                self.mpc_code == other.mpc_code and \
                 self.mpc_value == other.mpc_value and \
                 self.uncertainty == other.uncertainty and \
                 self.qualifiers == other.qualifiers
@@ -177,11 +179,11 @@ class AQCSVRecord(JSONable):
 
         jdict['lat'] = self.lat
         jdict['lon'] = self.lon
-        jdict['GISdatum'] = self.gis_datum
+        jdict['GISDatum'] = self.gis_datum
         jdict['elev'] = self.elev
 
         jdict['method_code'] = self.method_code
-        jdict['mpc'] = self.mpc
+        jdict['mpc'] = self.mpc_code
         jdict['mpc_value'] = self.mpc_value
         jdict['uncertainty'] = self.uncertainty
         jdict['qualifiers'] = self.qualifiers
@@ -209,6 +211,14 @@ class AQCSVRecord(JSONable):
 
     def qc(self):
         return QC.instance(self.qc_code)
+
+
+    def method(self):
+        return Method.instance((self.parameter_code, self.method_code))
+
+
+    def mpc(self):
+        return MPC.instance(self.mpc_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -294,8 +304,8 @@ class AQCSVRecord(JSONable):
 
 
     @property
-    def mpc(self):
-        return self.__mpc
+    def mpc_code(self):
+        return self.__mpc_code
 
 
     @property
@@ -318,11 +328,11 @@ class AQCSVRecord(JSONable):
     def __str__(self, *args, **kwargs):
         return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
                "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, lat:%s, lon:%s, " \
-               "gis_datum:%s, elev:%s, method_code:%s, mpc:%s, mpc_value:%s, " \
+               "gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
                "uncertainty:%s, qualifiers:%s}" % \
                (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter_code,
                 self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc, self.lat, self.lon,
-                self.gis_datum, self.elev, self.method_code, self.mpc, self.mpc_value,
+                self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,
                 self.uncertainty, self.qualifiers)
 
 

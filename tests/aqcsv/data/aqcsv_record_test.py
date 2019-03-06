@@ -16,10 +16,11 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-record1 = AQCSVRecord(site_code='124MM456789123', data_status=2, action_code=3, datetime_code='20081008T1800-0600',
-                      parameter_code=42601, duration=6, frequency=7, value=8, unit_code=9, qc_code=0,
-                      poc=11, lat=12, lon=13, gis_datum=14, elev=15,
-                      method_code=16, mpc=17, mpc_value=18, uncertainty=19, qualifiers=20)
+record1 = AQCSVRecord(site_code='124MM456789123', data_status=2, action_code=3,
+                      datetime_code='20081008T1800-0600', parameter_code=42601, duration=6,
+                      frequency=7, value=8, unit_code=9, qc_code=0, poc=11,
+                      lat=12, lon=13, gis_datum=14, elev=15, method_code=90,
+                      mpc_code=2, mpc_value=18, uncertainty=19, qualifiers=20)
 
 print("AQCSVRecord...")
 print("record1: %s" % record1)
@@ -29,6 +30,8 @@ print("datetime: %s" % record1.datetime())
 print("parameter: %s" % record1.parameter())
 print("unit: %s" % record1.unit())
 print("qc: %s" % record1.qc())
+print("method: %s" % record1.method())
+print("mpc: %s" % record1.mpc())
 print("=")
 
 jstr = JSONify.dumps(record1)

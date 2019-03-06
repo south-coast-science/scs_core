@@ -24,7 +24,7 @@ class AQCSVSite(JSONable):
 
     @classmethod
     def construct_from_code(cls, code):
-        if not code:
+        if code is None:
             return None
         try:
             match = re.match('(\d{3})(MM)?(\d{9})', code)

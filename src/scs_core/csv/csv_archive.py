@@ -46,8 +46,11 @@ class CSVArchive(ABC):
 
     @classmethod
     def instance(cls, pk):
-        if pk not in cls._retrieved:
+        if pk is None:
             return None
+
+        if pk not in cls._retrieved:
+            raise ValueError(pk)
 
         return cls._retrieved[pk]
 
