@@ -8,8 +8,6 @@ Created on 13 Nov 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_core.psu.psu_version import PSUVersion
@@ -21,7 +19,7 @@ jstr = '{"id": "South Coast Science PSU", "tag": "1.2.3", "c-date": "Aug  8 2017
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 print("-")
 

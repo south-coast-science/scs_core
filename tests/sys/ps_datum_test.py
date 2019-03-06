@@ -8,8 +8,6 @@ Created on 13 Jun 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.sys.ps_datum import PsDatum
 
@@ -30,7 +28,7 @@ jstr = JSONify.dumps(status)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 print("-")
 

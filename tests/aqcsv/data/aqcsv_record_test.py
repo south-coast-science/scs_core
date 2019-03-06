@@ -8,8 +8,6 @@ Created on 5 Mar 2019
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.aqcsv.data.aqcsv_record import AQCSVRecord, AQCSVFirstRecord, AQCSVSubsequentRecord
 from scs_core.data.json import JSONify
 
@@ -38,7 +36,7 @@ jstr = JSONify.dumps(record1)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 record2 = AQCSVRecord.construct_from_jdict(jdict)
 print("record2: %s" % record2)

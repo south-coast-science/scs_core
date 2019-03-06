@@ -11,8 +11,6 @@ data: {"topic":"/users/southcoastscience-dev/test/json","date":1479655521714,
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.osio.client.realtime_client import RealtimeClient
 from scs_core.osio.data.message_event import MessageEvent
 
@@ -58,7 +56,7 @@ class MessageEventSubscriber(object):
         if not self.__listener:
             return
 
-        jdict = json.loads(datum, object_pairs_hook=OrderedDict)
+        jdict = json.loads(datum)
         event = MessageEvent.construct_from_jdict(jdict)
 
         self.__listener(event)

@@ -21,8 +21,6 @@ aggregate:
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.gas.a4_datum import A4Datum
 from scs_core.gas.a4_temp_comp import A4TempComp
 from scs_core.gas.afe_baseline import AFEBaseline
@@ -57,11 +55,11 @@ baseline_jstr = '{"sn1": {"calibrated-on": "2017-09-27T07:44:01.259+00:00", "off
                 '"sn3": {"calibrated-on": "2018-08-18T08:24:25.599+00:00", "offset": 24}, ' \
                 '"sn4": {"calibrated-on": "2018-08-18T08:28:53.212+00:00", "offset": 22}}'
 
-calib = AFECalib.construct_from_jdict(json.loads(calib_jstr, object_pairs_hook=OrderedDict))
+calib = AFECalib.construct_from_jdict(json.loads(calib_jstr))
 co_calib = calib.sensor_calib(1)
 print(co_calib)
 
-baseline = AFEBaseline.construct_from_jdict(json.loads(baseline_jstr, object_pairs_hook=OrderedDict))
+baseline = AFEBaseline.construct_from_jdict(json.loads(baseline_jstr))
 co_baseline = baseline.sensor_baseline(1)
 print(co_baseline)
 
