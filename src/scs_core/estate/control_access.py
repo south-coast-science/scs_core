@@ -3,8 +3,6 @@ Created on 8 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-AQCSV: ISO country codes
-
 example:
 {"tag": 788, "shared_secret": "Tunisia", "topic": "TUN"}
 """
