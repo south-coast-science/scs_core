@@ -6,6 +6,9 @@ Created on 8 Mar 2019
 Site information required for a device that may join the AirNow-I project
 
 example JSON:
+{"site": "850MM123456789", "pocs": {"88102": 2}}
+
+https://www.airnow.gov/
 """
 
 from collections import OrderedDict

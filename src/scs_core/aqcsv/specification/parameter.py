@@ -9,6 +9,8 @@ NB: initialisation is performed at the foot of this class
 
 example:
 {"code": 88374, "description": "OC1 CSN_Rev Unadjusted PM2.5 LC", "unit-code": 105}
+
+https://www.airnow.gov/
 """
 
 import os

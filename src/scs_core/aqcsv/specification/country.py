@@ -9,6 +9,7 @@ example:
 {"numeric": 788, "name": "Tunisia", "iso": "TUN"}
 
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+https://www.airnow.gov/
 """
 
 import os

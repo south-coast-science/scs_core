@@ -17,6 +17,8 @@ example:
 suspect rows:
 Outdoor Temperature,62101,59,Continuous,Instrumental,Vaisala HMP 155,,,,-60,,,1,R,Degrees Fahrenheit
 Outdoor Temperature,62101,59,Continuous,Instrumental,Vaisala HMP 155,,,,-60,,,1,R,Degrees Fahrenheit
+
+https://www.airnow.gov/
 """
 
 import os

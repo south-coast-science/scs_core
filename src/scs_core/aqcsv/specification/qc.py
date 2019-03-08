@@ -9,6 +9,8 @@ NB: initialisation is performed at the foot of this class
 
 example:
 {"code": 0, "definition": "Valid"}
+
+https://www.airnow.gov/
 """
 
 import os

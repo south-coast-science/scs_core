@@ -9,6 +9,8 @@ NB: initialisation is performed at the foot of this class
 
 example:
 {"code": "LBL", "name": "Lawrence Berkeley National Laboratory"}
+
+https://www.airnow.gov/
 """
 
 import os

@@ -9,6 +9,8 @@ NB: initialisation is performed at the foot of this class
 
 example:
 {"code": 96, "description": "\u03bcg/sq meter/hour"}
+
+https://www.airnow.gov/
 """
 
 import os

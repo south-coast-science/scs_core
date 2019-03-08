@@ -9,6 +9,8 @@ NB: initialisation is performed at the foot of this class
 
 example:
 {"code": "BL", "description": "QA audit", "type-code": "ND", "type-description": "Null Data"}
+
+https://www.airnow.gov/
 """
 
 import os

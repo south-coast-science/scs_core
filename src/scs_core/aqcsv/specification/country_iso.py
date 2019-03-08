@@ -11,6 +11,7 @@ example:
 {"numeric": 788, "name": "Tunisia", "iso": "TUN"}
 
 https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+https://www.airnow.gov/
 """
 
 from scs_core.aqcsv.specification.country import Country
