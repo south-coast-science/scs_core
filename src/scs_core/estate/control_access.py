@@ -4,7 +4,8 @@ Created on 8 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"tag": 788, "shared_secret": "Tunisia", "topic": "TUN"}
+{"devices": {"scs-ap1-6": {"tag": "scs-ap1-6", "shared-secret": "secret",
+"topic": "south-coast-science-dev/development/device/alpha-pi-eng-000006/control"}}
 """
 
 from collections import OrderedDict
@@ -19,9 +20,11 @@ class ControlAccessSet(PersistentJSONable):
     classdocs
     """
 
+    __FILENAME =    "control_access.json"
+
     @classmethod
-    def persistence_location(cls, _):
-        raise NotImplementedError
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -31,25 +34,25 @@ class ControlAccessSet(PersistentJSONable):
         if not jdict:
             return None
 
-        accesses = {}
+        devices = OrderedDict()
 
-        for item in jdict.get('accesses').items():
+        for item in jdict.get('devices').values():
             access = ControlAccess.construct_from_jdict(item)
 
-            accesses[access.tag] = access
+            devices[access.tag] = access
 
-        return ControlAccessSet(accesses)
+        return ControlAccessSet(devices)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, accesses):
+    def __init__(self, devices):
         """
         Constructor
         """
         super().__init__()
 
-        self.__accesses = accesses                              # string
+        self.__devices = devices                                # dictionary of string: ControlAccess
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,24 +60,51 @@ class ControlAccessSet(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['accesses'] = self.accesses
+        jdict['devices'] = self.__devices
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def insert(self, device):
+        # add...
+        self.__devices[device.tag] = device
+
+        # sort...
+        devices = OrderedDict()
+
+        for key in sorted(self.__devices.keys()):
+            devices[key] = self.__devices[key]
+
+        self.__devices = devices
+
+
+    def remove(self, tag):
+        del(self.__devices[tag])
+
+
+    def device(self, tag):
+        try:
+            return self.__devices[tag]
+
+        except KeyError:
+            return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
-    def accesses(self):
-        return self.__accesses
+    def devices(self):
+        return self.__devices.values()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        accesses = '[' + ','.join([access.tag + ': ' + access for access in self.accesses.items])
+        devices = '[' + ', '.join([tag + ': ' + str(access) for tag, access in self.__devices.items()]) + ']'
 
-        return "ControlAccessSet:{accesses:%s}" % accesses
+        return "ControlAccessSet:{devices:%s}" % devices
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -104,9 +134,9 @@ class ControlAccess(JSONable):
         """
         Constructor
         """
-        self.__tag = tag                                    # string
-        self.__shared_secret = shared_secret                # string
-        self.__topic = topic                                # string
+        self.__tag = tag                                        # string
+        self.__shared_secret = shared_secret                    # string
+        self.__topic = topic                                    # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
