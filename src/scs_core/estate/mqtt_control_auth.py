@@ -4,7 +4,7 @@ Created on 8 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"devices": {"scs-bbe-002": {"hostname": "scs-bbe-002", "tag": "scs-be2-2", "shared-secret": "secret1",
+{"auths": {"scs-bbe-002": {"hostname": "scs-bbe-002", "tag": "scs-be2-2", "shared-secret": "secret1",
 "topic": "south-coast-science-dev/production-test/device/alpha-bb-eng-000002/control"}}
 """
 
@@ -15,12 +15,12 @@ from scs_core.data.json import JSONable, PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ControlAccessSet(PersistentJSONable):
+class MQTTControlAuthSet(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME =    "control_access.json"
+    __FILENAME =    "mqtt_control_auths.json"
 
     @classmethod
     def persistence_location(cls, hostname):
@@ -34,25 +34,25 @@ class ControlAccessSet(PersistentJSONable):
         if not jdict:
             return None
 
-        devices = OrderedDict()
+        auths = OrderedDict()
 
-        for hostname, item in jdict.get('devices').items():
-            device = ControlAccess.construct_from_jdict(item)
+        for hostname, item in jdict.get('auths').items():
+            auth = MQTTControlAuth.construct_from_jdict(item)
 
-            devices[hostname] = device
+            auths[hostname] = auth
 
-        return ControlAccessSet(devices)
+        return MQTTControlAuthSet(auths)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, devices):
+    def __init__(self, auths):
         """
         Constructor
         """
         super().__init__()
 
-        self.__devices = devices                                # dictionary of string: ControlAccess
+        self.__auths = auths                                # dictionary of string: MQTTControlAuth
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,56 +60,56 @@ class ControlAccessSet(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['devices'] = self.__devices
+        jdict['auths'] = self.__auths
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def insert(self, device):
+    def insert(self, auth):
         # add...
-        self.__devices[device.hostname] = device
+        self.__auths[auth.hostname] = auth
 
         # sort...
-        devices = OrderedDict()
+        auths = OrderedDict()
 
-        for hostname in sorted(self.__devices.keys()):
-            devices[hostname] = self.__devices[hostname]
+        for hostname in sorted(self.__auths.keys()):
+            auths[hostname] = self.__auths[hostname]
 
-        self.__devices = devices
+        self.__auths = auths
 
 
     def remove(self, hostname):
-        del(self.__devices[hostname])
+        del(self.__auths[hostname])
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def device(self, hostname):
+    def auth(self, hostname):
         try:
-            return self.__devices[hostname]
+            return self.__auths[hostname]
 
         except KeyError:
             return None
 
 
     @property
-    def devices(self):
-        return self.__devices.values()
+    def auths(self):
+        return self.__auths.values()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        devices = '{' + ', '.join([hostname + ': ' + str(device) for hostname, device in self.__devices.items()]) + '}'
+        auths = '{' + ', '.join([hostname + ': ' + str(auth) for hostname, auth in self.__auths.items()]) + '}'
 
-        return "ControlAccessSet:{devices:%s}" % devices
+        return "MQTTControlAuthSet:{auths:%s}" % auths
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ControlAccess(JSONable):
+class MQTTControlAuth(JSONable):
     """
     classdocs
     """
@@ -126,7 +126,7 @@ class ControlAccess(JSONable):
         shared_secret = jdict.get('shared-secret')
         topic = jdict.get('topic')
 
-        return ControlAccess(hostname, tag, shared_secret, topic)
+        return MQTTControlAuth(hostname, tag, shared_secret, topic)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -179,5 +179,5 @@ class ControlAccess(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlAccess:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
+        return "MQTTControlAuth:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
                (self.hostname, self.tag, self.shared_secret, self.topic)
