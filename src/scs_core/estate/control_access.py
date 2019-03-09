@@ -84,6 +84,8 @@ class ControlAccessSet(PersistentJSONable):
         del(self.__devices[hostname])
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def device(self, hostname):
         try:
             return self.__devices[hostname]
@@ -91,8 +93,6 @@ class ControlAccessSet(PersistentJSONable):
         except KeyError:
             return None
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def devices(self):
