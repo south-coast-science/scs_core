@@ -23,8 +23,8 @@ class MQTTControlAuthSet(PersistentJSONable):
     __FILENAME =    "mqtt_control_auths.json"
 
     @classmethod
-    def persistence_location(cls, hostname):
-        return hostname.conf_dir(), cls.__FILENAME
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,7 +81,11 @@ class MQTTControlAuthSet(PersistentJSONable):
 
 
     def remove(self, hostname):
-        del(self.__auths[hostname])
+        try:
+            del(self.__auths[hostname])
+
+        except KeyError:
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
