@@ -12,19 +12,19 @@ from scs_core.estate.control_access import ControlAccess, ControlAccessSet
 
 from scs_core.data.json import JSONify
 
-# from scs_host.sys.host import Host
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 print("device1...")
-device1 = ControlAccess("scs-be2-2", "secret1",
-                        "south-coast-science-dev/production-test/device/alpha-bb-eng-000002/control")
+device1 = ControlAccess("scs-rpi-006", "scs-ap1-6", "secret2",
+                        "south-coast-science-dev/development/device/alpha-pi-eng-000006/control")
 print(device1)
 print("-")
 
 print("group...")
-devices = {device1.tag: device1}
+devices = {device1.hostname: device1}
 print(devices)
 
 group = ControlAccessSet(devices)
@@ -32,8 +32,8 @@ print(group)
 print("-")
 
 print("device2...")
-device2 = ControlAccess("scs-ap1-6", "secret2",
-                        "south-coast-science-dev/development/device/alpha-pi-eng-000006/control")
+device2 = ControlAccess("scs-bbe-002", "scs-be2-2", "secret1",
+                        "south-coast-science-dev/production-test/device/alpha-bb-eng-000002/control")
 print(device2)
 print("-")
 
@@ -51,11 +51,11 @@ print(group)
 print("-")
 
 print("save...")
-# group.save(Host)
+group.save(Host)
 
 print("load...")
-# group = ControlAccessSet.load(Host)
-# print(group)
+group = ControlAccessSet.load(Host)
+print(group)
 print("-")
 
 print("devices...")
@@ -64,7 +64,7 @@ for device in group.devices:
 print("-")
 
 print("device...")
-print(group.device("scs-ap1-6"))
-print(group.device("xxx"))
+print(group.device("scs-rpi-006"))
+print(group.device("scs-rpi-xxx"))
 print("-")
 

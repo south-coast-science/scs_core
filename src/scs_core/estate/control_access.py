@@ -4,8 +4,8 @@ Created on 8 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"devices": {"scs-ap1-6": {"tag": "scs-ap1-6", "shared-secret": "secret",
-"topic": "south-coast-science-dev/development/device/alpha-pi-eng-000006/control"}}
+{"devices": {"scs-bbe-002": {"hostname": "scs-bbe-002", "tag": "scs-be2-2", "shared-secret": "secret1",
+"topic": "south-coast-science-dev/production-test/device/alpha-bb-eng-000002/control"}}
 """
 
 from collections import OrderedDict
@@ -23,8 +23,8 @@ class ControlAccessSet(PersistentJSONable):
     __FILENAME =    "control_access.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls, hostname):
+        return hostname.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,10 +36,10 @@ class ControlAccessSet(PersistentJSONable):
 
         devices = OrderedDict()
 
-        for item in jdict.get('devices').values():
-            access = ControlAccess.construct_from_jdict(item)
+        for hostname, item in jdict.get('devices').items():
+            device = ControlAccess.construct_from_jdict(item)
 
-            devices[access.tag] = access
+            devices[hostname] = device
 
         return ControlAccessSet(devices)
 
@@ -69,24 +69,24 @@ class ControlAccessSet(PersistentJSONable):
 
     def insert(self, device):
         # add...
-        self.__devices[device.tag] = device
+        self.__devices[device.hostname] = device
 
         # sort...
         devices = OrderedDict()
 
-        for key in sorted(self.__devices.keys()):
-            devices[key] = self.__devices[key]
+        for hostname in sorted(self.__devices.keys()):
+            devices[hostname] = self.__devices[hostname]
 
         self.__devices = devices
 
 
-    def remove(self, tag):
-        del(self.__devices[tag])
+    def remove(self, hostname):
+        del(self.__devices[hostname])
 
 
-    def device(self, tag):
+    def device(self, hostname):
         try:
-            return self.__devices[tag]
+            return self.__devices[hostname]
 
         except KeyError:
             return None
@@ -102,7 +102,7 @@ class ControlAccessSet(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        devices = '[' + ', '.join([tag + ': ' + str(access) for tag, access in self.__devices.items()]) + ']'
+        devices = '{' + ', '.join([hostname + ': ' + str(device) for hostname, device in self.__devices.items()]) + '}'
 
         return "ControlAccessSet:{devices:%s}" % devices
 
@@ -121,19 +121,21 @@ class ControlAccess(JSONable):
         if not jdict:
             return None
 
+        hostname = jdict.get('hostname')
         tag = jdict.get('tag')
         shared_secret = jdict.get('shared-secret')
         topic = jdict.get('topic')
 
-        return ControlAccess(tag, shared_secret, topic)
+        return ControlAccess(hostname, tag, shared_secret, topic)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, shared_secret, topic):
+    def __init__(self, hostname, tag, shared_secret, topic):
         """
         Constructor
         """
+        self.__hostname = hostname                              # string
         self.__tag = tag                                        # string
         self.__shared_secret = shared_secret                    # string
         self.__topic = topic                                    # string
@@ -144,6 +146,7 @@ class ControlAccess(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['hostname'] = self.hostname
         jdict['tag'] = self.tag
         jdict['shared-secret'] = self.shared_secret
         jdict['topic'] = self.topic
@@ -152,6 +155,11 @@ class ControlAccess(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def hostname(self):
+        return self.__hostname
+
 
     @property
     def tag(self):
@@ -171,4 +179,5 @@ class ControlAccess(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlAccess:{tag:%s, shared_secret:%s, topic:%s}" % (self.tag, self.shared_secret, self.topic)
+        return "ControlAccess:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
+               (self.hostname, self.tag, self.shared_secret, self.topic)
