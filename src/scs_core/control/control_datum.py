@@ -51,8 +51,8 @@ class ControlDatum(JSONable):
 
 
     @classmethod
-    def construct(cls, tag, attn, rec, cmd_tokens, subscriber_sn):
-        digest = ControlDatum.__hash(tag, attn, rec, cmd_tokens, subscriber_sn)
+    def construct(cls, tag, attn, rec, cmd_tokens, key):
+        digest = cls.__hash(tag, attn, rec, cmd_tokens, key)
 
         return ControlDatum(tag, attn, rec, cmd_tokens, digest)
 
