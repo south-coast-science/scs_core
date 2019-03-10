@@ -8,7 +8,9 @@ AQCSV: Qualifiers
 NB: initialisation is performed at the foot of this class
 
 example:
-Qualifier:{code:Y, description:Elapsed sample time out of spec., type_code:QA, type_description:Quality Assurance}
+{"code": "BL", "description": "QA audit", "type-code": "ND", "type-description": "Null Data"}
+
+https://www.airnow.gov/
 """
 
 import os

@@ -2,6 +2,8 @@
 Created on 5 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://www.airnow.gov/
 """
 
 import pytz
@@ -43,7 +45,7 @@ class AQCSVDatetime(JSONable):
         if fields[5] is None:
             datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=pytz.timezone('Etc/UTC'))
 
-            return AQCSVDatetime(datetime, None)
+            return AQCSVDatetime(datetime)
 
         # zone...
         zone_sign = -1 if fields[6] == '-' else 1

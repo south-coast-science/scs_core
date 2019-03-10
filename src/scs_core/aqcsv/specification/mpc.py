@@ -10,6 +10,8 @@ NB: initialisation is performed at the foot of this class
 example:
 {"code": 2, "abbreviation": "XC", "definition": "Critical Value",
 "description": "Threshold above which a measurement result is unlikely to result from a true value of zero"}
+
+https://www.airnow.gov/
 """
 
 import os

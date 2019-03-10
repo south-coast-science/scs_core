@@ -2,11 +2,11 @@
 Created on 5 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://www.airnow.gov/
 """
 
 import re
-
-from collections import OrderedDict
 
 from scs_core.aqcsv.specification.country_numeric import CountryNumeric
 
@@ -19,6 +19,8 @@ class AQCSVSite(JSONable):
     """
     classdocs
     """
+
+    LOCATION_CODE_LENGTH = 9
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -67,20 +69,14 @@ class AQCSVSite(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_json(self):
+        return self.as_code()
+
+
     def as_code(self):
         mobility_code = 'MM' if self.is_mobile else ''
 
-        return str(self.country_code) + mobility_code + self.location_code
-
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['country-code'] = self.country_code
-        jdict['location-code'] = self.location_code
-        jdict['is-mobile'] = self.is_mobile
-
-        return jdict
+        return str(self.country_code) + str(mobility_code) + str(self.location_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------

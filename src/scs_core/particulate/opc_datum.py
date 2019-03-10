@@ -58,6 +58,7 @@ class OPCDatum(PMxDatum):
         return OPCDatum(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
                         sht)
 
+
     @classmethod
     def null_datum(cls):
         return OPCDatum(None, LocalizedDatetime.now(), None, None, None, 0.0, [], 0, 0, 0, 0)
