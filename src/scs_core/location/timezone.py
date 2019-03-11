@@ -41,6 +41,18 @@ class Timezone(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        name = jdict.get('name')
+
+        return Timezone(name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, name):
         """
         Constructor
