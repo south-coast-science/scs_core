@@ -2,6 +2,9 @@
 Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+
+
 """
 
 import re
@@ -30,6 +33,18 @@ class PathDict(JSONable):
             union.append(name, value)
 
         return union
+
+
+    @staticmethod
+    def sub_path_includes_path(sub_path, path):
+        sub_path_nodes = [node[0] for node in re.findall('([^.:]+)([.:]*)', sub_path)]
+        path_nodes = [node[0] for node in re.findall('([^.:]+)([.:]*)', path)]
+
+        for i in range(len(sub_path_nodes)):
+            if sub_path_nodes[i] != path_nodes[i]:
+                return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
