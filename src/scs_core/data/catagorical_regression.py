@@ -2,6 +2,8 @@
 Created on 11 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stats.idre.ucla.edu/spss/faq/coding-systems-for-categorical-variables-in-regression-analysis-2/
 """
 
 from scs_core.data.regression import Regression
@@ -20,11 +22,11 @@ class CatagoricalRegression(Regression):
         """
         Constructor
         """
-        self.__data = set()
+        self.__categories = set()
 
 
     def __len__(self):
-        return len(self.__data)
+        return len(self.__categories)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,32 +40,32 @@ class CatagoricalRegression(Regression):
 
 
     def append(self, _, value):
-        self.__data.add(value)
+        self.__categories.add(value)
 
 
     def reset(self):
-        self.__data = set()
+        self.__categories = set()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def midpoint(self, ndigits=None):
+    def midpoint(self, _=None):
         if len(self) != 1:
             return None, None
 
-        return None, next(iter(self.__data))
+        return None, next(iter(self.__categories))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def min(self, ndigits=None):
-        ordered = sorted(self.__data)
+    def min(self, _=None):
+        ordered = sorted(self.__categories)
 
         return ordered[0]
 
 
-    def max(self, ndigits=None):
-        ordered = sorted(self.__data)
+    def max(self, _=None):
+        ordered = sorted(self.__categories)
 
         return ordered[-1]
 
@@ -71,4 +73,4 @@ class CatagoricalRegression(Regression):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CatagoricalRegression:{data:%s}" %  self.__data
+        return "CatagoricalRegression:{categories:%s}" %  self.__categories
