@@ -42,6 +42,9 @@ class AirNowSiteConf(PersistentJSONable):
         site = AQCSVSite.construct_from_code(jdict.get('site'))
         pocs = jdict.get('pocs')
 
+        if pocs is None:
+            pocs = {}
+
         return AirNowSiteConf(site, pocs)
 
 
