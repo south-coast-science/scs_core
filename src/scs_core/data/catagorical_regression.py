@@ -59,12 +59,18 @@ class CatagoricalRegression(Regression):
     # ----------------------------------------------------------------------------------------------------------------
 
     def min(self, _=None):
+        if len(self) == 0:
+            return None
+
         ordered = sorted(self.__categories)
 
         return ordered[0]
 
 
     def max(self, _=None):
+        if len(self) == 0:
+            return None
+
         ordered = sorted(self.__categories)
 
         return ordered[-1]
