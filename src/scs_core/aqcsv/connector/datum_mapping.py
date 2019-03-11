@@ -15,7 +15,7 @@ from scs_core.data.path_dict import PathDict
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ParameterMapping(JSONable):
+class DatumMapping(JSONable):
     """
     classdocs
     """
@@ -31,7 +31,7 @@ class ParameterMapping(JSONable):
         species = jdict.get('species')
         schedule = jdict.get('schedule')
 
-        return ParameterMapping(topic, species, schedule)
+        return DatumMapping(topic, species, schedule)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -117,5 +117,5 @@ class ParameterMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParameterMapping:{topic:%s, species:%s, schedule:%s}" % \
+        return "DatumMapping:{topic:%s, species:%s, schedule:%s}" % \
                (self.topic, self.species, self.schedule)

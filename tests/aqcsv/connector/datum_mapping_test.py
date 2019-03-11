@@ -6,7 +6,7 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.connector.parameter_mapping import ParameterMapping
+from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
@@ -14,7 +14,7 @@ from scs_core.data.path_dict import PathDict
 
 # --------------------------------------------------------------------------------------------------------------------
 
-mapping = ParameterMapping("particulates", "pm2p5", "scs-particulates")
+mapping = DatumMapping("particulates", "pm2p5", "scs-particulates")
 print(mapping)
 print("-")
 
