@@ -9,6 +9,8 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.connector.source_mapping import SourceMapping
+
 from scs_core.data.json import JSONable
 from scs_core.data.path_dict import PathDict
 
@@ -59,7 +61,10 @@ class DatumMapping(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # TODO: look up source_mapping from (topic, species, source)
+    def source_mapping(self, datum: PathDict):
+        pk = (self.topic, self.species, self.source(datum))
+
+        return SourceMapping.instance(pk)
 
 
     # ----------------------------------------------------------------------------------------------------------------
