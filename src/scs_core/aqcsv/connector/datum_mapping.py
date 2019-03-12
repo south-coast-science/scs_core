@@ -67,8 +67,6 @@ class DatumMapping(JSONable):
         return SourceMapping.instance(pk)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     def tag(self, datum: PathDict):
         return datum.node(self.tag_path())
 

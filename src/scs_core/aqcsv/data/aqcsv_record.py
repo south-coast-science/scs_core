@@ -328,13 +328,15 @@ class AQCSVRecord(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
-               "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, lat:%s, lon:%s, " \
-               "gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
-               "uncertainty:%s, qualifiers:%s}" % \
+        classname = self.__class__.__name__
+
+        return classname + ":{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
+                           "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, " \
+                           "lat:%s, lon:%s, gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
+                           "uncertainty:%s, qualifiers:%s}" % \
                (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter_code,
-                self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc, self.lat, self.lon,
-                self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,
+                self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc,
+                self.lat, self.lon, self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,
                 self.uncertainty, self.qualifiers)
 
 
