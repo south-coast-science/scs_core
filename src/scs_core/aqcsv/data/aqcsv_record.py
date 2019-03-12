@@ -8,7 +8,7 @@ site,data_status,action_code,datetime,parameter,duration,frequency,value,unit_co
 lat,lon,GISdatum,elev,method_code,mpc,mpc_value,uncertainty,qualifiers
 
 first time / mobile:
-site,data_status,,datetime1,parameter,duration,,value,unit_code,qc_code,poc,
+site,data_status,,datetime,parameter,duration,,value,unit_code,qc_code,poc,
 lat1,lon1,,,,,,,
 
 subsequent:
@@ -49,6 +49,8 @@ class AQCSVRecord(JSONable):
     ACTION_INSERT_NOAUTO =      3
     ACTION_UPDATE_NOAUTO =      4
     ACTION_DELETE =             5
+
+    GIS_DATUM =                 "WGS84"
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -108,7 +110,7 @@ class AQCSVRecord(JSONable):
         self.__action_code = Datum.int(action_code)                 # int(1)
 
         self.__datetime_code = str(datetime_code)                   # nvarchar(20)      required
-        self.__parameter_code = Datum.int(parameter_code)           # int(5)            required
+        self.__parameter_code = parameter_code                      # int(5) or string  required
         self.__duration = Datum.int(duration)                       # int               required
 
         self.__frequency = Datum.int(frequency)                     # int
@@ -328,12 +330,10 @@ class AQCSVRecord(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        classname = self.__class__.__name__
-
-        return classname + ":{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
-                           "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, " \
-                           "lat:%s, lon:%s, gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
-                           "uncertainty:%s, qualifiers:%s}" % \
+        return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%s, " \
+               "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, " \
+               "lat:%s, lon:%s, gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
+               "uncertainty:%s, qualifiers:%s}" % \
                (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter_code,
                 self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc,
                 self.lat, self.lon, self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,

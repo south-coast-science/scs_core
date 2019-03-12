@@ -6,7 +6,7 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.connector.device_mapping import DeviceMapping
+from scs_core.aqcsv.connector.status_mapping import StatusMapping
 
 from scs_core.data.path_dict import PathDict
 
@@ -30,8 +30,8 @@ datum = PathDict.construct_from_jstr(jstr)
 print(datum)
 print("-")
 
-print("     tag: %s" % DeviceMapping.tag(datum))
-print("   value: %s" % DeviceMapping.site(datum))
-print("  source: %s" % DeviceMapping.timezone(datum))
-print("duration: %s" % DeviceMapping.gps(datum))
+print("      tag: %s" % StatusMapping.tag(datum))
+print("site_conf: %s" % StatusMapping.site_conf(datum))
+print(" timezone: %s" % StatusMapping.timezone(datum))
+print(" duration: %s" % StatusMapping.gps(datum))
 print("-")

@@ -14,7 +14,7 @@ from scs_core.data.path_dict import PathDict
 
 # --------------------------------------------------------------------------------------------------------------------
 
-datum_mapping = DatumMapping("particulates", "pm2p5", "scs-particulates")
+datum_mapping = DatumMapping("particulates", "pm1", "scs-particulates")
 print(datum_mapping)
 print("-")
 
@@ -35,12 +35,19 @@ datum = PathDict.construct_from_jstr(jstr)
 print(datum)
 print("-")
 
-print("     tag: %s" % datum_mapping.tag(datum))
-print("   value: %s" % datum_mapping.value(datum))
-print("  source: %s" % datum_mapping.source(datum))
-print("duration: %s" % datum_mapping.duration(datum))
-print("   s-map: %s" % datum_mapping.source_mapping(datum))
+print("         tag: %s" % datum_mapping.tag(datum))
+print("       value: %s" % datum_mapping.value(datum))
+print("      source: %s" % datum_mapping.source(datum))
+print("    duration: %s" % datum_mapping.duration(datum))
+print("aqcsv_source: %s" % datum_mapping.aqcsv_source(datum))
 print("-")
 
 print(JSONify.dumps(datum_mapping))
+print("-")
+
+record = aqcsv_record = datum_mapping.aqcsv_record(datum)
+print(record)
+print("-")
+
+print(JSONify.dumps(record))
 print("-")

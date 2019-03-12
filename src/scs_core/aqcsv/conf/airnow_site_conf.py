@@ -73,11 +73,11 @@ class AirNowSiteConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def poc(self, parameter):
-        if parameter not in self.__pocs:
+    def poc(self, parameter_code):
+        if parameter_code not in self.__pocs:
             return 1
 
-        return self.__pocs[parameter]
+        return self.__pocs[parameter_code]
 
 
     # ----------------------------------------------------------------------------------------------------------------

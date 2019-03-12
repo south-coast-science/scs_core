@@ -22,6 +22,13 @@ class AQCSVDatetime(JSONable):
     """
 
     @classmethod
+    def construct_from_localised_datetime(cls, localised, timezone=None):
+        zone = None if timezone is None else timezone.zone
+
+        return AQCSVDatetime(localised.datetime, zone)
+
+
+    @classmethod
     def construct_from_code(cls, code):
         try:
             match = re.match('(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(([+\-])(\d{2})(\d{2}))?', code)

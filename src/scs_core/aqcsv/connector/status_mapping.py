@@ -15,7 +15,7 @@ from scs_core.position.gps_datum import GPSDatum
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceMapping(object):
+class StatusMapping(object):
     """
     classdocs
     """
@@ -24,47 +24,25 @@ class DeviceMapping(object):
 
     @classmethod
     def tag(cls, datum: PathDict):
-        return datum.node(cls.tag_path())
+        return datum.node('status.tag')
 
 
     @classmethod
-    def site(cls, datum: PathDict):
-        jdict = datum.node(cls.site_path())
+    def site_conf(cls, datum: PathDict):
+        jdict = datum.node('status.val.airnow')
 
         return AirNowSiteConf.construct_from_jdict(jdict)
 
 
     @classmethod
-    def timezone(cls, datum: PathDict):
-        jdict = datum.node(cls.timezone_path())
-
-        return Timezone.construct_from_jdict(jdict)
-
-
-    @classmethod
     def gps(cls, datum: PathDict):
-        jdict = datum.node(cls.gps_path())
+        jdict = datum.node('status.val.gps')
 
         return GPSDatum.construct_from_jdict(jdict)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
+    @classmethod
+    def timezone(cls, datum: PathDict):
+        jdict = datum.node('status.val.tz')
 
-    @staticmethod
-    def tag_path():
-        return 'status.tag'
-
-
-    @staticmethod
-    def site_path():
-        return 'status.val.airnow'
-
-
-    @staticmethod
-    def timezone_path():
-        return 'status.val.tz'
-
-
-    @staticmethod
-    def gps_path():
-        return 'status.val.gps'
+        return Timezone.construct_from_jdict(jdict)

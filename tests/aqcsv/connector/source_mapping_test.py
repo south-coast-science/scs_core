@@ -20,6 +20,21 @@ print("-")
 print("find...")
 topic = "particulates"
 species = "pm2p5"
+source = "N2"
+
+pk = (topic, species, source)
+
+mapping = SourceMapping.instance(pk)
+print("pk:%s mapping:%s" % (pk, mapping))
+print("-")
+
+jstr = JSONify.dumps(mapping)
+print(jstr)
+print("-")
+
+print("find...")
+topic = "particulates"
+species = "pm1"
 source = "N3"
 
 pk = (topic, species, source)
