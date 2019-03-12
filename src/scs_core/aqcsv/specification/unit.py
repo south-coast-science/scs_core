@@ -23,7 +23,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Unit(JSONable, CSVArchive):
+class Unit(CSVArchive, JSONable):
     """
     classdocs
     """

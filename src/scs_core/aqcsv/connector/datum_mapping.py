@@ -59,6 +59,11 @@ class DatumMapping(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # TODO: look up source_mapping from (topic, species, source)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def tag(self, datum: PathDict):
         return datum.node(self.tag_path())
 
@@ -76,8 +81,6 @@ class DatumMapping(JSONable):
 
         return int(schedule['interval']) * int(schedule['tally'])
 
-
-    # TODO: look up method, units, mpc, etc. from combination of topic, species, source
 
     # ----------------------------------------------------------------------------------------------------------------
 
