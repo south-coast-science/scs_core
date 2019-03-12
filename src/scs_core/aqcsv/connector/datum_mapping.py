@@ -4,7 +4,7 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"topic": "particulates", "species": "pm2p5", "schedule": "scs-particulates"}
+{"topic": "particulates", "species": "pm2p5"}
 """
 
 from collections import OrderedDict
@@ -27,6 +27,11 @@ class DatumMapping(JSONable):
     classdocs
     """
 
+    __SCHEDULES = {
+        'gases': 'scs-gases',
+        'particulates': 'scs-particulates'
+    }
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -36,9 +41,8 @@ class DatumMapping(JSONable):
 
         topic = jdict.get('topic')
         species = jdict.get('species')
-        schedule = jdict.get('schedule')
 
-        return DatumMapping(topic, species, schedule)
+        return DatumMapping(topic, species)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,13 +57,12 @@ class DatumMapping(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, species, schedule):
+    def __init__(self, topic, species):
         """
         Constructor
         """
         self.__topic = topic                                        # string
         self.__species = species                                    # string
-        self.__schedule = schedule                                  # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,7 +72,6 @@ class DatumMapping(JSONable):
 
         jdict['topic'] = self.topic
         jdict['species'] = self.species
-        jdict['schedule'] = self.schedule
 
         return jdict
 
@@ -178,7 +180,7 @@ class DatumMapping(JSONable):
 
 
     def duration(self, datum: PathDict):
-        schedule_path = '.'.join(['status.val.sch', self.schedule])
+        schedule_path = '.'.join(['status.val.sch', self.__SCHEDULES[self.topic]])
         schedule = datum.node(schedule_path)
 
         return int(schedule['interval']) * int(schedule['tally'])
@@ -196,13 +198,7 @@ class DatumMapping(JSONable):
         return self.__species
 
 
-    @property
-    def schedule(self):
-        return self.__schedule
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DatumMapping:{topic:%s, species:%s, schedule:%s}" % \
-               (self.topic, self.species, self.schedule)
+        return "DatumMapping:{topic:%s, species:%s}" % (self.topic, self.species)
