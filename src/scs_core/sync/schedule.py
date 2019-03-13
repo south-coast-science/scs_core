@@ -10,7 +10,6 @@ document example:
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.json import PersistentJSONable
 
@@ -164,8 +163,8 @@ class ScheduleItem(JSONable):
         Constructor
         """
         self.__name = name
-        self.__interval = Datum.float(interval, 1)                  # float     seconds between samples
-        self.__tally = Datum.int(tally)                             # int       number of samples per report
+        self.__interval = round(interval, 1)                    # float     seconds between samples
+        self.__tally = int(tally)                               # int       number of samples per report
 
 
     # ----------------------------------------------------------------------------------------------------------------
