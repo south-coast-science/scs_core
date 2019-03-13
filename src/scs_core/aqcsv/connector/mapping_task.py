@@ -39,7 +39,7 @@ class MappingTaskList(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return None
+            return MappingTaskList({})
 
         tasks = {literal_eval(key): task for key, task in jdict.get('tasks').items()}
 
@@ -55,6 +55,12 @@ class MappingTaskList(PersistentJSONable):
         super().__init__()
 
         self.__tasks = tasks                                    # dictionary of task.pk: task
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def items(self):
+        return self.__tasks.values()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -87,6 +93,10 @@ class MappingTaskList(PersistentJSONable):
 
         except KeyError:
             pass
+
+
+    def set_latest_rec(self, pk, latest_rec):
+        self.__tasks[pk].latest_rec = latest_rec
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -249,6 +259,11 @@ class MappingTask(JSONable):
     @property
     def latest_rec(self):
         return self.__latest_rec
+
+
+    @latest_rec.setter
+    def latest_rec(self, latest_rec):
+        self.__latest_rec = latest_rec
 
 
     # ----------------------------------------------------------------------------------------------------------------
