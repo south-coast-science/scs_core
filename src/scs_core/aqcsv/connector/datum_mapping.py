@@ -78,12 +78,12 @@ class DatumMapping(JSONable):
 
     def aqcsv_record(self, datum: PathDict):
         # parameter_code...
-        aqcsv_source = self.aqcsv_source(datum)
+        source = self.aqcsv_source(datum)
 
-        if aqcsv_source is None:
+        if source is None:
             return None
 
-        parameter_code = aqcsv_source.parameter_code
+        parameter_code = source.parameter_code
 
         # site_code / poc...
         if self.__site_code is not None:
@@ -100,7 +100,7 @@ class DatumMapping(JSONable):
             poc = site_conf.poc(parameter_code)
 
         # datetime_code...
-        aqcsv_rec = self.aqcsv_rec(datum)
+        rec = self.aqcsv_rec(datum)
 
         # position...
         gps = self.gps(datum)
@@ -124,7 +124,7 @@ class DatumMapping(JSONable):
             data_status=AQCSVRecord.STATUS_FINAL,
             action_code=AQCSVRecord.ACTION_DEFAULT,
 
-            datetime_code=aqcsv_rec.as_json(),
+            datetime_code=rec.as_json(),
 
             parameter_code=parameter_code,
 
@@ -132,9 +132,9 @@ class DatumMapping(JSONable):
             frequency=0,
 
             value=self.value(datum),
-            unit_code=aqcsv_source.unit_code,
+            unit_code=source.unit_code,
 
-            qc_code=aqcsv_source.qc_code,
+            qc_code=source.qc_code,
             poc=poc,
 
             lat=lat,
@@ -142,9 +142,9 @@ class DatumMapping(JSONable):
             gis_datum=gis_datum,
             elev=elev,
 
-            method_code=aqcsv_source.method_code,
-            mpc_code=aqcsv_source.mpc_code,
-            mpc_value=aqcsv_source.mpc_value,
+            method_code=source.method_code,
+            mpc_code=source.mpc_code,
+            mpc_value=source.mpc_value,
 
             uncertainty=None,
             qualifiers=None)
@@ -219,7 +219,7 @@ class DatumMapping(JSONable):
         schedule_path = '.'.join(['status.val.sch', self.__SCHEDULES[self.topic]])
         schedule = datum.node(schedule_path)
 
-        return int(schedule['interval']) * int(schedule['tally'])
+        return int(schedule['interval']) * int(schedule['tally'])       # TODO: put duration on Schedule
 
 
     # ----------------------------------------------------------------------------------------------------------------
