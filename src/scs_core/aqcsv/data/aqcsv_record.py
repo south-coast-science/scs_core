@@ -55,6 +55,16 @@ class AQCSVRecord(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def fixed_int(value, fmt):
+        try:
+            return fmt % int(value)
+        except ValueError:
+            return value
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
@@ -129,7 +139,7 @@ class AQCSVRecord(JSONable):
         self.__mpc_code = Datum.int(mpc_code)                       # int
         self.__mpc_value = Datum.float(mpc_value, 5)                # numeric(10,5)
         self.__uncertainty = Datum.float(uncertainty, 5)            # numeric(10,5)
-        self.__qualifiers = str(qualifiers)                         # nvarchar(255)
+        self.__qualifiers = qualifiers                              # nvarchar(255)
 
 
     def __eq__(self, other):
@@ -171,13 +181,13 @@ class AQCSVRecord(JSONable):
         jdict['action_code'] = self.action_code
 
         jdict['datetime'] = self.datetime_code
-        jdict['parameter'] = self.parameter_code
+        jdict['parameter'] = self.fixed_int(self.parameter_code, "%05d")
         jdict['duration'] = self.duration
 
         jdict['frequency'] = self.frequency
 
         jdict['value'] = self.value
-        jdict['unit'] = self.unit_code
+        jdict['unit'] = self.fixed_int(self.unit_code, "%03d")
         jdict['qc'] = self.qc_code
         jdict['poc'] = self.poc
 
@@ -186,7 +196,7 @@ class AQCSVRecord(JSONable):
         jdict['GISDatum'] = self.gis_datum
         jdict['elev'] = self.elev
 
-        jdict['method_code'] = self.method_code
+        jdict['method_code'] = self.fixed_int(self.method_code, "%03d")
         jdict['mpc'] = self.mpc_code
         jdict['mpc_value'] = self.mpc_value
         jdict['uncertainty'] = self.uncertainty

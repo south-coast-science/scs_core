@@ -4,12 +4,13 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"topic": "particulates", "species": "pm2p5"}
+{"topic": "particulates", "species": "pm1", "site-code": null}
 """
 
 from collections import OrderedDict
 
-from scs_core.aqcsv.connector.status_mapping import StatusMapping
+from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
+
 from scs_core.aqcsv.connector.source_mapping import SourceMapping
 
 from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
@@ -18,6 +19,10 @@ from scs_core.aqcsv.data.aqcsv_record import AQCSVRecord
 from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.path_dict import PathDict
+
+from scs_core.location.timezone import Timezone
+
+from scs_core.position.gps_datum import GPSDatum
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -41,28 +46,20 @@ class DatumMapping(JSONable):
 
         topic = jdict.get('topic')
         species = jdict.get('species')
+        site_code = jdict.get('site-code')
 
-        return DatumMapping(topic, species)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @staticmethod
-    def aqcsv_rec(datum: PathDict):
-        localised = LocalizedDatetime.construct_from_jdict(datum.node('rec'))
-        timezone = StatusMapping.timezone(datum)
-
-        return AQCSVDatetime.construct_from_localised_datetime(localised, timezone)
+        return DatumMapping(topic, species, site_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, species):
+    def __init__(self, topic, species, site_code=None):
         """
         Constructor
         """
         self.__topic = topic                                        # string
         self.__species = species                                    # string
+        self.__site_code = site_code                                # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,6 +69,7 @@ class DatumMapping(JSONable):
 
         jdict['topic'] = self.topic
         jdict['species'] = self.species
+        jdict['site-code'] = self.site_code
 
         return jdict
 
@@ -79,37 +77,33 @@ class DatumMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def aqcsv_record(self, datum: PathDict):
-        # common components...
+        # parameter_code...
         aqcsv_source = self.aqcsv_source(datum)
 
         if aqcsv_source is None:
             return None
 
-        site_conf = StatusMapping.site_conf(datum)
-
-        if site_conf is None:
-            return None
-
-        # parameters...
-        site_code = site_conf.site.as_code()
-
-        data_status = AQCSVRecord.STATUS_FINAL
-        action_code = AQCSVRecord.ACTION_DEFAULT
-
-        aqcsv_rec = self.aqcsv_rec(datum)
-        datetime_code = aqcsv_rec.as_json()
-
         parameter_code = aqcsv_source.parameter_code
 
-        duration = self.duration(datum)
+        # site_code / poc...
+        if self.__site_code is not None:
+            code = self.__site_code
+            poc = None
 
-        value = self.value(datum)
-        unit_code = aqcsv_source.unit_code
+        else:
+            site_conf = self.site_conf(datum)
 
-        qc_code = aqcsv_source.qc_code
-        poc = site_conf.poc(parameter_code)
+            if site_conf is None:
+                return None
 
-        gps = StatusMapping.gps(datum)
+            code = site_conf.site.as_code()
+            poc = site_conf.poc(parameter_code)
+
+        # datetime_code...
+        aqcsv_rec = self.aqcsv_rec(datum)
+
+        # position...
+        gps = self.gps(datum)
 
         if gps is not None:
             lat = gps.pos.lat
@@ -123,30 +117,35 @@ class DatumMapping(JSONable):
             gis_datum = None
             elev = None
 
-        method_code = aqcsv_source.method_code
-        mpc_code = aqcsv_source.mpc_code
-        mpc_value = aqcsv_source.mpc_value
-
         # record...
         record = AQCSVRecord(
-            site_code=site_code,
-            data_status=data_status,
-            action_code=action_code,
-            datetime_code=datetime_code,
+            site_code=code,
+
+            data_status=AQCSVRecord.STATUS_FINAL,
+            action_code=AQCSVRecord.ACTION_DEFAULT,
+
+            datetime_code=aqcsv_rec.as_json(),
+
             parameter_code=parameter_code,
-            duration=duration,
-            frequency=None,
-            value=value,
-            unit_code=unit_code,
-            qc_code=qc_code,
+
+            duration=self.duration(datum),
+            frequency=0,
+
+            value=self.value(datum),
+            unit_code=aqcsv_source.unit_code,
+
+            qc_code=aqcsv_source.qc_code,
             poc=poc,
+
             lat=lat,
             lon=lon,
             gis_datum=gis_datum,
             elev=elev,
-            method_code=method_code,
-            mpc_code=mpc_code,
-            mpc_value=mpc_value,
+
+            method_code=aqcsv_source.method_code,
+            mpc_code=aqcsv_source.mpc_code,
+            mpc_value=aqcsv_source.mpc_value,
+
             uncertainty=None,
             qualifiers=None)
 
@@ -154,17 +153,54 @@ class DatumMapping(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # datum fields...
+
+    @classmethod
+    def datum_tag(cls, datum: PathDict):
+        return datum.node('status.tag')
+
+
+    @classmethod
+    def site_conf(cls, datum: PathDict):
+        jdict = datum.node('status.val.airnow')
+
+        return AirNowSiteConf.construct_from_jdict(jdict)
+
+
+    @classmethod
+    def gps(cls, datum: PathDict):
+        jdict = datum.node('status.val.gps')
+
+        return GPSDatum.construct_from_jdict(jdict)
+
+
+    @classmethod
+    def timezone(cls, datum: PathDict):
+        jdict = datum.node('status.val.tz')
+
+        return Timezone.construct_from_jdict(jdict)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # status fields...
+
+    def aqcsv_rec(self, datum: PathDict):
+        localised = LocalizedDatetime.construct_from_jdict(datum.node('rec'))
+        timezone = self.timezone(datum)
+
+        return AQCSVDatetime(localised.datetime, timezone.zone)
+
+
+    def status_tag(self, datum: PathDict):
+        tag_path = '.'.join([self.topic, 'tag'])
+
+        return datum.node(tag_path)
+
 
     def aqcsv_source(self, datum: PathDict):
         pk = (self.topic, self.species, self.source(datum))
 
         return SourceMapping.instance(pk)
-
-
-    def tag(self, datum: PathDict):
-        tag_path = '.'.join([self.topic, 'tag'])
-
-        return datum.node(tag_path)
 
 
     def value(self, datum: PathDict):
@@ -198,7 +234,12 @@ class DatumMapping(JSONable):
         return self.__species
 
 
+    @property
+    def site_code(self):
+        return self.__site_code
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DatumMapping:{topic:%s, species:%s}" % (self.topic, self.species)
+        return "DatumMapping:{topic:%s, species:%s, site_code:%s}" % (self.topic, self.species, self.site_code)

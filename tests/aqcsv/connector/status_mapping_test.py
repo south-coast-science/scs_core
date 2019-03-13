@@ -6,7 +6,7 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aqcsv.connector.status_mapping import StatusMapping
+from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 
 from scs_core.data.path_dict import PathDict
 
@@ -30,8 +30,13 @@ datum = PathDict.construct_from_jstr(jstr)
 print(datum)
 print("-")
 
-print("      tag: %s" % StatusMapping.tag(datum))
-print("site_conf: %s" % StatusMapping.site_conf(datum))
-print(" timezone: %s" % StatusMapping.timezone(datum))
-print(" duration: %s" % StatusMapping.gps(datum))
+mapping = DatumMapping("particulates", "pm1")
+print(mapping)
+print("-")
+
+
+print("      tag: %s" % mapping.status_tag(datum))
+print("site_conf: %s" % mapping.site_conf(datum))
+print(" timezone: %s" % mapping.timezone(datum))
+print(" duration: %s" % mapping.gps(datum))
 print("-")
