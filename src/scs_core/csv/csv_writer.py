@@ -24,7 +24,7 @@ class CSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None, append=False):
+    def __init__(self, filename=None, append=False, exclude_header=False):
         """
         Constructor
         """
@@ -44,6 +44,8 @@ class CSVWriter(object):
 
             self.__file = open(self.__filename, "a" if self.__append else "w", newline='')
             self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
+
+        self.__exclude_header = exclude_header
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -73,9 +75,11 @@ class CSVWriter(object):
         if self.__paths is None:
             self.__paths = datum.paths()
 
-            if not self.__append:
+            # header...
+            if not self.__append and not self.__exclude_header:
                 self.__writer.writerow(self.__paths)
 
+        # row...
         self.__writer.writerow(datum.row(self.__paths))
 
         if self.filename is None:
@@ -99,4 +103,5 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, append:%s, paths:%s}" % (self.filename, self.__append, self.__paths)
+        return "CSVWriter:{filename:%s, append:%s, exclude_header:%s, paths:%s}" % \
+               (self.filename, self.__append, self.__exclude_header, self.__paths)

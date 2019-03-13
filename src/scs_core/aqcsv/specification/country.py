@@ -23,7 +23,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Country(JSONable, CSVArchive, metaclass=ABCMeta):
+class Country(CSVArchive, JSONable, metaclass=ABCMeta):
     """
     classdocs
     """

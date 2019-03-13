@@ -24,7 +24,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPC(JSONable, CSVArchive):
+class MPC(CSVArchive, JSONable):
     """
     classdocs
     """

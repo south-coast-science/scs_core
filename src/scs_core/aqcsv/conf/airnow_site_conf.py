@@ -42,6 +42,9 @@ class AirNowSiteConf(PersistentJSONable):
         site = AQCSVSite.construct_from_code(jdict.get('site'))
         pocs = jdict.get('pocs')
 
+        if pocs is None:
+            pocs = {}
+
         return AirNowSiteConf(site, pocs)
 
 
@@ -70,11 +73,11 @@ class AirNowSiteConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def poc(self, parameter):
-        if parameter not in self.__pocs:
+    def poc(self, parameter_code):
+        if parameter_code not in self.__pocs:
             return 1
 
-        return self.__pocs[parameter]
+        return self.__pocs[parameter_code]
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -29,7 +29,7 @@ class AQCSVSite(JSONable):
         if code is None:
             return None
         try:
-            match = re.match('(\d{3})(MM)?(\d{9})', code)
+            match = re.match('(\d{3})(MM)?(\d{9}).*', str(code))
         except TypeError:
             raise ValueError(code)
 

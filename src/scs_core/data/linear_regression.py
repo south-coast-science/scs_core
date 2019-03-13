@@ -7,11 +7,12 @@ Created on 14 Oct 2016
 from decimal import Decimal
 
 from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.regression import Regression
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class LinearRegression(object):
+class LinearRegression(Regression):
     """
     classdocs
     """
@@ -72,7 +73,7 @@ class LinearRegression(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def compute(self):
+    def line(self):
         # validate...
         if not self.has_regression():
             return None, None
@@ -107,7 +108,7 @@ class LinearRegression(object):
         return float(slope), float(intercept)
 
 
-    def midpoint(self):
+    def midpoint(self, ndigits=None):
         # validate...
         if not self.has_midpoint():
             return None, None
@@ -118,7 +119,7 @@ class LinearRegression(object):
                 return LocalizedDatetime.construct_from_timestamp(timestamp, self.__tzinfo), float(value)
 
         # multiple values...
-        slope, intercept = self.compute()
+        slope, intercept = self.line()
 
         # x domain...
         x_data = [x for x, _ in self.__data]
@@ -131,19 +132,23 @@ class LinearRegression(object):
         rec = LocalizedDatetime.construct_from_timestamp(mid_x, self.__tzinfo)
 
         # y val...
-        val = slope * float(mid_x) + intercept
+        value = slope * float(mid_x) + intercept
 
-        return rec, val
+        return rec, value if ndigits is None else round(value, ndigits)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def min(self):
-        return float(min([y for _, y in self.__data]))
+    def min(self, ndigits=None):
+        value = float(min([y for _, y in self.__data]))
+
+        return value if ndigits is None else round(value, ndigits)
 
 
-    def max(self):
-        return float(max([y for _, y in self.__data]))
+    def max(self, ndigits=None):
+        value = float(max([y for _, y in self.__data]))
+
+        return value if ndigits is None else round(value, ndigits)
 
 
     # ----------------------------------------------------------------------------------------------------------------

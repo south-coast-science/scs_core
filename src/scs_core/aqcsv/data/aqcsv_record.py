@@ -8,7 +8,7 @@ site,data_status,action_code,datetime,parameter,duration,frequency,value,unit_co
 lat,lon,GISdatum,elev,method_code,mpc,mpc_value,uncertainty,qualifiers
 
 first time / mobile:
-site,data_status,,datetime1,parameter,duration,,value,unit_code,qc_code,poc,
+site,data_status,,datetime,parameter,duration,,value,unit_code,qc_code,poc,
 lat1,lon1,,,,,,,
 
 subsequent:
@@ -49,6 +49,18 @@ class AQCSVRecord(JSONable):
     ACTION_INSERT_NOAUTO =      3
     ACTION_UPDATE_NOAUTO =      4
     ACTION_DELETE =             5
+
+    GIS_DATUM =                 "WGS84"
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def fixed_int(value, fmt):
+        try:
+            return fmt % int(value)
+        except ValueError:
+            return value
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -108,7 +120,7 @@ class AQCSVRecord(JSONable):
         self.__action_code = Datum.int(action_code)                 # int(1)
 
         self.__datetime_code = str(datetime_code)                   # nvarchar(20)      required
-        self.__parameter_code = Datum.int(parameter_code)           # int(5)            required
+        self.__parameter_code = parameter_code                      # int(5) or string  required
         self.__duration = Datum.int(duration)                       # int               required
 
         self.__frequency = Datum.int(frequency)                     # int
@@ -127,7 +139,7 @@ class AQCSVRecord(JSONable):
         self.__mpc_code = Datum.int(mpc_code)                       # int
         self.__mpc_value = Datum.float(mpc_value, 5)                # numeric(10,5)
         self.__uncertainty = Datum.float(uncertainty, 5)            # numeric(10,5)
-        self.__qualifiers = str(qualifiers)                         # nvarchar(255)
+        self.__qualifiers = qualifiers                              # nvarchar(255)
 
 
     def __eq__(self, other):
@@ -169,13 +181,13 @@ class AQCSVRecord(JSONable):
         jdict['action_code'] = self.action_code
 
         jdict['datetime'] = self.datetime_code
-        jdict['parameter'] = self.parameter_code
+        jdict['parameter'] = self.fixed_int(self.parameter_code, "%05d")
         jdict['duration'] = self.duration
 
         jdict['frequency'] = self.frequency
 
         jdict['value'] = self.value
-        jdict['unit'] = self.unit_code
+        jdict['unit'] = self.fixed_int(self.unit_code, "%03d")
         jdict['qc'] = self.qc_code
         jdict['poc'] = self.poc
 
@@ -184,7 +196,7 @@ class AQCSVRecord(JSONable):
         jdict['GISDatum'] = self.gis_datum
         jdict['elev'] = self.elev
 
-        jdict['method_code'] = self.method_code
+        jdict['method_code'] = self.fixed_int(self.method_code, "%03d")
         jdict['mpc'] = self.mpc_code
         jdict['mpc_value'] = self.mpc_value
         jdict['uncertainty'] = self.uncertainty
@@ -328,13 +340,13 @@ class AQCSVRecord(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%05d, " \
-               "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, lat:%s, lon:%s, " \
-               "gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
+        return "AQCSVRecord:{site_code:%s, data_status:%1d, action_code:%s, datetime_code:%s, parameter_code:%s, " \
+               "duration:%d, frequency:%s, value:%0.5f, unit_code:%03d, qc_code:%d, poc:%d, " \
+               "lat:%s, lon:%s, gis_datum:%s, elev:%s, method_code:%s, mpc_code:%s, mpc_value:%s, " \
                "uncertainty:%s, qualifiers:%s}" % \
                (self.site_code, self.data_status, self.action_code, self.datetime_code, self.parameter_code,
-                self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc, self.lat, self.lon,
-                self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,
+                self.duration, self.frequency, self.value, self.unit_code, self.qc_code, self.poc,
+                self.lat, self.lon, self.gis_datum, self.elev, self.method_code, self.mpc_code, self.mpc_value,
                 self.uncertainty, self.qualifiers)
 
 

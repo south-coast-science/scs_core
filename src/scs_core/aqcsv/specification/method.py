@@ -33,7 +33,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Method(JSONable, CSVArchive):
+class Method(CSVArchive, JSONable):
     """
     classdocs
     """

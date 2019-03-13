@@ -5,6 +5,10 @@ Created on 10 Jan 2017
 
 https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
+
+reference coordinate systems:
+https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84
+https://en.wikipedia.org/wiki/PZ-90
 """
 
 from collections import OrderedDict

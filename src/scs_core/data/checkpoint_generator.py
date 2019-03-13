@@ -43,6 +43,16 @@ class CheckpointGenerator(object):
         return CheckpointGenerator(hour, minute, second)
 
 
+    @classmethod
+    def is_valid(cls, specification):
+        try:
+            cls.construct(specification)
+            return True
+
+        except (AttributeError, ValueError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, hour, minute, second):

@@ -6,14 +6,14 @@ Created on 4 Mar 2019
 
 import json
 
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 from scs_core.csv.csv_reader import CSVReader
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVArchive(ABC):
+class CSVArchive(metaclass=ABCMeta):
     """
     classdocs
     """
@@ -54,7 +54,11 @@ class CSVArchive(ABC):
         if pk is None:
             return None
 
-        return cls._retrieved[pk]
+        try:
+            return cls._retrieved[pk]
+
+        except KeyError:
+            return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -23,7 +23,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Qualifier(JSONable, CSVArchive):
+class Qualifier(CSVArchive, JSONable):
     """
     classdocs
     """

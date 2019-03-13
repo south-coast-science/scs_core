@@ -25,7 +25,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Parameter(JSONable, CSVArchive):
+class Parameter(CSVArchive, JSONable):
     """
     classdocs
     """
