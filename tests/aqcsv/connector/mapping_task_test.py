@@ -25,7 +25,7 @@ parameters = ("val.pm1", "val.pm2p5", "val.pm10")
 checkpoint = "**:/01:00"
 
 site_code = "123MM123456789"
-pocs = {"88101": 2, "85101": 3 }
+pocs = {"88101": 2, "85101": 3}
 
 latest_rec = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
 
