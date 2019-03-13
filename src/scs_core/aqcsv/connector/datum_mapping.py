@@ -24,6 +24,8 @@ from scs_core.location.timezone import Timezone
 
 from scs_core.position.gps_datum import GPSDatum
 
+from scs_core.sync.schedule import Schedule
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -216,10 +218,10 @@ class DatumMapping(JSONable):
 
 
     def duration(self, datum: PathDict):
-        schedule_path = '.'.join(['status.val.sch', self.__SCHEDULES[self.topic]])
-        schedule = datum.node(schedule_path)
+        schedule = Schedule.construct_from_jdict(datum.node('status.val.sch'))
+        item = schedule.item(self.__SCHEDULES[self.topic])
 
-        return int(schedule['interval']) * int(schedule['tally'])       # TODO: put duration on Schedule
+        return int(round(item.duration()))
 
 
     # ----------------------------------------------------------------------------------------------------------------

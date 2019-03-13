@@ -164,8 +164,8 @@ class ScheduleItem(JSONable):
         Constructor
         """
         self.__name = name
-        self.__interval = Datum.float(interval, 1)          # time between samples
-        self.__tally = Datum.int(tally)                     # number of samples per report
+        self.__interval = Datum.float(interval, 1)                  # float     seconds between samples
+        self.__tally = Datum.int(tally)                             # int       number of samples per report
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -189,6 +189,12 @@ class ScheduleItem(JSONable):
         jdict['tally'] = self.tally
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def duration(self):
+        return self.interval * self.tally
 
 
     # ----------------------------------------------------------------------------------------------------------------
