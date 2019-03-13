@@ -14,6 +14,8 @@ from ast import literal_eval
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.connector.datum_mapping import DatumMapping
+
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
@@ -200,6 +202,12 @@ class MappingTask(JSONable):
         jdict['latest-rec'] = self.latest_rec
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def mappings(self):
+        return [DatumMapping(self.topic, species, self.site_code) for species in self.parameters]
 
 
     # ----------------------------------------------------------------------------------------------------------------
