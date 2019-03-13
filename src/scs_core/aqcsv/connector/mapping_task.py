@@ -206,8 +206,16 @@ class MappingTask(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def environment_path(self):
+        return '/'.join((self.org, self.group, 'loc', str(self.loc), self.topic))
+
+
+    def status_path(self):
+        return '/'.join((self.org, self.group, 'device', self.device, 'status'))
+
+
     def mappings(self):
-        return [DatumMapping(self.topic, species, self.site_code) for species in self.parameters]
+        return (DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -33,6 +33,14 @@ task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_
 print(task)
 print("-")
 
+for mapping in task.mappings():
+    print(mapping)
+print("-")
+
+print(task.environment_path())
+print(task.status_path())
+print("-")
+
 jstr = JSONify.dumps(task)
 print(jstr)
 print("-")

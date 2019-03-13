@@ -117,11 +117,11 @@ class Project(PersistentJSONable):
 
 
     def status_topic_path(self, system_id):
-        return self.__device_path + '/' + system_id.topic_label() + '/status'
+        return '/'.join((self.__device_path, system_id.topic_label(), 'status'))
 
 
     def control_topic_path(self, system_id):
-        return self.__device_path + '/' + system_id.topic_label() + '/control'
+        return '/'.join((self.__device_path, system_id.topic_label(), 'control'))
 
 
     # ----------------------------------------------------------------------------------------------------------------
