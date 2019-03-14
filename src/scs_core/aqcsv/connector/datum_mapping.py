@@ -39,6 +39,11 @@ class DatumMapping(JSONable):
         'particulates': 'scs-particulates'
     }
 
+    @classmethod
+    def is_valid_topic(cls, topic):
+        return topic in cls.__SCHEDULES
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -83,11 +88,11 @@ class DatumMapping(JSONable):
         source = self.aqcsv_source(datum)
 
         if source is None:
-            return None
+            return None                                 # TODO: raise AttributeError
 
         parameter_code = source.parameter_code
 
-        # site_code / poc...
+        # site_code / POCs...
         if self.__site_code is not None:
             code = self.__site_code
             poc = None
@@ -96,7 +101,7 @@ class DatumMapping(JSONable):
             site_conf = self.site_conf(datum)
 
             if site_conf is None:
-                return None
+                return None                             # TODO: raise AttributeError
 
             code = site_conf.site.as_code()
             poc = site_conf.poc(parameter_code)
@@ -111,7 +116,7 @@ class DatumMapping(JSONable):
             lat = gps.pos.lat
             lon = gps.pos.lng
             gis_datum = AQCSVRecord.GIS_DATUM
-            elev = round(gps.elv)
+            elev = int(round(gps.elv))
 
         else:
             lat = None
@@ -186,17 +191,17 @@ class DatumMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
     # status fields...
 
+    def status_tag(self, datum: PathDict):
+        tag_path = '.'.join([self.topic, 'tag'])
+
+        return datum.node(tag_path)
+
+
     def aqcsv_rec(self, datum: PathDict):
         localised = LocalizedDatetime.construct_from_jdict(datum.node('rec'))
         timezone = self.timezone(datum)
 
         return AQCSVDatetime(localised.datetime, timezone.zone)
-
-
-    def status_tag(self, datum: PathDict):
-        tag_path = '.'.join([self.topic, 'tag'])
-
-        return datum.node(tag_path)
 
 
     def aqcsv_source(self, datum: PathDict):

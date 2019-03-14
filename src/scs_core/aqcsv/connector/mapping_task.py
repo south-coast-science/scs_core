@@ -3,11 +3,10 @@ Created on 13 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
+MappingTask example:
 {"org": "south-coast-science-demo", "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00",
-"site-code": "123MM123456789", "pocs": {"88101": 2, "85101": 3},
-"latest-rec": "2019-03-13T12:45:00Z"}
+"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00", "site-code": "123MM123456789",
+"pocs": {"88101": 2, "85101": 3}, "latest-rec": "2019-03-13T12:45:00Z"}
 """
 
 from ast import literal_eval
@@ -134,6 +133,7 @@ class MappingTask(JSONable):
         group = jdict.get('group')
         loc = jdict.get('loc')
         topic = jdict.get('topic')
+
         device = jdict.get('device')
         parameters = jdict.get('parameters')
         checkpoint = jdict.get('checkpoint')
@@ -156,6 +156,7 @@ class MappingTask(JSONable):
         self.__group = group                                # string
         self.__loc = int(loc)                               # int
         self.__topic = topic                                # string
+
         self.__device = device                              # string
         self.__parameters = tuple(parameters)               # tuple of string
         self.__checkpoint = checkpoint                      # string
@@ -196,6 +197,7 @@ class MappingTask(JSONable):
         jdict['device'] = self.device
         jdict['parameters'] = self.parameters
         jdict['checkpoint'] = self.checkpoint
+
         jdict['site-code'] = self.site_code
         jdict['pocs'] = self.pocs
 
