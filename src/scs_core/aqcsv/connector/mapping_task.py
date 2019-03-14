@@ -15,9 +15,14 @@ from collections import OrderedDict
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 
+from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
+from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
+
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+
+# TODO: add agency code to MappingTask
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -225,6 +230,13 @@ class MappingTask(JSONable):
 
     def mappings(self):
         return (DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
+
+
+    def filename(self, agency):
+        site = AQCSVSite.construct_from_code(self.site_code)
+        dt = AQCSVDatetime(LocalizedDatetime.now().datetime)
+
+        return dt.filename_prefix() + '_' + str(site.country_code) + '.' + agency
 
 
     # ----------------------------------------------------------------------------------------------------------------
