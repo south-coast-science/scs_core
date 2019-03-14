@@ -232,11 +232,16 @@ class MappingTask(JSONable):
         return (DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
 
 
-    def filename(self, agency):
+    def filename(self, suffix=None):
         site = AQCSVSite.construct_from_code(self.site_code)
         dt = AQCSVDatetime(LocalizedDatetime.now().datetime)
 
-        return dt.filename_prefix() + '_' + str(site.country_code) + '.' + agency
+        filename = dt.filename_prefix() + '_' + str(site.country_code)
+
+        if suffix is not None:
+            filename += '.' + suffix
+
+        return filename
 
 
     # ----------------------------------------------------------------------------------------------------------------
