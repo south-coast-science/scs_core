@@ -42,7 +42,7 @@ class MappingTaskList(PersistentJSONable):
         if not jdict:
             return MappingTaskList({})
 
-        tasks = {literal_eval(key): task for key, task in jdict.get('tasks').items()}
+        tasks = {literal_eval(key): MappingTask.construct_from_jdict(task) for key, task in jdict.get('tasks').items()}
 
         return MappingTaskList(tasks)
 
@@ -62,6 +62,13 @@ class MappingTaskList(PersistentJSONable):
 
     def items(self):
         return self.__tasks.values()
+
+
+    def item(self, pk):
+        if pk not in self.__tasks:
+            return None
+
+        return self.__tasks[pk]
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -86,10 +86,6 @@ class DatumMapping(JSONable):
     def aqcsv_record(self, datum: PathDict):
         # parameter_code...
         source = self.aqcsv_source(datum)
-
-        if source is None:
-            return None                                 # TODO: raise AttributeError
-
         parameter_code = source.parameter_code
 
         # site_code / POCs...
@@ -99,10 +95,6 @@ class DatumMapping(JSONable):
 
         else:
             site_conf = self.site_conf(datum)
-
-            if site_conf is None:
-                return None                             # TODO: raise AttributeError
-
             code = site_conf.site.as_code()
             poc = site_conf.poc(parameter_code)
 
@@ -171,7 +163,12 @@ class DatumMapping(JSONable):
     def site_conf(cls, datum: PathDict):
         jdict = datum.node('status.val.airnow')
 
-        return AirNowSiteConf.construct_from_jdict(jdict)
+        conf = AirNowSiteConf.construct_from_jdict(jdict)
+
+        if conf is None:
+            raise ValueError("no site configuration found for %s" % str(jdict))
+
+        return conf
 
 
     @classmethod
@@ -207,7 +204,12 @@ class DatumMapping(JSONable):
     def aqcsv_source(self, datum: PathDict):
         pk = (self.topic, self.species, self.source(datum))
 
-        return SourceMapping.instance(pk)
+        mapping = SourceMapping.instance(pk)
+
+        if mapping is None:
+            raise ValueError("no source mapping found for %s" % str(pk))
+
+        return mapping
 
 
     def value(self, datum: PathDict):
