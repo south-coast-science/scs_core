@@ -84,6 +84,10 @@ class DatumMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def aqcsv_record(self, datum: PathDict):
+        # validate...
+        if self.datum_tag(datum) != self.status_tag(datum):
+            raise ValueError(datum)
+
         # parameter_code...
         source = self.aqcsv_source(datum)
         parameter_code = source.parameter_code
@@ -152,10 +156,10 @@ class DatumMapping(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # datum fields...
+    # status fields...
 
     @classmethod
-    def datum_tag(cls, datum: PathDict):
+    def status_tag(cls, datum: PathDict):
         return datum.node('status.tag')
 
 
@@ -186,9 +190,9 @@ class DatumMapping(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # status fields...
+    # datum fields...
 
-    def status_tag(self, datum: PathDict):
+    def datum_tag(self, datum: PathDict):
         tag_path = '.'.join([self.topic, 'tag'])
 
         return datum.node(tag_path)
