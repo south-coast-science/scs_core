@@ -85,12 +85,12 @@ class DatumMapping(JSONable):
 
     def aqcsv_record(self, datum: PathDict):
         # validate...
-        if self.datum_tag(datum) != self.status_tag(datum):
-            raise ValueError(datum)
+        if self.environment_tag(datum) != self.status_tag(datum):
+            raise ValueError("non-matching tag fields: %s" % datum)
 
         # parameter_code...
-        source = self.aqcsv_source(datum)
-        parameter_code = source.parameter_code
+        mapping = self.aqcsv_source_mapping(datum)
+        parameter_code = mapping.parameter_code
 
         # site_code / POCs...
         if self.__site_code is not None:
@@ -135,9 +135,9 @@ class DatumMapping(JSONable):
             frequency=0,
 
             value=self.value(datum),
-            unit_code=source.unit_code,
+            unit_code=mapping.unit_code,
 
-            qc_code=source.qc_code,
+            qc_code=mapping.qc_code,
             poc=poc,
 
             lat=lat,
@@ -145,9 +145,9 @@ class DatumMapping(JSONable):
             gis_datum=gis_datum,
             elev=elev,
 
-            method_code=source.method_code,
-            mpc_code=source.mpc_code,
-            mpc_value=source.mpc_value,
+            method_code=mapping.method_code,
+            mpc_code=mapping.mpc_code,
+            mpc_value=mapping.mpc_value,
 
             uncertainty=None,
             qualifiers=None)
@@ -156,43 +156,9 @@ class DatumMapping(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # status fields...
+    # environment fields...
 
-    @classmethod
-    def status_tag(cls, datum: PathDict):
-        return datum.node('status.tag')
-
-
-    @classmethod
-    def site_conf(cls, datum: PathDict):
-        jdict = datum.node('status.val.airnow')
-
-        conf = AirNowSiteConf.construct_from_jdict(jdict)
-
-        if conf is None:
-            raise ValueError("no site configuration found for %s" % str(jdict))
-
-        return conf
-
-
-    @classmethod
-    def gps(cls, datum: PathDict):
-        jdict = datum.node('status.val.gps')
-
-        return GPSDatum.construct_from_jdict(jdict)
-
-
-    @classmethod
-    def timezone(cls, datum: PathDict):
-        jdict = datum.node('status.val.tz')
-
-        return Timezone.construct_from_jdict(jdict)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # datum fields...
-
-    def datum_tag(self, datum: PathDict):
+    def environment_tag(self, datum: PathDict):
         tag_path = '.'.join([self.topic, 'tag'])
 
         return datum.node(tag_path)
@@ -205,13 +171,13 @@ class DatumMapping(JSONable):
         return AQCSVDatetime(localised.datetime, timezone.zone)
 
 
-    def aqcsv_source(self, datum: PathDict):
+    def aqcsv_source_mapping(self, datum: PathDict):
         pk = (self.topic, self.species, self.source(datum))
 
         mapping = SourceMapping.instance(pk)
 
         if mapping is None:
-            raise ValueError("no source mapping found for %s" % str(pk))
+            raise KeyError("no source mapping found for %s" % str(pk))
 
         return mapping
 
@@ -233,6 +199,40 @@ class DatumMapping(JSONable):
         item = schedule.item(self.__SCHEDULES[self.topic])
 
         return int(round(item.duration()))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # status fields...
+
+    @classmethod
+    def status_tag(cls, datum: PathDict):
+        return datum.node('status.tag')
+
+
+    @classmethod
+    def site_conf(cls, datum: PathDict):
+        jdict = datum.node('status.val.airnow')
+
+        conf = AirNowSiteConf.construct_from_jdict(jdict)
+
+        if conf is None:
+            raise KeyError("no site configuration found for %s" % str(jdict))
+
+        return conf
+
+
+    @classmethod
+    def gps(cls, datum: PathDict):
+        jdict = datum.node('status.val.gps')
+
+        return GPSDatum.construct_from_jdict(jdict)
+
+
+    @classmethod
+    def timezone(cls, datum: PathDict):
+        jdict = datum.node('status.val.tz')
+
+        return Timezone.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
