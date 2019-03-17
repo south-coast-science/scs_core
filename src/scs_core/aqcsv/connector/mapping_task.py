@@ -3,20 +3,26 @@ Created on 13 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
+MappingTask example:
 {"org": "south-coast-science-demo", "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00",
-"site-code": "123MM123456789", "pocs": {"88101": 2, "85101": 3},
-"latest-rec": "2019-03-13T12:45:00Z"}
+"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00", "site-code": "123MM123456789",
+"pocs": {"88101": 2, "85101": 3}, "latest-rec": "2019-03-13T12:45:00Z"}
 """
 
 from ast import literal_eval
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.connector.datum_mapping import DatumMapping
+
+from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
+from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
+
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+
+# TODO: add agency code to MappingTask
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -41,7 +47,7 @@ class MappingTaskList(PersistentJSONable):
         if not jdict:
             return MappingTaskList({})
 
-        tasks = {literal_eval(key): task for key, task in jdict.get('tasks').items()}
+        tasks = {literal_eval(key): MappingTask.construct_from_jdict(task) for key, task in jdict.get('tasks').items()}
 
         return MappingTaskList(tasks)
 
@@ -61,6 +67,13 @@ class MappingTaskList(PersistentJSONable):
 
     def items(self):
         return self.__tasks.values()
+
+
+    def item(self, pk):
+        if pk not in self.__tasks:
+            return None
+
+        return self.__tasks[pk]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -132,6 +145,7 @@ class MappingTask(JSONable):
         group = jdict.get('group')
         loc = jdict.get('loc')
         topic = jdict.get('topic')
+
         device = jdict.get('device')
         parameters = jdict.get('parameters')
         checkpoint = jdict.get('checkpoint')
@@ -154,6 +168,7 @@ class MappingTask(JSONable):
         self.__group = group                                # string
         self.__loc = int(loc)                               # int
         self.__topic = topic                                # string
+
         self.__device = device                              # string
         self.__parameters = tuple(parameters)               # tuple of string
         self.__checkpoint = checkpoint                      # string
@@ -194,12 +209,39 @@ class MappingTask(JSONable):
         jdict['device'] = self.device
         jdict['parameters'] = self.parameters
         jdict['checkpoint'] = self.checkpoint
+
         jdict['site-code'] = self.site_code
         jdict['pocs'] = self.pocs
 
         jdict['latest-rec'] = self.latest_rec
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def environment_path(self):
+        return '/'.join((self.org, self.group, 'loc', str(self.loc), self.topic))
+
+
+    def status_path(self):
+        return '/'.join((self.org, self.group, 'device', self.device, 'status'))
+
+
+    def mappings(self):
+        return (DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
+
+
+    def filename(self, suffix=None):
+        site = AQCSVSite.construct_from_code(self.site_code)
+        dt = AQCSVDatetime(LocalizedDatetime.now().datetime)
+
+        filename = dt.filename_prefix() + '_' + str(site.country_code)
+
+        if suffix is not None:
+            filename += '.' + suffix
+
+        return filename
 
 
     # ----------------------------------------------------------------------------------------------------------------

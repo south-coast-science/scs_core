@@ -7,8 +7,6 @@ Created on 12 Apr 2018
 import os
 
 
-# TODO: use the Filesystem.mkdir(..) method to auto-create conf directories, etc.
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Filesystem(object):

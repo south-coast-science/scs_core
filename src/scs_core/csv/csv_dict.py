@@ -120,13 +120,13 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def paths(self):
-        return [cell.path for cell in self.__cells]
+        return (cell.path for cell in self.__cells)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        cells = [str(cell) for cell in self.__cells]
+        cells = (str(cell) for cell in self.__cells)
 
         return "CSVHeader:{cells:%s}" % cells
 

@@ -24,6 +24,8 @@ from scs_core.location.timezone import Timezone
 
 from scs_core.position.gps_datum import GPSDatum
 
+from scs_core.sync.schedule import Schedule
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -36,6 +38,11 @@ class DatumMapping(JSONable):
         'gases': 'scs-gases',
         'particulates': 'scs-particulates'
     }
+
+    @classmethod
+    def is_valid_topic(cls, topic):
+        return topic in cls.__SCHEDULES
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -77,30 +84,26 @@ class DatumMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def aqcsv_record(self, datum: PathDict):
+        # validate...
+        if self.environment_tag(datum) != self.status_tag(datum):
+            raise ValueError("non-matching tag fields: %s" % datum)
+
         # parameter_code...
-        aqcsv_source = self.aqcsv_source(datum)
+        mapping = self.aqcsv_source_mapping(datum)
+        parameter_code = mapping.parameter_code
 
-        if aqcsv_source is None:
-            return None
-
-        parameter_code = aqcsv_source.parameter_code
-
-        # site_code / poc...
+        # site_code / POCs...
         if self.__site_code is not None:
             code = self.__site_code
             poc = None
 
         else:
             site_conf = self.site_conf(datum)
-
-            if site_conf is None:
-                return None
-
             code = site_conf.site.as_code()
             poc = site_conf.poc(parameter_code)
 
         # datetime_code...
-        aqcsv_rec = self.aqcsv_rec(datum)
+        rec = self.aqcsv_rec(datum)
 
         # position...
         gps = self.gps(datum)
@@ -109,7 +112,7 @@ class DatumMapping(JSONable):
             lat = gps.pos.lat
             lon = gps.pos.lng
             gis_datum = AQCSVRecord.GIS_DATUM
-            elev = round(gps.elv)
+            elev = int(round(gps.elv))
 
         else:
             lat = None
@@ -124,7 +127,7 @@ class DatumMapping(JSONable):
             data_status=AQCSVRecord.STATUS_FINAL,
             action_code=AQCSVRecord.ACTION_DEFAULT,
 
-            datetime_code=aqcsv_rec.as_json(),
+            datetime_code=rec.as_json(),
 
             parameter_code=parameter_code,
 
@@ -132,9 +135,9 @@ class DatumMapping(JSONable):
             frequency=0,
 
             value=self.value(datum),
-            unit_code=aqcsv_source.unit_code,
+            unit_code=mapping.unit_code,
 
-            qc_code=aqcsv_source.qc_code,
+            qc_code=mapping.qc_code,
             poc=poc,
 
             lat=lat,
@@ -142,9 +145,9 @@ class DatumMapping(JSONable):
             gis_datum=gis_datum,
             elev=elev,
 
-            method_code=aqcsv_source.method_code,
-            mpc_code=aqcsv_source.mpc_code,
-            mpc_value=aqcsv_source.mpc_value,
+            method_code=mapping.method_code,
+            mpc_code=mapping.mpc_code,
+            mpc_value=mapping.mpc_value,
 
             uncertainty=None,
             qualifiers=None)
@@ -153,36 +156,13 @@ class DatumMapping(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # datum fields...
+    # environment fields...
 
-    @classmethod
-    def datum_tag(cls, datum: PathDict):
-        return datum.node('status.tag')
+    def environment_tag(self, datum: PathDict):
+        tag_path = '.'.join([self.topic, 'tag'])
 
+        return datum.node(tag_path)
 
-    @classmethod
-    def site_conf(cls, datum: PathDict):
-        jdict = datum.node('status.val.airnow')
-
-        return AirNowSiteConf.construct_from_jdict(jdict)
-
-
-    @classmethod
-    def gps(cls, datum: PathDict):
-        jdict = datum.node('status.val.gps')
-
-        return GPSDatum.construct_from_jdict(jdict)
-
-
-    @classmethod
-    def timezone(cls, datum: PathDict):
-        jdict = datum.node('status.val.tz')
-
-        return Timezone.construct_from_jdict(jdict)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # status fields...
 
     def aqcsv_rec(self, datum: PathDict):
         localised = LocalizedDatetime.construct_from_jdict(datum.node('rec'))
@@ -191,16 +171,15 @@ class DatumMapping(JSONable):
         return AQCSVDatetime(localised.datetime, timezone.zone)
 
 
-    def status_tag(self, datum: PathDict):
-        tag_path = '.'.join([self.topic, 'tag'])
-
-        return datum.node(tag_path)
-
-
-    def aqcsv_source(self, datum: PathDict):
+    def aqcsv_source_mapping(self, datum: PathDict):
         pk = (self.topic, self.species, self.source(datum))
 
-        return SourceMapping.instance(pk)
+        mapping = SourceMapping.instance(pk)
+
+        if mapping is None:
+            raise KeyError("no source mapping found for %s" % str(pk))
+
+        return mapping
 
 
     def value(self, datum: PathDict):
@@ -216,10 +195,44 @@ class DatumMapping(JSONable):
 
 
     def duration(self, datum: PathDict):
-        schedule_path = '.'.join(['status.val.sch', self.__SCHEDULES[self.topic]])
-        schedule = datum.node(schedule_path)
+        schedule = Schedule.construct_from_jdict(datum.node('status.val.sch'))
+        item = schedule.item(self.__SCHEDULES[self.topic])
 
-        return int(schedule['interval']) * int(schedule['tally'])
+        return int(round(item.duration()))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # status fields...
+
+    @classmethod
+    def status_tag(cls, datum: PathDict):
+        return datum.node('status.tag')
+
+
+    @classmethod
+    def site_conf(cls, datum: PathDict):
+        jdict = datum.node('status.val.airnow')
+
+        conf = AirNowSiteConf.construct_from_jdict(jdict)
+
+        if conf is None:
+            raise KeyError("no site configuration found for %s" % str(jdict))
+
+        return conf
+
+
+    @classmethod
+    def gps(cls, datum: PathDict):
+        jdict = datum.node('status.val.gps')
+
+        return GPSDatum.construct_from_jdict(jdict)
+
+
+    @classmethod
+    def timezone(cls, datum: PathDict):
+        jdict = datum.node('status.val.tz')
+
+        return Timezone.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

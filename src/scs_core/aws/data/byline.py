@@ -77,7 +77,7 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['rec'] = self.rec.as_iso8601()
+        jdict['last_write'] = self.rec.as_iso8601()
 
         return jdict
 
