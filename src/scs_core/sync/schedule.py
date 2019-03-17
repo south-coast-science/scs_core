@@ -163,8 +163,8 @@ class ScheduleItem(JSONable):
         Constructor
         """
         self.__name = name
-        self.__interval = round(interval, 1)                    # float     seconds between samples
-        self.__tally = int(tally)                               # int       number of samples per report
+        self.__interval = round(float(interval), 1)                 # float     seconds between samples
+        self.__tally = int(tally)                                   # int       number of samples per report
 
 
     # ----------------------------------------------------------------------------------------------------------------
