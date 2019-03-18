@@ -1,5 +1,5 @@
 """
-Created on 18 Sep 2016
+Created on 18 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -17,7 +17,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class A4Datum(JSONable):
+class D4Datum(JSONable):
     """
     classdocs
     """
@@ -25,43 +25,39 @@ class A4Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, calib, baseline, tc, temp, we_v, ae_v, no2_cnc=None):
+    def construct(cls, calib, baseline, tc, temp, we_v):
         if calib is None or tc is None:
-            return A4Datum(we_v, ae_v)
+            return D4Datum(we_v)
 
-        # print("A4Datum: calib:%s baseline:%s tc:%s temp:%f we_v:%f ae_v:%f x_sens_sample:%s" %
-        #       (calib, baseline, tc, temp, we_v, ae_v, x_sens_sample), file=sys.stderr)
+        # print("D4Datum: calib:%s baseline:%s tc:%s temp:%f we_v:%f x_sens_sample:%s" %
+        #       (calib, baseline, tc, temp, we_v, x_sens_sample), file=sys.stderr)
 
         # weC...
-        we_c = cls.__we_c(calib, tc, temp, we_v, ae_v)
+        we_c = cls.__we_c(calib, tc, temp, we_v)
 
         if we_c is None:
-            return A4Datum(we_v, ae_v)
-
-        if no2_cnc:
-            we_c -= cls.__reverse_we_c(calib.we_no2_x_sens_mv, no2_cnc)
+            return D4Datum(we_v)
 
         # cnc...
         cnc = cls.__cnc(calib.we_sens_mv, we_c)
 
         baselined_cnc = cnc + baseline.offset
 
-        return A4Datum(we_v, ae_v, we_c, baselined_cnc)
+        return D4Datum(we_v, we_c, baselined_cnc)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __we_c(cls, calib, tc, temp, we_v, ae_v):
+    def __we_c(cls, calib, tc, temp, we_v):
         """
         Compute weC from sensor temperature compensation of weV, aeV
         """
         we_t = we_v - (calib.we_elc_mv / 1000.0)        # remove electronic we zero
-        ae_t = ae_v - (calib.ae_elc_mv / 1000.0)        # remove electronic ae zero
 
-        we_c = tc.correct(calib, temp, we_t, ae_t)
+        we_c = tc.correct(calib, temp, we_t)
 
-        # print("A4Datum__we_c: we_t:%f ae_t:%f we_c:%s" % (we_t, ae_t, we_c), file=sys.stderr)
+        # print("D4Datum__we_c: we_t:%f we_c:%s" % (we_t, we_c), file=sys.stderr)
 
         return we_c
 
@@ -76,31 +72,18 @@ class A4Datum(JSONable):
 
         cnc = we_c / (sens_mv / 1000.0)
 
-        # print("A4Datum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
+        # print("D4Datum__cnc: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
 
         return cnc
 
 
-    @classmethod
-    def __reverse_we_c(cls, sens_mv, cnc):      # TODO: don't use concentration - factor out baseline?
-        """
-        Compute weC from cnc (using cross-sensitivity)
-        """
-        we_c = (cnc * sens_mv) / 1000.0
-
-        # print("__reverse_we_c: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
-
-        return we_c
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, we_v, ae_v, we_c=None, cnc=None):
+    def __init__(self, we_v, we_c=None, cnc=None):
         """
         Constructor
         """
         self.__we_v = Datum.float(we_v, 6)        # uncorrected working electrode voltage       Volts
-        self.__ae_v = Datum.float(ae_v, 6)        # uncorrected auxiliary electrode voltage     Volts
 
         self.__we_c = Datum.float(we_c, 6)        # corrected working electrode voltage         Volts
         self.__cnc = Datum.float(cnc, 1)          # gas concentration                           ppb
@@ -112,7 +95,6 @@ class A4Datum(JSONable):
         jdict = OrderedDict()
 
         jdict['weV'] = self.we_v
-        jdict['aeV'] = self.ae_v
 
         jdict['weC'] = self.we_c                 # may be None
         jdict['cnc'] = self.cnc                  # may be None
@@ -125,11 +107,6 @@ class A4Datum(JSONable):
     @property
     def we_v(self):
         return self.__we_v
-
-
-    @property
-    def ae_v(self):
-        return self.__ae_v
 
 
     @property
@@ -146,8 +123,7 @@ class A4Datum(JSONable):
 
     def __str__(self, *args, **kwargs):
         we_v = None if self.we_v is None else round(float(self.we_v), 6)
-        ae_v = None if self.ae_v is None else round(float(self.ae_v), 6)
         we_c = None if self.we_c is None else round(float(self.we_c), 6)
         cnc = None if self.cnc is None else round(float(self.cnc), 6)
 
-        return "A4Datum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s}" % (we_v, ae_v, we_c, cnc)
+        return "D4Datum:{we_v:%s, we_c:%s, cnc:%s}" % (we_v, we_c, cnc)

@@ -28,7 +28,7 @@ class TimezoneOffset(JSONable):
 
     @classmethod
     def construct_from_offset(cls, offset):
-        match = re.match('([+\-])(\d{2})(\d{2})', offset)
+        match = re.match(r'([+\-])(\d{2})(\d{2})', offset)
 
         if match is None:
             return None

@@ -24,7 +24,8 @@ class CSVDict(object):
     @classmethod
     def construct_from_jstr(cls, jstr):
         try:
-            jdict = json.loads(jstr)
+            jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+
         except ValueError:
             return None
 

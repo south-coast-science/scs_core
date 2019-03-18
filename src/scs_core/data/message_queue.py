@@ -176,7 +176,8 @@ class MessageQueueInterface(object):
         """
         self.__value = value
 
-        self.clear_cmds()
+        self.cmd_enq = False
+        self.cmd_deq = False
 
         self.newest = None
         self.oldest = None
