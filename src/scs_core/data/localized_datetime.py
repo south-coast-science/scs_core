@@ -70,7 +70,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date_time(cls, date_str, time_str, tz=None):
         # date...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
 
         if match is None:
             return None
@@ -82,7 +82,7 @@ class LocalizedDatetime(JSONable):
         day = int(fields[2])
 
         # time...
-        match = re.match('(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
+        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
@@ -115,7 +115,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_z(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', datetime_str)
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', datetime_str)
 
         if match is None:
             return None
@@ -144,7 +144,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match('(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?([ +\-]?)(\d{2}):(\d{2})',
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?([ +\-]?)(\d{2}):(\d{2})',
                          datetime_str)
 
         if match is None:

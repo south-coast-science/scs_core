@@ -33,7 +33,7 @@ class RTCDatetime(JSONable):
         if not jstr:
             return None
 
-        match = re.match('(\d{2})-(\d{2})-(\d{2}) \((\d)\) (\d{2}):(\d{2}):(\d{2})', jstr)
+        match = re.match(r'(\d{2})-(\d{2})-(\d{2}) \((\d)\) (\d{2}):(\d{2}):(\d{2})', jstr)
 
         if match is None:
             return None
