@@ -145,4 +145,9 @@ class A4Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4Datum:{we_v:%0.6f, ae_v:%0.6f, we_c:%s, cnc:%s}" % (self.we_v, self.ae_v, self.we_c, self.cnc)
+        we_v = None if self.we_v is None else round(float(self.we_v), 6)
+        ae_v = None if self.ae_v is None else round(float(self.ae_v), 6)
+        we_c = None if self.we_c is None else round(float(self.we_c), 6)
+        cnc = None if self.cnc is None else round(float(self.cnc), 6)
+
+        return "A4Datum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s}" % (we_v, ae_v, we_c, cnc)
