@@ -54,6 +54,6 @@ class AFEDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        sns = '[' + ', '.join(str(key) + ':' + str(self.sns[key]) for key in self.sns) + ']'
+        sns = '{' + ', '.join(str(key) + ':' + str(self.sns[key]) for key in self.sns) + '}'
 
         return "AFEDatum:{pt1000:%s, sns:{%s}}" % (self.pt1000, sns)
