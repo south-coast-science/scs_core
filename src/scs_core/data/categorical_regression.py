@@ -11,7 +11,7 @@ from scs_core.data.regression import Regression
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CatagoricalRegression(Regression):
+class CategoricalRegression(Regression):
     """
     classdocs
     """
@@ -79,4 +79,4 @@ class CatagoricalRegression(Regression):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CatagoricalRegression:{categories:%s}" %  self.__categories
+        return "CategoricalRegression:{categories:%s}" %  self.__categories
