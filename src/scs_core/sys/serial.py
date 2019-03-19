@@ -6,12 +6,12 @@ Created on 19 Mar 2019
 
 import time
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Serial(object, metaclass=ABCMeta):
+class Serial(ABC):
     """
     classdocs
     """
