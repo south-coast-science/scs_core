@@ -7,12 +7,12 @@ The abstract definition of an NDIR required by NDIRMonitor.
 Implementations are elsewhere.
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NDIR(object):
+class NDIR(ABC):
     """
     classdocs
     """

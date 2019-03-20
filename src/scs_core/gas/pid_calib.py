@@ -7,12 +7,14 @@ Created on 24 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+from scs_core.data.json import JSONable
+
 from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PIDCalib(SensorCalib):
+class PIDCalib(SensorCalib, JSONable):
     """
     classdocs
     """

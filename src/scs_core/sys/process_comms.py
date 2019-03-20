@@ -4,12 +4,12 @@ Created on 27 May 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ProcessComms(object):
+class ProcessComms(ABC):
     """
     classdocs
     """

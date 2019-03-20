@@ -7,14 +7,14 @@ Created on 13 Aug 2016
 import json
 import os
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from scs_core.sys.filesystem import Filesystem
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class JSONable(object):
+class JSONable(ABC):
     """
     classdocs
     """
