@@ -14,7 +14,7 @@ https://www.airnow.gov/
 
 import os
 
-from abc import ABCMeta
+from abc import ABC
 from collections import OrderedDict
 
 from scs_core.csv.csv_archive import CSVArchive
@@ -23,7 +23,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Country(CSVArchive, JSONable, metaclass=ABCMeta):
+class Country(CSVArchive, JSONable, ABC):
     """
     classdocs
     """

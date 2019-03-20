@@ -7,14 +7,14 @@ https://docs.python.org/3/library/multiprocessing.html#sharing-state-between-pro
 http://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from multiprocessing import Process, Lock
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SynchronisedProcess(object):
+class SynchronisedProcess(ABC):
     """
     classdocs
     """

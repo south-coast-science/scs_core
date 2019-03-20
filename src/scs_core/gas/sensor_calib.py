@@ -4,16 +4,14 @@ Created on 30 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
-
-from scs_core.data.json import JSONable
+from abc import ABC
 
 from scs_core.gas.sensor import Sensor
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SensorCalib(JSONable):
+class SensorCalib(ABC):
     """
     classdocs
     """
@@ -44,13 +42,6 @@ class SensorCalib(JSONable):
         sensor.baseline = baseline
 
         return sensor
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
-    def as_json(self):
-        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------

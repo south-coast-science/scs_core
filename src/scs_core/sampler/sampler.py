@@ -4,14 +4,14 @@ Created on 30 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from scs_core.sync.runner import Runner
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Sampler(object):
+class Sampler(ABC):
     """
     classdocs
     """

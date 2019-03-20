@@ -6,12 +6,12 @@ Created on 1 Jul 2017
 A device able to control a sampling process, by whatever method.
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Runner(object):
+class Runner(ABC):
     """
     classdocs
     """

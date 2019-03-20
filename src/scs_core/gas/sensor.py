@@ -6,12 +6,12 @@ Created on 30 Sep 2016
 https://www.alphasense-technology.co.uk/sensor_types
 """
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Sensor(object):
+class Sensor(ABC):
     """
     classdocs
     """
