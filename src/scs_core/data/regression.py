@@ -4,14 +4,14 @@ Created on 14 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Regression(metaclass=ABCMeta):
+class Regression(ABC):
     """
     classdocs
     """

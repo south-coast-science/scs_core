@@ -6,12 +6,12 @@ Created on 11 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.catagorical_regression import CatagoricalRegression
+from scs_core.data.categorical_regression import CategoricalRegression
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-reg = CatagoricalRegression()
+reg = CategoricalRegression()
 
 reg.append(None, "hello")
 print(reg)
