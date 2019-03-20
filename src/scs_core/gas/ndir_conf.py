@@ -6,7 +6,7 @@ Created on 15 Mar 2017
 A stub class for an NDIRConf that may be implemented elsewhere
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -14,7 +14,7 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NDIRConf(ABC, PersistentJSONable):
+class NDIRConf(PersistentJSONable):
     """
     classdocs
     """
