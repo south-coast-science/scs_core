@@ -31,6 +31,20 @@ class Country(CSVArchive, JSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        numeric = jdict.get('numeric')
+        name = jdict.get('name')
+        iso = jdict.get('iso')
+
+        return cls(numeric, name, iso)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def archive_location(cls):
         return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'archive', 'countries.csv')
 
