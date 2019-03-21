@@ -23,14 +23,14 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MappingTaskList(PersistentJSONable):
+class AirNowMappingTaskList(PersistentJSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =    "aqcsv_mapping_tasks.json"
+    __FILENAME =    "airnow_mapping_tasks.json"
 
     @classmethod
     def persistence_location(cls, host):
@@ -42,11 +42,11 @@ class MappingTaskList(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return MappingTaskList({})
+            return AirNowMappingTaskList({})
 
         tasks = {literal_eval(key): MappingTask.construct_from_jdict(task) for key, task in jdict.get('tasks').items()}
 
-        return MappingTaskList(tasks)
+        return AirNowMappingTaskList(tasks)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ class MappingTaskList(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         tasks = '{' + ', '.join(str(key) + ': ' + str(self.tasks[key]) for key in self.tasks) + '}'
 
-        return "MappingTaskList:{tasks:%s}" % tasks
+        return "AirNowMappingTaskList:{tasks:%s}" % tasks
 
 
 # --------------------------------------------------------------------------------------------------------------------

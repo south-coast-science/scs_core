@@ -8,7 +8,7 @@ Created on 13 Mar 2019
 
 import json
 
-from scs_core.aqcsv.connector.mapping_task import MappingTask
+from scs_core.aqcsv.connector.airnow_mapping_task import MappingTask
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
