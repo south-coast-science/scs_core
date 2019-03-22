@@ -22,6 +22,9 @@ from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
+# TODO: add first-period-start to MappingTask
+# TODO: add latest-period-end to MappingTask
+
 # TODO: add agency code to MappingTask
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -81,7 +84,7 @@ class AirNowMappingTaskList(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['tasks'] = {str(key): task for key, task in self.tasks.items()}
+        jdict['tasks'] = {str(key): task for key, task in self.__tasks.items()}
 
         return jdict
 
@@ -114,15 +117,8 @@ class AirNowMappingTaskList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def tasks(self):
-        return self.__tasks
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        tasks = '{' + ', '.join(str(key) + ': ' + str(self.tasks[key]) for key in self.tasks) + '}'
+        tasks = '{' + ', '.join(str(key) + ': ' + str(self.__tasks[key]) for key in self.__tasks) + '}'
 
         return "AirNowMappingTaskList:{tasks:%s}" % tasks
 
@@ -236,7 +232,7 @@ class MappingTask(JSONable):
         dt = AQCSVDatetime(LocalizedDatetime.now().datetime)
         site = AQCSVSite.construct_from_code(self.site_code)
 
-        return dt.filename_prefix() + '_' + str(site.country_code)              # YYYYMMDDhhmm_CCC.AAAAAAAAAA
+        return dt.filename_prefix() + '_' + str(site.country_code)          # goal is YYYYMMDDhhmm_CCC.AAAAAAAAAA
 
 
     # ----------------------------------------------------------------------------------------------------------------
