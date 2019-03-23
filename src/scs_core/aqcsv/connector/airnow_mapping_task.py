@@ -22,9 +22,6 @@ from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
-# TODO: add first-period-start to MappingTask
-# TODO: add latest-period-end to MappingTask
-
 # TODO: add agency code to MappingTask
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -111,8 +108,8 @@ class AirNowMappingTaskList(PersistentJSONable):
             pass
 
 
-    def set_latest_rec(self, pk, latest_rec):
-        self.__tasks[pk].latest_rec = latest_rec
+    def set_upload_start(self, pk, upload_start):
+        self.__tasks[pk].upload_start = upload_start
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,14 +146,17 @@ class MappingTask(JSONable):
         site_code = jdict.get('site-code')
         pocs = jdict.get('pocs')
 
-        latest_rec = LocalizedDatetime.construct_from_jdict(jdict.get('latest-rec'))
+        upload_start = LocalizedDatetime.construct_from_jdict(jdict.get('upload-start'))
+        upload_end = LocalizedDatetime.construct_from_jdict(jdict.get('upload-end'))
 
-        return MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, latest_rec)
+        return MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs,
+                           upload_start, upload_end)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, latest_rec):
+    def __init__(self, org, group, loc, topic, device, parameters, checkpoint, site_code, pocs,
+                 upload_start, upload_end):
         """
         Constructor
         """
@@ -172,7 +172,8 @@ class MappingTask(JSONable):
         self.__site_code = site_code                        # string
         self.__pocs = pocs                                  # dictionary of parameter: index
 
-        self.__latest_rec = latest_rec                      # LocalizedDatetime
+        self.__upload_start = upload_start                  # LocalizedDatetime
+        self.__upload_end = upload_end                      # LocalizedDatetime
 
 
     def __eq__(self, other):
@@ -186,7 +187,8 @@ class MappingTask(JSONable):
                    self.checkpoint == other.checkpoint and \
                    self.site_code == other.site_code and \
                    self.pocs == other.pocs and \
-                   self.latest_rec == other.latest_rec
+                   self.upload_start == other.upload_start and \
+                   self.upload_end == other.upload_end
 
         except AttributeError:
             return False
@@ -209,7 +211,8 @@ class MappingTask(JSONable):
         jdict['site-code'] = self.site_code
         jdict['pocs'] = self.pocs
 
-        jdict['latest-rec'] = self.latest_rec
+        jdict['upload-start'] = self.upload_start
+        jdict['upload-end'] = self.upload_end
 
         return jdict
 
@@ -290,19 +293,24 @@ class MappingTask(JSONable):
 
 
     @property
-    def latest_rec(self):
-        return self.__latest_rec
+    def upload_start(self):
+        return self.__upload_start
 
 
-    @latest_rec.setter
-    def latest_rec(self, latest_rec):
-        self.__latest_rec = latest_rec
+    @property
+    def upload_end(self):
+        return self.__upload_end
+
+
+    @upload_end.setter
+    def upload_end(self, upload_end):
+        self.__upload_end = upload_end
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "MappingTask:{org:%s, group:%s, loc:%s, topic:%s, device:%s, parameters:%s, checkpoint:%s, " \
-               "site_code:%s, pocs:%s, latest_rec:%s}" % \
+               "site_code:%s, pocs:%s, upload_start:%s, upload_end:%s}" % \
                (self.org, self.group, self.loc, self.topic, self.device, self.parameters, self.checkpoint,
-                self.site_code, self.pocs, self.latest_rec)
+                self.site_code, self.pocs, self.upload_start, self.upload_end)

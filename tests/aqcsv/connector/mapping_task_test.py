@@ -27,9 +27,10 @@ checkpoint = "**:/01:00"
 site_code = "123MM123456789"
 pocs = {"88101": 2, "85101": 3}
 
-latest_rec = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
+upload_start = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
+upload_end = LocalizedDatetime.construct_from_jdict("2019-03-14T12:45:00Z")
 
-task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, latest_rec)
+task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, upload_start, upload_end)
 print(task)
 print("-")
 
