@@ -76,14 +76,10 @@ class Timedelta(JSONable):
         # elapsed time...
         match = re.match(r'(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
 
-        print("report: %s" % report)
-
         if match is None:
             return None
 
         fields = match.groups()
-
-        print("fields: %s" % str(fields))
 
         if fields[1] == "-":
             days = int(fields[0])
