@@ -5,7 +5,7 @@ Created on 13 Mar 2019
 
 MappingTask example:
 {"org": "south-coast-science-demo", "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "SSSSSSSSSS",
+"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "AAA",
 "site-code": "123MM123456789", "pocs": {}, "upload-start": "2019-02-01T00:00:00Z", "upload-end": null}
 """
 
