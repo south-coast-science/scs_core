@@ -5,8 +5,8 @@ Created on 13 Mar 2019
 
 MappingTask example:
 {"org": "south-coast-science-demo", "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00", "site-code": "123MM123456789",
-"pocs": {"88101": 2, "85101": 3}, "latest-rec": "2019-03-13T12:45:00Z"}
+"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "SSSSSSSSSS",
+"site-code": "123MM123456789", "pocs": {}, "upload-start": "2019-02-01T00:00:00Z", "upload-end": null}
 """
 
 from ast import literal_eval
@@ -21,8 +21,6 @@ from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-
-# TODO: add agency code to MappingTask
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -143,19 +141,20 @@ class MappingTask(JSONable):
         parameters = jdict.get('parameters')
         checkpoint = jdict.get('checkpoint')
 
+        agency_code = jdict.get('agency-code')
         site_code = jdict.get('site-code')
         pocs = jdict.get('pocs')
 
         upload_start = LocalizedDatetime.construct_from_jdict(jdict.get('upload-start'))
         upload_end = LocalizedDatetime.construct_from_jdict(jdict.get('upload-end'))
 
-        return MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs,
+        return MappingTask(org, group, loc, topic, device, parameters, checkpoint, agency_code, site_code, pocs,
                            upload_start, upload_end)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org, group, loc, topic, device, parameters, checkpoint, site_code, pocs,
+    def __init__(self, org, group, loc, topic, device, parameters, checkpoint, agency_code, site_code, pocs,
                  upload_start, upload_end):
         """
         Constructor
@@ -169,6 +168,7 @@ class MappingTask(JSONable):
         self.__parameters = tuple(parameters)               # tuple of string
         self.__checkpoint = checkpoint                      # string
 
+        self.__agency_code = agency_code                    # string
         self.__site_code = site_code                        # string
         self.__pocs = pocs                                  # dictionary of parameter: index
 
@@ -185,6 +185,7 @@ class MappingTask(JSONable):
                    self.device == other.device and \
                    self.parameters == other.parameters and \
                    self.checkpoint == other.checkpoint and \
+                   self.agency_code == other.agency_code and \
                    self.site_code == other.site_code and \
                    self.pocs == other.pocs and \
                    self.upload_start == other.upload_start and \
@@ -208,6 +209,7 @@ class MappingTask(JSONable):
         jdict['parameters'] = self.parameters
         jdict['checkpoint'] = self.checkpoint
 
+        jdict['agency-code'] = self.agency_code
         jdict['site-code'] = self.site_code
         jdict['pocs'] = self.pocs
 
@@ -283,6 +285,11 @@ class MappingTask(JSONable):
 
 
     @property
+    def agency_code(self):
+        return self.__agency_code
+
+
+    @property
     def site_code(self):
         return self.__site_code
 
@@ -311,6 +318,6 @@ class MappingTask(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "MappingTask:{org:%s, group:%s, loc:%s, topic:%s, device:%s, parameters:%s, checkpoint:%s, " \
-               "site_code:%s, pocs:%s, upload_start:%s, upload_end:%s}" % \
+               "agency_code:%s, site_code:%s, pocs:%s, upload_start:%s, upload_end:%s}" % \
                (self.org, self.group, self.loc, self.topic, self.device, self.parameters, self.checkpoint,
-                self.site_code, self.pocs, self.upload_start, self.upload_end)
+                self.agency_code, self.site_code, self.pocs, self.upload_start, self.upload_end)

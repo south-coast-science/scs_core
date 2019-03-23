@@ -24,13 +24,15 @@ device = "praxis-000401"
 parameters = ("val.pm1", "val.pm2p5", "val.pm10")
 checkpoint = "**:/01:00"
 
+agency_code = "AAAAAAAAAA"
 site_code = "123MM123456789"
 pocs = {"88101": 2, "85101": 3}
 
 upload_start = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
 upload_end = LocalizedDatetime.construct_from_jdict("2019-03-14T12:45:00Z")
 
-task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, upload_start, upload_end)
+task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, agency_code, site_code, pocs,
+                   upload_start, upload_end)
 print(task)
 print("-")
 
