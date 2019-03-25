@@ -108,7 +108,7 @@ class DatumMapping(JSONable):
         # position...
         gps = self.gps(datum)
 
-        if gps is not None:
+        if gps is not None and gps.elv is not None:
             lat = gps.pos.lat
             lon = gps.pos.lng
             gis_datum = AQCSVRecord.GIS_DATUM
