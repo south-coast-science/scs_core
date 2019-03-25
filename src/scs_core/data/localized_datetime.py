@@ -208,6 +208,16 @@ class LocalizedDatetime(JSONable):
         return self.datetime < other.datetime
 
 
+    def __add__(self, other):
+        if type(other) == Timedelta:
+            operand = other.delta
+
+        else:
+            operand = other
+
+        return LocalizedDatetime(self.datetime + operand)
+
+
     def __sub__(self, other):
         if type(other) == LocalizedDatetime:
             operand = other.datetime
@@ -218,7 +228,7 @@ class LocalizedDatetime(JSONable):
         else:
             operand = other
 
-        return self.datetime - operand
+        return self.datetime - operand                  # result may be datetime or timedelta
 
 
     # ----------------------------------------------------------------------------------------------------------------
