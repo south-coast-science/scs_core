@@ -5,7 +5,7 @@ Created on 13 Mar 2019
 
 MappingTask example:
 {"org": "south-coast-science-demo", "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "AAA",
+"parameters": ["pm1", "pm2p5", "pm10"], "duration": 1, "checkpoint": "**:/01:00", "agency-code": "AAA",
 "site-code": "123MM123456789", "pocs": {}, "upload-start": "2019-02-01T00:00:00Z", "upload-end": null}
 """
 
@@ -139,6 +139,7 @@ class MappingTask(JSONable):
 
         device = jdict.get('device')
         parameters = jdict.get('parameters')
+        duration = jdict.get('duration')
         checkpoint = jdict.get('checkpoint')
 
         agency_code = jdict.get('agency-code')
@@ -148,14 +149,14 @@ class MappingTask(JSONable):
         upload_start = LocalizedDatetime.construct_from_jdict(jdict.get('upload-start'))
         upload_end = LocalizedDatetime.construct_from_jdict(jdict.get('upload-end'))
 
-        return MappingTask(org, group, loc, topic, device, parameters, checkpoint, agency_code, site_code, pocs,
-                           upload_start, upload_end)
+        return MappingTask(org, group, loc, topic, device, parameters, duration, checkpoint,
+                           agency_code, site_code, pocs, upload_start, upload_end)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org, group, loc, topic, device, parameters, checkpoint, agency_code, site_code, pocs,
-                 upload_start, upload_end):
+    def __init__(self, org, group, loc, topic, device, parameters, duration, checkpoint,
+                 agency_code, site_code, pocs, upload_start, upload_end):
         """
         Constructor
         """
@@ -166,6 +167,7 @@ class MappingTask(JSONable):
 
         self.__device = device                              # string
         self.__parameters = tuple(parameters)               # tuple of string
+        self.__duration = int(duration)                     # int                       minutes
         self.__checkpoint = checkpoint                      # string
 
         self.__agency_code = agency_code                    # string
@@ -184,6 +186,7 @@ class MappingTask(JSONable):
                    self.topic == other.topic and \
                    self.device == other.device and \
                    self.parameters == other.parameters and \
+                   self.duration == other.duration and \
                    self.checkpoint == other.checkpoint and \
                    self.agency_code == other.agency_code and \
                    self.site_code == other.site_code and \
@@ -207,6 +210,7 @@ class MappingTask(JSONable):
 
         jdict['device'] = self.device
         jdict['parameters'] = self.parameters
+        jdict['duration'] = self.duration
         jdict['checkpoint'] = self.checkpoint
 
         jdict['agency-code'] = self.agency_code
@@ -285,6 +289,11 @@ class MappingTask(JSONable):
 
 
     @property
+    def duration(self):
+        return self.__duration
+
+
+    @property
     def agency_code(self):
         return self.__agency_code
 
@@ -317,7 +326,7 @@ class MappingTask(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MappingTask:{org:%s, group:%s, loc:%s, topic:%s, device:%s, parameters:%s, checkpoint:%s, " \
-               "agency_code:%s, site_code:%s, pocs:%s, upload_start:%s, upload_end:%s}" % \
-               (self.org, self.group, self.loc, self.topic, self.device, self.parameters, self.checkpoint,
-                self.agency_code, self.site_code, self.pocs, self.upload_start, self.upload_end)
+        return "MappingTask:{org:%s, group:%s, loc:%s, topic:%s, device:%s, parameters:%s, duration:%s, " \
+               "checkpoint:%s, agency_code:%s, site_code:%s, pocs:%s, upload_start:%s, upload_end:%s}" % \
+               (self.org, self.group, self.loc, self.topic, self.device, self.parameters, self.duration,
+                self.checkpoint, self.agency_code, self.site_code, self.pocs, self.upload_start, self.upload_end)

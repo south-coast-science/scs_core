@@ -24,8 +24,6 @@ from scs_core.location.timezone import Timezone
 
 from scs_core.position.gps_datum import GPSDatum
 
-from scs_core.sync.schedule import Schedule
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -83,7 +81,7 @@ class DatumMapping(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def aqcsv_record(self, datum: PathDict):
+    def aqcsv_record(self, datum: PathDict, duration):
         # validate...
         if self.environment_tag(datum) != self.status_tag(datum):
             raise ValueError("non-matching tag fields: %s" % datum)
@@ -95,7 +93,7 @@ class DatumMapping(JSONable):
         # site_code / POCs...
         if self.__site_code is not None:
             code = self.__site_code
-            poc = None
+            poc = 1
 
         else:
             site_conf = self.site_conf(datum)
@@ -131,7 +129,7 @@ class DatumMapping(JSONable):
 
             parameter_code=parameter_code,
 
-            duration=self.duration(datum),
+            duration=duration,
             frequency=0,
 
             value=self.value(datum),
@@ -192,13 +190,6 @@ class DatumMapping(JSONable):
         source_path = '.'.join([self.topic, 'src'])
 
         return datum.node(source_path)
-
-
-    def duration(self, datum: PathDict):
-        schedule = Schedule.construct_from_jdict(datum.node('status.val.sch'))
-        item = schedule.item(self.__SCHEDULES[self.topic])
-
-        return int(round(item.duration()))
 
 
     # ----------------------------------------------------------------------------------------------------------------

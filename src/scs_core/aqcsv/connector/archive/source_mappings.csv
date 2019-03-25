@@ -1,7 +1,7 @@
 topic,species,source,parameter-code,unit-code,qc-code,method-code,mpc-code,mpc-value
-particulates,pm1,N2,PM1.0 (ATM),005,0,195,1,5
-particulates,pm1,N3,PM1.0 (ATM),005,0,195,1,5
-particulates,pm1,R1,PM1.0 (ATM),005,0,195,1,5
+particulates,pm1,N2,PM1,105,0,195,1,5
+particulates,pm1,N3,PM1,105,0,195,1,5
+particulates,pm1,R1,PM1,105,0,195,1,5
 particulates,pm2p5,N2,88101,105,0,195,1,5
 particulates,pm2p5,N3,88101,105,0,195,1,5
 particulates,pm2p5,R1,88101,105,0,195,1,5
