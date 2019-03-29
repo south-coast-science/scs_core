@@ -10,9 +10,9 @@ example JSON:
 "remote-path": "/UNEP/AQCSV"}
 """
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.client.sftp_client_conf import SFTPClientConf
 
-from scs_host.client.sftp_client_conf import SFTPClientConf
+from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
