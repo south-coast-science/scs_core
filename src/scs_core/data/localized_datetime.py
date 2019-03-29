@@ -70,7 +70,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date_time(cls, date_str, time_str, tz=None):
         # date...
-        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)          # e.g. 2019-01-14
 
         if match is None:
             return None
