@@ -70,7 +70,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date_time(cls, date_str, time_str, tz=None):
         # date...
-        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)       # e.g. 2019-01-14
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)          # e.g. 2019-01-14
 
         if match is None:
             return None
@@ -208,6 +208,16 @@ class LocalizedDatetime(JSONable):
         return self.datetime < other.datetime
 
 
+    def __add__(self, other):
+        if type(other) == Timedelta:
+            operand = other.delta
+
+        else:
+            operand = other
+
+        return LocalizedDatetime(self.datetime + operand)
+
+
     def __sub__(self, other):
         if type(other) == LocalizedDatetime:
             operand = other.datetime
@@ -218,7 +228,7 @@ class LocalizedDatetime(JSONable):
         else:
             operand = other
 
-        return self.datetime - operand
+        return self.datetime - operand                  # result may be datetime or timedelta
 
 
     # ----------------------------------------------------------------------------------------------------------------

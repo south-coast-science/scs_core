@@ -28,20 +28,6 @@ class CountryISO(Country):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        numeric = jdict.get('numeric')
-        name = jdict.get('name')
-        iso = jdict.get('iso')
-
-        return CountryISO(numeric, name, iso)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __init__(self, numeric, name, iso):
         """
         Constructor

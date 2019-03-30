@@ -14,6 +14,7 @@ https://en.wikipedia.org/wiki/PZ-90
 from collections import OrderedDict
 from numbers import Number
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.position.position import Position
 
@@ -59,10 +60,10 @@ class GPSDatum(JSONable):
         """
         Constructor
         """
-        self.__pos = pos                    # Position
-        self.__elv = elv                    # metres above mean sea level
+        self.__pos = pos                            # Position
+        self.__elv = Datum.float(elv, 1)            # metres above mean sea level
 
-        self.__quality = quality            # 0 to 6 (?)
+        self.__quality = Datum.int(quality)         # 0 to 6 (?)
 
 
     # ----------------------------------------------------------------------------------------------------------------

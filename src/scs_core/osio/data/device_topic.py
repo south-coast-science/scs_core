@@ -7,18 +7,18 @@ example:
     {
       "client_id": "5926",
       "owner": "southcoastscience-dev",
-      "topic": "\/orgs\/south-coast-science-dev\/development\/loc\/3\/gases",
+      "topic": "/orgs/south-coast-science-dev/development/loc/3/gases",
       "date": "2017-03-19T08:00:18.414Z",
       "payload": {
         "encoding": "utf-8",
-        "content-type": "application\/json",
-        "text": "{\"tag\": \"scs-ap1-6\", \"rec\": \"2017-03-19T08:00:17.601+00:00\", \"val\": 
-        {\"NO2\": {\"weV\": 0.286379, \"aeV\": 0.288317, \"weC\": -0.014025, \"cnc\": -76.2}, 
-        \"Ox\": {\"weV\": 0.416506, \"aeV\": 0.407381, \"weC\": null, \"cnc\": null}, 
-        \"NO\": {\"weV\": 0.296255, \"aeV\": 0.31138, \"weC\": -0.036358, \"cnc\": -98.5}, 
-        \"CO\": {\"weV\": 0.33413, \"aeV\": 0.566696, \"weC\": 0.34805, \"cnc\": 1456.3}, 
-        \"pt1\": {\"v\": 0.324005, \"tmp\": 23.3}, 
-        \"sht\": {\"hmd\": 45.4, \"tmp\": 21.9}}}"
+        "content-type": "application/json",
+        "text": "{"tag": "scs-ap1-6", "rec": "2017-03-19T08:00:17.601+00:00", "val":
+        {"NO2": {"weV": 0.286379, "aeV": 0.288317, "weC": -0.014025, "cnc": -76.2},
+        "Ox": {"weV": 0.416506, "aeV": 0.407381, "weC": null, "cnc": null},
+        "NO": {"weV": 0.296255, "aeV": 0.31138, "weC": -0.036358, "cnc": -98.5},
+        "CO": {"weV": 0.33413, "aeV": 0.566696, "weC": 0.34805, "cnc": 1456.3},
+        "pt1": {"v": 0.324005, "tmp": 23.3},
+        "sht": {"hmd": 45.4, "tmp": 21.9}}}"
       },
 """
 

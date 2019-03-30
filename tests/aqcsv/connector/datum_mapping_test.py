@@ -27,6 +27,8 @@ jstr = '{"rec": "2019-03-11T13:59:00Z", ' \
 print(jstr)
 print("=")
 
+duration = 1
+
 mapping = DatumMapping("particulates", "pm1")
 print(mapping)
 print("-")
@@ -38,14 +40,13 @@ print("-")
 print("         tag: %s" % mapping.environment_tag(datum))
 print("       value: %s" % mapping.value(datum))
 print("      source: %s" % mapping.source(datum))
-print("    duration: %s" % mapping.duration(datum))
 print("     mapping: %s" % mapping.aqcsv_source_mapping(datum))
 print("-")
 
 print(JSONify.dumps(mapping))
 print("-")
 
-record = mapping.aqcsv_record(datum)
+record = mapping.aqcsv_record(datum, duration)
 print(record)
 print("-")
 
@@ -63,14 +64,13 @@ print("-")
 print("         tag: %s" % mapping.environment_tag(datum))
 print("       value: %s" % mapping.value(datum))
 print("      source: %s" % mapping.source(datum))
-print("    duration: %s" % mapping.duration(datum))
 print("     mapping: %s" % mapping.aqcsv_source_mapping(datum))
 print("-")
 
 print(JSONify.dumps(mapping))
 print("-")
 
-record = mapping.aqcsv_record(datum)
+record = mapping.aqcsv_record(datum, duration)
 print(record)
 print("-")
 

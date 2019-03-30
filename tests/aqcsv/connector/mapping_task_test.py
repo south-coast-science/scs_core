@@ -8,7 +8,7 @@ Created on 13 Mar 2019
 
 import json
 
-from scs_core.aqcsv.connector.mapping_task import MappingTask
+from scs_core.aqcsv.connector.airnow_mapping_task import MappingTask
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -22,14 +22,18 @@ loc = 1
 topic = "particulates"
 device = "praxis-000401"
 parameters = ("val.pm1", "val.pm2p5", "val.pm10")
+duration = 1
 checkpoint = "**:/01:00"
 
+agency_code = "AAAAAAAAAA"
 site_code = "123MM123456789"
 pocs = {"88101": 2, "85101": 3}
 
-latest_rec = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
+upload_start = LocalizedDatetime.construct_from_jdict("2019-03-13T12:45:00Z")
+upload_end = LocalizedDatetime.construct_from_jdict("2019-03-14T12:45:00Z")
 
-task = MappingTask(org, group, loc, topic, device, parameters, checkpoint, site_code, pocs, latest_rec)
+task = MappingTask(org, group, loc, topic, device, parameters, duration, checkpoint,
+                   agency_code, site_code, pocs, upload_start, upload_end)
 print(task)
 print("-")
 
