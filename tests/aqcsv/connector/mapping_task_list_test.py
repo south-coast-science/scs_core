@@ -8,7 +8,7 @@ Created on 13 Mar 2019
 
 import json
 
-from scs_core.aqcsv.connector.mapping_task import MappingTask, MappingTaskList
+from scs_core.aqcsv.connector.airnow_mapping_task import MappingTask, AirNowMappingTaskList
 
 from scs_core.data.json import JSONify
 
@@ -45,7 +45,7 @@ print(task3)
 print("-")
 
 
-tasks = MappingTaskList({})
+tasks = AirNowMappingTaskList({})
 tasks.insert(task1)
 print(tasks)
 
@@ -61,11 +61,11 @@ print(jstr)
 print("-")
 
 tasks.save(Host)
-tasks = MappingTaskList.load(Host)
+tasks = AirNowMappingTaskList.load(Host)
 print(tasks)
 print("-")
 
-remade = MappingTaskList.construct_from_jdict(json.loads(jstr))
+remade = AirNowMappingTaskList.construct_from_jdict(json.loads(jstr))
 print("-")
 print("-")
 
