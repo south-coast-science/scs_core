@@ -68,18 +68,12 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
-    def construct_from_date_time(cls, date_str, time_str, tz=None):
+    def construct_from_date_time(cls, parser, date_str, time_str, tz=None):
         # date...
-        match = re.match(r'(\d{4})-(\d{2})-(\d{2})', date_str)          # e.g. 2019-01-14
+        date = parser.datetime(date_str)
 
-        if match is None:
+        if date is None:
             return None
-
-        fields = match.groups()
-
-        year = int(fields[0])
-        month = int(fields[1])
-        day = int(fields[2])
 
         # time...
         match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
@@ -97,16 +91,15 @@ class LocalizedDatetime(JSONable):
         zone = pytz.timezone('Etc/UTC') if tz is None else tz
 
         # construct...
-        localized = zone.localize(datetime(year, month, day, 0, 0, 0, 0))
+        start = LocalizedDatetime(zone.localize(date))
 
-        start = LocalizedDatetime(localized)
         corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
 
         return corrected
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):           # TODO: deprecated
+    def construct_from_jdict(cls, jdict):               # TODO: deprecated
         return cls.construct_from_iso8601(jdict)
 
 
@@ -189,7 +182,11 @@ class LocalizedDatetime(JSONable):
 
 
     def __eq__(self, other):
-        return self.datetime == other.datetime
+        try:
+            return self.datetime == other.datetime
+
+        except AttributeError:
+            return False
 
 
     def __ge__(self, other):
@@ -323,3 +320,62 @@ class LocalizedDatetime(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "LocalizedDatetime:{datetime:%s}" % self.datetime
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DateParser(object):
+    """
+    classdocs
+    """
+
+    __FORMATS = {
+        'DD-MM-YYYY': '%d-%m-%Y',
+        'DD/MM/YYYY': '%d/%m/%Y',
+        'MM-DD-YYYY': '%m-%d-%Y',
+        'MM/DD/YYYY': '%m/%d/%Y',
+        'YYYY-MM-DD': '%Y-%m-%d',
+        'YYYY/MM/DD': '%Y/%m/%d'
+    }
+
+
+    @classmethod
+    def formats(cls):
+        return sorted(cls.__FORMATS.keys())
+
+
+    @classmethod
+    def is_valid_format(cls, date_format):
+        return date_format in cls.__FORMATS.keys()
+
+
+    @classmethod
+    def construct(cls, date_format):
+        strptime_format = cls.__FORMATS[date_format]
+
+        return cls(strptime_format)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, strptime_format):
+        """
+        Constructor
+        """
+        self.__strptime_format = strptime_format
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def datetime(self, datetime_str):
+        try:
+            return datetime.strptime(datetime_str, self.__strptime_format)
+
+        except ValueError:
+            return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DateParser:{format:%s}" % self.__strptime_format

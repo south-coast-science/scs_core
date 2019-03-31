@@ -11,7 +11,7 @@ from datetime import timezone
 
 from pytz import timezone as pytz_timezone
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.localized_datetime import DateParser, LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -79,9 +79,12 @@ iso = loc.as_iso8601()
 print(iso)
 print("-")
 
+parser = DateParser.construct('YYYY-MM-DD')
+print(parser)
+
 airwatch_date = '2019-02-14'
 airwatch_time = '24:00:00'
 
 print("airwatch: %s %s" % (airwatch_date, airwatch_time))
-loc = LocalizedDatetime.construct_from_date_time(airwatch_date, airwatch_time)
+loc = LocalizedDatetime.construct_from_date_time(parser, airwatch_date, airwatch_time)
 print(loc)
