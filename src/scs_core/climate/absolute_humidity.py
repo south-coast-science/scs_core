@@ -35,17 +35,17 @@ class AbsoluteHumidity(object):
     def from_rh_t(cls, rh, t):              # %, °C -> g/m3
         tk = t + 273.15
 
-        theta = 1 - (tk / cls.__TCK)
+        theta = 1.0 - (tk / cls.__TCK)
 
-        sequence = (cls.__A1 * theta) + (cls.__A2 * pow(theta, 1.5)) + (cls.__A3 * pow(theta, 3)) + \
-                   (cls.__A4 * pow(theta, 3.5)) + (cls.__A5 * pow(theta, 4)) + (cls.__A6 * pow(theta, 7.5))
+        sequence = (cls.__A1 * theta) + (cls.__A2 * pow(theta, 1.5)) + (cls.__A3 * pow(theta, 3.0)) + \
+                   (cls.__A4 * pow(theta, 3.5)) + (cls.__A5 * pow(theta, 4.0)) + (cls.__A6 * pow(theta, 7.5))
 
         ln_pws_pc = (cls.__TCK / tk) * sequence
 
         pws = exp(ln_pws_pc) * cls.__PC
 
-        pw = pws * (rh / 100)
+        pw = pws * (rh / 100.0)
 
         ah = pw / (cls.__RW * tk)
 
-        return ah * 1000
+        return ah * 1000.0
