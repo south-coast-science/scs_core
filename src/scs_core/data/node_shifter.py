@@ -87,7 +87,7 @@ class NodeShifter(object):
         for source_path in outer.paths():
             if PathDict.sub_path_includes_path(self.source_sub_path, source_path):
                 source = inner
-                path = source_path.replace(self.source_sub_path, self.target_sub_path)
+                path = source_path.replace(self.source_sub_path, self.target_sub_path, 1)
 
             else:
                 source = outer
