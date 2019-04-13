@@ -29,7 +29,7 @@ class Precision(object):
         digits = Datum.precision(value)
 
         if digits is None:
-                return
+            return
 
         if self.__digits is None or digits > self.__digits:
             self.__digits = digits

@@ -132,4 +132,4 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-            return "RESTClient:{http_client:%s, api_key:%s}" % (self.__http_client, self.__api_key)
+        return "RESTClient:{http_client:%s, api_key:%s}" % (self.__http_client, self.__api_key)

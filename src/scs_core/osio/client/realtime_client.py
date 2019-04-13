@@ -56,4 +56,4 @@ class RealtimeClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-            return "RealtimeClient:{streaming_client:%s, auth:%s}" % (self.__streaming_client, self.__auth)
+        return "RealtimeClient:{streaming_client:%s, auth:%s}" % (self.__streaming_client, self.__auth)
