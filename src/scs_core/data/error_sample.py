@@ -76,7 +76,7 @@ class ErrorSample(object):
 
     def stdev(self):
         try:
-            return round(statistics.stdev(self.__errors()), 1)
+            return round(statistics.stdev(self.__errors()), 3)
 
         except statistics.StatisticsError:
             return None

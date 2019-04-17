@@ -104,7 +104,7 @@ class ErrorGridRhT(JSONable):
                     stdevs.append(stdev)
 
         # average...
-        return round(sum(stdevs) / len(stdevs), 1)
+        return round(sum(stdevs) / len(stdevs), 3)
 
 
     # ----------------------------------------------------------------------------------------------------------------
