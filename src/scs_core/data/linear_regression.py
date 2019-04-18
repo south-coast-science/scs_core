@@ -10,6 +10,8 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.regression import Regression
 
 
+# TODO: consider replacing LinearRegression with scipy.stats.linregress
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class LinearRegression(Regression):
