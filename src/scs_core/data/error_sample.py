@@ -4,7 +4,7 @@ Created on 16 Apr 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import statistics
+import statistics as stats
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -76,9 +76,9 @@ class ErrorSample(object):
 
     def stdev(self):
         try:
-            return round(statistics.stdev(self.__errors()), 3)
+            return round(stats.stdev(self.__errors()), 3)
 
-        except statistics.StatisticsError:
+        except stats.StatisticsError:
             return None
 
 
