@@ -13,7 +13,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ErrorGridMeshTRh(JSONable):
+class ErrorMeshTRh(JSONable):
     """
     classdocs
     """
@@ -35,12 +35,12 @@ class ErrorGridMeshTRh(JSONable):
                 # stats...
                 m_t, c_t, r, p, std_err = stats.linregress(means, samples)
 
-                lines.append(ErrorGridMeshTRhLine(rh_min, rh_max, col_t_min, col_t_max, n, m_t, c_t, r ** 2))
+                lines.append(ErrorMeshTRhLine(rh_min, rh_max, col_t_min, col_t_max, n, m_t, c_t, r ** 2))
 
             rh_min = rh_max
             rh_max += grid.rh_step
 
-        return ErrorGridMeshTRh(lines)
+        return ErrorMeshTRh(lines)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -111,12 +111,12 @@ class ErrorGridMeshTRh(JSONable):
     def __str__(self, *args, **kwargs):
         lines = '[' + ', '.join(str(line) for line in self.__lines) + ']'
 
-        return "ErrorGridMeshTRh:{lines:%s}" % lines
+        return "ErrorMeshTRh:{lines:%s}" % lines
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ErrorGridMeshTRhLine(JSONable):
+class ErrorMeshTRhLine(JSONable):
     """
     classdocs
     """
@@ -210,5 +210,5 @@ class ErrorGridMeshTRhLine(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ErrorGridMeshTRhLine:{rh_min:%s, rh_max:%s, t_min:%s, t_max:%s, n:%s, m_t:%s, c_t:%s, r2:%s}" % \
+        return "ErrorMeshTRhLine:{rh_min:%s, rh_max:%s, t_min:%s, t_max:%s, n:%s, m_t:%s, c_t:%s, r2:%s}" % \
                (self.rh_min, self.rh_max, self.t_min, self.t_max, self.n, self.m_t, self.c_t, self.r2)
