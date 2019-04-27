@@ -15,8 +15,6 @@ import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-
 from scs_core.data.json import JSONify
 
 
@@ -36,11 +34,11 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  128                     # recommended: 32 or 128 (sec)
-    __RECONN_STABLE =               20                      # recommended: 20 (sec)
+    __RECONN_MAX =                  10                      # recommended: 32 or 128 (sec), was 128, 10
+    __RECONN_STABLE =               10                      # recommended: 20 (sec), was 20, 10
 
-    __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec)
-    __OPERATION_TIMEOUT =           10                      # recommended: 5 (sec)
+    __DISCONNECT_TIMEOUT =          40                      # recommended: 10 (sec), was 10, 20
+    __OPERATION_TIMEOUT =           20                      # recommended: 5 (sec), was 10
 
     __PUB_QOS =                     1
     __SUB_QOS =                     1
@@ -60,7 +58,7 @@ class MQTTClient(object):
 
     def connect(self, auth):
         # client...
-        self.__client = AWSIoTMQTTClient(auth.client_id)
+        self.__client = MQTTLib.AWSIoTMQTTClient(auth.client_id)
 
         # configuration...
         self.__client.configureEndpoint(auth.endpoint, self.__PORT)
@@ -94,20 +92,18 @@ class MQTTClient(object):
         except (AWSIoTExceptions.disconnectError, AWSIoTExceptions.disconnectTimeoutException):
             pass
 
+        self.__client = None
 
-# ----------------------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------------------------
 
     def publish(self, publication):
         if not self.__client:
-            return False
+            raise IOError("publish: no client")
 
         payload = JSONify.dumps(publication.payload)
 
-        try:
-            return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
-
-        except (AWSIoTExceptions.publishError, AWSIoTExceptions.publishTimeoutException):
-            return False
+        return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
 
     # ----------------------------------------------------------------------------------------------------------------
