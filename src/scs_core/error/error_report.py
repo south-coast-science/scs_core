@@ -1,48 +1,62 @@
 """
-Created on 12 Dec 2018
+Created on 17 Apr 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.datum import Datum
+from collections import OrderedDict
+
+from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Precision(object):
+class ErrorReport(JSONable):
     """
     classdocs
-   """
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, digits=None):
+    def __init__(self, t_ts, rh_ts, r2):
         """
         Constructor
         """
-        self.__digits = digits            # int
+        self.__t_ts = t_ts                          # int
+        self.__rh_ts = rh_ts                        # int
+        self.__r2 = r2                              # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def widen(self, value):
-        digits = Datum.precision(value)
+    def as_json(self):
+        jdict = OrderedDict()
 
-        if digits is None:
-            return
+        jdict['t_ts'] = self.t_ts
+        jdict['rh_ts'] = self.rh_ts
+        jdict['r2'] = round(self.r2, 3)
 
-        if self.__digits is None or digits > self.__digits:
-            self.__digits = digits
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def digits(self):
-        return self.__digits
+    def t_ts(self):
+        return self.__t_ts
+
+
+    @property
+    def rh_ts(self):
+        return self.__rh_ts
+
+
+    @property
+    def r2(self):
+        return self.__r2
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Precision:{digits:%s}" % self.digits
+        return "ErrorReport:{t_ts:%s, rh_ts:%s, r2:%s}" % (self.t_ts, self.rh_ts, self.r2)

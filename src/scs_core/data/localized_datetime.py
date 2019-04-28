@@ -332,8 +332,10 @@ class DateParser(object):
     __FORMATS = {
         'DD-MM-YYYY': '%d-%m-%Y',
         'DD/MM/YYYY': '%d/%m/%Y',
+        'DD/MM/YY': '%d/%m/%y',
         'MM-DD-YYYY': '%m-%d-%Y',
         'MM/DD/YYYY': '%m/%d/%Y',
+        'MM/DD/YY': '%m/%d/%y',
         'YYYY-MM-DD': '%Y-%m-%d',
         'YYYY/MM/DD': '%Y/%m/%d'
     }
