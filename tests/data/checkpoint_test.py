@@ -23,8 +23,8 @@ hours = 23
 seconds = 0.1
 
 for minutes in range(0, 60):
-        next_checkpoint = checkpoint.next(hours, minutes, seconds)
-        print("hours: %02d minutes: %02d seconds: %04.1f - %s" % (hours, minutes, seconds, next_checkpoint))
+    next_checkpoint = checkpoint.next(hours, minutes, seconds)
+    print("hours: %02d minutes: %02d seconds: %04.1f - %s" % (hours, minutes, seconds, next_checkpoint))
 
 
 while True:
