@@ -18,13 +18,13 @@ class ErrorReport(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, t_ts, rh_ts, stdev):
+    def __init__(self, t_ts, rh_ts, r2):
         """
         Constructor
         """
         self.__t_ts = t_ts                          # int
         self.__rh_ts = rh_ts                        # int
-        self.__stdev = stdev                        # float
+        self.__r2 = r2                              # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ class ErrorReport(JSONable):
 
         jdict['t_ts'] = self.t_ts
         jdict['rh_ts'] = self.rh_ts
-        jdict['stdev'] = self.stdev
+        jdict['r2'] = round(self.r2, 3)
 
         return jdict
 
@@ -52,11 +52,11 @@ class ErrorReport(JSONable):
 
 
     @property
-    def stdev(self):
-        return self.__stdev
+    def r2(self):
+        return self.__r2
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ErrorReport:{t_ts:%s, rh_ts:%s, stdev:%s}" % (self.t_ts, self.rh_ts, self.stdev)
+        return "ErrorReport:{t_ts:%s, rh_ts:%s, r2:%s}" % (self.t_ts, self.rh_ts, self.r2)
