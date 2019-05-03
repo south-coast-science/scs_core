@@ -7,6 +7,8 @@ example document:
 {"tag": "scs-ap1-6", "rec": "2019-01-22T13:55:54Z", "val": {"hmd": 49.3, "tmp": 21.5, "bar": {"pA": 99.8}}}
 """
 
+from collections import OrderedDict
+
 from scs_core.sample.sample import Sample
 
 
@@ -23,4 +25,10 @@ class ClimateSample(Sample):
         """
         Constructor
         """
-        super().__init__(tag, None, rec, ('hmd', sht_sample.humid), ('tmp', sht_sample.temp), ('bar', barometer_sample))
+        jdict = OrderedDict()
+
+        jdict['hmd'] = sht_sample.humid
+        jdict['tmp'] = sht_sample.temp
+        jdict['bar'] = barometer_sample
+
+        super().__init__(tag, None, rec, jdict)
