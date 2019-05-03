@@ -179,28 +179,28 @@ class Encode(object):
     # encode byte array...
 
     @staticmethod
-    def int(value, order=''):
+    def int(value, order):
         unpacked = struct.unpack('BB', struct.pack(order + 'h', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def unsigned_int(value, order=''):
+    def unsigned_int(value, order):
         unpacked = struct.unpack('BB', struct.pack(order + 'H', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def unsigned_long(value, order=''):
+    def unsigned_long(value, order):
         unpacked = struct.unpack('BBBB', struct.pack(order + 'L', int(value)))
 
         return unpacked
 
 
     @staticmethod
-    def float(value, order=''):
+    def float(value, order):
         unpacked = struct.unpack('BBBB', struct.pack(order + 'f', float(value)))
 
         return unpacked
@@ -217,42 +217,42 @@ class Decode(object):
     # decode byte array...
 
     @staticmethod
-    def int(byte_values, order=''):
+    def int(byte_values, order):
         packed = struct.unpack(order + 'h', struct.pack('BB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def unsigned_int(byte_values, order=''):
+    def unsigned_int(byte_values, order):
         packed = struct.unpack(order + 'H', struct.pack('BB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def long(byte_values, order=''):
+    def long(byte_values, order):
         packed = struct.unpack(order + 'l', struct.pack('BBBB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def unsigned_long(byte_values, order=''):
+    def unsigned_long(byte_values, order):
         packed = struct.unpack(order + 'L', struct.pack('BBBB', *byte_values))
 
         return packed[0]
 
 
     @staticmethod
-    def float(byte_values, order=''):
+    def float(byte_values, order):
         packed = struct.unpack(order + 'f', struct.pack('BBBB', *byte_values))
 
         return None if math.isnan(packed[0]) else packed[0]
 
 
     @staticmethod
-    def double(byte_values, order=''):
+    def double(byte_values, order):
         packed = struct.unpack(order + 'd', struct.pack('BBBBBBBB', *byte_values))
 
         return None if math.isnan(packed[0]) else packed[0]
