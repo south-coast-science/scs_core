@@ -20,7 +20,7 @@ from collections import OrderedDict
 from scs_core.sample.sample import Sample
 
 
-# TODO: get src from AFE data interpretation
+# TODO: get src from AFE data interpretation?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -41,8 +41,8 @@ class GasesSample(Sample):
             jdict['CO2'] = ndir_datum
 
         if afe_datum is not None:
-            for key in afe_datum.sns.items():
-                jdict[key] = afe_datum.sns[key]
+            for key, value in afe_datum.sns.items():
+                jdict[key] = value
 
             if afe_datum.pt1000 is not None:
                 jdict['pt1'] = afe_datum.pt1000
