@@ -77,4 +77,4 @@ class Sample(JSONable):
         classname = self.__class__.__name__
         values = '{' + ', '.join(str(key) + ': ' + str(self.values[key]) for key in self.values) + '}'
 
-        return classname + ":{tag:%s, src:%s, rec:%s, val:%s}" % (self.tag, self.src, self.rec, values)
+        return classname + ":{tag:%s, src:%s, rec:%s, values:%s}" % (self.tag, self.src, self.rec, values)
