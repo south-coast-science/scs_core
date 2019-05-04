@@ -13,6 +13,8 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
+from scs_core.sample.sample import Sample
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -86,6 +88,10 @@ class MPL115A2Datum(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def as_sample(self, tag, rec):
+        return Sample(tag, None, rec, self.as_json())
+
 
     def as_json(self):
         jdict = OrderedDict()

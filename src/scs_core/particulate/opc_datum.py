@@ -71,7 +71,7 @@ class OPCDatum(PMxDatum):
         """
         Constructor
         """
-        PMxDatum.__init__(self, rec, pm1, pm2p5, pm10)
+        PMxDatum.__init__(self, rec, pm1, pm2p5, None, pm10)
 
         self.__source = source                              # string
 
@@ -88,6 +88,28 @@ class OPCDatum(PMxDatum):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def as_sample(self, tag):
+        jdict = OrderedDict()
+
+        jdict['per'] = self.period
+
+        jdict['pm1'] = self.pm1
+        jdict['pm2.5'] = self.pm2p5
+        jdict['pm10'] = self.pm10
+
+        jdict['bin'] = self.bins
+
+        jdict['mtf1'] = self.bin_1_mtof
+        jdict['mtf3'] = self.bin_3_mtof
+        jdict['mtf5'] = self.bin_5_mtof
+        jdict['mtf7'] = self.bin_7_mtof
+
+        if self.sht is not None:
+            jdict['sht'] = self.sht
+
+        return Sample(tag, self.source, self.rec, jdict)
+
 
     def as_json(self):
         jdict = OrderedDict()

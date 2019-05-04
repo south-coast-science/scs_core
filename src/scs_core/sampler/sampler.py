@@ -33,7 +33,11 @@ class Sampler(ABC):
 
     def samples(self):
         for sample in self.__runner.samples(self):
-            yield sample
+            try:
+                yield sample
+
+            except StopIteration:
+                break
 
 
     # ----------------------------------------------------------------------------------------------------------------

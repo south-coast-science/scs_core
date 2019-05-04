@@ -7,9 +7,9 @@ https://pymotw.com/2/subprocess/
 """
 
 import os
-import subprocess
 
 from collections import OrderedDict
+from subprocess import Popen, PIPE
 
 from scs_core.data.json import JSONable
 from scs_core.data.json import JSONify
@@ -120,13 +120,13 @@ class Command(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __execute(self, statement, host):
-        proc = subprocess.Popen(statement, cwd=host.command_dir(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = Popen(statement, cwd=host.command_dir(), stdout=PIPE, stderr=PIPE)
 
-        stdout_bytes, stderr_bytes = proc.communicate(None, Command.__TIMEOUT)
+        stdout_bytes, stderr_bytes = p.communicate(None, Command.__TIMEOUT)
 
         self.__stdout = stdout_bytes.decode().strip().splitlines()
         self.__stderr = stderr_bytes.decode().strip().splitlines()
-        self.__return_code = proc.returncode
+        self.__return_code = p.returncode
 
         return self.__return_code == 0
 
