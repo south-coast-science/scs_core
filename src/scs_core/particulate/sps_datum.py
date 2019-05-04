@@ -25,8 +25,6 @@ class SPSDatum(PMxDatum):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        # print("jdict: %s" % jdict)
-
         if not jdict:
             return None
 
@@ -214,12 +212,6 @@ class SPSDatumCounts(JSONable):
     @property
     def pm10(self):
         return self.__pm10
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def val(self):
-        return [('pm0p5', self.pm0p5), ('pm1', self.pm1), ('pm2p5', self.pm2p5), ('pm4', self.pm4), ('pm10', self.pm10)]
 
 
     # ----------------------------------------------------------------------------------------------------------------

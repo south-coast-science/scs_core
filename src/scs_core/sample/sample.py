@@ -29,7 +29,7 @@ class Sample(JSONable):
 
         self.__rec = rec                        # LocalizedDatetime
 
-        self.__values = values                  # OrderedDict of (src, JSONable)
+        self.__values = values                  # OrderedDict
 
 
     # ----------------------------------------------------------------------------------------------------------------
