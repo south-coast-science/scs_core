@@ -95,7 +95,7 @@ class OPCDatum(PMxDatum):
         jdict['per'] = self.period
 
         jdict['pm1'] = self.pm1
-        jdict['pm2.5'] = self.pm2p5
+        jdict['pm2p5'] = self.pm2p5
         jdict['pm10'] = self.pm10
 
         jdict['bin'] = self.bins
@@ -121,7 +121,7 @@ class OPCDatum(PMxDatum):
         jdict['per'] = self.period
 
         jdict['pm1'] = self.pm1
-        jdict['pm2.5'] = self.pm2p5
+        jdict['pm2p5'] = self.pm2p5
         jdict['pm10'] = self.pm10
 
         jdict['bin'] = self.bins
