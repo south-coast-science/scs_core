@@ -21,7 +21,7 @@ class PMxDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, pm1, pm2p5, pm10):
+    def __init__(self, rec, pm1, pm2p5, pm4, pm10):
         """
         Constructor
         """
@@ -29,6 +29,7 @@ class PMxDatum(JSONable):
 
         self.__pm1 = Datum.float(pm1, 1)            # PM1
         self.__pm2p5 = Datum.float(pm2p5, 1)        # PM2.5
+        self.__pm4 = Datum.float(pm4, 1)            # PM4
         self.__pm10 = Datum.float(pm10, 1)          # PM10
 
 
@@ -40,7 +41,8 @@ class PMxDatum(JSONable):
         jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
 
         jdict['pm1'] = self.pm1
-        jdict['pm2.5'] = self.pm2p5
+        jdict['pm2p5'] = self.pm2p5
+        jdict['pm4'] = self.pm4
         jdict['pm10'] = self.pm10
 
         return jdict
@@ -64,6 +66,11 @@ class PMxDatum(JSONable):
 
 
     @property
+    def pm4(self):
+        return self.__pm4
+
+
+    @property
     def pm10(self):
         return self.__pm10
 
@@ -71,4 +78,5 @@ class PMxDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxDatum:{rec:%s, pm1:%s, pm2p5:%s, pm10:%s}" % (self.rec, self.pm1, self.pm2p5, self.pm10)
+        return "PMxDatum:{rec:%s, pm1:%s, pm2p5:%s, pm4:%s, pm10:%s}" % \
+               (self.rec, self.pm1, self.pm2p5, self.pm4, self.pm10)

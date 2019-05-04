@@ -15,10 +15,12 @@ example document:
   "sht": {"hmd": 73.0, "tmp": 21.4}}}
 """
 
+from collections import OrderedDict
+
 from scs_core.sample.sample import Sample
 
 
-# TODO: get src from AFE data interpretation
+# TODO: get src from AFE data interpretation?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -33,18 +35,19 @@ class GasesSample(Sample):
         """
         Constructor
         """
-        val = []
+        jdict = OrderedDict()
 
         if ndir_datum is not None:
-            val.append(('CO2', ndir_datum))
+            jdict['CO2'] = ndir_datum
 
         if afe_datum is not None:
-            val.extend([(key, afe_datum.sns[key]) for key in afe_datum.sns])
+            for key, value in afe_datum.sns.items():
+                jdict[key] = value
 
             if afe_datum.pt1000 is not None:
-                val.append(('pt1', afe_datum.pt1000))
+                jdict['pt1'] = afe_datum.pt1000
 
         if sht_datum is not None:
-            val.append(('sht', sht_datum))
+            jdict['sht'] = sht_datum
 
-        super().__init__(tag, None, rec, *val)
+        super().__init__(tag, None, rec, jdict)

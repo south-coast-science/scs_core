@@ -20,7 +20,7 @@ class Sample(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, src, rec, *values):
+    def __init__(self, tag, src, rec, values):
         """
         Constructor
         """
@@ -29,7 +29,7 @@ class Sample(JSONable):
 
         self.__rec = rec                        # LocalizedDatetime
 
-        self.__val = OrderedDict(values)        # OrderedDict of (src, JSONable)
+        self.__values = values                  # OrderedDict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class Sample(JSONable):
             jdict['src'] = self.src
 
         jdict['rec'] = self.rec.as_iso8601(self.INCLUDE_MILLIS)
-        jdict['val'] = self.val
+        jdict['val'] = self.values
 
         return jdict
 
@@ -67,14 +67,14 @@ class Sample(JSONable):
 
 
     @property
-    def val(self):
-        return self.__val
+    def values(self):
+        return self.__values
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         classname = self.__class__.__name__
-        vals = '{' + ', '.join(str(key) + ': ' + str(self.val[key]) for key in self.val) + '}'
+        values = '{' + ', '.join(str(key) + ': ' + str(self.values[key]) for key in self.values) + '}'
 
-        return classname + ":{tag:%s, src:%s, rec:%s, val:%s}" % (self.tag, self.src, self.rec, vals)
+        return classname + ":{tag:%s, src:%s, rec:%s, values:%s}" % (self.tag, self.src, self.rec, values)

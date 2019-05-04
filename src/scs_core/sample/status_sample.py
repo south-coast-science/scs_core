@@ -13,6 +13,8 @@ example document:
 "up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
 """
 
+from collections import OrderedDict
+
 from scs_core.sample.sample import Sample
 
 
@@ -29,22 +31,22 @@ class StatusSample(Sample):
         """
         Constructor
         """
-        val = []
+        jdict = OrderedDict()
 
         if airnow is not None:
-            val.append(('airnow', airnow))
+            jdict['airnow'] = airnow
 
         if timezone is not None:
-            val.append(('tz', timezone))
+            jdict['tz'] = timezone
 
         if position is not None:
-            val.append(('gps', position))
+            jdict['gps'] = position
 
-        val.append(('sch', schedule))
-        val.append(('tmp', temperature))
-        val.append(('up', uptime))
+        jdict['sch'] = schedule
+        jdict['tmp'] = temperature
+        jdict['up'] = uptime
 
         if psu_status is not None:
-            val.append(('psu', psu_status))
+            jdict['psu'] = psu_status
 
-        super().__init__(tag, None, rec, *val)
+        super().__init__(tag, None, rec, jdict)
