@@ -37,7 +37,7 @@ class OPCDatum(PMxDatum):
         period = jdict.get('per')
 
         pm1 = jdict.get('pm1')
-        pm2p5 = jdict.get('pm2.5')
+        pm2p5 = jdict.get('pm2p5')
         pm10 = jdict.get('pm10')
 
         bins = jdict.get('bin')
