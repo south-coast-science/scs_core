@@ -99,10 +99,10 @@ class A4Datum(JSONable):
         """
         Constructor
         """
-        self.__we_v = Datum.float(we_v, 6)        # uncorrected working electrode voltage       Volts
-        self.__ae_v = Datum.float(ae_v, 6)        # uncorrected auxiliary electrode voltage     Volts
+        self.__we_v = Datum.float(we_v, 5)        # uncorrected working electrode voltage       Volts
+        self.__ae_v = Datum.float(ae_v, 5)        # uncorrected auxiliary electrode voltage     Volts
 
-        self.__we_c = Datum.float(we_c, 6)        # corrected working electrode voltage         Volts
+        self.__we_c = Datum.float(we_c, 5)        # corrected working electrode voltage         Volts
         self.__cnc = Datum.float(cnc, 1)          # gas concentration                           ppb
 
 
@@ -145,9 +145,9 @@ class A4Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        we_v = None if self.we_v is None else round(float(self.we_v), 6)
-        ae_v = None if self.ae_v is None else round(float(self.ae_v), 6)
-        we_c = None if self.we_c is None else round(float(self.we_c), 6)
-        cnc = None if self.cnc is None else round(float(self.cnc), 6)
+        we_v = None if self.we_v is None else round(float(self.we_v), 5)
+        ae_v = None if self.ae_v is None else round(float(self.ae_v), 5)
+        we_c = None if self.we_c is None else round(float(self.we_c), 5)
+        cnc = None if self.cnc is None else round(float(self.cnc), 5)
 
         return "A4Datum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s}" % (we_v, ae_v, we_c, cnc)
