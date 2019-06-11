@@ -20,7 +20,7 @@ from collections import OrderedDict
 from scs_core.sample.sample import Sample
 
 
-# TODO: get src from AFE data interpretation?
+# TODO: get src from AFE / IEI datum?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ class GasesSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, ndir_datum, afe_datum, sht_datum):
+    def __init__(self, tag, rec, ndir_datum, electrochem_datum, sht_datum):
         """
         Constructor
         """
@@ -40,12 +40,15 @@ class GasesSample(Sample):
         if ndir_datum is not None:
             jdict['CO2'] = ndir_datum
 
-        if afe_datum is not None:
-            for key, value in afe_datum.sns.items():
+        if electrochem_datum is not None:
+            for key, value in electrochem_datum.sns.items():
                 jdict[key] = value
 
-            if afe_datum.pt1000 is not None:
-                jdict['pt1'] = afe_datum.pt1000
+            try:
+                if electrochem_datum.pt1000 is not None:
+                    jdict['pt1'] = electrochem_datum.pt1000
+            except AttributeError:
+                pass
 
         if sht_datum is not None:
             jdict['sht'] = sht_datum

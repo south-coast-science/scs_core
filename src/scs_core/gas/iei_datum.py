@@ -1,5 +1,5 @@
 """
-Created on 18 Sep 2016
+Created on 7 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -11,18 +11,17 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AFEDatum(JSONable):
+class IEIDatum(JSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pt1000, *sns):
+    def __init__(self, *sns):
         """
         Constructor
         """
-        self.__pt1000 = pt1000
         self.__sns = OrderedDict(sns)
 
 
@@ -31,22 +30,13 @@ class AFEDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['src'] = 'AFE'
-
-        if self.pt1000:
-            jdict['pt1'] = self.pt1000
-
+        jdict['src'] = 'IEI'
         jdict['sns'] = self.sns
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def pt1000(self):
-        return self.__pt1000
-
 
     @property
     def sns(self):
@@ -58,4 +48,4 @@ class AFEDatum(JSONable):
     def __str__(self, *args, **kwargs):
         sns = '{' + ', '.join(str(key) + ':' + str(self.sns[key]) for key in self.sns) + '}'
 
-        return "AFEDatum:{pt1000:%s, sns:%s}" % (self.pt1000, sns)
+        return "IEIDatum:{sns:%s}" % sns
