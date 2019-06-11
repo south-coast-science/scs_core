@@ -27,7 +27,8 @@ class PID(Sensor):
 
     @classmethod
     def init(cls):
-        cls.SENSORS[cls.CODE_VOC_PPB] = PID(cls.CODE_VOC_PPB,  'VOC',  4, 50.0, 0.000040)   # ppb sensitivity
+        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'VOC',  4, 50.0, 0.000040)   # ppb sensitivity
+        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'VOC',  4, 50.0, 0.000040)   # ppb sensitivity
         cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  4, 50.0, 0.040)      # ppm sensitivity
 
 
