@@ -75,7 +75,10 @@ class Timezone(JSONable):
 
 
     def current_utc_offset(self):
-        tz = pytz.timezone(self.__name)
+        if self.name is None:
+            return None
+
+        tz = pytz.timezone(self.name)
         dt = datetime.datetime.now(tz)
 
         offset = dt.strftime('%z')
