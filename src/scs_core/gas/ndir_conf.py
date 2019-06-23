@@ -42,12 +42,12 @@ class NDIRConf(PersistentJSONable, ABC):
     # abstract NDIRConf...
 
     @abstractmethod
-    def ndir(self, host):
+    def ndir(self, host, load_switch_active_high):
         pass
 
 
     @abstractmethod
-    def ndir_monitor(self, host):
+    def ndir_monitor(self, host, load_switch_active_high):
         pass
 
 

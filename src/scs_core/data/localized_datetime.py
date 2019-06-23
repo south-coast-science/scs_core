@@ -381,3 +381,157 @@ class DateParser(object):
 
     def __str__(self, *args, **kwargs):
         return "DateParser:{format:%s}" % self.__strptime_format
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ISO8601(object):
+    """
+    classdocs
+    """
+
+    @classmethod
+    def construct(cls, localised_datetime):
+        if localised_datetime is None:
+            return None
+
+        iso8601 = localised_datetime.as_iso8601(True)
+
+        if iso8601 is None:
+            return None
+
+        return cls.parse(iso8601)
+
+
+    @classmethod
+    def parse(cls, iso8601):
+        # 2016-08-13T00:38:05.210+01:00
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([+-])(\d{2}):(\d{2})', iso8601)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        year = fields[0]
+        month = fields[1]
+        day = fields[2]
+
+        hour = fields[3]
+        minute = fields[4]
+        second = fields[5]
+        millis = fields[6]
+
+        tz_sign = fields[7]
+        tz_hour = fields[8]
+        tz_minute = fields[9]
+
+        return cls(year, month, day, hour, minute, second, millis, tz_sign, tz_hour, tz_minute)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, year, month, day, hour, minute, second, millis, tz_sign, tz_hour, tz_minute):
+        """
+        Constructor
+        """
+        self.__year = year
+        self.__month = month
+        self.__day = day
+
+        self.__hour = hour
+        self.__minute = minute
+        self.__second = second
+        self.__millis = millis
+
+        self.__tz_sign = tz_sign
+        self.__tz_hour = tz_hour
+        self.__tz_minute = tz_minute
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def date(self):
+        return "%s-%s-%s" % (self.year, self.month, self.day)
+
+
+    @property
+    def time(self):
+        return "%s:%s" % (self.hour, self.minute)
+
+
+    @property
+    def time_secs(self):
+        return "%s:%s:%s" % (self.hour, self.minute, self.second)
+
+
+    @property
+    def time_millis(self):
+        return "%s:%s:%s.%s" % (self.hour, self.minute, self.second, self.millis)
+
+
+    @property
+    def timezone(self):
+        return "%s%s:%s" % (self.tz_sign, self.tz_hour, self.tz_minute)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def year(self):
+        return self.__year
+
+
+    @property
+    def month(self):
+        return self.__month
+
+
+    @property
+    def day(self):
+        return self.__day
+
+
+    @property
+    def hour(self):
+        return self.__hour
+
+
+    @property
+    def minute(self):
+        return self.__minute
+
+
+    @property
+    def second(self):
+        return self.__second
+
+
+    @property
+    def millis(self):
+        return self.__millis
+
+
+    @property
+    def tz_sign(self):
+        return self.__tz_sign
+
+
+    @property
+    def tz_hour(self):
+        return self.__tz_hour
+
+
+    @property
+    def tz_minute(self):
+        return self.__tz_minute
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ISO8601:{year:%s, month:%s, day:%s, hour:%s, minute:%s, second:%s, millis:%s, " \
+               "tz_sign:%s, tz_hour:%s, tz_minute:%s}" % \
+               (self.year, self.month, self.day, self.hour, self.minute, self.second, self.millis,
+                self.tz_sign, self.tz_hour, self.tz_minute)

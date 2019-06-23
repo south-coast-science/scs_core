@@ -14,7 +14,7 @@ example JSON:
 
 class PSUConf(object):
     """
-    A stub class for a PSU that may be implemented elsewhere
+    A stub class for a PSUConf that may be implemented elsewhere
     """
 
     @classmethod

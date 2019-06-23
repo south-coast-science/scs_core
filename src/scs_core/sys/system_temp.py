@@ -64,6 +64,4 @@ class SystemTemp(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        host_name = None if self.host is None else self.host.name()
-
-        return "SystemTemp:{board:%s, host:%s}" % (self.board, host_name)
+        return "SystemTemp:{board:%s, host:%s}" % (self.board, self.host)
