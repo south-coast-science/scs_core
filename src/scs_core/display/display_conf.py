@@ -68,8 +68,11 @@ class DisplayConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def system_monitor(self):
-        return SystemMonitor.construct(self.device_name, self.startup_message, self.shutdown_message)
+    def monitor(self):
+        if self.mode == 'SYS':
+            return SystemMonitor.construct(self.device_name, self.startup_message, self.shutdown_message)
+
+        raise ValueError('unknown mode: %s' % self.mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
