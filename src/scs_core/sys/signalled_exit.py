@@ -10,8 +10,6 @@ import sys
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# noinspection PyUnusedLocal
-
 class SignalledExit(object):
     """
     classdocs
@@ -20,13 +18,9 @@ class SignalledExit(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def init(cls, client, verbose):
+    def construct(cls, client, verbose):
         listener = cls(client, verbose)
-
-        listener.__original_sigint_handler = signal.getsignal(signal.SIGINT)        # function
-
-        signal.signal(signal.SIGINT, listener.sigint_handler)
-        signal.signal(signal.SIGTERM, listener.sigterm_handler)
+        listener.set()
 
         return listener
 
@@ -40,15 +34,50 @@ class SignalledExit(object):
         self.__client = client                                  # string
         self.__verbose = verbose                                # bool
 
-        self.__exiting = False                                  # bool
         self.__original_sigint_handler = None                   # function
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnusedLocal
+
+    def sigint_handler(self, signum, frame):
+        self.clear()
+
+        if self.__verbose:
+            print("%s: SIGINT (%d)" % (self.__client, signum), file=sys.stderr)
+
+        sys.exit(1)
+
+
+    # noinspection PyUnusedLocal
+
+    def sigterm_handler(self, signum, frame):
+        self.clear()
+
+        if self.__verbose:
+            print("%s: SIGTERM (%d)" % (self.__client, signum), file=sys.stderr)
+
+        sys.exit(0)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def set(self):
+        if self.__original_sigint_handler is not None:
+            return
+
+        self.__original_sigint_handler = signal.getsignal(signal.SIGINT)
+
+        signal.signal(signal.SIGINT, self.sigint_handler)
+        signal.signal(signal.SIGTERM, self.sigterm_handler)
+
+
     def clear(self):
         if self.__original_sigint_handler is None:
             return
+
+        self.__original_sigint_handler = None
 
         signal.signal(signal.SIGINT, self.__original_sigint_handler)
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
@@ -56,34 +85,6 @@ class SignalledExit(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def sigint_handler(self, signum, frame):
-        if self.__exiting:
-            return
-
-        self.clear()
-        self.__exiting = True
-
-        if self.__verbose:
-            print("%s: SIGINT" % self.__client, file=sys.stderr)
-
-        sys.exit(1)
-
-
-    def sigterm_handler(self, signum, frame):
-        if self.__exiting:
-            return
-
-        self.clear()
-        self.__exiting = True
-
-        if self.__verbose:
-            print("%s: SIGTERM" % self.__client, file=sys.stderr)
-
-        sys.exit(0)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "SignalledExit:{client:%s, verbose:%s, exiting:%s, original_sigint_handler:%s}" % \
-               (self.__client, self.__verbose, self.__exiting, self.__original_sigint_handler)
+        return "SignalledExit:{client:%s, verbose:%s, original_sigint_handler:%s}" % \
+               (self.__client, self.__verbose, self.__original_sigint_handler)

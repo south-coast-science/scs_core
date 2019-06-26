@@ -15,7 +15,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 # run...
 
 
-listener = SignalledExit.init("test", True)
+listener = SignalledExit.construct("test", True)
 print(listener)
 
 while True:
