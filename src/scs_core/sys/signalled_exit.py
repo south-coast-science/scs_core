@@ -77,8 +77,6 @@ class SignalledExit(object):
         if self.__original_sigint_handler is None:
             return
 
-        self.__original_sigint_handler = None
-
         signal.signal(signal.SIGINT, self.__original_sigint_handler)
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
