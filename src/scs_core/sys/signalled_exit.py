@@ -19,18 +19,39 @@ class SignalledExit(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def init(cls, client, verbose):
+        listener = cls(client, verbose)
+
+        listener.__original_sigint_handler = signal.getsignal(signal.SIGINT)        # function
+
+        signal.signal(signal.SIGINT, listener.sigint_handler)
+        signal.signal(signal.SIGTERM, listener.sigterm_handler)
+
+        return listener
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, client, verbose):
         """
         Constructor
         """
-        self.__client = client                                                  # string
-        self.__verbose = verbose                                                # bool
+        self.__client = client                                  # string
+        self.__verbose = verbose                                # bool
 
-        self.__exiting = False                                                  # bool
-        self.__original_sigint_handler = signal.getsignal(signal.SIGINT)        # function
+        self.__exiting = False                                  # bool
+        self.__original_sigint_handler = None                   # function
 
-        signal.signal(signal.SIGINT, self.sigint_handler)
-        signal.signal(signal.SIGTERM, self.sigterm_handler)
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def clear(self):
+        if self.__original_sigint_handler is None:
+            return
+
+        signal.signal(signal.SIGINT, self.__original_sigint_handler)
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -59,11 +80,6 @@ class SignalledExit(object):
             print("%s: SIGTERM" % self.__client, file=sys.stderr)
 
         sys.exit(0)
-
-
-    def clear(self):
-        signal.signal(signal.SIGINT, self.__original_sigint_handler)
-        signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
 
     # ----------------------------------------------------------------------------------------------------------------
