@@ -34,7 +34,7 @@ class SignalledExit(object):
         self.__client = client                                  # string
         self.__verbose = verbose                                # bool
 
-        self.__original_sigint_handler = None                   # function
+        self.__original_sigint_handler = None                   # function?
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,10 +64,8 @@ class SignalledExit(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def set(self):
-        if self.__original_sigint_handler is not None:
-            return
-
-        self.__original_sigint_handler = signal.getsignal(signal.SIGINT)
+        if self.__original_sigint_handler is None:
+            self.__original_sigint_handler = signal.getsignal(signal.SIGINT)
 
         signal.signal(signal.SIGINT, self.sigint_handler)
         signal.signal(signal.SIGTERM, self.sigterm_handler)
