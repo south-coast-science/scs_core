@@ -24,7 +24,9 @@ class MessageQueue(SynchronisedProcess):
     classdocs
     """
 
-    LOCK_RELEASE_TIME =     0.2
+    __PROCESS_LOCK_RELEASE_TIME =       0.2             # seconds
+    __CLIENT_LOCK_RELEASE_TIME =        0.3             # seconds - must be longer than __PROCESS_LOCK_RELEASE_TIME
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -36,8 +38,8 @@ class MessageQueue(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, MessageQueueInterface(manager.dict()))
 
-        self.__max_size = max_size                  # int
-        self.__messages = []                        # array of JSONable messages
+        self.__max_size = max_size                      # int
+        self.__messages = []                            # array of JSONable messages
 
 
     def __len__(self):
@@ -50,7 +52,7 @@ class MessageQueue(SynchronisedProcess):
     def run(self):
         try:
             while True:
-                time.sleep(self.LOCK_RELEASE_TIME)
+                time.sleep(self.__PROCESS_LOCK_RELEASE_TIME)            # wait for client operations
 
                 with self._lock:
                     if not self._value.has_cmd():
@@ -79,7 +81,7 @@ class MessageQueue(SynchronisedProcess):
                 self._value.cmd_enq = True
                 self._value.newest = message
 
-            time.sleep(self.LOCK_RELEASE_TIME + 0.1)              # wait for queue to regain lock
+            time.sleep(self.__CLIENT_LOCK_RELEASE_TIME)                 # wait for queue to be processed
 
         except BaseException:
             pass
@@ -93,7 +95,7 @@ class MessageQueue(SynchronisedProcess):
             with self._lock:
                 self._value.cmd_deq = True
 
-            time.sleep(self.LOCK_RELEASE_TIME + 0.1)              # wait for queue to regain lock
+            time.sleep(self.__CLIENT_LOCK_RELEASE_TIME)                 # wait for queue to be processed
 
         except BaseException:
             pass
