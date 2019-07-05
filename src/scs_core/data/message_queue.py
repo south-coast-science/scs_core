@@ -36,8 +36,8 @@ class MessageQueue(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, MessageQueueInterface(manager.dict()))
 
-        self.__max_size = max_size
-        self.__messages = []
+        self.__max_size = max_size                  # int
+        self.__messages = []                        # array of JSONable messages
 
 
     def __len__(self):
@@ -79,7 +79,7 @@ class MessageQueue(SynchronisedProcess):
                 self._value.cmd_enq = True
                 self._value.newest = message
 
-            time.sleep(self.LOCK_RELEASE_TIME)              # wait for queue to regain lock
+            time.sleep(self.LOCK_RELEASE_TIME + 0.1)              # wait for queue to regain lock
 
         except BaseException:
             pass
@@ -87,6 +87,17 @@ class MessageQueue(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
     # consumer interface...
+
+    def dequeue(self):
+        try:
+            with self._lock:
+                self._value.cmd_deq = True
+
+            time.sleep(self.LOCK_RELEASE_TIME + 0.1)              # wait for queue to regain lock
+
+        except BaseException:
+            pass
+
 
     def length(self):
         try:
@@ -101,17 +112,6 @@ class MessageQueue(SynchronisedProcess):
         try:
             with self._lock:
                 return self._value.oldest
-
-        except BaseException:
-            pass
-
-
-    def dequeue(self):
-        try:
-            with self._lock:
-                self._value.cmd_deq = True
-
-            time.sleep(self.LOCK_RELEASE_TIME)              # wait for queue to regain lock
 
         except BaseException:
             pass
@@ -174,14 +174,14 @@ class MessageQueueInterface(object):
         """
         Constructor
         """
-        self.__value = value
+        self.__value = value                    # dict
 
-        self.cmd_enq = False
-        self.cmd_deq = False
+        self.cmd_enq = False                    # bool
+        self.cmd_deq = False                    # bool
 
-        self.newest = None
-        self.oldest = None
-        self.length = 0
+        self.newest = None                      # JSONable message
+        self.oldest = None                      # JSONable message
+        self.length = 0                         # int
 
 
     # ----------------------------------------------------------------------------------------------------------------
