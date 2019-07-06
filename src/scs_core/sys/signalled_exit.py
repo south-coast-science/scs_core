@@ -46,6 +46,7 @@ class SignalledExit(object):
 
         if self.__verbose:
             print("%s: SIGINT (%d)" % (self.__client, signum), file=sys.stderr)
+            sys.stderr.flush()
 
         sys.exit(1)
 
@@ -57,6 +58,7 @@ class SignalledExit(object):
 
         if self.__verbose:
             print("%s: SIGTERM (%d)" % (self.__client, signum), file=sys.stderr)
+            sys.stderr.flush()
 
         sys.exit(0)
 
