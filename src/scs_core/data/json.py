@@ -51,7 +51,10 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def load(cls, host):
-        filename = os.path.join(*cls.persistence_location(host))
+        try:
+            filename = os.path.join(*cls.persistence_location(host))
+        except NotImplementedError:
+            return None
 
         instance = cls.load_from_file(filename)
 
