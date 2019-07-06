@@ -86,6 +86,9 @@ class MQTTClient(object):
 
 
     def disconnect(self):
+        if self.__client is None:
+            return
+
         try:
             self.__client.disconnect()
 
