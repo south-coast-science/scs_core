@@ -4,7 +4,7 @@ Created on 8 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"auths": {"scs-bbe-002": {"hostname": "scs-bbe-002", "tag": "scs-be2-2", "shared-secret": "secret1",
+{"peers": {"scs-bbe-002": {"hostname": "scs-bbe-002", "tag": "scs-be2-2", "shared-secret": "secret1",
 "topic": "south-coast-science-dev/production-test/device/alpha-bb-eng-000002/control"}}
 """
 
@@ -15,12 +15,12 @@ from scs_core.data.json import JSONable, PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MQTTControlAuthSet(PersistentJSONable):
+class MQTTPeerSet(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME =    "mqtt_control_auths.json"
+    __FILENAME =    "mqtt_peers.json"
 
     @classmethod
     def persistence_location(cls, host):
@@ -34,25 +34,25 @@ class MQTTControlAuthSet(PersistentJSONable):
         if not jdict:
             return None
 
-        auths = OrderedDict()
+        peers = OrderedDict()
 
-        for hostname, item in jdict.get('auths').items():
-            auth = MQTTControlAuth.construct_from_jdict(item)
+        for hostname, item in jdict.get('peers').items():
+            peer = MQTTPeer.construct_from_jdict(item)
 
-            auths[hostname] = auth
+            peers[hostname] = peer
 
-        return MQTTControlAuthSet(auths)
+        return MQTTPeerSet(peers)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, auths):
+    def __init__(self, peers):
         """
         Constructor
         """
         super().__init__()
 
-        self.__auths = auths                                # dictionary of string: MQTTControlAuth
+        self.__peers = peers                                # dictionary of string: MQTTPeer
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,29 +60,29 @@ class MQTTControlAuthSet(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['auths'] = self.__auths
+        jdict['peers'] = self.__peers
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def insert(self, auth):
+    def insert(self, peer):
         # add...
-        self.__auths[auth.hostname] = auth
+        self.__peers[peer.hostname] = peer
 
         # sort...
-        auths = OrderedDict()
+        peers = OrderedDict()
 
-        for hostname in sorted(self.__auths.keys()):
-            auths[hostname] = self.__auths[hostname]
+        for hostname in sorted(self.__peers.keys()):
+            peers[hostname] = self.__peers[hostname]
 
-        self.__auths = auths
+        self.__peers = peers
 
 
     def remove(self, hostname):
         try:
-            del(self.__auths[hostname])
+            del(self.__peers[hostname])
 
         except KeyError:
             pass
@@ -90,30 +90,30 @@ class MQTTControlAuthSet(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def auth(self, hostname):
+    def peer(self, hostname):
         try:
-            return self.__auths[hostname]
+            return self.__peers[hostname]
 
         except KeyError:
             return None
 
 
     @property
-    def auths(self):
-        return self.__auths.values()
+    def peers(self):
+        return self.__peers.values()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        auths = '{' + ', '.join([hostname + ': ' + str(auth) for hostname, auth in self.__auths.items()]) + '}'
+        peers = '{' + ', '.join([hostname + ': ' + str(peer) for hostname, peer in self.__peers.items()]) + '}'
 
-        return "MQTTControlAuthSet:{auths:%s}" % auths
+        return "MQTTPeerSet:{peers:%s}" % peers
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MQTTControlAuth(JSONable):
+class MQTTPeer(JSONable):
     """
     classdocs
     """
@@ -130,7 +130,7 @@ class MQTTControlAuth(JSONable):
         shared_secret = jdict.get('shared-secret')
         topic = jdict.get('topic')
 
-        return MQTTControlAuth(hostname, tag, shared_secret, topic)
+        return MQTTPeer(hostname, tag, shared_secret, topic)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -183,5 +183,5 @@ class MQTTControlAuth(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTControlAuth:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
+        return "MQTTPeer:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
                (self.hostname, self.tag, self.shared_secret, self.topic)

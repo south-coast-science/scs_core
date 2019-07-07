@@ -8,7 +8,7 @@ Created on 9 Mar 2019
 
 import json
 
-from scs_core.estate.mqtt_control_auth import MQTTControlAuth, MQTTControlAuthSet
+from scs_core.estate.mqtt_peer import MQTTPeer, MQTTPeerSet
 
 from scs_core.data.json import JSONify
 
@@ -18,8 +18,8 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 print("auth1...")
-auth1 = MQTTControlAuth("scs-rpi-006", "scs-ap1-6", "secret2",
-                        "south-coast-science-dev/development/auth/alpha-pi-eng-000006/control")
+auth1 = MQTTPeer("scs-rpi-006", "scs-ap1-6", "secret2",
+                 "south-coast-science-dev/development/auth/alpha-pi-eng-000006/control")
 print(auth1)
 print("-")
 
@@ -27,13 +27,13 @@ print("group...")
 auths = {auth1.hostname: auth1}
 print(auths)
 
-group = MQTTControlAuthSet(auths)
+group = MQTTPeerSet(auths)
 print(group)
 print("-")
 
 print("auth2...")
-auth2 = MQTTControlAuth("scs-bbe-002", "scs-be2-2", "secret1",
-                        "south-coast-science-dev/production-test/auth/alpha-bb-eng-000002/control")
+auth2 = MQTTPeer("scs-bbe-002", "scs-be2-2", "secret1",
+                 "south-coast-science-dev/production-test/auth/alpha-bb-eng-000002/control")
 print(auth2)
 print("-")
 
@@ -46,7 +46,7 @@ print(jstr)
 print("-")
 
 print("remake...")
-group = MQTTControlAuthSet.construct_from_jdict(json.loads(jstr))
+group = MQTTPeerSet.construct_from_jdict(json.loads(jstr))
 print(group)
 print("-")
 
@@ -54,7 +54,7 @@ print("save...")
 group.save(Host)
 
 print("load...")
-group = MQTTControlAuthSet.load(Host)
+group = MQTTPeerSet.load(Host)
 print(group)
 print("-")
 
