@@ -98,6 +98,16 @@ class MQTTPeerSet(PersistentJSONable):
             return None
 
 
+    def subset(self, hostname_substring):
+        subset = []
+
+        for hostname, peer in self.__peers.items():
+            if hostname_substring in hostname:
+                subset.append(peer)
+
+        return subset
+
+
     @property
     def peers(self):
         return self.__peers.values()
