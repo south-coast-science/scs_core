@@ -121,9 +121,15 @@ class CheckpointGenerator(object):
         next_hour = self.__hour.next(hour)
 
         # dateline...
-        day_increment = (next_hour < hour)
+        day_increment = self.is_24h() or (next_hour < hour)
 
         return day_increment, next_hour, next_minute, next_second
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_24h(self):
+        return len(self.__hour) == 1 and len(self.__minute) == 1 and len(self.__second) == 1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -175,6 +181,10 @@ class CheckpointField(object):
         Constructor
         """
         self.__ticks = ticks                    # array of int
+
+
+    def __len__(self):
+        return len(self.__ticks)
 
 
     # ----------------------------------------------------------------------------------------------------------------
