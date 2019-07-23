@@ -9,7 +9,7 @@ Checkpoints are specified in the form HH:MM:SS, in a format similar to that for 
 
 ** - all values
 NN - exactly matching NN
-/NN - every match of NN
+/NN - repeated every NN
 
 For example, **:/5:30 is used to indicate 30 seconds past the minute, every 5 minutes, during every hour.
 """
