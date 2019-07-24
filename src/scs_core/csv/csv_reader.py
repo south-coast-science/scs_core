@@ -7,13 +7,15 @@ https://stackoverflow.com/questions/43717757/commas-and-double-quotes-in-csv-fil
 """
 
 import csv
+import _csv
 import sys
 
 from scs_core.csv.csv_dict import CSVHeader
+
 from scs_core.data.json import JSONify
 
 
-# TODO: deal with comma-terminated line dialect
+# TODO: deal with comma-terminated line dialect?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -79,17 +81,21 @@ class CSVReader(object):
 
     @property
     def rows(self):
-        for row in self.__reader:
-            if len(row) == 0:
-                continue
+        try:
+            for row in self.__reader:
+                if len(row) == 0:
+                    continue
 
-            if self.__cast:
-                datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+                if self.__cast:
+                    datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
 
-            else:
-                datum = self.__header.as_dict([cell for cell in row])
+                else:
+                    datum = self.__header.as_dict([cell for cell in row])
 
-            yield JSONify.dumps(datum)
+                yield JSONify.dumps(datum)
+
+        except _csv.Error as ex:
+            raise CSVReaderException(ex)            # typically caused by a badly-closed CSV file
 
 
     @property
@@ -108,3 +114,16 @@ class CSVReader(object):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
         return "CSVReader:{filename:%s, cast:%s, header:%s}" % (self.filename, self.__cast, header)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVReaderException(Exception):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, *args):
+        super().__init__(*args)
