@@ -54,6 +54,11 @@ class GPSDatum(JSONable):
         return GPSDatum(pos, elv, quality)
 
 
+    @classmethod
+    def construct_null(cls):
+        return GPSDatum(Position(None, None), None, 0)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, pos, elv, quality):
