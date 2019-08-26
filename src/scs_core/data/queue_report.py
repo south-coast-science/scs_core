@@ -46,6 +46,9 @@ class QueueReport(object):
 
 
     def save(self, filename):
+        if self.__length is None:
+            return
+
         f = open(filename, 'w')
         f.write(str(self.__length) + '\n')
         f.close()
