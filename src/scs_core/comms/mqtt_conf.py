@@ -3,10 +3,8 @@ Created on 17 May 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-settings for OPCMonitor
-
 example JSON:
-{"inhibit-publishing": false}
+{"inhibit-publishing": false, "queue-size": 21000, "report-file": "/tmp/southcoastscience/mqtt_queue_length.json"}
 """
 
 from collections import OrderedDict
@@ -38,27 +36,32 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return MQTTConf(False, cls.DEFAULT_QUEUE_SIZE)
+            return MQTTConf(False, cls.DEFAULT_QUEUE_SIZE, None)
 
         inhibit_publishing = jdict.get('inhibit-publishing')
         queue_size = jdict.get('queue-size')
+        report_file = jdict.get('report-file')
+
+        if inhibit_publishing is None:
+            inhibit_publishing = False
 
         if queue_size is None:
             queue_size = cls.DEFAULT_QUEUE_SIZE
 
-        return MQTTConf(inhibit_publishing, queue_size)
+        return MQTTConf(inhibit_publishing, queue_size, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, inhibit_publishing, queue_size):
+    def __init__(self, inhibit_publishing, queue_size, report_file):
         """
         Constructor
         """
         super().__init__()
 
-        self.__inhibit_publishing = bool(inhibit_publishing)
-        self.__queue_size = int(queue_size)
+        self.__inhibit_publishing = bool(inhibit_publishing)                # do not attempt to publish
+        self.__queue_size = int(queue_size)                                 # maximum queue size
+        self.__report_file = report_file                                    # tmp file to store current queue length
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -73,6 +76,11 @@ class MQTTConf(PersistentJSONable):
         return self.__queue_size
 
 
+    @property
+    def report_file(self):
+        return self.__report_file
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -80,6 +88,7 @@ class MQTTConf(PersistentJSONable):
 
         jdict['inhibit-publishing'] = self.inhibit_publishing
         jdict['queue-size'] = self.queue_size
+        jdict['report-file'] = self.report_file
 
         return jdict
 
@@ -87,4 +96,5 @@ class MQTTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTConf:{inhibit_publishing:%s, queue_size:%s}" %  (self.inhibit_publishing, self.queue_size)
+        return "MQTTConf:{inhibit_publishing:%s, queue_size:%s, report_file:%s}" %  \
+               (self.inhibit_publishing, self.queue_size, self.report_file)
