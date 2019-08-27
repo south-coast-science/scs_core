@@ -4,7 +4,8 @@ Created on 26 Aug 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import os.path
+import os
+import time
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -49,9 +50,15 @@ class QueueReport(object):
         if self.__length is None:
             return
 
-        f = open(filename, 'w')
+        # file...
+        tmp_filename = filename + '.' + str(int(time.time()))
+
+        f = open(tmp_filename, 'w')
         f.write(str(self.__length) + '\n')
         f.close()
+
+        # atomic operation...
+        os.rename(tmp_filename, filename)
 
 
     # ----------------------------------------------------------------------------------------------------------------

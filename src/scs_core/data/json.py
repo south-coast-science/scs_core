@@ -6,6 +6,7 @@ Created on 13 Aug 2016
 
 import json
 import os
+import time
 
 from abc import ABC, abstractmethod
 
@@ -112,16 +113,22 @@ class PersistentJSONable(JSONable):
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, file):
+    def save_to_file(self, directory, filename):
         # directory...
         Filesystem.mkdir(directory)
 
         # file...
         jstr = JSONify.dumps(self)
 
-        f = open(os.path.join(directory, file), "w")
+        abs_filename = os.path.join(directory, filename)
+        tmp_filename = abs_filename + '.' + str(int(time.time()))
+
+        f = open(tmp_filename, "w")
         f.write(jstr + '\n')
         f.close()
+
+        # atomic operation...
+        os.rename(tmp_filename, abs_filename)
 
 
     # ----------------------------------------------------------------------------------------------------------------
