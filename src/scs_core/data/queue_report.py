@@ -65,9 +65,19 @@ class QueueReport(JSONReport):
         return self.__length
 
 
+    @length.setter
+    def length(self, length):
+        self.__length = length
+
+
     @property
     def publish_success(self):
         return self.__publish_success
+
+
+    @publish_success.setter
+    def publish_success(self, publish_success):
+        self.__publish_success = publish_success
 
 
     # ----------------------------------------------------------------------------------------------------------------
