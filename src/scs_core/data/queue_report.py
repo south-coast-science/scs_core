@@ -4,13 +4,14 @@ Created on 26 Aug 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import os
-import time
+from collections import OrderedDict
+
+from scs_core.data.json import JSONReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class QueueReport(object):
+class QueueReport(JSONReport):
     """
     classdocs
    """
@@ -20,24 +21,24 @@ class QueueReport(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, filename):
-        if not os.path.isfile(filename):
-            return QueueReport(None)
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
 
-        f = open(filename, 'r')
-        line = f.readline()
-        f.close()
+        length = jdict.get('length')
+        publish_success = jdict.get('publish-success')
 
-        return QueueReport(int(line.strip()))
+        return QueueReport(length, publish_success)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, length):
+    def __init__(self, length, publish_success):
         """
         Constructor
         """
-        self.__length = length                  # int or None
+        self.__length = length                                  # int or None
+        self.__publish_success = publish_success                # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,19 +47,15 @@ class QueueReport(object):
         return self.__length is not None and self.__length > self.__BACKLOG_MIN
 
 
-    def save(self, filename):
-        if self.__length is None:
-            return
+    # ----------------------------------------------------------------------------------------------------------------
 
-        # file...
-        tmp_filename = filename + '.' + str(int(time.time()))
+    def as_json(self):
+        jdict = OrderedDict()
 
-        f = open(tmp_filename, 'w')
-        f.write(str(self.__length) + '\n')
-        f.close()
+        jdict['length'] = self.length
+        jdict['publish-success'] = self.publish_success
 
-        # atomic operation...
-        os.rename(tmp_filename, filename)
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,7 +65,12 @@ class QueueReport(object):
         return self.__length
 
 
+    @property
+    def publish_success(self):
+        return self.__publish_success
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "QueueReport:{length:%s}" % self.length
+        return "QueueReport:{length:%s, publish_success:%s}" % (self.length, self.publish_success)

@@ -43,6 +43,59 @@ class JSONable(ABC):
 
 # --------------------------------------------------------------------------------------------------------------------
 
+class JSONReport(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load(cls, filename):
+        if not os.path.isfile(filename):
+            return cls.construct_from_jdict(None)
+
+        f = open(filename, 'r')
+        jstr = f.readline()
+        f.close()
+
+        jdict = json.loads(jstr)
+
+        return cls.construct_from_jdict(jdict)
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, _):
+        return JSONReport()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, filename):
+        # data...
+        jstr = JSONify.dumps(self)
+
+        # file...
+        tmp_filename = filename + '.' + str(int(time.time()))
+
+        f = open(tmp_filename, 'w')
+        f.write(jstr + '\n')
+        f.close()
+
+        # atomic operation...
+        os.rename(tmp_filename, filename)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def as_json(self):
+        pass
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class PersistentJSONable(JSONable):
     """
     classdocs
@@ -114,11 +167,11 @@ class PersistentJSONable(JSONable):
 
 
     def save_to_file(self, directory, filename):
-        # directory...
-        Filesystem.mkdir(directory)
+        # data...
+        jstr = JSONify.dumps(self)
 
         # file...
-        jstr = JSONify.dumps(self)
+        Filesystem.mkdir(directory)
 
         abs_filename = os.path.join(directory, filename)
         tmp_filename = abs_filename + '.' + str(int(time.time()))

@@ -13,8 +13,9 @@ from scs_core.data.queue_report import QueueReport
 
 filename = '/tmp/southcoastscience/queue_report.json'
 
-report = QueueReport(23)
+report = QueueReport(23, True)
 print(report)
+print(report.as_json())
 
 report.save(filename)
 print("-")
