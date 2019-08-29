@@ -73,6 +73,9 @@ class JSONReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, filename):
+        if filename is None:
+            return
+
         # data...
         jstr = JSONify.dumps(self)
 
