@@ -25,12 +25,12 @@ class PSUConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def psu(cls, _):
+    def psu(cls, _host, _interface_model):
         return None
 
 
     @classmethod
-    def psu_monitor(cls, _):
+    def psu_monitor(cls, _host, _interface_model):
         return None
 
 
