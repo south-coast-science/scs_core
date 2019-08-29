@@ -13,7 +13,7 @@ from scs_core.data.queue_report import QueueReport
 
 filename = '/tmp/southcoastscience/queue_report.json'
 
-report = QueueReport(23, True)
+report = QueueReport(23, QueueReport.CLIENT_CONNECTED, True)
 print(report)
 print(report.as_json())
 
