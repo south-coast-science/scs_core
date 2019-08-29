@@ -2,6 +2,8 @@
 Created on 7 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Datum for Integrated Electrochem Interface (IEI)
 """
 
 from collections import OrderedDict
