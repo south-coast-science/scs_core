@@ -6,6 +6,7 @@ Created on 13 Aug 2016
 
 import json
 import os
+import time
 
 from abc import ABC, abstractmethod
 
@@ -37,6 +38,59 @@ class JSONable(ABC):
 
     @abstractmethod
     def as_json(self):              # TODO: handle named parameters of JSONify.dumps(..)
+        pass
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class JSONReport(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load(cls, filename):
+        if not os.path.isfile(filename):
+            return cls.construct_from_jdict(None)
+
+        f = open(filename, 'r')
+        jstr = f.readline()
+        f.close()
+
+        jdict = json.loads(jstr)
+
+        return cls.construct_from_jdict(jdict)
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, _):
+        return JSONReport()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, filename):
+        # data...
+        jstr = JSONify.dumps(self)
+
+        # file...
+        tmp_filename = filename + '.' + str(int(time.time()))
+
+        f = open(tmp_filename, 'w')
+        f.write(jstr + '\n')
+        f.close()
+
+        # atomic operation...
+        os.rename(tmp_filename, filename)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def as_json(self):
         pass
 
 
@@ -112,16 +166,22 @@ class PersistentJSONable(JSONable):
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, file):
-        # directory...
-        Filesystem.mkdir(directory)
-
-        # file...
+    def save_to_file(self, directory, filename):
+        # data...
         jstr = JSONify.dumps(self)
 
-        f = open(os.path.join(directory, file), "w")
+        # file...
+        Filesystem.mkdir(directory)
+
+        abs_filename = os.path.join(directory, filename)
+        tmp_filename = abs_filename + '.' + str(int(time.time()))
+
+        f = open(tmp_filename, "w")
         f.write(jstr + '\n')
         f.close()
+
+        # atomic operation...
+        os.rename(tmp_filename, abs_filename)
 
 
     # ----------------------------------------------------------------------------------------------------------------
