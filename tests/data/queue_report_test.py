@@ -6,14 +6,14 @@ Created on 27 Aug 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.queue_report import QueueReport
+from scs_core.data.queue_report import QueueReport, ClientStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 filename = '/tmp/southcoastscience/queue_report.json'
 
-report = QueueReport(23, QueueReport.CLIENT_CONNECTED, True)
+report = QueueReport(23, ClientStatus.CONNECTED, True)
 print(report)
 print(report.as_json())
 

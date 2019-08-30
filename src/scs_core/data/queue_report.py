@@ -5,6 +5,7 @@ Created on 26 Aug 2019
 """
 
 from collections import OrderedDict
+from enum import Enum
 
 from scs_core.data.json import JSONReport
 
@@ -15,29 +16,17 @@ class QueueReport(JSONReport):
     """
     classdocs
    """
-    CLIENT_INHIBITED =          11
-    CLIENT_DISCONNECTED =       12
-    CLIENT_CONNECTED =          13
-
-    STATUS_NONE =               21
-    STATUS_INHIBITED =          22
-    STATUS_DISCONNECTED =       23
-    STATUS_PUBLISHING =         24
-    STATUS_QUEUING =            25
-    STATUS_CLEARING =           26
-
     __BACKLOG_MIN =             4           # documents
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return QueueReport(0, cls.CLIENT_DISCONNECTED, False)
+            return QueueReport(0, ClientStatus.DISCONNECTED, False)
 
         length = jdict.get('length')
-        client_state = jdict.get('client-state')
+        client_state = ClientStatus(jdict.get('client-state'))
         publish_success = jdict.get('publish-success')
 
         return QueueReport(length, client_state, publish_success)
@@ -61,22 +50,27 @@ class QueueReport(JSONReport):
 
 
     def status(self):
-        if self.client_state == self.CLIENT_INHIBITED:
-            return self.STATUS_INHIBITED
+        # client INHIBITED...
+        if self.client_state == ClientStatus.INHIBITED:
+            return QueueStatus.INHIBITED
 
-        if self.client_state == self.CLIENT_DISCONNECTED:
-            return self.STATUS_DISCONNECTED
+        # client DISCONNECTED...
+        if self.client_state == ClientStatus.DISCONNECTED:
+            return QueueStatus.DISCONNECTED
 
+        # client CONNECTED...
         if not self.has_backlog() and self.publish_success:
-            return self.STATUS_PUBLISHING
+            return QueueStatus.PUBLISHING
 
         if self.has_backlog() and self.publish_success:
-            return self.STATUS_CLEARING
+            return QueueStatus.CLEARING
 
-        if self.has_backlog() and not self.publish_success:
-            return self.STATUS_QUEUING
+        # any client state...
+        if not self.publish_success:
+            return QueueStatus.QUEUING
 
-        return self.STATUS_NONE
+        # unknown...
+        return QueueStatus.NONE
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -85,7 +79,7 @@ class QueueReport(JSONReport):
         jdict = OrderedDict()
 
         jdict['length'] = self.length
-        jdict['client-state'] = self.client_state
+        jdict['client-state'] = self.client_state.name
         jdict['publish-success'] = self.publish_success
 
         return jdict
@@ -128,3 +122,28 @@ class QueueReport(JSONReport):
     def __str__(self, *args, **kwargs):
         return "QueueReport:{length:%s, client_state:%s, publish_success:%s}" % \
                (self.length, self.client_state, self.publish_success)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ClientStatus(Enum):
+    """
+    classdocs
+   """
+    INHIBITED =         1
+    DISCONNECTED =      2
+    CONNECTED =         3
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class QueueStatus(Enum):
+    """
+    classdocs
+   """
+    NONE =              1
+    INHIBITED =         2
+    DISCONNECTED =      3
+    PUBLISHING =        4
+    QUEUING =           5
+    CLEARING =          6
