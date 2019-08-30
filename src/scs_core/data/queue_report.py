@@ -26,7 +26,7 @@ class QueueReport(JSONReport):
             return QueueReport(0, ClientStatus.DISCONNECTED, False)
 
         length = jdict.get('length')
-        client_state = ClientStatus(jdict.get('client-state'))
+        client_state = ClientStatus[jdict.get('client-state')]
         publish_success = jdict.get('publish-success')
 
         return QueueReport(length, client_state, publish_success)
@@ -58,18 +58,17 @@ class QueueReport(JSONReport):
         if self.client_state == ClientStatus.DISCONNECTED:
             return QueueStatus.DISCONNECTED
 
-        # client CONNECTED...
+        # any client state...
         if not self.has_backlog() and self.publish_success:
             return QueueStatus.PUBLISHING
 
         if self.has_backlog() and self.publish_success:
             return QueueStatus.CLEARING
 
-        # any client state...
         if not self.publish_success:
             return QueueStatus.QUEUING
 
-        # unknown...
+        # unknown / error...
         return QueueStatus.NONE
 
 
