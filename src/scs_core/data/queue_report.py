@@ -26,7 +26,7 @@ class QueueReport(JSONReport):
             return QueueReport(0, ClientStatus.DISCONNECTED, False)
 
         length = jdict.get('length')
-        client_state = ClientStatus(jdict.get('client-state'))
+        client_state = ClientStatus[jdict.get('client-state')]
         publish_success = jdict.get('publish-success')
 
         return QueueReport(length, client_state, publish_success)
