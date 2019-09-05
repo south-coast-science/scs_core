@@ -14,8 +14,6 @@ from datetime import date
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
-# TODO: make order params compulsory
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Datum(object):

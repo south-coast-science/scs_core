@@ -7,6 +7,8 @@ The abstract definition of an NDIR required by NDIRMonitor.
 Implementations are elsewhere.
 """
 
+import time
+
 from abc import ABC, abstractmethod
 
 
@@ -18,17 +20,43 @@ class NDIR(ABC):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-    # abstract NDIR...
 
+    @classmethod
     @abstractmethod
+    def boot_time(cls):
+        pass
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, interface):
+        """
+        Constructor
+        """
+        self.__interface = interface
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def power_on(self):
-        pass
+        print("ndir: power_on")
+        self.__interface.power_ndir(True)
+        time.sleep(self.boot_time())
 
 
-    @abstractmethod
     def power_off(self):
-        pass
+        print("ndir: power_off")
+        self.__interface.power_ndir(False)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def interface(self):
+        return self.__interface
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # abstract NDIR...
 
     @abstractmethod
     def sample(self):
