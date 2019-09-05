@@ -112,6 +112,12 @@ class PathDict(JSONable):
         return self.__node(self.__dictionary, re.split(r"[.:]", sub_path))
 
 
+    # Sets an internal node to the given value...
+
+    def set_node(self, sub_path, value):
+        return self.__set_node(self.__dictionary, re.split(r"[.:]", sub_path), value)
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # target...
 
@@ -200,6 +206,29 @@ class PathDict(JSONable):
 
         # deep...
         return self.__node(value, nodes[1:])
+
+
+    def __set_node(self, container, nodes, value):
+        # key...
+        if isinstance(container, list):
+            try:
+                key = int(nodes[0])
+
+            except ValueError:
+                raise KeyError(nodes[0])            # a non-integer key on an array is a KeyError
+
+        else:
+            key = nodes[0]
+
+        # value...
+        container[key] = value
+
+        # leaf...
+        if len(nodes) == 1:
+            return value
+
+        # deep...
+        return self.__set_node(value, nodes[1:], value)
 
 
     def __append(self, container, nodes, value):
