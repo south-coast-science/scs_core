@@ -15,13 +15,13 @@ from collections import OrderedDict
 from numbers import Number
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONReport
 from scs_core.position.position import Position
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GPSDatum(JSONable):
+class GPSDatum(JSONReport):
     """
     classdocs
     """
@@ -31,7 +31,7 @@ class GPSDatum(JSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return None
+            return cls.null_datum()
 
         pos = Position.construct_from_jdict(jdict.get('pos'))
         elv = jdict.get('elv')
