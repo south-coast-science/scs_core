@@ -160,9 +160,19 @@ class A4Calib(SensorCalib, JSONable):
         return self.__we_sens_mv
 
 
+    @we_sens_mv.setter
+    def we_sens_mv(self, we_sens_mv):
+        self.__we_sens_mv = we_sens_mv
+
+
     @property
     def we_no2_x_sens_mv(self):
         return self.__we_no2_x_sens_mv
+
+
+    @we_no2_x_sens_mv.setter
+    def we_no2_x_sens_mv(self, we_no2_x_sens_mv):
+        self.__we_no2_x_sens_mv = we_no2_x_sens_mv
 
 
     # ----------------------------------------------------------------------------------------------------------------

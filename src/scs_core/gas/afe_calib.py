@@ -42,30 +42,40 @@ class AFECalib(PersistentJSONable):
     PATH =          "/api/v1/boards/"
     HEADER =        {"Accept": "application/json"}
 
-    TEST_JSON = '''
+    TEST_LOAD = '''
                 {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
                 "pt1000_v20": 1.0, 
-            
+
                 "sn1": {"serial_number": "01", "sensor_type": "SN1", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn2": {"serial_number": "02", "sensor_type": "SN2", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn3": {"serial_number": "03", "sensor_type": "SN3", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn4": {"serial_number": "04", "sensor_type": "SN4", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}}    
                 '''
+
+    DSI_WRAPPER = '''
+                {"serial_number": "00-000000", "type": "000-0000-00", "calibrated_on": "YYYY-MM-DD", 
+                "dispatched_on": null, "pt1000_v20": 1.0, 
+                "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "A4", "we_electronic_zero_mv": 300, 
+                "we_sensor_zero_mv": 6, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, 
+                "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 300, "we_sensitivity_na_ppb": "S.SSSSSSS", 
+                "we_cross_sensitivity_no2_na_ppb": -0.3, "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, 
+                "we_cross_sensitivity_no2_mv_ppb": 0.2}}
+                  '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -228,6 +238,11 @@ class AFECalib(PersistentJSONable):
     @property
     def calibrated_on(self):
         return self.__calibrated_on
+
+
+    @calibrated_on.setter
+    def calibrated_on(self, calibrated_on):
+        self.__calibrated_on = calibrated_on
 
 
     @property
