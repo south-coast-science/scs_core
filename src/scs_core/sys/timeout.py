@@ -50,7 +50,7 @@ class Timeout(object):
         signal.alarm(int(round(self.__seconds)))
 
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, _exc_type, _exc_val, _exc_tb):
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
 
