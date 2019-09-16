@@ -74,7 +74,7 @@ class AFECalib(PersistentJSONable):
                 "we_sensor_zero_mv": 0, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, 
                 "ae_sensor_zero_mv": 0, "ae_total_zero_mv": 300, "we_sensitivity_na_ppb": "S.SSSSSSS", 
                 "we_cross_sensitivity_no2_na_ppb": -0.3, "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, 
-                "we_cross_sensitivity_no2_mv_ppb": 0.2}}
+                "we_cross_sensitivity_no2_mv_ppb": "n/a"}}
                   '''
 
     # ----------------------------------------------------------------------------------------------------------------
