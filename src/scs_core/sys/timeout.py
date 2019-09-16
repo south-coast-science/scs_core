@@ -32,6 +32,7 @@ class Timeout(object):
     @staticmethod
     def raise_timeout(_signum, _frame):
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
         raise TimeoutError
 
 
@@ -41,7 +42,7 @@ class Timeout(object):
         """
         Constructor
         """
-        self.__seconds = seconds                                # number
+        self.__seconds = seconds                                    # number
 
 
     def __enter__(self):
