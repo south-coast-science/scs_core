@@ -51,7 +51,17 @@ class SensorCalib(ABC):
         return self.__serial_number
 
 
+    @serial_number.setter
+    def serial_number(self, serial_number):
+        self.__serial_number = serial_number
+
+
     @property
     def sensor_type(self):
         return self.__sensor_type
+
+
+    @sensor_type.setter
+    def sensor_type(self, sensor_type):
+        self.__sensor_type = sensor_type
 

@@ -50,11 +50,12 @@ class Sensor(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_code, gas_name, adc_gain_index, calib=None, baseline=None):
+    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, calib=None, baseline=None):
         """
         Constructor
         """
         self.__sensor_code = sensor_code
+        self.__sensor_type = sensor_type
 
         self.__gas_name = gas_name
         self.__adc_gain_index = adc_gain_index
@@ -87,6 +88,11 @@ class Sensor(ABC):
     @property
     def sensor_code(self):
         return self.__sensor_code
+
+
+    @property
+    def sensor_type(self):
+        return self.__sensor_type
 
 
     @property

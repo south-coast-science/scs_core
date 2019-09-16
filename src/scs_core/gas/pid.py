@@ -27,18 +27,21 @@ class PID(Sensor):
 
     @classmethod
     def init(cls):
-        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'VOC',  4, 50.0, 0.000040)   # ppb sensitivity
-        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'VOC',  4, 50.0, 0.000040)   # ppb sensitivity
-        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  4, 50.0, 0.040)      # ppm sensitivity
+        # ppb sensitivity...
+        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDNH', 'VOC',  4, 50.0, 0.000040)
+        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDNH', 'VOC',  4, 50.0, 0.000040)
+
+        # ppm sensitivity
+        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  'PIDN1', 4, 50.0, 0.040)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_code, gas_name, adc_gain_index, default_elc_mv, default_sens_mv):
+    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, default_elc_mv, default_sens_mv):
         """
         Constructor
         """
-        Sensor.__init__(self, sensor_code, gas_name, adc_gain_index)
+        Sensor.__init__(self, sensor_code, sensor_type, gas_name, adc_gain_index)
 
         self.__default_elc_mv = default_elc_mv
         self.__default_sens_mv = default_sens_mv
@@ -90,7 +93,7 @@ class PID(Sensor):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PID:{sensor_code:%s, gas_name:%s, adc_gain_index:0x%04x, default_elc_mv:%s, default_sens_mv:%s, " \
-               "calib:%s, baseline:%s}" %  \
-               (self.sensor_code, self.gas_name, self.adc_gain_index, self.default_elc_mv, self.default_sens_mv,
-                self.calib, self.baseline)
+        return "PID:{sensor_code:%s, sensor_type:%s, gas_name:%s, adc_gain_index:0x%04x, default_elc_mv:%s, " \
+               "default_sens_mv:%s, calib:%s, baseline:%s}" %  \
+               (self.sensor_code, self.sensor_type, self.gas_name, self.adc_gain_index, self.default_elc_mv,
+                self.default_sens_mv, self.calib, self.baseline)
