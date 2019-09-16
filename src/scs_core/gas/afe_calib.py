@@ -4,11 +4,19 @@ Created on 26 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
+4-Way AFE:
 {"serial_number":"250011","type":"810-00000","pt1000_v20":2.0,"calibrated_on":null,"dispatched_on":null,
 "sn1":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"7.0","sensor_ae_zero_na":"-5.1","sensor_we_zero_na":"-6.6","we_sensor_zero_mv":"9.0","ae_electronic_zero_mv":"280.0","we_electronic_zero_mv":"275.0","we_sensitivity_mv_ppb":"219.0","sensor_we_sensitivity_na_ppm":"-300.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"},
 "sn2":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"2.0","sensor_ae_zero_na":"1.6","sensor_we_zero_na":"3.2","we_sensor_zero_mv":"4.0","ae_electronic_zero_mv":"285.0","we_electronic_zero_mv":"280.0","we_sensitivity_mv_ppb":"200.0","sensor_we_sensitivity_na_ppm":"250.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"},
 "sn3":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"280.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"10.0","sensor_ae_zero_na":"-7.3","sensor_we_zero_na":"-4.4","we_sensor_zero_mv":"6.0","ae_electronic_zero_mv":"270.0","we_electronic_zero_mv":"278.0","we_sensitivity_mv_ppb":"292.0","sensor_we_sensitivity_na_ppm":"-400.0","sensor_we_cross_sensitivity_na_ppm":"-350.0","we_cross_sensitivity_ox_no2_mv_ppb":"256.0"},
 "sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0","ae_sensor_zero_mv":"9.0","sensor_ae_zero_na":"7.2","sensor_we_zero_na":"4.8","we_sensor_zero_mv":"6.0","ae_electronic_zero_mv":"304.0","we_electronic_zero_mv":"299.0","we_sensitivity_mv_ppb":"400.0","sensor_we_sensitivity_na_ppm":"500.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"}}
+
+Digital Single Interface:
+{"serial_number": "10-000056", "type": "810-0021-00", "calibrated_on": "YYYY-MM-DD", "dispatched_on": null,
+"pt1000_v20": 1.0, "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "NOGA4", "we_electronic_zero_mv": 300,
+"we_sensor_zero_mv": 6, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, "ae_sensor_zero_mv": 1,
+"ae_total_zero_mv": 300, "we_sensitivity_na_ppb": S.SSSSSSS, "we_cross_sensitivity_no2_na_ppb": -0.3,
+"pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
 from collections import OrderedDict
@@ -17,6 +25,7 @@ from scs_core.gas.sensor import Sensor
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
+
 from scs_core.gas.a4_calib import A4Calib
 from scs_core.gas.pid_calib import PIDCalib
 from scs_core.gas.pt1000_calib import Pt1000Calib
@@ -33,30 +42,40 @@ class AFECalib(PersistentJSONable):
     PATH =          "/api/v1/boards/"
     HEADER =        {"Accept": "application/json"}
 
-    TEST_JSON = '''
+    TEST_LOAD = '''
                 {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
                 "pt1000_v20": 1.0, 
-            
+
                 "sn1": {"serial_number": "01", "sensor_type": "SN1", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn2": {"serial_number": "02", "sensor_type": "SN2", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn3": {"serial_number": "03", "sensor_type": "SN3", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}, 
-            
+
                 "sn4": {"serial_number": "04", "sensor_type": "SN4", "we_electronic_zero_mv": 1, "we_sensor_zero_mv": 1, 
                 "we_total_zero_mv": 1, "ae_electronic_zero_mv": 1, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 1, 
                 "we_sensitivity_na_ppb": 1.0, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": 1.0, 
                 "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}}    
                 '''
+
+    DSI_WRAPPER = '''
+                {"serial_number": "00-000000", "type": "000-0000-00", "calibrated_on": "YYYY-MM-DD", 
+                "dispatched_on": null, "pt1000_v20": 1.0, 
+                "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "A4", "we_electronic_zero_mv": 300, 
+                "we_sensor_zero_mv": 6, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, 
+                "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 300, "we_sensitivity_na_ppb": "S.SSSSSSS", 
+                "we_cross_sensitivity_no2_na_ppb": -0.3, "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, 
+                "we_cross_sensitivity_no2_mv_ppb": 0.2}}
+                  '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -219,6 +238,11 @@ class AFECalib(PersistentJSONable):
     @property
     def calibrated_on(self):
         return self.__calibrated_on
+
+
+    @calibrated_on.setter
+    def calibrated_on(self, calibrated_on):
+        self.__calibrated_on = calibrated_on
 
 
     @property
