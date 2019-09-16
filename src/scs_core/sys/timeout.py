@@ -12,7 +12,7 @@ try:
         my_func()
 
 except TimeoutError:
-    print("my_func() timed out!")
+    print("function timed out!")
 
 https://www.jujens.eu/posts/en/2018/Jun/02/python-timeout-function/
 """
