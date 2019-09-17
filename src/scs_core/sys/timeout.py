@@ -37,10 +37,12 @@ class Timeout(object):
 
 
     def __enter__(self):
+        # handler...
         def raise_timeout(_signum, _frame):
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             raise TimeoutError
 
+        # signal...
         signal.signal(signal.SIGALRM, raise_timeout)
         signal.alarm(int(round(self.__seconds)))
 
