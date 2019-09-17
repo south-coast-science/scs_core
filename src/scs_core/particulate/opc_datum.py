@@ -53,10 +53,12 @@ class OPCDatum(PMxDatum):
         bin_5_mtof = jdict.get('mtf5')
         bin_7_mtof = jdict.get('mtf7')
 
+        sfr = jdict.get('sfr')
+
         sht = SHTDatum.construct_from_jdict(jdict.get('sht'))
 
         return OPCDatum(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
-                        sht)
+                        sfr=sfr, sht=sht)
 
 
     @classmethod
@@ -67,7 +69,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
-                 sht=None):
+                 sfr=None, sht=None):
         """
         Constructor
         """
@@ -79,10 +81,12 @@ class OPCDatum(PMxDatum):
 
         self.__bins = [int(count) for count in bins]        # array of count
 
-        self.__bin_1_mtof = Datum.int(bin_1_mtof)           # time
-        self.__bin_3_mtof = Datum.int(bin_3_mtof)           # time
-        self.__bin_5_mtof = Datum.int(bin_5_mtof)           # time
-        self.__bin_7_mtof = Datum.int(bin_7_mtof)           # time
+        self.__bin_1_mtof = Datum.int(bin_1_mtof)           # float time
+        self.__bin_3_mtof = Datum.int(bin_3_mtof)           # float time
+        self.__bin_5_mtof = Datum.int(bin_5_mtof)           # float time
+        self.__bin_7_mtof = Datum.int(bin_7_mtof)           # float time
+
+        self.__sfr = Datum.float(sfr, 3)                    # float sample flow rate
 
         self.__sht = sht                                    # SHTDatum
 
@@ -104,6 +108,9 @@ class OPCDatum(PMxDatum):
         jdict['mtf3'] = self.bin_3_mtof
         jdict['mtf5'] = self.bin_5_mtof
         jdict['mtf7'] = self.bin_7_mtof
+
+        if self.sfr is not None:
+            jdict['sfr'] = self.sfr
 
         if self.sht is not None:
             jdict['sht'] = self.sht
@@ -130,6 +137,8 @@ class OPCDatum(PMxDatum):
         jdict['mtf3'] = self.bin_3_mtof
         jdict['mtf5'] = self.bin_5_mtof
         jdict['mtf7'] = self.bin_7_mtof
+
+        jdict['sfr'] = self.sfr
 
         if self.sht is not None:
             jdict['sht'] = self.sht
@@ -185,10 +194,15 @@ class OPCDatum(PMxDatum):
         return self.__sht
 
 
+    @property
+    def sfr(self):
+        return self.__sfr
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "OPCDatum:{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
-               "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s, sht:%s}" % \
+               "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s, sfr:%s, sht:%s}" % \
                     (self.source, self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
-                     self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof, self.sht)
+                     self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof, self.sfr, self.sht)
