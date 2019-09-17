@@ -3,7 +3,7 @@ Created on 16 Sep 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Usage:
+Timeout context manager. Usage:
 
 timeout = Timeout(10)
 
