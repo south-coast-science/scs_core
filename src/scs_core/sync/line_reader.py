@@ -41,7 +41,7 @@ class LineReader(object):
             for line in file:
                 self.__queue.put(str(line).strip())
 
-        except (BrokenPipeError, KeyboardInterrupt, TypeError):
+        except (BrokenPipeError, KeyboardInterrupt):
             pass
 
         self.__queue.put(None)
