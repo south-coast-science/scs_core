@@ -39,9 +39,7 @@ class SignalledExit(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # noinspection PyUnusedLocal
-
-    def sigint_handler(self, signum, frame):
+    def sigint_handler(self, signum, _frame):
         self.clear()
 
         if self.__verbose:
@@ -51,9 +49,7 @@ class SignalledExit(object):
         sys.exit(1)
 
 
-    # noinspection PyUnusedLocal
-
-    def sigterm_handler(self, signum, frame):
+    def sigterm_handler(self, signum, _frame):
         self.clear()
 
         if self.__verbose:
