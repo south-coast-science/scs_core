@@ -39,17 +39,20 @@ class SynchronisedProcess(ABC):
 
 
     def stop(self):
-        if self.__proc is None:
-            return
+        try:
+            if self.__proc is None:
+                return
 
-        self.__proc.terminate()
-        self.__proc = None
+            self.__proc.terminate()
+            self.__proc = None
+
+        except (BrokenPipeError, KeyboardInterrupt):
+            pass
 
 
     @abstractmethod
     def run(self):
         pass
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
