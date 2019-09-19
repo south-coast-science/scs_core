@@ -19,6 +19,18 @@ class A4Calib(SensorCalib, JSONable):
     classdocs
     """
 
+    # used for Digital Single Interface...
+    DEFAULT_WE_ELECTRONIC_ZERO_MV =     300
+    DEFAULT_WE_SENSOR_ZERO_MV =           0
+    DEFAULT_WE_TOTAL_ZERO_MV =          300
+
+    DEFAULT_AE_ELECTRONIC_ZERO_MV =     300
+    DEFAULT_AE_SENSOR_ZERO_MV =           0
+    DEFAULT_AE_TOTAL_ZERO_MV =          300
+
+    DEFAULT_PCB_GAIN =                  -0.7
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -44,6 +56,7 @@ class A4Calib(SensorCalib, JSONable):
 
         we_sens_mv = jdict.get('we_sensitivity_mv_ppb')
         we_no2_x_sens_mv = jdict.get('we_cross_sensitivity_no2_mv_ppb')
+
 
         return A4Calib(serial_number, sensor_type, we_elc_mv, we_cal_mv, we_tot_mv, ae_elc_mv, ae_cal_mv, ae_tot_mv,
                        we_sens_na, we_x_sens_na, pcb_gain, we_sens_mv, we_no2_x_sens_mv)
@@ -76,6 +89,23 @@ class A4Calib(SensorCalib, JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def set_defaults(self):
+        self.__we_elc_mv = self.DEFAULT_WE_ELECTRONIC_ZERO_MV
+        self.__we_cal_mv = self.DEFAULT_WE_SENSOR_ZERO_MV
+        self.__we_tot_mv = self.DEFAULT_WE_TOTAL_ZERO_MV
+
+        self.__ae_elc_mv = self.DEFAULT_AE_ELECTRONIC_ZERO_MV
+        self.__ae_cal_mv = self.DEFAULT_AE_SENSOR_ZERO_MV
+        self.__ae_tot_mv = self.DEFAULT_AE_TOTAL_ZERO_MV
+
+        self.__pcb_gain = self.DEFAULT_PCB_GAIN
+
+
+    def set_sens_mv_from_sens_na(self):
+        we_sens_mv = -0.7313 * self.__we_sens_na + -0.0006          # coefficients found from Alphasense calibrations
+        self.__we_sens_mv = round(we_sens_mv, 3)
+
 
     def reports_no2_cross_sensitivity(self):
         return self.__we_no2_x_sens_mv is not None

@@ -16,10 +16,33 @@ class SensorCalib(ABC):
     classdocs
     """
 
+    ALPHASENSE_HOST =       "www.alphasense-technology.co.uk"
+    ALPHASENSE_PATH =       "/api/v1/sensors/"
+    ALPHASENSE_HEADER =     {"Accept": "application/json"}
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def reports_no2_cross_sensitivity(cls):     # the default - override as necessary
+    def construct_from_jdict(cls, jdict):
+        from scs_core.gas.a4_calib import A4Calib
+        from scs_core.gas.pid_calib import PIDCalib
+
+        sensor_type = jdict.get('sensor_type', 'NOGA4')
+
+        if sensor_type[-2:] == 'A4' or sensor_type[:2] == 'SN':
+            return A4Calib.construct_from_jdict(jdict)
+
+        elif sensor_type[:3] == 'PID':
+            return PIDCalib.construct_from_jdict(jdict)
+
+        raise ValueError(sensor_type)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def reports_no2_cross_sensitivity(cls):             # the default - override as necessary
         return False
 
 

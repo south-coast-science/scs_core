@@ -21,14 +21,12 @@ Digital Single Interface:
 
 from collections import OrderedDict
 
-from scs_core.gas.sensor import Sensor
-
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
-from scs_core.gas.a4_calib import A4Calib
-from scs_core.gas.pid_calib import PIDCalib
 from scs_core.gas.pt1000_calib import Pt1000Calib
+from scs_core.gas.sensor import Sensor
+from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -38,9 +36,11 @@ class AFECalib(PersistentJSONable):
     classdocs
     """
 
-    HOST =          "www.alphasense-technology.co.uk"
-    PATH =          "/api/v1/boards/"
-    HEADER =        {"Accept": "application/json"}
+    ALPHASENSE_HOST =       "www.alphasense-technology.co.uk"
+    ALPHASENSE_PATH =       "/api/v1/boards/"
+    ALPHASENSE_HEADER =     {"Accept": "application/json"}
+
+    # https: // www.alphasense - technology.co.uk / api / v1 / sensors / 212810464.j
 
     TEST_LOAD = '''
                 {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
@@ -110,15 +110,14 @@ class AFECalib(PersistentJSONable):
                     sensor_calibs.append(None)
                     continue
 
-                sensor_type = jdict[key]['sensor_type']
-
-                if sensor_type[-2:] == 'A4' or sensor_type[:2] == 'SN':
-                    sensor_calibs.append(A4Calib.construct_from_jdict(jdict[key]))
-
-                elif sensor_type[:3] == 'PID':
-                    sensor_calibs.append(PIDCalib.construct_from_jdict(jdict[key]))
+                sensor_calibs.append(SensorCalib.construct_from_jdict(jdict[key]))
 
         return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs)
+
+
+    @classmethod
+    def construct_for_sensor(cls, calibrated_on, sensor_calib):
+        return AFECalib(None, 'IEI', calibrated_on, None, None, [sensor_calib])
 
 
     # ----------------------------------------------------------------------------------------------------------------
