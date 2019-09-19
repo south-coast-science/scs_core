@@ -15,6 +15,7 @@ class Sensor(ABC):
     """
     classdocs
     """
+
     CODE_CO =           '132'           # CO A4
     CODE_H2S =          '133'           # H2SA4
     CODE_NO =           '130'           # NO A4
