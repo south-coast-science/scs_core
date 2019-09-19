@@ -6,6 +6,7 @@ Created on 27 Sep 2018
 A shared queue supporting a single producer process and a single consumer process.
 """
 
+import copy
 import time
 
 from multiprocessing import Manager
@@ -113,7 +114,7 @@ class MessageQueue(SynchronisedProcess):
     def next(self):
         try:
             with self._lock:
-                return self._value.oldest
+                return copy.deepcopy(self._value.oldest)
 
         except BaseException:
             pass
