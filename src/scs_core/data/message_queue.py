@@ -80,7 +80,7 @@ class MessageQueue(SynchronisedProcess):
         try:
             with self._lock:
                 self._value.cmd_enq = True
-                self._value.newest = message
+                self._value.newest = copy.deepcopy(message)
 
             time.sleep(self.__CLIENT_LOCK_RELEASE_TIME)                 # wait for queue to be processed
 
@@ -105,7 +105,9 @@ class MessageQueue(SynchronisedProcess):
     def length(self):
         try:
             with self._lock:
-                return self._value.length
+                length = self._value.length
+
+            return length
 
         except BaseException:
             pass
@@ -114,7 +116,9 @@ class MessageQueue(SynchronisedProcess):
     def next(self):
         try:
             with self._lock:
-                return copy.deepcopy(self._value.oldest)
+                oldest = copy.deepcopy(self._value.oldest)
+
+            return oldest
 
         except BaseException:
             pass
