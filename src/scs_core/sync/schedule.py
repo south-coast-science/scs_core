@@ -65,7 +65,7 @@ class Schedule(PersistentJSONable):
         """
         super().__init__()
 
-        self.__items = items
+        self.__items = items                # dict of name: ScheduleItem
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -115,6 +115,10 @@ class Schedule(PersistentJSONable):
     @property
     def items(self):
         return self.__items.values()
+
+
+    def contains(self, name):
+        return name in self.__items
 
 
     def item(self, name):
