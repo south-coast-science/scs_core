@@ -7,6 +7,9 @@ Note that, for the ISO 8601 constructors, milliseconds are optional.
 
 http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-timezone-offset
+
+https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tooadate?view=netframework-4.8
+http://code.activestate.com/recipes/496683-converting-ole-datetime-values-into-python-datetim/
 """
 
 import pytz
@@ -27,6 +30,10 @@ class LocalizedDatetime(JSONable):
     """
     classdocs
     """
+
+    OLE_TIME_ZERO = datetime(1899, 12, 30, 0, 0, 0)
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def now(cls):
@@ -96,6 +103,17 @@ class LocalizedDatetime(JSONable):
         corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
 
         return corrected
+
+
+    @classmethod
+    def construct_from_oad(cls, oad, tz=None):
+        date = cls.OLE_TIME_ZERO + timedelta(days=float(oad))
+
+        # zone...
+        zone = pytz.timezone('Etc/UTC') if tz is None else tz
+
+        # construct...
+        return LocalizedDatetime(zone.localize(date))
 
 
     @classmethod
