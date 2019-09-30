@@ -44,7 +44,6 @@ class SynchronisedProcess(ABC):
                 return
 
             self.__proc.terminate()
-            self.__proc = None
 
         except (BrokenPipeError, KeyboardInterrupt):
             pass
