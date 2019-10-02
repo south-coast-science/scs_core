@@ -16,6 +16,29 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
+class Format(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # formatting...
+
+    @staticmethod
+    def bin16(value, separator=' '):
+        formatted = ''
+
+        for shift in (12, 8, 4, 0):
+            nibble = (value >> shift) & 0x000f
+            nibble_str = "{0:b}".format(nibble).rjust(4, '0')
+
+            formatted += nibble_str + separator
+
+        return formatted.strip(separator)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class Datum(object):
     """
     classdocs
