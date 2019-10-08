@@ -69,7 +69,7 @@ class MessageQueue(SynchronisedProcess):
                     self._value.oldest = self.__get_oldest()
                     self._value.length = len(self)
 
-        except (BrokenPipeError, KeyboardInterrupt):
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 
 
