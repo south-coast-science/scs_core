@@ -2,6 +2,8 @@
 Created on 9 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+http://softwareengineering.stackexchange.com/questions/298364/exception-handling-in-python-am-i-doing-this-wrong-and-why
 """
 
 import sys
@@ -13,9 +15,6 @@ from scs_core.data.json import JSONable
 from scs_core.sys.trace_entry import TraceEntry
 
 
-# TODO: do we need numeric fields for trace in order to comply with a schema?
-# http://softwareengineering.stackexchange.com/questions/298364/exception-handling-in-python-am-i-doing-this-wrong-and-why
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class ExceptionReport(JSONable):
@@ -24,8 +23,6 @@ class ExceptionReport(JSONable):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    # TODO: add a print(ex) method?
 
     @classmethod
     def construct(cls, ex):
