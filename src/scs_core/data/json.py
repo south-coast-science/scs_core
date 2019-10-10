@@ -65,6 +65,14 @@ class JSONReport(JSONable):
 
 
     @classmethod
+    def delete(cls, filename):
+        if filename is None:
+            return
+
+        os.remove(filename)
+
+
+    @classmethod
     @abstractmethod
     def construct_from_jdict(cls, _):
         return JSONReport()

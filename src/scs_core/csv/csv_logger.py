@@ -102,7 +102,7 @@ class CSVLogger(object):
         # first run...
         if not self.__file:
             if self.log.tag is None and 'tag' in datum.dictionary:
-                self.log.tag = datum.dictionary['tag']                  # TODO: use node(..)?
+                self.log.tag = datum.dictionary['tag']
 
             self.__open_file()
 

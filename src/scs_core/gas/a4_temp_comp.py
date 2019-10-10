@@ -139,7 +139,7 @@ class A4TempComp(object):
     def __eq4(self, temp, we_t, we_cal_mv):
         kpp_t = self.cf_t(temp)
 
-        we_c = we_t - we_cal_mv - kpp_t     # TODO: fix over-sensitivity to temperature
+        we_c = we_t - we_cal_mv - kpp_t
 
         # print("A4TempComp.__eq4: alg:%d, temp:%f we_t:%f we_cal_mv:%f kpp_t:%f we_c:%f " %
         #       (self.__algorithm, temp, we_t, we_cal_mv, kpp_t, we_c), file=sys.stderr)
