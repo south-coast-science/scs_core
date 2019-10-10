@@ -23,7 +23,7 @@ class QueueReport(JSONReport):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return QueueReport(0, ClientStatus.DISCONNECTED, False)
+            return QueueReport(0, ClientStatus.WAITING, False)
 
         length = jdict.get('length')
         client_state = ClientStatus[jdict.get('client-state')]
@@ -54,9 +54,11 @@ class QueueReport(JSONReport):
         if self.client_state == ClientStatus.INHIBITED:
             return QueueStatus.INHIBITED
 
-        # client DISCONNECTED...
-        if self.client_state == ClientStatus.DISCONNECTED:
-            return QueueStatus.DISCONNECTED
+        # client WAITING...
+
+        # client CONNECTING...
+        if self.client_state == ClientStatus.CONNECTING:
+            return QueueStatus.CONNECTING
 
         # any client state...
         if not self.has_backlog() and self.publish_success:
@@ -130,8 +132,9 @@ class ClientStatus(Enum):
     classdocs
    """
     INHIBITED =         1
-    DISCONNECTED =      2
-    CONNECTED =         3
+    WAITING =           2
+    CONNECTING =        3
+    CONNECTED =         4
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -142,7 +145,8 @@ class QueueStatus(Enum):
    """
     NONE =              1
     INHIBITED =         2
-    DISCONNECTED =      3
-    PUBLISHING =        4
-    QUEUING =           5
-    CLEARING =          6
+    WAITING =           3
+    CONNECTING =        4
+    PUBLISHING =        5
+    QUEUING =           6
+    CLEARING =          7
