@@ -55,6 +55,8 @@ class QueueReport(JSONReport):
             return QueueStatus.INHIBITED
 
         # client WAITING...
+        if self.client_state == ClientStatus.WAITING:
+            return QueueStatus.WAITING
 
         # client CONNECTING...
         if self.client_state == ClientStatus.CONNECTING:
