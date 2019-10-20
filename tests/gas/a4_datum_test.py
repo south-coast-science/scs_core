@@ -21,10 +21,12 @@ aggregate:
 
 import json
 
-from scs_core.gas.a4_datum import A4Datum
-from scs_core.gas.a4_temp_comp import A4TempComp
+from scs_core.gas.a4.a4_datum import A4Datum
+from scs_core.gas.a4.a4_temp_comp import A4TempComp
+
 from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_calib import AFECalib
+
 from scs_core.gas.sensor import Sensor
 
 

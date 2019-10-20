@@ -3,6 +3,8 @@ Created on 18 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Alphasense D4 electrochemical sensor
+
 Alphasense Application Note AAN 803-02
 AAN 803-02 070916_DRAFT03.doc
 """

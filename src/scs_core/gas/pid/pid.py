@@ -3,14 +3,16 @@ Created on 30 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Alphasense A4 photo ionisation detector
+
 PID-AH sn: 143950149 - pid_elc_mv: 47.6, pid_sens_mv: 0.0375
 
 PID-AH "default" - pid_elc_mv: 54, pid_sens_mv: 0.040
 """
 
-from scs_core.gas.pid_calib import PIDCalib
-from scs_core.gas.pid_datum import PIDDatum
-from scs_core.gas.pid_temp_comp import PIDTempComp
+from scs_core.gas.pid.pid_calib import PIDCalib
+from scs_core.gas.pid.pid_datum import PIDDatum
+from scs_core.gas.pid.pid_temp_comp import PIDTempComp
 
 from scs_core.gas.sensor import Sensor
 

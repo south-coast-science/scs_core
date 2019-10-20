@@ -24,7 +24,8 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
-from scs_core.gas.pt1000_calib import Pt1000Calib
+from scs_core.gas.afe.pt1000_calib import Pt1000Calib
+
 from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
 

@@ -25,8 +25,9 @@ class SensorCalib(ABC):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        from scs_core.gas.a4_calib import A4Calib
-        from scs_core.gas.pid_calib import PIDCalib
+        # late import...
+        from scs_core.gas.a4.a4_calib import A4Calib
+        from scs_core.gas.pid.pid_calib import PIDCalib
 
         sensor_type = jdict.get('sensor_type', 'NOGA4')
 
