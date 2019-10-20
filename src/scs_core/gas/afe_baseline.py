@@ -13,6 +13,7 @@ example JSON:
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
+
 from scs_core.gas.sensor_baseline import SensorBaseline
 
 

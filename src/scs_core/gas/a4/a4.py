@@ -2,11 +2,14 @@
 Created on 30 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Alphasense A4 electrochemical sensor
 """
 
-from scs_core.gas.a4_datum import A4Datum
+from scs_core.gas.a4.a4_datum import A4Datum
+from scs_core.gas.a4.a4_temp_comp import A4TempComp
+
 from scs_core.gas.sensor import Sensor
-from scs_core.gas.a4_temp_comp import A4TempComp
 
 
 # --------------------------------------------------------------------------------------------------------------------
