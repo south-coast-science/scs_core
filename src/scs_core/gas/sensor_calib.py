@@ -9,8 +9,6 @@ from abc import ABC
 from scs_core.gas.sensor import Sensor
 
 
-# TODO: rename as Gas Sensor Calib
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class SensorCalib(ABC):
