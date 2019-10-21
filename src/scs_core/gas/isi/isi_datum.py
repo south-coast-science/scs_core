@@ -3,7 +3,7 @@ Created on 7 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Datum for Integrated Electrochem Interface (IEI)
+Datum for Integrated Electrochem Interface (ISI)
 """
 
 from collections import OrderedDict
@@ -11,9 +11,11 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: rename as Gas Sensor Interface Datum
+
 # --------------------------------------------------------------------------------------------------------------------
 
-class IEIDatum(JSONable):
+class ISIDatum(JSONable):
     """
     classdocs
     """
@@ -32,7 +34,7 @@ class IEIDatum(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['src'] = 'IEI'
+        jdict['src'] = 'ISI'
         jdict['sns'] = self.sns
 
         return jdict
@@ -50,4 +52,4 @@ class IEIDatum(JSONable):
     def __str__(self, *args, **kwargs):
         sns = '{' + ', '.join(str(key) + ':' + str(self.sns[key]) for key in self.sns) + '}'
 
-        return "IEIDatum:{sns:%s}" % sns
+        return "ISIDatum:{sns:%s}" % sns
