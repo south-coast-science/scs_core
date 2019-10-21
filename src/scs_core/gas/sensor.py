@@ -9,6 +9,8 @@ https://www.alphasense-technology.co.uk/sensor_types
 from abc import ABC, abstractmethod
 
 
+# TODO: rename as Gas Sensor
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Sensor(ABC):

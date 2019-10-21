@@ -30,6 +30,8 @@ from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
 
 
+# TODO: rename as Interface Calib (GSCalib)
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class AFECalib(PersistentJSONable):
@@ -118,7 +120,7 @@ class AFECalib(PersistentJSONable):
 
     @classmethod
     def construct_for_sensor(cls, calibrated_on, sensor_calib):
-        return AFECalib(None, 'IEI', calibrated_on, None, None, [sensor_calib])
+        return AFECalib(None, 'ISI', calibrated_on, None, None, [sensor_calib])
 
 
     # ----------------------------------------------------------------------------------------------------------------
