@@ -40,13 +40,15 @@ class NDIR(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def power_on(self):
-        print("ndir: power_on")
+        # print("ndir: power_on")
+
         self.__interface.power_ndir(True)
         time.sleep(self.boot_time())
 
 
     def power_off(self):
-        print("ndir: power_off")
+        # print("ndir: power_off")
+
         self.__interface.power_ndir(False)
 
 
