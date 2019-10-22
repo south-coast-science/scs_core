@@ -24,10 +24,13 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
-from scs_core.gas.pt1000_calib import Pt1000Calib
+from scs_core.gas.afe.pt1000_calib import Pt1000Calib
+
 from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
 
+
+# TODO: rename as Interface Calib (GSCalib)
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -68,7 +71,7 @@ class AFECalib(PersistentJSONable):
                 '''
 
     DSI_WRAPPER = '''
-                {"serial_number": "00-000000", "type": "000-0000-00", "calibrated_on": "YYYY-MM-DD", 
+                {"serial_number": "00-000000", "type": "ISI", "calibrated_on": "YYYY-MM-DD", 
                 "dispatched_on": null, "pt1000_v20": 1.0, 
                 "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "A4", "we_electronic_zero_mv": 300, 
                 "we_sensor_zero_mv": 0, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, 
@@ -117,7 +120,7 @@ class AFECalib(PersistentJSONable):
 
     @classmethod
     def construct_for_sensor(cls, calibrated_on, sensor_calib):
-        return AFECalib(None, 'IEI', calibrated_on, None, None, [sensor_calib])
+        return AFECalib(None, 'ISI', calibrated_on, None, None, [sensor_calib])
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ from collections import OrderedDict
 from scs_core.sample.sample import Sample
 
 
-# TODO: get src from AFE / IEI datum?
+# TODO: get src from AFE / ISI datum?
 
 # --------------------------------------------------------------------------------------------------------------------
 

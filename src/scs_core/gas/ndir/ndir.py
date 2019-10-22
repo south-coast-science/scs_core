@@ -3,6 +3,8 @@ Created on 15 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Alphasense A4 non-dispersive infra-red detector
+
 The abstract definition of an NDIR required by NDIRMonitor.
 Implementations are elsewhere.
 """
