@@ -14,8 +14,6 @@ from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 
-# TODO: rename as Gas Sensor Baseline
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class SensorBaseline(JSONable):
