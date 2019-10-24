@@ -102,7 +102,8 @@ class NextMessageQuery(object):
     classdocs
 
     example query:
-    /v1/messages/topic//users/southcoastscience-dev/test/json?start-date=2016-11-13T07:11:14.779Z&end-date=2016-11-13T08:48:08.901+00:00
+    /v1/messages/topic//users/southcoastscience-dev/test/json?
+    start-date=2016-11-13T07:11:14.779Z&end-date=2016-11-13T08:48:08.901+00:00
     """
 
     # ----------------------------------------------------------------------------------------------------------------
