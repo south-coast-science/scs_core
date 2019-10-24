@@ -6,10 +6,10 @@ Created on 26 Sep 2016
 example JSON:
 4-Way AFE:
 {"serial_number":"250011","type":"810-00000","pt1000_v20":2.0,"calibrated_on":null,"dispatched_on":null,
-"sn1":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"7.0","sensor_ae_zero_na":"-5.1","sensor_we_zero_na":"-6.6","we_sensor_zero_mv":"9.0","ae_electronic_zero_mv":"280.0","we_electronic_zero_mv":"275.0","we_sensitivity_mv_ppb":"219.0","sensor_we_sensitivity_na_ppm":"-300.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"},
-"sn2":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"2.0","sensor_ae_zero_na":"1.6","sensor_we_zero_na":"3.2","we_sensor_zero_mv":"4.0","ae_electronic_zero_mv":"285.0","we_electronic_zero_mv":"280.0","we_sensitivity_mv_ppb":"200.0","sensor_we_sensitivity_na_ppm":"250.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"},
-"sn3":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"280.0","we_total_zero_mv":"284.0","ae_sensor_zero_mv":"10.0","sensor_ae_zero_na":"-7.3","sensor_we_zero_na":"-4.4","we_sensor_zero_mv":"6.0","ae_electronic_zero_mv":"270.0","we_electronic_zero_mv":"278.0","we_sensitivity_mv_ppb":"292.0","sensor_we_sensitivity_na_ppm":"-400.0","sensor_we_cross_sensitivity_na_ppm":"-350.0","we_cross_sensitivity_ox_no2_mv_ppb":"256.0"},
-"sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0","ae_sensor_zero_mv":"9.0","sensor_ae_zero_na":"7.2","sensor_we_zero_na":"4.8","we_sensor_zero_mv":"6.0","ae_electronic_zero_mv":"304.0","we_electronic_zero_mv":"299.0","we_sensitivity_mv_ppb":"400.0","sensor_we_sensitivity_na_ppm":"500.0","sensor_we_cross_sensitivity_na_ppm":"n/a","we_cross_sensitivity_ox_no2_mv_ppb":"n/a"}}
+"sn1":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0", ...},
+"sn2":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0", ...},
+"sn3":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"280.0","we_total_zero_mv":"284.0", ...},
+"sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0", ...}}
 
 Digital Single Interface:
 {"serial_number": "10-000056", "type": "810-0021-00", "calibrated_on": "YYYY-MM-DD", "dispatched_on": null,
