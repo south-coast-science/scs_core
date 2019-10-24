@@ -32,7 +32,7 @@ class A4TempComp(object):
     def init(cls):          # °C:                  -30   -20   -10    0    10    20    30    40    50
         cls.__COMP = {
             Sensor.CODE_CO:     A4TempComp(1, 'n_t', [1.0, 1.0, 1.0, 1.0, -0.2, -0.9, -1.5, -1.5, -1.5]),
-            Sensor.CODE_H2S:    A4TempComp(2, 'k_t', [-1.5, -1.5, -1.5, -0.5, 0.5, 1.0, 0.8, 0.5, 0.3]),
+            Sensor.CODE_H2S:    A4TempComp(1, 'n_t', [3.0, 3.0, 3.0, 1.0, -1.0, -2.0, -1.5, -1.0, -0.5]),
             Sensor.CODE_NO:     A4TempComp(3, 'kp_t', [0.7, 0.7, 0.7, 0.7, 0.8, 1.0, 1.2, 1.4, 1.6]),
             Sensor.CODE_NO2:    A4TempComp(1, 'n_t', [0.8, 0.8, 1.0, 1.2, 1.6, 1.8, 1.9, 2.5, 3.6]),
             Sensor.CODE_OX:     A4TempComp(3, 'kp_t', [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0]),
@@ -43,6 +43,9 @@ class A4TempComp(object):
             Sensor.CODE_TEST_3: None,
             Sensor.CODE_TEST_4: None
         }
+
+        #   Recommended, but causes div by zero error if calib.ae_cal_mv is zero
+        #   Sensor.CODE_H2S:    A4TempComp(2, 'k_t', [-1.5, -1.5, -1.5, -0.5, 0.5, 1.0, 0.8, 0.5, 0.3]),
 
 
     @classmethod
