@@ -30,7 +30,7 @@ class PSUConf(object):
 
 
     @classmethod
-    def psu_monitor(cls, _host, _interface_model):
+    def psu_monitor(cls, _host, _interface_model, _auto_shutdown):
         return None
 
 
