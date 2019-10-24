@@ -28,7 +28,7 @@ class NDIRConf(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, tally):
+    def __init__(self, model, tally, raw=False):
         """
         Constructor
         """
@@ -36,6 +36,7 @@ class NDIRConf(PersistentJSONable, ABC):
 
         self.__model = model
         self.__tally = tally
+        self.__raw = raw
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -58,6 +59,7 @@ class NDIRConf(PersistentJSONable, ABC):
 
         jdict['model'] = self.model
         jdict['tally'] = self.tally
+        jdict['raw'] = self.raw
 
         return jdict
 
@@ -74,7 +76,12 @@ class NDIRConf(PersistentJSONable, ABC):
         return self.__tally
 
 
+    @property
+    def raw(self):
+        return self.__raw
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NDIRConf:{model:%s, tally:%s}" %  (self.model, self.tally)
+        return "NDIRConf:{model:%s, tally:%s, raw:%s}" %  (self.model, self.tally, self.raw)
