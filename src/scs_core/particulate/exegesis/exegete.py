@@ -6,7 +6,7 @@ Created on 26 Oct 2019
 a catalogue of particulate exegesis models
 """
 
-from scs_core.particulate.exegesis.isece001 import ISECEv1
+from scs_core.particulate.exegesis.isecen2_v001 import ISECEN2v1
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -27,12 +27,12 @@ class Exegete(object):
 
     @staticmethod
     def models():
-        return [ISECEv1.name()]
+        return [ISECEN2v1.name()]
 
 
     @staticmethod
     def model(name, host):
-        if name == ISECEv1.name():
-            return ISECEv1.load(host)
+        if name == ISECEN2v1.name():
+            return ISECEN2v1.load(host)
 
         raise ValueError(name)

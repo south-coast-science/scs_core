@@ -10,7 +10,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
 from scs_core.particulate.exegesis.text import Text
-from scs_core.particulate.exegesis.isece001 import ISECEv1
+from scs_core.particulate.exegesis.isecen2_v001 import ISECEN2v1
 
 from scs_host.sys.host import Host
 
@@ -26,12 +26,12 @@ jstr = '{"val": {"mtf1": 13, "pm1": 7.7, "mtf5": 18, "pm2p5": 14.3, ' \
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-exegete = ISECEv1.standard()
+exegete = ISECEN2v1.standard()
 print(exegete)
 print("-")
 
 exegete.save(Host)
-exegete = ISECEv1.load(Host)
+exegete = ISECEN2v1.load(Host)
 print(exegete)
 print("-")
 
