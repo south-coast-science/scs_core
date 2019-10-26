@@ -6,7 +6,7 @@ Created on 26 Oct 2019
 THIS CODE SHALL BE TREATED AS IMMUTABLE. THUS, ANY ALTERATIONS TO EQUATIONS OR STANDARD COEFFICIENTS SHALL BE
 PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
 
-Coefficients gained from OPC-N2 (versus Palas Fidas) data at LHR2 in 2019.
+Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2 in 2019.
 
 method: Immediate Scaling Error / Exponential Curve (ISECE), version 1
 
