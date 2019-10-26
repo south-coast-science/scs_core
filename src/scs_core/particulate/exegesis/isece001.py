@@ -3,13 +3,14 @@ Created on 26 Oct 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-THIS CODE SHALL BE TREATED AS IMMUTABLE. THUS, ANY ALTERATIONS TO EQUATIONS OR DEFAULT COEFFICIENTS SHALL BE
-PRESENTED AS A NEW CLASS, WITH AN INCREMENTED VERSION NUMBER.
+THIS CODE SHALL BE TREATED AS IMMUTABLE. THUS, ANY ALTERATIONS TO EQUATIONS OR STANDARD COEFFICIENTS SHALL BE
+PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
 
 method: Immediate Scaling Error / Exponential Curve (ISECE), version 1
 
 domain: 0 <= rH <= max_rh
-curve: error = ce * e ^ (cx * x)
+model: error = ce * e ^ (cx * x)
+range: x / error
 """
 
 from collections import OrderedDict
@@ -42,7 +43,7 @@ class ISECEv1(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME = "exegete_particulates_isece1_calib.json"
+    __FILENAME = "particulate_exegete_isece1_calib.json"
 
     @classmethod
     def persistence_location(cls, host):

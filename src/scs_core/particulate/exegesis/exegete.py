@@ -3,7 +3,7 @@ Created on 26 Oct 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a catalogue of particulates exegesis models
+a catalogue of particulate exegesis models
 """
 
 from scs_core.particulate.exegesis.isece001 import ISECEv1
@@ -15,6 +15,13 @@ class Exegete(object):
     """
     classdocs
     """
+
+    __ROOT = 'exg'
+
+    @classmethod
+    def root(cls):
+        return cls.__ROOT
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
