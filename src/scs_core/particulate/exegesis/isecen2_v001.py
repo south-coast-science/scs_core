@@ -11,8 +11,8 @@ Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2 in 
 method: Immediate Scaling Error / Exponential Curve (ISECE), version 1
 
 domain: 0 <= rH <= max_rh
-model: error = ce * e ^ (cx * x)
-range: x / error
+model: error = ce * e ^ (cx * rH)
+range: PM / error
 """
 
 from collections import OrderedDict
