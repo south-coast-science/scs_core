@@ -418,11 +418,43 @@ class ISO8601(object):
         if iso8601 is None:
             return None
 
-        return cls.parse(iso8601)
+        iso = cls.__parse_z(iso8601)
+        if iso:
+            return iso
+
+        return cls.__parse_numeric(iso8601)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def __parse_z(cls, iso8601):
+        # 2016-08-13T00:38:05.210Z
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', iso8601)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        year = fields[0]
+        month = fields[1]
+        day = fields[2]
+
+        hour = fields[3]
+        minute = fields[4]
+        second = fields[5]
+        millis = fields[6]
+
+        tz_sign = '+'
+        tz_hour = '00'
+        tz_minute = '00'
+
+        return cls(year, month, day, hour, minute, second, millis, tz_sign, tz_hour, tz_minute)
 
 
     @classmethod
-    def parse(cls, iso8601):
+    def __parse_numeric(cls, iso8601):
         # 2016-08-13T00:38:05.210+01:00
         match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})([+-])(\d{2}):(\d{2})', iso8601)
 
