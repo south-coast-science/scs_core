@@ -8,7 +8,7 @@ PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
 
 Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2 in 2019.
 
-method: Immediate Scaling Error / Exponential Curve (ISECE), version 1
+method: Immediate Scaling Error / Exponential Curve (ISECE), OPC-N2, version 1
 
 domain: 0 <= rH <= max_rh
 model: error = ce * e ^ (cx * rH)
