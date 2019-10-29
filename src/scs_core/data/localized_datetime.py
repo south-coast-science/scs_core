@@ -75,15 +75,15 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
-    def construct_from_date_time(cls, parser, date_str, time_str, tz=None):
+    def construct_from_date_time(cls, date_parser, date_str, time_str, tz=None):
         # date...
-        date = parser.datetime(date_str)
+        date = date_parser.datetime(date_str)
 
         if date is None:
             return None
 
         # time...
-        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))?', time_str)       # e.g. 24:00:00
+        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])?', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
@@ -93,6 +93,9 @@ class LocalizedDatetime(JSONable):
         hours_delta = int(fields[0])
         minutes_delta = int(fields[1])
         seconds_delta = 0 if fields[3] is None else int(fields[3])
+
+        if fields[4] == 'pm' or fields[4] == 'PM':
+            hours_delta += 12
 
         # zone...
         zone = pytz.timezone('Etc/UTC') if tz is None else tz
