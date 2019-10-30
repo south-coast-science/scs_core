@@ -45,7 +45,7 @@ class ISECEN2v1(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME = "particulate_exegete_isece1_calib.json"
+    __FILENAME = "particulate_exegete_" + __NAME + "_calib.json"
 
     @classmethod
     def persistence_location(cls, host):
