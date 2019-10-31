@@ -82,8 +82,8 @@ class LocalizedDatetime(JSONable):
         if date is None:
             return None
 
-        # time...
-        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])?', time_str)       # e.g. 24:00:00
+        # time (rightmost time in string)...
+        match = re.match(r'^.*(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])? *$', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
