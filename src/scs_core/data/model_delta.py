@@ -4,6 +4,8 @@ Created on 2 Nov 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 one cell of a statistical model, with one independent variable and one or more dependent variables
+
+https://en.wikipedia.org/wiki/Dependent_and_independent_variables
 """
 
 from collections import OrderedDict
