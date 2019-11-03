@@ -88,3 +88,11 @@ airwatch_time = '24:00:00'
 print("airwatch: %s %s" % (airwatch_date, airwatch_time))
 loc = LocalizedDatetime.construct_from_date_time(parser, airwatch_date, airwatch_time)
 print(loc)
+print("-")
+
+am_pm_date = '2019-10-01'
+am_pm_time = '01:00 AM'
+
+print("am/pm: %s %s" % (am_pm_date, am_pm_time))
+loc = LocalizedDatetime.construct_from_date_time(parser, am_pm_date, am_pm_time)
+print(loc)
