@@ -8,7 +8,7 @@ PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
 
 Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2 in 2019.
 
-method: Immediate Scaling Error / Exponential Curve (ISECE), OPC-N2, version 1
+method: Immediate Scaling Error / Curve is Single Exponential (ISECSE), OPC-N2, version 1
 
 domain: 0 <= rH <= max_rh
 model: error = ce * e ^ (cx * rH)
@@ -24,12 +24,12 @@ from scs_core.particulate.exegesis.text import Text
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ISECEN2v1(PersistentJSONable):
+class ISECSEN2v1(PersistentJSONable):
     """
     classdocs
     """
 
-    __NAME =                        "isecen2v1"
+    __NAME =                        "isecsen2v1"
 
     __STANDARD_CE =                 0.44
     __STANDARD_CX =                 0.027
@@ -150,5 +150,5 @@ class ISECEN2v1(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ISECEN2v1:{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
+        return "ISECSEN2v1:{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
                (self.__ce, self.__cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)

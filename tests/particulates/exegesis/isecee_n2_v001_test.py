@@ -10,28 +10,28 @@ from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
 from scs_core.particulate.exegesis.text import Text
-from scs_core.particulate.exegesis.isecen2_v001 import ISECEN2v1
+from scs_core.particulate.exegesis.isecee_n2_v001 import ISECEEN2v1
 
 from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jstr = '{"val": {"mtf1": 13, "pm1": 7.7, "mtf5": 18, "pm2p5": 14.3, ' \
-        '"bin": [266, 247, 189, 110, 50, 78, 41, 14, 4, 4, 1, 0, 0, 0, 0, 0], ' \
-        '"mtf3": 16, "pm10": 25.1, "mtf7": 23, "per": 9.9}, ' \
-        '"rec": "2019-10-26T11:27:38Z", "tag": "scs-bgx-401", "src": "N2"}'
+jstr = '{"tag": "scs-bgx-512", "src": "N3", "rec": "2019-11-04T15:22:05Z", ' \
+       '"val": {"per": 4.9, "pm1": 5.3, "pm2p5": 5.3, "pm10": 5.3, ' \
+       '"bin": [85, 28, 18, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ' \
+       '"mtf1": 26, "mtf3": 30, "mtf5": 40, "mtf7": 0, "sfr": 4.54, "sht": {"hmd": 23.1, "tmp": 34.6}}}'
 
 
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-exegete = ISECEN2v1.standard()
+exegete = ISECEEN2v1.standard()
 print(exegete)
 print("-")
 
 exegete.save(Host)
-exegete = ISECEN2v1.load(Host)
+exegete = ISECEEN2v1.load(Host)
 print(exegete)
 print("-")
 
