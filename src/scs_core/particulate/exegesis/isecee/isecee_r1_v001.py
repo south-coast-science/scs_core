@@ -1,14 +1,14 @@
 """
-Created on 26 Oct 2019
+Created on 7 Nov 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 THIS CODE SHALL BE TREATED AS IMMUTABLE. THUS, ANY ALTERATIONS TO EQUATIONS OR STANDARD COEFFICIENTS SHALL BE
 PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
 
-Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2, from Feb - Apr 2019.
+Coefficients gained from Alphasense OPC-R1 (versus Palas Fidas) data at LHR2, Oct 2019.
 
-method: Immediate Scaling Error / Curve is Elbow Exponential (ISECEE), OPC-N2, version 1
+method: Immediate Scaling Error / Curve is Elbow Exponential (ISECEE), OPC-R1, version 1
 
 domain: 0 <= rH <= max_rh
 model: error = ceLOW * e ^ (cxLOW * rH) where rH < elbow
@@ -18,37 +18,37 @@ range: PM / error
 
 from collections import OrderedDict
 
-from scs_core.particulate.exegesis.isecee import ISECEE
+from scs_core.particulate.exegesis.isecee.isecee import ISECEE
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ISECEEN2v1(ISECEE):
+class ISECEER1v1(ISECEE):
     """
     classdocs
     """
 
-    __NAME =                            "iseceen2v1"
+    __NAME =                            "iseceer1v1"
 
     __STANDARD_CE_LOW = OrderedDict()
-    __STANDARD_CE_LOW['pm1'] =          0.6029
-    __STANDARD_CE_LOW['pm2p5'] =        0.6208
-    __STANDARD_CE_LOW['pm10'] =         0.5375
+    __STANDARD_CE_LOW['pm1'] =          0.6029              # taken from N2
+    __STANDARD_CE_LOW['pm2p5'] =        0.7896
+    __STANDARD_CE_LOW['pm10'] =         1.0996
 
     __STANDARD_CX_LOW = OrderedDict()
-    __STANDARD_CX_LOW['pm1'] =          0.0195
-    __STANDARD_CX_LOW['pm2p5'] =        0.0208
-    __STANDARD_CX_LOW['pm10'] =         0.0213
+    __STANDARD_CX_LOW['pm1'] =          0.0195              # taken from N2
+    __STANDARD_CX_LOW['pm2p5'] =        0.0300
+    __STANDARD_CX_LOW['pm10'] =         0.0239
 
     __STANDARD_CE_HIGH = OrderedDict()
-    __STANDARD_CE_HIGH['pm1'] =         0.1605
-    __STANDARD_CE_HIGH['pm2p5'] =       0.1924
-    __STANDARD_CE_HIGH['pm10'] =        0.0177
+    __STANDARD_CE_HIGH['pm1'] =         0.1605              # taken from N2
+    __STANDARD_CE_HIGH['pm2p5'] =       0.1924              # taken from N2
+    __STANDARD_CE_HIGH['pm10'] =        0.0177              # taken from N2
 
     __STANDARD_CX_HIGH = OrderedDict()
-    __STANDARD_CX_HIGH['pm1'] =         0.0398
-    __STANDARD_CX_HIGH['pm2p5'] =       0.0389
-    __STANDARD_CX_HIGH['pm10'] =        0.0728
+    __STANDARD_CX_HIGH['pm1'] =         0.0398              # taken from N2
+    __STANDARD_CX_HIGH['pm2p5'] =       0.0389              # taken from N2
+    __STANDARD_CX_HIGH['pm10'] =        0.0728              # taken from N2
 
     __STANDARD_CE = OrderedDict()
     __STANDARD_CE['low'] = __STANDARD_CE_LOW

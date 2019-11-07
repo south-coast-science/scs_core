@@ -6,10 +6,10 @@ Created on 26 Oct 2019
 a catalogue of particulate exegesis models
 """
 
-from scs_core.particulate.exegesis.isecee_n2_v001 import ISECEEN2v1
-from scs_core.particulate.exegesis.isecee_r1_v001 import ISECEER1v1
+from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
+from scs_core.particulate.exegesis.isecee.isecee_r1_v001 import ISECEER1v1
 
-from scs_core.particulate.exegesis.isecse_n2_v001 import ISECSEN2v1
+from scs_core.particulate.exegesis.isecse.isecse_n2_v001 import ISECSEN2v1
 
 
 # --------------------------------------------------------------------------------------------------------------------

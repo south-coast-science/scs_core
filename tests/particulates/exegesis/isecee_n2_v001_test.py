@@ -10,7 +10,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
 from scs_core.particulate.exegesis.text import Text
-from scs_core.particulate.exegesis.isecee_n2_v001 import ISECEEN2v1
+from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
 
 from scs_host.sys.host import Host
 
