@@ -11,7 +11,7 @@ https://github.com/aws/aws-iot-device-sdk-python/issues/57
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
-import logging
+# import logging
 
 import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
 
