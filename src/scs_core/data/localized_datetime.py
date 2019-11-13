@@ -83,7 +83,7 @@ class LocalizedDatetime(JSONable):
             return None
 
         # time (rightmost time in string)...
-        match = re.match(r'^.*(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])? *$', time_str)       # e.g. 24:00:00
+        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])? *$', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
@@ -351,14 +351,30 @@ class DateParser(object):
     """
 
     __FORMATS = {
-        'DD-MM-YYYY': '%d-%m-%Y',
-        'DD/MM/YYYY': '%d/%m/%Y',
-        'DD/MM/YY': '%d/%m/%y',
-        'MM-DD-YYYY': '%m-%d-%Y',
-        'MM/DD/YYYY': '%m/%d/%Y',
-        'MM/DD/YY': '%m/%d/%y',
-        'YYYY-MM-DD': '%Y-%m-%d',
-        'YYYY/MM/DD': '%Y/%m/%d'
+        'DD-MM-YYYY': ('%d-%m-%Y', False),
+        'DD/MM/YYYY': ('%d/%m/%Y', False),
+        'DD/MM/YY': ('%d/%m/%y', False),
+        'MM-DD-YYYY': ('%m-%d-%Y', False),
+        'MM/DD/YYYY': ('%m/%d/%Y', False),
+        'MM/DD/YY': ('%m/%d/%y', False),
+        'YYYY-MM-DD': ('%Y-%m-%d', False),
+        'YYYY/MM/DD': ('%Y/%m/%d', False),
+        'DD_MMM_YYYY': ('%d %m %Y', True)
+    }
+
+    __MONTHS = {
+        'Jan': '01',
+        'Feb': '02',
+        'Mar': '03',
+        'Apr': '04',
+        'May': '05',
+        'Jun': '06',
+        'Jul': '07',
+        'Aug': '08',
+        'Sep': '09',
+        'Oct': '10',
+        'Nov': '11',
+        'Dec': '12'
     }
 
 
@@ -374,34 +390,52 @@ class DateParser(object):
 
     @classmethod
     def construct(cls, date_format):
-        strptime_format = cls.__FORMATS[date_format]
+        strptime_format, textual_month = cls.__FORMATS[date_format]
 
-        return cls(strptime_format)
+        return cls(strptime_format, textual_month)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, strptime_format):
+    def __init__(self, strptime_format, textual_month):
         """
         Constructor
         """
         self.__strptime_format = strptime_format
+        self.__textual_month = textual_month
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def datetime(self, datetime_str):
         try:
-            return datetime.strptime(datetime_str, self.__strptime_format)
+            if self.__textual_month:
+                month_name = self.__month_name(datetime_str)
+                standard_datetime = datetime_str.replace(month_name, self.__MONTHS[month_name])
+            else:
+                standard_datetime = datetime_str
 
-        except ValueError:
+            return datetime.strptime(standard_datetime, self.__strptime_format)
+
+        except (KeyError, ValueError):
             return None
+
+
+    @staticmethod
+    def __month_name(datetime_str):
+        pieces = datetime_str.split(' ')
+
+        for piece in pieces:
+            if len(piece) == 3:
+                return piece
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DateParser:{format:%s}" % self.__strptime_format
+        return "DateParser:{format:%s, textual_month:%s}" % (self.__strptime_format, self.__textual_month)
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -1,20 +1,16 @@
 """
-Created on 26 Oct 2019
+Created on 11 Nov 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-THIS CODE SHALL BE TREATED AS IMMUTABLE. THUS, ANY ALTERATIONS TO EQUATIONS OR STANDARD COEFFICIENTS SHALL BE
-PRESENTED AS A NEW CLASS, WITH AN INCREMENTED CLASS VERSION NUMBER.
-
-Coefficients gained from Alphasense OPC-N2 (versus Palas Fidas) data at LHR2 in 2019.
-
-method: Immediate Scaling Error / Exponential Curve (ISECE), OPC-N2, version 1
+method: Immediate Scaling Error / Curve is Single Exponential (ISECSE), OPC-N2, version 1
 
 domain: 0 <= rH <= max_rh
 model: error = ce * e ^ (cx * rH)
 range: PM / error
 """
 
+from abc import ABC, abstractmethod
 from collections import OrderedDict
 from math import exp
 
@@ -24,32 +20,22 @@ from scs_core.particulate.exegesis.text import Text
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ISECEN2v1(PersistentJSONable):
+class ISECSE(PersistentJSONable, ABC):
     """
     classdocs
     """
 
-    __NAME =                        "isecen2v1"
-
-    __STANDARD_CE =                 0.44
-    __STANDARD_CX =                 0.027
-
-    __STANDARD_MAX_rH_PM1 =         100
-    __STANDARD_MAX_rH_PM2p5 =       100
-    __STANDARD_MAX_rH_PM10 =        85
-
-    @classmethod
-    def name(cls):
-        return cls.__NAME
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME = "particulate_exegete_" + __NAME + "_calib.json"
+    @classmethod
+    @abstractmethod
+    def name(cls):
+        pass
+
 
     @classmethod
     def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+        return host.conf_dir(), "particulate_exegete_" + cls.name() + "_calib.json"
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,9 +56,9 @@ class ISECEN2v1(PersistentJSONable):
 
 
     @classmethod
+    @abstractmethod
     def standard(cls):
-        return cls(cls.__STANDARD_CE, cls.__STANDARD_CX,
-                   cls.__STANDARD_MAX_rH_PM1, cls.__STANDARD_MAX_rH_PM2p5, cls.__STANDARD_MAX_rH_PM10)
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -83,12 +69,12 @@ class ISECEN2v1(PersistentJSONable):
         """
         super().__init__()
 
-        self.__ce = float(ce)                               # coefficient of e
-        self.__cx = float(cx)                               # coefficient of x
+        self.__ce = ce                                      # coefficient of e              dict of float
+        self.__cx = cx                                      # coefficient of x              dict of float
 
-        self.__max_rh_pm1 = int(max_rh_pm1)                 # maximum rH for PM1
-        self.__max_rh_pm2p5 = int(max_rh_pm2p5)             # maximum rH for PM2.5
-        self.__max_rh_pm10 = int(max_rh_pm10)               # maximum rH for PM10
+        self.__max_rh_pm1 = int(max_rh_pm1)                 # maximum rH for PM1            int
+        self.__max_rh_pm2p5 = int(max_rh_pm2p5)             # maximum rH for PM2.5          int
+        self.__max_rh_pm10 = int(max_rh_pm10)               # maximum rH for PM10           int
 
 
     def __eq__(self, other):
@@ -102,34 +88,37 @@ class ISECEN2v1(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def interpret(self, datum, rh):
-        pm1 = self.__interpret(datum.pm1, rh, self.__max_rh_pm1)
-        pm2p5 = self.__interpret(datum.pm2p5, rh, self.__max_rh_pm2p5)
-        pm10 = self.__interpret(datum.pm10, rh, self.__max_rh_pm10)
+        pm1 = self.__interpret('pm1', datum.pm1, rh, self.__max_rh_pm1)
+        pm2p5 = self.__interpret('pm2p5', datum.pm2p5, rh, self.__max_rh_pm2p5)
+        pm10 = self.__interpret('pm10', datum.pm10, rh, self.__max_rh_pm10)
 
         return Text(pm1, pm2p5, pm10)
 
 
     def tag(self):
         if self == self.standard():
-            return self.__NAME
+            return self.name()
 
-        return self.__NAME + '?'                            # indicates non-standard coefficients
+        return self.name() + '?'                            # indicates non-standard coefficients
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __interpret(self, pm, rh, max_rh):
+    def __interpret(self, species, pm, rh, max_rh):
         if pm is None or rh is None:
             return None
 
         if rh > max_rh:
             return None
 
-        return pm / self.__error(rh)
+        return pm / self.__error(species, rh)
 
 
-    def __error(self, rh):
-        return self.__ce * exp(self.__cx * rh)
+    def __error(self, species, rh):
+        ce = self.__ce[species]
+        cx = self.__cx[species]
+
+        return ce * exp(cx * rh)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -150,5 +139,5 @@ class ISECEN2v1(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ISECEN2v1:{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
+        return self.__class__.__name__ + ":{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
                (self.__ce, self.__cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)

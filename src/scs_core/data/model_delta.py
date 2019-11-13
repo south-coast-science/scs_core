@@ -89,26 +89,41 @@ class ModelDelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def ind_min(self):
+        if not self.__ind_values:
+            return None
+
         value = min(self.__ind_values)
         return round(value, self.__ind_prec)
 
 
     def ind_avg(self):
+        if not self.__ind_values:
+            return None
+
         value = sum(self.__ind_values) / len(self)
         return round(value, self.__ind_prec)
 
 
     def ind_max(self):
+        if not self.__ind_values:
+            return None
+
         value = max(self.__ind_values)
         return round(value, self.__ind_prec)
 
 
     def dep_avg(self, name):
+        if not self.__dependents[name]:
+            return None
+
         value = sum(self.__dependents[name]) / len(self)
         return round(value, self.__dep_prec)
 
 
     def dep_stdev(self, name):
+        if not self.__dependents[name]:
+            return None
+
         value = stdev(self.__dependents[name])
         return round(value, self.__STDEV_PRECISION)
 

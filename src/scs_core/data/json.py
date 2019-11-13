@@ -9,6 +9,7 @@ import os
 import time
 
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 
 from scs_core.sys.filesystem import Filesystem
 
@@ -139,7 +140,7 @@ class PersistentJSONable(JSONable):
         jstr = f.read().strip()
         f.close()
 
-        jdict = json.loads(jstr)
+        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
 
         return cls.construct_from_jdict(jdict)
 
