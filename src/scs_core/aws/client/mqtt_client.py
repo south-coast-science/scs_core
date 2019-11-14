@@ -11,7 +11,7 @@ https://github.com/aws/aws-iot-device-sdk-python/issues/57
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
-# import logging
+import logging
 
 import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
 
@@ -60,14 +60,14 @@ class MQTTClient(object):
 
     def connect(self, auth):
         # logging...
-        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        # stream_handler = logging.StreamHandler()
-        # stream_handler.setFormatter(formatter)
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
 
-        # logger = logging.getLogger("AWSIoTPythonSDK.core")
-        # logger.setLevel(logging.DEBUG)
-        # logger.addHandler(stream_handler)
+        logger = logging.getLogger("AWSIoTPythonSDK.core")
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(stream_handler)
 
         # client...
         self.__client = MQTTLib.AWSIoTMQTTClient(auth.client_id)
