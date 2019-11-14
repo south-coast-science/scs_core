@@ -26,6 +26,7 @@ class MQTTClient(object):
     """
     classdocs
     """
+    __DEBUG =                       False
 
     __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 default: 600 (sec)
 
@@ -60,14 +61,15 @@ class MQTTClient(object):
 
     def connect(self, auth):
         # logging...
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        if self.__DEBUG:
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
+            stream_handler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
 
-        logger = logging.getLogger("AWSIoTPythonSDK.core")
-        logger.setLevel(logging.DEBUG)
-        logger.addHandler(stream_handler)
+            logger = logging.getLogger("AWSIoTPythonSDK.core")
+            logger.setLevel(logging.DEBUG)
+            logger.addHandler(stream_handler)
 
         # client...
         self.__client = MQTTLib.AWSIoTMQTTClient(auth.client_id)
