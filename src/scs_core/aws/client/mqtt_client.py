@@ -49,6 +49,20 @@ class MQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def __assert_logger(level):
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+
+        logger = logging.getLogger("AWSIoTPythonSDK.core")
+        logger.setLevel(level)
+        logger.addHandler(stream_handler)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, *subscribers):
         """
         Constructor
@@ -62,14 +76,7 @@ class MQTTClient(object):
     def connect(self, auth):
         # logging...
         if self.__DEBUG:
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-            stream_handler = logging.StreamHandler()
-            stream_handler.setFormatter(formatter)
-
-            logger = logging.getLogger("AWSIoTPythonSDK.core")
-            logger.setLevel(logging.DEBUG)
-            logger.addHandler(stream_handler)
+            self.__assert_logger(logging.DEBUG)
 
         # client...
         self.__client = MQTTLib.AWSIoTMQTTClient(auth.client_id)
@@ -112,7 +119,7 @@ class MQTTClient(object):
         self.__client = None
 
 
-# --------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------
 
     def publish(self, publication):
         if not self.__client:
