@@ -121,7 +121,7 @@ class ModelDelta(JSONable):
 
 
     def dep_stdev(self, name):
-        if not self.__dependents[name]:
+        if not self.__dependents[name] or len(self.__dependents[name]) == 1:
             return None
 
         value = stdev(self.__dependents[name])

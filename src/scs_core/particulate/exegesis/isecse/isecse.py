@@ -3,7 +3,7 @@ Created on 11 Nov 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-method: Immediate Scaling Error / Curve is Single Exponential (ISECSE), OPC-N2, version 1
+method: Immediate Scaling Error / Curve is Single Exponential (ISECSE)
 
 domain: 0 <= rH <= max_rh
 model: error = ce * e ^ (cx * rH)
@@ -14,7 +14,7 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 from math import exp
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import JSONify, PersistentJSONable
 from scs_core.particulate.exegesis.text import Text
 
 
@@ -139,5 +139,8 @@ class ISECSE(PersistentJSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        ce = JSONify.dumps(self.__ce)
+        cx = JSONify.dumps(self.__cx)
+
         return self.__class__.__name__ + ":{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
-               (self.__ce, self.__cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)
+            (ce, cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)
