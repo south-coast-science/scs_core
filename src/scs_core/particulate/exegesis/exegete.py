@@ -12,6 +12,7 @@ from scs_core.particulate.exegesis.isecee.isecee_r1_v001 import ISECEER1v1
 from scs_core.particulate.exegesis.isecse.isecse_n2_v001 import ISECSEN2v1
 from scs_core.particulate.exegesis.isecse.isecse_n2_v002 import ISECSEN2v2
 from scs_core.particulate.exegesis.isecse.isecse_n3_v001 import ISECSEN3v1
+from scs_core.particulate.exegesis.isecse.isecse_n3_v002 import ISECSEN3v2
 
 from scs_core.particulate.exegesis.iselut.iselut_n2_v001 import ISELUTN2v1
 from scs_core.particulate.exegesis.iselut.iselut_n3_v001 import ISELUTN3v1
@@ -41,6 +42,7 @@ class Exegete(object):
             ISECSEN2v1.name(),
             ISECSEN2v2.name(),
             ISECSEN3v1.name(),
+            ISECSEN3v2.name(),
             ISELUTN2v1.name(),
             ISELUTN3v1.name()
         ]
@@ -64,6 +66,9 @@ class Exegete(object):
 
         if name == ISECSEN3v1.name():
             return ISECSEN3v1.load(host)
+
+        if name == ISECSEN3v2.name():
+            return ISECSEN3v2.load(host)
 
         # ISELUT...
         if name == ISELUTN2v1.name():
@@ -93,6 +98,9 @@ class Exegete(object):
 
         if name == ISECSEN3v1.name():
             return ISECSEN3v1.standard()
+
+        if name == ISECSEN3v2.name():
+            return ISECSEN3v2.standard()
 
         # ISELUT...
         if name == ISELUTN2v1.name():
