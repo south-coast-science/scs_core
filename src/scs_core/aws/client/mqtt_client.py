@@ -11,7 +11,7 @@ https://github.com/aws/aws-iot-device-sdk-python/issues/57
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 """
 
-# import logging
+import logging
 
 import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
 
@@ -26,6 +26,7 @@ class MQTTClient(object):
     """
     classdocs
     """
+    __DEBUG =                       False
 
     __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 default: 600 (sec)
 
@@ -48,6 +49,20 @@ class MQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def __assert_logger(level):
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+
+        logger = logging.getLogger("AWSIoTPythonSDK.core")
+        logger.setLevel(level)
+        logger.addHandler(stream_handler)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, *subscribers):
         """
         Constructor
@@ -60,14 +75,8 @@ class MQTTClient(object):
 
     def connect(self, auth):
         # logging...
-        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-        # stream_handler = logging.StreamHandler()
-        # stream_handler.setFormatter(formatter)
-
-        # logger = logging.getLogger("AWSIoTPythonSDK.core")
-        # logger.setLevel(logging.DEBUG)
-        # logger.addHandler(stream_handler)
+        if self.__DEBUG:
+            self.__assert_logger(logging.DEBUG)
 
         # client...
         self.__client = MQTTLib.AWSIoTMQTTClient(auth.client_id)
@@ -110,7 +119,7 @@ class MQTTClient(object):
         self.__client = None
 
 
-# --------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------
 
     def publish(self, publication):
         if not self.__client:
