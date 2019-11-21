@@ -3,7 +3,7 @@ Created on 7 Nov 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-method: Immediate Scaling Error / Curve is Elbow Exponential (ISECEE), OPC-N2, version 1
+method: Immediate Scaling Error / Curve is Elbow Exponential (ISECEE)
 
 domain: 0 <= rH <= max_rh
 model: error = ceLOW * e ^ (cxLOW * rH) where rH < elbow
@@ -72,8 +72,8 @@ class ISECEE(PersistentJSONable, ABC):
         """
         super().__init__()
 
-        self.__ce = ce                                      # coefficient of e          dict of dict of float
-        self.__cx = cx                                      # coefficient of x          dict of dict of float
+        self.__ce = ce                                      # coefficient of e     dict of zone: dict of species: float
+        self.__cx = cx                                      # coefficient of x     dict of zone: dict of species: float
 
         self.__rh_elbow = int(rh_elbow)                     # lower to higher rH boundary       int
 
