@@ -128,6 +128,11 @@ class GPSDatum(JSONReport):
         return self.__quality
 
 
+    @quality.setter
+    def quality(self, quality):
+        self.__quality = quality
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
