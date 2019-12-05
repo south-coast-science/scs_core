@@ -41,12 +41,12 @@ class CSVArchive(ABC):
 
     @classmethod
     def keys(cls):
-        return cls._retrieved.keys()
+        return list(cls._retrieved.keys())
 
 
     @classmethod
     def instances(cls):
-        return cls._retrieved.values()
+        return list(cls._retrieved.values())
 
 
     @classmethod

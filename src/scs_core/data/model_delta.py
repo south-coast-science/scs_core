@@ -137,7 +137,7 @@ class ModelDelta(JSONable):
 
     @property
     def dep_names(self):
-        return self.__dependents.keys()
+        return list(self.__dependents.keys())
 
 
     # ----------------------------------------------------------------------------------------------------------------
