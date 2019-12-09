@@ -32,81 +32,39 @@ class Exegete(object):
         return cls.__ROOT
 
 
+    __MODELS = {
+        # ISECEE...
+        ISECEEN2v1.name(): ISECEEN2v1,
+        ISECEER1v1.name(): ISECEER1v1,
+
+        # ISECSE...
+        ISECSEN2v1.name(): ISECSEN2v1,
+        ISECSEN2v2.name(): ISECSEN2v2,
+        ISECSEN3v1.name(): ISECSEN3v1,
+        ISECSEN3v2.name(): ISECSEN3v2,
+
+        # ISELUT...
+        ISELUTN2v1.name(): ISELUTN2v1,
+        ISELUTN3v1.name(): ISELUTN3v1
+    }
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def models():
-        return [
-            ISECEEN2v1.name(),
-            ISECEER1v1.name(),
-            ISECSEN2v1.name(),
-            ISECSEN2v2.name(),
-            ISECSEN3v1.name(),
-            ISECSEN3v2.name(),
-            ISELUTN2v1.name(),
-            ISELUTN3v1.name()
-        ]
+    @classmethod
+    def model_names(cls):
+        return list(cls.__MODELS.keys())
 
 
-    @staticmethod
-    def load(name, host):
-        # ISECEE...
-        if name == ISECEEN2v1.name():
-            return ISECEEN2v1.load(host)
+    @classmethod
+    def load(cls, name, host):
+        model = cls.__MODELS[name]
 
-        if name == ISECEER1v1.name():
-            return ISECEER1v1.load(host)
-
-        # ISECSE...
-        if name == ISECSEN2v1.name():
-            return ISECSEN2v1.load(host)
-
-        if name == ISECSEN2v2.name():
-            return ISECSEN2v2.load(host)
-
-        if name == ISECSEN3v1.name():
-            return ISECSEN3v1.load(host)
-
-        if name == ISECSEN3v2.name():
-            return ISECSEN3v2.load(host)
-
-        # ISELUT...
-        if name == ISELUTN2v1.name():
-            return ISELUTN2v1.load(host)
-
-        if name == ISELUTN3v1.name():
-            return ISELUTN3v1.load(host)
-
-        raise ValueError(name)
+        return model.load(host)
 
 
-    @staticmethod
-    def standard(name):
-        # ISECEE...
-        if name == ISECEEN2v1.name():
-            return ISECEEN2v1.standard()
+    @classmethod
+    def standard(cls, name):
+        model = cls.__MODELS[name]
 
-        if name == ISECEER1v1.name():
-            return ISECEER1v1.standard()
-
-        # ISECSE...
-        if name == ISECSEN2v1.name():
-            return ISECSEN2v1.standard()
-
-        if name == ISECSEN2v2.name():
-            return ISECSEN2v2.standard()
-
-        if name == ISECSEN3v1.name():
-            return ISECSEN3v1.standard()
-
-        if name == ISECSEN3v2.name():
-            return ISECSEN3v2.standard()
-
-        # ISELUT...
-        if name == ISELUTN2v1.name():
-            return ISELUTN2v1.standard()
-
-        if name == ISELUTN3v1.name():
-            return ISELUTN3v1.standard()
-
-        raise ValueError(name)
+        return model.standard()
