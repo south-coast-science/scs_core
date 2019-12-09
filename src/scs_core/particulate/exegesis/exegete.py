@@ -27,6 +27,11 @@ class Exegete(object):
 
     __ROOT = 'exg'
 
+    @classmethod
+    def root(cls):
+        return cls.__ROOT
+
+
     __MODELS = {
         # ISECEE...
         ISECEEN2v1.name(): ISECEEN2v1,
@@ -42,11 +47,6 @@ class Exegete(object):
         ISELUTN2v1.name(): ISELUTN2v1,
         ISELUTN3v1.name(): ISELUTN3v1
     }
-
-
-    @classmethod
-    def root(cls):
-        return cls.__ROOT
 
 
     # ----------------------------------------------------------------------------------------------------------------
