@@ -98,7 +98,7 @@ class Serial(ABC):
     @property
     @abstractmethod
     def port(self):
-        pass
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
