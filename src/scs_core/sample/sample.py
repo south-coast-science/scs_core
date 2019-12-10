@@ -6,6 +6,7 @@ Created on 22 Sep 2016
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Format
 from scs_core.data.json import JSONable
 
 
@@ -20,7 +21,7 @@ class Sample(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, src, rec, values):
+    def __init__(self, tag, src, rec, values, exegeses=None):
         """
         Constructor
         """
@@ -30,6 +31,7 @@ class Sample(JSONable):
         self.__rec = rec                        # LocalizedDatetime
 
         self.__values = values                  # OrderedDict
+        self.__exegeses = exegeses              # OrderedDict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -45,6 +47,9 @@ class Sample(JSONable):
 
         jdict['rec'] = self.rec.as_iso8601(self.INCLUDE_MILLIS)
         jdict['val'] = self.values
+
+        if self.exegeses:
+            jdict['exg'] = self.exegeses
 
         return jdict
 
@@ -71,10 +76,21 @@ class Sample(JSONable):
         return self.__values
 
 
+    @property
+    def exegeses(self):
+        return self.__exegeses
+
+
+    @exegeses.setter
+    def exegeses(self, exegeses):
+        self.__exegeses = exegeses
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        classname = self.__class__.__name__
-        values = '{' + ', '.join(str(key) + ': ' + str(self.values[key]) for key in self.values) + '}'
+        values = Format.collection(self.values)
+        exegeses = Format.collection(self.exegeses)
 
-        return classname + ":{tag:%s, src:%s, rec:%s, values:%s}" % (self.tag, self.src, self.rec, values)
+        return self.__class__.__name__ + ":{tag:%s, src:%s, rec:%s, values:%s, exegeses:%s}" % \
+            (self.tag, self.src, self.rec, values, exegeses)

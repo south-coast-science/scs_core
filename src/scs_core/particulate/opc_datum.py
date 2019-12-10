@@ -190,13 +190,13 @@ class OPCDatum(PMxDatum):
 
 
     @property
-    def sht(self):
-        return self.__sht
+    def sfr(self):
+        return self.__sfr
 
 
     @property
-    def sfr(self):
-        return self.__sfr
+    def sht(self):
+        return self.__sht
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -76,3 +76,8 @@ class ISECEEN2v1(ISECEE):
     def standard(cls):
         return cls(cls.__STANDARD_CE, cls.__STANDARD_CX, cls.__STANDARD_rH_ELBOW,
                    cls.__STANDARD_MAX_rH_PM1, cls.__STANDARD_MAX_rH_PM2p5, cls.__STANDARD_MAX_rH_PM10)
+
+
+    @classmethod
+    def uses_external_sht(cls):
+        return True

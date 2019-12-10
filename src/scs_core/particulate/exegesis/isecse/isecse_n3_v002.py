@@ -56,3 +56,8 @@ class ISECSEN3v2(ISECSE):
     def standard(cls):
         return cls(cls.__STANDARD_CE, cls.__STANDARD_CX,
                    cls.__STANDARD_MAX_rH_PM1, cls.__STANDARD_MAX_rH_PM2p5, cls.__STANDARD_MAX_rH_PM10)
+
+
+    @classmethod
+    def uses_external_sht(cls):
+        return False
