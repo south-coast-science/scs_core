@@ -36,24 +36,19 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return MQTTConf(False, cls.DEFAULT_QUEUE_SIZE, None)
+            return MQTTConf(False, cls.DEFAULT_QUEUE_SIZE, None, False)
 
-        inhibit_publishing = jdict.get('inhibit-publishing')
-        queue_size = jdict.get('queue-size')
-        report_file = jdict.get('report-file')
+        inhibit_publishing = jdict.get('inhibit-publishing', False)
+        queue_size = jdict.get('queue-size', cls.DEFAULT_QUEUE_SIZE)
+        report_file = jdict.get('report-file', None)
+        debug = jdict.get('debug', False)
 
-        if inhibit_publishing is None:
-            inhibit_publishing = False
-
-        if queue_size is None:
-            queue_size = cls.DEFAULT_QUEUE_SIZE
-
-        return MQTTConf(inhibit_publishing, queue_size, report_file)
+        return MQTTConf(inhibit_publishing, queue_size, report_file, debug)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, inhibit_publishing, queue_size, report_file):
+    def __init__(self, inhibit_publishing, queue_size, report_file, debug):
         """
         Constructor
         """
@@ -62,6 +57,7 @@ class MQTTConf(PersistentJSONable):
         self.__inhibit_publishing = bool(inhibit_publishing)                # do not attempt to publish
         self.__queue_size = int(queue_size)                                 # maximum queue size
         self.__report_file = report_file                                    # tmp file to store current queue length
+        self.__debug = bool(debug)                                          # DEBUG log level
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,6 +77,11 @@ class MQTTConf(PersistentJSONable):
         return self.__report_file
 
 
+    @property
+    def debug(self):
+        return self.__debug
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -89,6 +90,7 @@ class MQTTConf(PersistentJSONable):
         jdict['inhibit-publishing'] = self.inhibit_publishing
         jdict['queue-size'] = self.queue_size
         jdict['report-file'] = self.report_file
+        jdict['debug'] = self.debug
 
         return jdict
 
@@ -96,5 +98,5 @@ class MQTTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTConf:{inhibit_publishing:%s, queue_size:%s, report_file:%s}" %  \
-               (self.inhibit_publishing, self.queue_size, self.report_file)
+        return "MQTTConf:{inhibit_publishing:%s, queue_size:%s, report_file:%s, debug:%s}" %  \
+               (self.inhibit_publishing, self.queue_size, self.report_file, self.debug)

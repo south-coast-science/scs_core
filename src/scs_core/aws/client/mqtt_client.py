@@ -26,8 +26,6 @@ class MQTTClient(object):
     """
     classdocs
     """
-    __DEBUG =                       False
-
     __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 default: 600 (sec)
 
     __PORT =                        8883
@@ -73,9 +71,9 @@ class MQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self, auth):
+    def connect(self, auth, debug):
         # logging...
-        if self.__DEBUG:
+        if debug:
             self.__assert_logger(logging.DEBUG)
 
         # client...

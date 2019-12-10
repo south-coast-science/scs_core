@@ -46,7 +46,7 @@ class ExegeteCatalogue(object):
 
     @classmethod
     def model_names(cls):
-        return list(cls.__MODELS.keys())
+        return sorted(cls.__MODELS.keys())
 
 
     @classmethod
