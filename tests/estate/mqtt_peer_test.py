@@ -50,8 +50,8 @@ group = MQTTPeerSet.construct_from_jdict(json.loads(jstr))
 print(group)
 print("-")
 
-print("save...")
-group.save(Host)
+# print("save...")
+# group.save(Host)
 
 print("load...")
 group = MQTTPeerSet.load(Host)

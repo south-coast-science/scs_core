@@ -1,70 +1,66 @@
 """
-Created on 26 Oct 2019
+Created on 9 Dec 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a catalogue of particulate exegesis models
+an abstract particulate exegesis model
 """
 
-from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
-from scs_core.particulate.exegesis.isecee.isecee_r1_v001 import ISECEER1v1
+from abc import ABC, abstractmethod
 
-from scs_core.particulate.exegesis.isecse.isecse_n2_v001 import ISECSEN2v1
-from scs_core.particulate.exegesis.isecse.isecse_n2_v002 import ISECSEN2v2
-from scs_core.particulate.exegesis.isecse.isecse_n3_v001 import ISECSEN3v1
-from scs_core.particulate.exegesis.isecse.isecse_n3_v002 import ISECSEN3v2
-
-from scs_core.particulate.exegesis.iselut.iselut_n2_v001 import ISELUTN2v1
-from scs_core.particulate.exegesis.iselut.iselut_n3_v001 import ISELUTN3v1
+from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Exegete(object):
+class Exegete(PersistentJSONable, ABC):
     """
     classdocs
     """
 
-    __ROOT = 'exg'
+    # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def root(cls):
-        return cls.__ROOT
-
-
-    __MODELS = {
-        # ISECEE...
-        ISECEEN2v1.name(): ISECEEN2v1,
-        ISECEER1v1.name(): ISECEER1v1,
-
-        # ISECSE...
-        ISECSEN2v1.name(): ISECSEN2v1,
-        ISECSEN2v2.name(): ISECSEN2v2,
-        ISECSEN3v1.name(): ISECSEN3v1,
-        ISECSEN3v2.name(): ISECSEN3v2,
-
-        # ISELUT...
-        ISELUTN2v1.name(): ISELUTN2v1,
-        ISELUTN3v1.name(): ISELUTN3v1
-    }
+    def persistence_location(cls, host):
+        return host.conf_dir(), "particulate_exegete_" + cls.name() + "_calib.json"
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def model_names(cls):
-        return list(cls.__MODELS.keys())
+    @abstractmethod
+    def name(cls):
+        pass
 
 
     @classmethod
-    def load(cls, name, host):
-        model = cls.__MODELS[name]
-
-        return model.load(host)
+    @abstractmethod
+    def standard(cls):
+        pass
 
 
     @classmethod
-    def standard(cls, name):
-        model = cls.__MODELS[name]
+    @abstractmethod
+    def uses_external_sht(cls):
+        pass
 
-        return model.standard()
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def __eq__(self, other):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def tag(self):
+        if self == self.standard():
+            return self.name()
+
+        return self.name() + '?'                            # indicates non-standard coefficients
+
+
+    @abstractmethod
+    def interpret(self, text, rh):
+        pass

@@ -37,6 +37,21 @@ class Format(object):
         return formatted.strip(separator)
 
 
+    @classmethod
+    def collection(cls, value):
+        if isinstance(value, list):
+            return '[' + ', '.join(cls.collection(item) for item in value) + ']'
+
+        if isinstance(value, tuple):
+            return '(' + ', '.join(cls.collection(item) for item in value) + ')'
+
+        try:
+            return '{' + ', '.join(str(key) + ': ' + cls.collection(value[key]) for key in value) + '}'
+
+        except TypeError:
+            return str(value)
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Datum(object):

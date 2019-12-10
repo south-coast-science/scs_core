@@ -91,3 +91,8 @@ class ISELUTN2v1(ISELUT):
         }
 
         return cls(rows)
+
+
+    @classmethod
+    def uses_external_sht(cls):
+        return True

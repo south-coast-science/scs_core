@@ -101,8 +101,8 @@ class CSVLogger(object):
     def __write(self, datum):
         # first run...
         if not self.__file:
-            if self.log.tag is None and 'tag' in datum.dictionary:
-                self.log.tag = datum.dictionary['tag']
+            if self.log.tag is None and 'tag' in datum.collection:
+                self.log.tag = datum.collection['tag']
 
             self.__open_file()
 
