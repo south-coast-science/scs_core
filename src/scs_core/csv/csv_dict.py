@@ -61,7 +61,7 @@ class CSVDict(object):
 
     @property
     def dictionary(self):
-        return self.__path_dict.dictionary
+        return self.__path_dict.collection
 
 
     @property

@@ -75,6 +75,11 @@ class ISELUTN3v1(ISELUT):
         return cls(rows)
 
 
+    @classmethod
+    def uses_external_sht(cls):
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def _interpret(self, species, pm, rh):

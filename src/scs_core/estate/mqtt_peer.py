@@ -10,6 +10,7 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Format
 from scs_core.data.json import JSONable, PersistentJSONable
 
 
@@ -116,9 +117,7 @@ class MQTTPeerSet(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        peers = '{' + ', '.join([hostname + ': ' + str(peer) for hostname, peer in self.__peers.items()]) + '}'
-
-        return "MQTTPeerSet:{peers:%s}" % peers
+        return "MQTTPeerSet:{peers:%s}" % Format.collection(self.__peers)
 
 
 # --------------------------------------------------------------------------------------------------------------------

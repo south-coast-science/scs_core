@@ -10,32 +10,21 @@ domain: 0 <= rH <= max_rh
 range: PM / error
 """
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable, JSONify, PersistentJSONable
+from scs_core.data.json import JSONable, JSONify
+
+from scs_core.particulate.exegesis.exegete import Exegete
 from scs_core.particulate.exegesis.text import Text
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ISELUT(PersistentJSONable, ABC):
+class ISELUT(Exegete, ABC):
     """
     classdocs
     """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def name(cls):
-        pass
-
-
-    @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), "particulate_exegete_" + cls.name() + "_calib.json"
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -51,12 +40,6 @@ class ISELUT(PersistentJSONable, ABC):
             rows[row.rh_max] = row
 
         return cls(rows)
-
-
-    @classmethod
-    @abstractmethod
-    def standard(cls):
-        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -86,13 +69,6 @@ class ISELUT(PersistentJSONable, ABC):
         pm10 = self._interpret('pm10', datum.pm10, rh)
 
         return Text(pm1, pm2p5, pm10)
-
-
-    def tag(self):
-        if self == self.standard():
-            return self.name()
-
-        return self.name() + '?'                            # indicates non-standard coefficients
 
 
     # ----------------------------------------------------------------------------------------------------------------

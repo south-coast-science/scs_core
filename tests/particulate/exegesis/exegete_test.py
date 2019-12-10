@@ -6,14 +6,14 @@ Created on 5 Dec 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.particulate.exegesis.exegete import Exegete
+from scs_core.particulate.exegesis.exegete_catalogue import ExegeteCatalogue
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-names = Exegete.model_names()
+names = ExegeteCatalogue.model_names()
 print(names)
 print("-")
 
-model = Exegete.standard(names[0])
+model = ExegeteCatalogue.standard(names[0])
 print(model)

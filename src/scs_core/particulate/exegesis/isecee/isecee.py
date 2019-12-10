@@ -11,33 +11,22 @@ model: error = ceHIGH * e ^ (cxHIGH * rH) where rH => elbow
 range: PM / error
 """
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import OrderedDict
 from math import exp
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.datum import Format
+
+from scs_core.particulate.exegesis.exegete import Exegete
 from scs_core.particulate.exegesis.text import Text
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ISECEE(PersistentJSONable, ABC):
+class ISECEE(Exegete, ABC):
     """
     classdocs
     """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def name(cls):
-        pass
-
-
-    @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), "particulate_exegete_" + cls.name() + "_calib.json"
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -56,12 +45,6 @@ class ISECEE(PersistentJSONable, ABC):
         max_rh_pm10 = jdict.get('max-rh-pm10')
 
         return cls(ce, cx, rh_elbow, max_rh_pm1, max_rh_pm2p5, max_rh_pm10)
-
-
-    @classmethod
-    @abstractmethod
-    def standard(cls):
-        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -98,13 +81,6 @@ class ISECEE(PersistentJSONable, ABC):
         pm10 = self.__interpret('pm10', datum.pm10, rh, self.__max_rh_pm10)
 
         return Text(pm1, pm2p5, pm10)
-
-
-    def tag(self):
-        if self == self.standard():
-            return self.name()
-
-        return self.name() + '?'                            # indicates non-standard coefficients
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -150,5 +126,8 @@ class ISECEE(PersistentJSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        ce = Format.collection(self.__ce)
+        cx = Format.collection(self.__cx)
+
         return self.__class__.__name__ + ":{ce:%s, cx:%s, max_rh_pm1:%s, max_rh_pm2p5:%s, max_rh_pm10:%s}" % \
-               (self.__ce, self.__cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)
+            (ce, cx, self.__max_rh_pm1, self.__max_rh_pm2p5, self.__max_rh_pm10)

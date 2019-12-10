@@ -8,6 +8,7 @@ Datum for Integrated Electrochem Interface (ISI)
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Format
 from scs_core.data.json import JSONable
 
 
@@ -50,6 +51,4 @@ class ISIDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        sns = '{' + ', '.join(str(key) + ':' + str(self.sns[key]) for key in self.sns) + '}'
-
-        return "ISIDatum:{sns:%s}" % sns
+        return "ISIDatum:{sns:%s}" % Format.collection(self.sns)
