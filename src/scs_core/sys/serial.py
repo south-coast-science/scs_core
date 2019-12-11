@@ -2,6 +2,8 @@
 Created on 19 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/7266558/pyserial-buffer-wont-flush
 """
 
 import time
@@ -91,6 +93,14 @@ class Serial(ABC):
 
     def write(self, *chars):
         self._ser.write(bytearray(chars))
+
+
+    def flush_input(self):
+        self._ser.flushInput()
+
+
+    def flush_output(self):
+        self._ser.flushOutput()
 
 
     # ----------------------------------------------------------------------------------------------------------------
