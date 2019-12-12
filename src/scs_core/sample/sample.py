@@ -17,7 +17,8 @@ class Sample(JSONable):
     classdocs
     """
 
-    INCLUDE_MILLIS = False
+    EXEGESIS_TAG =              "exg"
+    INCLUDE_MILLIS =            False
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +50,7 @@ class Sample(JSONable):
         jdict['val'] = self.values
 
         if self.exegeses:
-            jdict['exg'] = self.exegeses
+            jdict[self.EXEGESIS_TAG] = self.exegeses
 
         return jdict
 
