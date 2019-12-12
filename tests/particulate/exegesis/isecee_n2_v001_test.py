@@ -12,6 +12,8 @@ from scs_core.data.path_dict import PathDict
 from scs_core.particulate.exegesis.text import Text
 from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
 
+from scs_core.sample.sample import Sample
+
 from scs_host.sys.host import Host
 
 
@@ -35,7 +37,7 @@ exegete = ISECEEN2v1.load(Host)
 print(exegete)
 print("-")
 
-path_name = 'exg.' + exegete.tag()
+path_name = Sample.EXEGESIS_TAG + '.' + exegete.tag()
 
 datum = PathDict.construct_from_jstr(jstr)
 
