@@ -127,7 +127,7 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        cells = (str(cell) for cell in self.__cells)
+        cells = '[' + ', '.join(str(cells) for cells in self.__cells) + ']'
 
         return "CSVHeader:{cells:%s}" % cells
 
