@@ -103,6 +103,26 @@ class ErrorSurface(JSONable):
         self.__mt_weights = mt_weights                          # array of float
         self.__ct_weights = ct_weights                          # array of float
 
+        self.__m_t_poly = np.poly1d(mt_weights)
+        self.__c_t_poly = np.poly1d(ct_weights)
+
+
+    def __eq__(self, other):
+        return self.__mt_weights == other.__mt_weights and self.__ct_weights == other.__ct_weights
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def error(self, t, rh):
+        # numpy poly...
+        m_t = self.__m_t_poly(rh)
+        c_t = self.__c_t_poly(rh)
+
+        # correction...
+        error = (m_t * t) + c_t
+
+        return error
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -153,4 +173,4 @@ class ErrorSurface(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ErrorSurface:{mt_weights:%s, ct_weights:%s}" % (self.__mt_weights, self.__ct_weights)
+        return "ErrorSurface:{mt_weights:%s, ct_weights:%s}" %  (self.__mt_weights, self.__ct_weights)
