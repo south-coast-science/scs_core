@@ -2,6 +2,11 @@
 Created on 6 Jan 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+A CSV-friendly grid that can be used to visualise the error predicted by a given electrochem Exegete, using any T and
+rH range or resolution.
+
+This one has columns for rH and rows for T.
 """
 
 from collections import OrderedDict
@@ -71,7 +76,6 @@ class ExegeteRenderingRhTRow(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-#         rows = [ExegeteRenderingRhTRow.construct(t, rh_min, rh_max, rh_delta, exegete)
     @classmethod
     def construct(cls, t, rh_min, rh_max, rh_delta, exegete: Exegete):
         cells = [ExegeteRenderingRhTCell(rh, exegete.error(t, rh))

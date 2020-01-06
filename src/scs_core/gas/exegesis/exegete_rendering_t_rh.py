@@ -2,6 +2,12 @@
 Created on 6 Jan 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+A CSV-friendly grid that can be used to visualise the error predicted by a given electrochem Exegete, using any T and
+rH range or resolution.
+
+This one has columns for T and rows for rH (the more natural way of displaying temperature dependence as a
+function of rH).
 """
 
 from collections import OrderedDict

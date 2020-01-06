@@ -2,11 +2,16 @@
 Created on 20 Apr 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+A CSV-friendly grid that can be used to analyse the errors collected by a given ErrorGrid.
+
+This one has columns for T and rows for rH.
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.error.error_grid import ErrorGrid
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -19,7 +24,7 @@ class ErrorGridReportTRh(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, grid):
+    def construct(cls, grid: ErrorGrid):
         rows = []
 
         # rH rows...
