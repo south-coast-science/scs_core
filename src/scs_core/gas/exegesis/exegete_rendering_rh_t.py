@@ -1,9 +1,10 @@
 """
-Created on 20 Apr 2019
+Created on 6 Jan 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A CSV-friendly grid that can be used to analyse the errors collected by a given ErrorGrid.
+A CSV-friendly grid that can be used to visualise the error predicted by a given electrochem Exegete, using any T and
+rH range or resolution.
 
 This one has columns for rH and rows for T.
 """
@@ -11,12 +12,12 @@ This one has columns for rH and rows for T.
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-from scs_core.error.error_grid import ErrorGrid
+from scs_core.gas.exegesis.exegete import Exegete
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ErrorGridReportRhT(JSONable):
+class ExegeteRenderingRhT(JSONable):
     """
     classdocs
     """
@@ -24,34 +25,11 @@ class ErrorGridReportRhT(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, grid: ErrorGrid):
-        rows = []
+    def construct(cls, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
+        rows = [ExegeteRenderingRhTRow.construct(t, rh_min, rh_max, rh_delta, exegete)
+                for t in range(t_min, t_max + 1, t_delta)]
 
-        # t rows...
-        t_min = grid.t_min
-        t_max = t_min + grid.t_step
-
-        while t_min < grid.t_max:
-            # rH cols...
-            cells = []
-
-            rh_min = grid.rh_min
-            rh_max = rh_min + grid.rh_step
-
-            while rh_min < grid.rh_max:
-                cell = grid.cells[rh_max][t_max]
-
-                cells.append(ErrorGridReportRhTCell(rh_max, len(cell), cell.stdev(), cell.avg()))
-
-                rh_min = rh_max
-                rh_max += grid.rh_step
-
-            rows.append(ErrorGridReportRhTRow(t_min, t_max, cells))
-
-            t_min = t_max
-            t_max += grid.t_step
-
-        return ErrorGridReportRhT(rows)
+        return ExegeteRenderingRhT(rows)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,7 +38,7 @@ class ErrorGridReportRhT(JSONable):
         """
         Constructor
         """
-        self.__rows = rows                      # array of ErrorGridReportRhTRow
+        self.__rows = rows                          # array of ExegeteRenderingRhTRow
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -86,26 +64,34 @@ class ErrorGridReportRhT(JSONable):
     def __str__(self, *args, **kwargs):
         rows = '[' + ', '.join(str(row) for row in self.__rows) + ']'
 
-        return "ErrorGridReportRhT:{rows:%s}" % rows
+        return "ExegeteRenderingRhT:{rows:%s}" % rows
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ErrorGridReportRhTRow(JSONable):
+class ExegeteRenderingRhTRow(JSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, t_min, t_max, cells):
+    @classmethod
+    def construct(cls, t, rh_min, rh_max, rh_delta, exegete: Exegete):
+        cells = [ExegeteRenderingRhTCell(rh, exegete.error(t, rh))
+                 for rh in range(rh_min, rh_max + 1, rh_delta)]
+
+        return ExegeteRenderingRhTRow(t, cells)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, t, cells):
         """
         Constructor
         """
-        self.__t_min = t_min                    # float
-        self.__t_max = t_max                    # float
-
-        self.__cells = cells                    # array of ErrorGridReportRhTCell
+        self.__t = t                                # float
+        self.__cells = cells                        # array of ExegeteRenderingRhTCell
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,15 +99,10 @@ class ErrorGridReportRhTRow(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['t_max'] = self.t_max
-        jdict['t_avg'] = round(self.t_avg, 1)
-
-        cells_jdict = OrderedDict()
+        jdict['t'] = str(self.t) + ' C'
 
         for cell in self.cells():
-            cells_jdict[cell.key()] = cell.as_json()
-
-        jdict['cells'] = cells_jdict
+            jdict[cell.key()] = round(cell.error, 1)
 
         return jdict
 
@@ -129,18 +110,8 @@ class ErrorGridReportRhTRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def t_min(self):
-        return self.__t_min
-
-
-    @property
-    def t_max(self):
-        return self.__t_max
-
-
-    @property
-    def t_avg(self):
-        return (self.__t_min + self.__t_max) / 2
+    def t(self):
+        return self.__t
 
 
     def cells(self):
@@ -153,68 +124,45 @@ class ErrorGridReportRhTRow(JSONable):
     def __str__(self, *args, **kwargs):
         cells = '[' + ', '.join(str(cell) for cell in self.__cells) + ']'
 
-        return "ErrorGridReportRhTRow:{t_min:%s, t_max:%s, cells:%s}" %  (self.t_min, self.t_max, cells)
+        return "ExegeteRenderingRhTRow:{t:%s, cells:%s}" %  (self.t, cells)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ErrorGridReportRhTCell(JSONable):
+class ExegeteRenderingRhTCell(object):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rh_max, n, stdev, avg):
+    def __init__(self, rh, error):
         """
         Constructor
         """
-        self.__rh_max = rh_max                  # float
-        self.__n = n                            # int
-        self.__stdev = stdev                    # float
-        self.__avg = avg                        # float
+        self.__rh = rh                              # numeric
+        self.__error = error                        # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def key(self):
-        return 'rH_' + str(self.rh_max)
-
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['n'] = self.n
-        jdict['stdev'] = self.stdev
-        jdict['avg'] = self.avg
-
-        return jdict
+        return str(self.rh) + ' %'
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def rh_max(self):
-        return self.__rh_max
+    def rh(self):
+        return self.__rh
 
 
     @property
-    def n(self):
-        return self.__n
-
-
-    @property
-    def stdev(self):
-        return self.__stdev
-
-
-    @property
-    def avg(self):
-        return self.__avg
+    def error(self):
+        return self.__error
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ErrorGridReportRhTCell:{rh_max:%s, n:%s, stdev:%s, avg:%s}" % \
-               (self.rh_max, self.n, self.stdev, self.avg)
+        return "ExegeteRenderingRhTCell:{rh:%s, error:%0.1f}" % (self.rh, self.error)

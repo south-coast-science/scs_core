@@ -10,7 +10,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
 from scs_core.particulate.exegesis.text import Text
-from scs_core.particulate.exegesis.isecse.isecse_n2_v001 import ISECSEN2v1
+from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
 
 from scs_core.sample.sample import Sample
 
@@ -28,12 +28,12 @@ jstr = '{"tag": "scs-bgx-512", "src": "N3", "rec": "2019-11-04T15:22:05Z", ' \
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-exegete = ISECSEN2v1.standard()
+exegete = ISECEEN2v1.standard()
 print(exegete)
 print("-")
 
 exegete.save(Host)
-exegete = ISECSEN2v1.load(Host)
+exegete = ISECEEN2v1.load(Host)
 print(exegete)
 print("-")
 
@@ -46,6 +46,6 @@ print("text: %s" % text)
 print("-")
 
 for rh in range(0, 101, 5):
-    interpretation = exegete.interpret(text, rh)
+    interpretation = exegete.interpretation(text, rh)
     datum.append(path_name, interpretation.as_json())
     print("rH:%s: %s" % (rh, JSONify.dumps(datum)))

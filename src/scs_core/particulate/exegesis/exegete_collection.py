@@ -57,12 +57,12 @@ class ExegeteCollection(object):
         return False
 
 
-    def interpret(self, text, internal_sht_sample, external_sht_sample):
+    def interpretation(self, text, internal_sht_sample, external_sht_sample):
         interpretations = OrderedDict()
 
         for exegete in self.__exegetes:
             sht_sample = external_sht_sample if exegete.uses_external_sht() else internal_sht_sample
-            interpretations[exegete.name()] = exegete.interpret(text, sht_sample.humid)
+            interpretations[exegete.name()] = exegete.interpretation(text, sht_sample.humid)
 
         return interpretations
 

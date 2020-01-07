@@ -65,12 +65,12 @@ class CSVWriter(object):
 
     def write(self, jstr):
         if jstr is None:
-            return
+            return False
 
         datum = CSVDict.construct_from_jstr(jstr)
 
         if datum is None:
-            return
+            return False
 
         if self.__paths is None:
             self.__paths = datum.paths()
@@ -84,6 +84,8 @@ class CSVWriter(object):
 
         if self.filename is None:
             self.__file.flush()
+
+        return True
 
 
     def close(self):
