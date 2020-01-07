@@ -2,6 +2,8 @@
 Created on 16 Apr 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+An object providing a statistical report on sensor error, categorised by T and rH.
 """
 
 from collections import OrderedDict
@@ -80,7 +82,7 @@ class ErrorGrid(object):
         # find rH row...
         for rh_max in self.__cells.keys():
             if rh < rh_max:
-                # find t col...
+                # find T col...
                 for t_max in self.__cells[rh_max].keys():
                     if t < t_max:
                         self.__cells[rh_max][t_max].append(report, ref)
@@ -94,7 +96,7 @@ class ErrorGrid(object):
 
         # rH rows...
         for row in self.__cells.values():
-            # t cols...
+            # T cols...
             for cell in row.values():
                 stdev = cell.stdev()
 

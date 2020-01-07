@@ -75,27 +75,15 @@ class ISECEE(Exegete, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interpret(self, datum, rh):
-        pm1 = self.__interpret('pm1', datum.pm1, rh, self.__max_rh_pm1)
-        pm2p5 = self.__interpret('pm2p5', datum.pm2p5, rh, self.__max_rh_pm2p5)
-        pm10 = self.__interpret('pm10', datum.pm10, rh, self.__max_rh_pm10)
+    def interpretation(self, datum, rh):
+        pm1 = self.__interpretation('pm1', datum.pm1, rh, self.__max_rh_pm1)
+        pm2p5 = self.__interpretation('pm2p5', datum.pm2p5, rh, self.__max_rh_pm2p5)
+        pm10 = self.__interpretation('pm10', datum.pm10, rh, self.__max_rh_pm10)
 
         return Text(pm1, pm2p5, pm10)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __interpret(self, species, pm, rh, max_rh):
-        if pm is None or rh is None:
-            return None
-
-        if rh > max_rh:
-            return None
-
-        return pm / self.__error(species, rh)
-
-
-    def __error(self, species, rh):
+    def error(self, species, rh):
         zone = 'low' if rh < self.__rh_elbow else 'high'
 
         ce = self.__ce[zone][species]
@@ -104,6 +92,18 @@ class ISECEE(Exegete, ABC):
         # print("species:%s rH:%s zone:%s ce:%s cx:%s" % (species, rh, zone, ce, cx))
 
         return ce * exp(cx * rh)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __interpretation(self, species, pm, rh, max_rh):
+        if pm is None or rh is None:
+            return None
+
+        if rh > max_rh:
+            return None
+
+        return pm / self.error(species, rh)
 
 
     # ----------------------------------------------------------------------------------------------------------------

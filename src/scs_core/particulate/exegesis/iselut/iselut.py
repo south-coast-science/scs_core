@@ -63,23 +63,44 @@ class ISELUT(Exegete, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interpret(self, datum, rh):
-        pm1 = self._interpret('pm1', datum.pm1, rh)
-        pm2p5 = self._interpret('pm2p5', datum.pm2p5, rh)
-        pm10 = self._interpret('pm10', datum.pm10, rh)
+    def interpretation(self, datum, rh):
+        pm1 = self._interpretation('pm1', datum.pm1, rh)
+        pm2p5 = self._interpretation('pm2p5', datum.pm2p5, rh)
+        pm10 = self._interpretation('pm10', datum.pm10, rh)
 
         return Text(pm1, pm2p5, pm10)
 
 
+    def error(self, species, rh):
+        error = self._error(species, rh)
+
+        if error is None:
+            return None
+
+        return 1 / error                # the model contains the inverse of the scaling error
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def _interpret(self, species, pm, rh):
+    def _interpretation(self, species, pm, rh):
         if pm is None or rh is None:
             return None
 
-        row = self._row(rh)
+        error = self._error(species, rh)
 
-        return pm * row.error(species, rh)
+        if error is None:
+            return None
+
+        return pm * error               # the model contains the inverse of the scaling error
+
+
+    def _error(self, species, rh):
+        try:
+            row = self._row(rh)
+        except ValueError:
+            return None
+
+        return row.species_error(species, rh)
 
 
     def _row(self, rh):
@@ -143,7 +164,7 @@ class ISELURow(JSONable):
         self.__rh_min = int(rh_min)
         self.__rh_max = int(rh_max)
 
-        self.__scaling = scaling                     # dict of species: float
+        self.__scaling = scaling                        # dict of species: float
 
 
     def __eq__(self, other):
@@ -154,7 +175,7 @@ class ISELURow(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def error(self, species, _rh):
+    def species_error(self, species, _rh):
         scaling = self.__scaling[species]               # TODO: interpolate using rh?
 
         return scaling

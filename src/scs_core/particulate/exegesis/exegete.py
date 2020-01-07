@@ -62,5 +62,10 @@ class Exegete(PersistentJSONable, ABC):
 
 
     @abstractmethod
-    def interpret(self, text, rh):
+    def interpretation(self, text, rh):
+        pass
+
+
+    @abstractmethod
+    def error(self, species, rh):
         pass
