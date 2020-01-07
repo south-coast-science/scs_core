@@ -1,23 +1,21 @@
 """
-Created on 6 Jan 2020
+Created on 7 Jan 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A CSV-friendly grid that can be used to visualise the error predicted by a given electrochem Exegete, using any T and
-rH range or resolution.
-
-This one has columns for rH and rows for T.
+A CSV-friendly grid that can be used to visualise the scaling error predicted for a given OPC exegete, by PM size,
+using any rH range or resolution.
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-from scs_core.gas.exegesis.exegete import Exegete
+from scs_core.particulate.exegesis.exegete import Exegete
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ExegeteRenderingRhT(JSONable):
+class ExegeteRendering(JSONable):
     """
     classdocs
     """
@@ -25,11 +23,11 @@ class ExegeteRenderingRhT(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
-        rows = [ExegeteRenderingRhTRow.construct(t, rh_min, rh_max, rh_delta, exegete)
-                for t in range(t_min, t_max + 1, t_delta)]
+    def construct(cls, rh_min, rh_max, rh_delta, exegete: Exegete):
+        rows = [ExegeteRenderingRow.construct(species, rh_min, rh_max, rh_delta, exegete)
+                for species in ('pm1', 'pm2p5', 'pm10')]
 
-        return ExegeteRenderingRhT(rows)
+        return ExegeteRendering(rows)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,7 +36,7 @@ class ExegeteRenderingRhT(JSONable):
         """
         Constructor
         """
-        self.__rows = rows                          # array of ExegeteRenderingRhTRow
+        self.__rows = rows                          # array of ExegeteRenderingRow
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,12 +62,12 @@ class ExegeteRenderingRhT(JSONable):
     def __str__(self, *args, **kwargs):
         rows = '[' + ', '.join(str(row) for row in self.__rows) + ']'
 
-        return "ExegeteRenderingRhT:{rows:%s}" % rows
+        return "ExegeteRendering:{rows:%s}" % rows
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ExegeteRenderingRhTRow(JSONable):
+class ExegeteRenderingRow(JSONable):
     """
     classdocs
     """
@@ -77,21 +75,21 @@ class ExegeteRenderingRhTRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, t, rh_min, rh_max, rh_delta, exegete: Exegete):
-        cells = [ExegeteRenderingRhTCell(rh, exegete.error(t, rh))
+    def construct(cls, species, rh_min, rh_max, rh_delta, exegete: Exegete):
+        cells = [ExegeteRenderingCell(rh, exegete.error(species, rh))
                  for rh in range(rh_min, rh_max + 1, rh_delta)]
 
-        return ExegeteRenderingRhTRow(t, cells)
+        return ExegeteRenderingRow(species, cells)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, t, cells):
+    def __init__(self, species, cells):
         """
         Constructor
         """
-        self.__t = t                                # float
-        self.__cells = cells                        # array of ExegeteRenderingRhTCell
+        self.__species = species                    # string
+        self.__cells = cells                        # array of ExegeteRenderingCell
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,7 +97,7 @@ class ExegeteRenderingRhTRow(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['t'] = str(self.t) + ' C'
+        jdict['species'] = self.species
 
         for cell in self.cells():
             jdict[cell.key()] = round(cell.error, 1)
@@ -110,8 +108,8 @@ class ExegeteRenderingRhTRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def t(self):
-        return self.__t
+    def species(self):
+        return self.__species
 
 
     def cells(self):
@@ -124,12 +122,12 @@ class ExegeteRenderingRhTRow(JSONable):
     def __str__(self, *args, **kwargs):
         cells = '[' + ', '.join(str(cell) for cell in self.__cells) + ']'
 
-        return "ExegeteRenderingRhTRow:{t:%s, cells:%s}" %  (self.t, cells)
+        return "ExegeteRendering:{species:%s, cells:%s}" %  (self.species, cells)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ExegeteRenderingRhTCell(object):
+class ExegeteRenderingCell(object):
     """
     classdocs
     """
@@ -165,4 +163,4 @@ class ExegeteRenderingRhTCell(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ExegeteRenderingRhTCell:{rh:%s, error:%0.1f}" % (self.rh, self.error)
+        return "ExegeteRenderingCell:{rh:%s, error:%0.1f}" % (self.rh, self.error)

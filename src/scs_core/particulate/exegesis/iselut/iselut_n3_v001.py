@@ -82,7 +82,7 @@ class ISELUTN3v1(ISELUT):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def _interpret(self, species, pm, rh):
+    def _interpretation(self, species, pm, rh):
         if pm is None or rh is None:
             return None
 

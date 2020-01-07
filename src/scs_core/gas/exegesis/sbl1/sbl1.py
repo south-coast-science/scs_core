@@ -68,12 +68,12 @@ class SBL1(Exegete, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def error(self, t, rh):
-        return self.__surface.error(t, rh)
-
-
     def interpretation(self, text, t, rh):
         return text - self.error(t, rh)
+
+
+    def error(self, t, rh):
+        return self.__surface.error(t, rh)
 
 
     # ----------------------------------------------------------------------------------------------------------------

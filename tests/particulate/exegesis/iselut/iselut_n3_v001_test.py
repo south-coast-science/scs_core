@@ -46,6 +46,6 @@ print("text: %s" % text)
 print("-")
 
 for rh in range(0, 101, 5):
-    interpretation = exegete.interpret(text, rh)
+    interpretation = exegete.interpretation(text, rh)
     datum.append(path_name, interpretation.as_json())
     print("rH:%s: %s" % (rh, JSONify.dumps(datum)))
