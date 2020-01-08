@@ -22,6 +22,8 @@ class ExegeteRenderingRhT(JSONable):
     classdocs
     """
 
+    PRECISION = 1
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -102,7 +104,7 @@ class ExegeteRenderingRhTRow(JSONable):
         jdict['t'] = str(self.t) + ' C'
 
         for cell in self.cells():
-            jdict[cell.key()] = round(cell.error, 1)
+            jdict[cell.key()] = round(cell.error, ExegeteRenderingRhT.PRECISION)
 
         return jdict
 

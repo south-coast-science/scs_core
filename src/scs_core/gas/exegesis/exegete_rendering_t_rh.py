@@ -23,6 +23,8 @@ class ExegeteRenderingTRh(JSONable):
     classdocs
     """
 
+    PRECISION = 1
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -39,7 +41,7 @@ class ExegeteRenderingTRh(JSONable):
         """
         Constructor
         """
-        self.__rows = rows                          # array of ExegeteRenderingTRhRow
+        self.__rows = rows                              # array of ExegeteRenderingTRhRow
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,8 +93,8 @@ class ExegeteRenderingTRhRow(JSONable):
         """
         Constructor
         """
-        self.__rh = rh                              # numeric
-        self.__cells = cells                        # array of ExegeteRenderingTRhCell
+        self.__rh = rh                                  # numeric
+        self.__cells = cells                            # array of ExegeteRenderingTRhCell
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -103,7 +105,7 @@ class ExegeteRenderingTRhRow(JSONable):
         jdict['rh'] = str(self.rh) + ' %'
 
         for cell in self.cells():
-            jdict[cell.key()] = round(cell.error, 1)
+            jdict[cell.key()] = round(cell.error, ExegeteRenderingTRh.PRECISION)
 
         return jdict
 
@@ -141,8 +143,8 @@ class ExegeteRenderingTRhCell(object):
         """
         Constructor
         """
-        self.__t = t                                # numeric
-        self.__error = error                        # float
+        self.__t = t                                    # numeric
+        self.__error = error                            # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
