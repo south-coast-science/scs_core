@@ -23,11 +23,13 @@ class ExegeteRenderingTRh(JSONable):
     classdocs
     """
 
+    PRECISION = 1
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
-        rows = [ExegeteRenderingTRhRow.construct(rh, t_min, t_max, t_delta, exegete)
+    def construct(cls, gas, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
+        rows = [ExegeteRenderingTRhRow.construct(gas, rh, t_min, t_max, t_delta, exegete)
                 for rh in range(rh_min, rh_max + 1, rh_delta)]
 
         return ExegeteRenderingTRh(rows)
@@ -39,7 +41,7 @@ class ExegeteRenderingTRh(JSONable):
         """
         Constructor
         """
-        self.__rows = rows                          # array of ExegeteRenderingTRhRow
+        self.__rows = rows                              # array of ExegeteRenderingTRhRow
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,8 +80,8 @@ class ExegeteRenderingTRhRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, rh, t_min, t_max, t_delta, exegete: Exegete):
-        cells = [ExegeteRenderingTRhCell(t, exegete.error(t, rh))
+    def construct(cls, gas, rh, t_min, t_max, t_delta, exegete: Exegete):
+        cells = [ExegeteRenderingTRhCell(t, exegete.error(gas, t, rh))
                  for t in range(t_min, t_max + 1, t_delta)]
 
         return ExegeteRenderingTRhRow(rh, cells)
@@ -91,8 +93,8 @@ class ExegeteRenderingTRhRow(JSONable):
         """
         Constructor
         """
-        self.__rh = rh                              # numeric
-        self.__cells = cells                        # array of ExegeteRenderingTRhCell
+        self.__rh = rh                                  # numeric
+        self.__cells = cells                            # array of ExegeteRenderingTRhCell
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -103,7 +105,7 @@ class ExegeteRenderingTRhRow(JSONable):
         jdict['rh'] = str(self.rh) + ' %'
 
         for cell in self.cells():
-            jdict[cell.key()] = round(cell.error, 1)
+            jdict[cell.key()] = round(cell.error, ExegeteRenderingTRh.PRECISION)
 
         return jdict
 
@@ -141,14 +143,14 @@ class ExegeteRenderingTRhCell(object):
         """
         Constructor
         """
-        self.__t = t                                # numeric
-        self.__error = error                        # float
+        self.__t = t                                    # numeric
+        self.__error = error                            # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def key(self):
-        return str(self.t) + ' C'
+        return str(self.t) + ' °C'
 
 
     # ----------------------------------------------------------------------------------------------------------------

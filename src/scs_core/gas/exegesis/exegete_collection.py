@@ -3,13 +3,15 @@ Created on 9 Dec 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a collection of particulate exegesis models, as required by data interpretation tools
+a collection of gas exegesis models, as required by data interpretation tools
 """
 
 from collections import OrderedDict
 
 from scs_core.particulate.exegesis.exegete_catalogue import ExegeteCatalogue
 
+
+# TODO: work out how interpretation works with multiple gases
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -47,14 +49,6 @@ class ExegeteCollection(object):
 
     def has_members(self):
         return len(self) > 0
-
-
-    def uses_external_sht(self):
-        for exegete in self.__exegetes:
-            if exegete.uses_external_sht():
-                return True
-
-        return False
 
 
     def interpretation(self, text, internal_sht_sample, external_sht_sample):

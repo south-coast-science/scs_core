@@ -20,6 +20,8 @@ class ExegeteRendering(JSONable):
     classdocs
     """
 
+    PRECISION = 3
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -100,7 +102,7 @@ class ExegeteRenderingRow(JSONable):
         jdict['species'] = self.species
 
         for cell in self.cells():
-            jdict[cell.key()] = round(cell.error, 1)
+            jdict[cell.key()] = round(cell.error, ExegeteRendering.PRECISION)
 
         return jdict
 

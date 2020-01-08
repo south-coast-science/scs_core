@@ -3,7 +3,7 @@ Created on 26 Oct 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a catalogue of particulate exegesis models
+a catalogue of particulate exegesis models, as required by configuration tools
 """
 
 from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1
@@ -51,13 +51,13 @@ class ExegeteCatalogue(object):
 
     @classmethod
     def load(cls, name, host):
-        model = cls.__MODELS[name]
+        model = cls.__MODELS[name]                                  # may raise KeyError
 
         return model.load(host)
 
 
     @classmethod
     def standard(cls, name):
-        model = cls.__MODELS[name]
+        model = cls.__MODELS[name]                                  # may raise KeyError
 
         return model.standard()
