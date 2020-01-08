@@ -80,7 +80,7 @@ class SBL1(Exegete, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def gases(self):
-        return self.__surfaces.keys()
+        return list(self.__surfaces.keys())
 
 
     def interpretation(self, gas, text, t, rh):

@@ -101,7 +101,7 @@ class ExegeteRenderingRhTRow(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['t'] = str(self.t) + ' C'
+        jdict['t'] = str(self.t) + ' °C'
 
         for cell in self.cells():
             jdict[cell.key()] = round(cell.error, ExegeteRenderingRhT.PRECISION)
