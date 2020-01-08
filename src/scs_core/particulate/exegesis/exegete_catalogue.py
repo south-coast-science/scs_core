@@ -3,7 +3,7 @@ Created on 26 Oct 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a catalogue of particulate exegesis models
+a catalogue of particulate exegesis models, required by configuration tools
 """
 
 from scs_core.particulate.exegesis.isecee.isecee_n2_v001 import ISECEEN2v1

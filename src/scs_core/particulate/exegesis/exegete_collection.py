@@ -3,7 +3,7 @@ Created on 9 Dec 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-a collection of particulate exegesis models
+a collection of particulate exegesis models, required by sampling tools
 """
 
 from collections import OrderedDict
