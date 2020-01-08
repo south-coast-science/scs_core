@@ -8,9 +8,9 @@ Created on 26 Oct 2019
 
 from scs_core.data.path_dict import PathDict
 
-from scs_core.gas.exegesis.sbl1.sbl1_no2_v1 import SBL1NO2v1
+from scs_core.gas.exegesis.sbl1.sbl1_v1 import SBL1v1
 
-# from scs_host.sys.host import Host
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -25,14 +25,14 @@ jstr = '{"val": {"NO2": {"weV": 0.3085, "cnc": 32.6, "aeV": 0.31, "weC": -0.0004
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-exegete = SBL1NO2v1.standard()
+exegete = SBL1v1.standard()
 print(exegete)
 print("-")
 
-# exegete.save(Host)
-# exegete = SBL1NO2v1.load(Host)
-# print(exegete)
-# print("-")
+exegete.save(Host)
+exegete = SBL1v1.load(Host)
+print(exegete)
+print("-")
 
 datum = PathDict.construct_from_jstr(jstr)
 print(datum)
@@ -43,7 +43,7 @@ print("-")
 
 for rh in range(10, 91, 5):
     for t in range(0, 46, 5):
-        interpretation = exegete.interpretation(text, t, rh)
+        interpretation = exegete.interpretation('NO2', text, t, rh)
         print("rh: %2d t: %2d text: %3.1f interpretation: %3.1f" % (rh, t, text, interpretation))
 
     print("-")
