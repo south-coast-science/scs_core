@@ -56,10 +56,15 @@ class Exegete(PersistentJSONable, ABC):
 
 
     @abstractmethod
-    def interpretation(self, text, t, rh):
+    def gases(self):
         pass
 
 
     @abstractmethod
-    def error(self, t, rh):
+    def interpretation(self, gas, text, t, rh):
+        pass
+
+
+    @abstractmethod
+    def error(self, gas, t, rh):
         pass

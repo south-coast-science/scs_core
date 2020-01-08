@@ -58,7 +58,7 @@ class ISECEEN2v1(ISECEE):
     __STANDARD_CX['low'] = __STANDARD_CX_LOW
     __STANDARD_CX['high'] = __STANDARD_CX_HIGH
 
-    __STANDARD_rH_ELBOW =               61                      # percent relative humidity
+    __STANDARD_rH_ELBOW =               65                      # percent relative humidity (was 61)
 
     __STANDARD_MAX_rH_PM1 =             100
     __STANDARD_MAX_rH_PM2p5 =           100

@@ -39,9 +39,12 @@ class SBL1(Exegete, ABC):
         if not jdict:
             return cls.standard()
 
-        surface = jdict.get('surface')
+        surfaces = OrderedDict()
 
-        return cls(surface)
+        for gas in jdict.keys():
+            surfaces[gas] = ErrorSurface.construct_from_jdict(jdict[gas])
+
+        return cls(surfaces)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,40 +56,52 @@ class SBL1(Exegete, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, surface: ErrorSurface):
+    def __init__(self, surfaces):
         """
         Constructor
         """
         super().__init__()
 
-        self.__surface = surface
+        self.__surfaces = surfaces                              # dict of gas: ErrorSurface
 
 
     def __eq__(self, other):
-        return self.__surface == other.__surface
+        try:
+            for gas in self.gases():
+                if self.__surfaces[gas] != other.__surfaces[gas]:
+                    return False
+
+        except KeyError:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interpretation(self, text, t, rh):
-        return text - self.error(t, rh)
+    def gases(self):
+        return list(self.__surfaces.keys())
 
 
-    def error(self, t, rh):
-        return self.__surface.error(t, rh)
+    def interpretation(self, gas, text, t, rh):
+        return text - self.error(gas, t, rh)
+
+
+    def error(self, gas, t, rh):
+        surface = self.__surfaces[gas]                          # may raise KeyError
+
+        return surface.error(t, rh)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['surface'] = self.__surface
-
-        return jdict
+        return self.__surfaces
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{surface:%s}" % self.__surface
+        surfaces = '{' + ', '.join(gas + ': ' + str(surface) for gas, surface in self.__surfaces.items()) + '}'
+
+        return self.__class__.__name__ + ":{surfaces:%s}" % surfaces

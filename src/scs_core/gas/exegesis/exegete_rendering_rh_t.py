@@ -22,11 +22,13 @@ class ExegeteRenderingRhT(JSONable):
     classdocs
     """
 
+    PRECISION = 1
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
-        rows = [ExegeteRenderingRhTRow.construct(t, rh_min, rh_max, rh_delta, exegete)
+    def construct(cls, gas, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
+        rows = [ExegeteRenderingRhTRow.construct(gas, t, rh_min, rh_max, rh_delta, exegete)
                 for t in range(t_min, t_max + 1, t_delta)]
 
         return ExegeteRenderingRhT(rows)
@@ -77,8 +79,8 @@ class ExegeteRenderingRhTRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, t, rh_min, rh_max, rh_delta, exegete: Exegete):
-        cells = [ExegeteRenderingRhTCell(rh, exegete.error(t, rh))
+    def construct(cls, gas, t, rh_min, rh_max, rh_delta, exegete: Exegete):
+        cells = [ExegeteRenderingRhTCell(rh, exegete.error(gas, t, rh))
                  for rh in range(rh_min, rh_max + 1, rh_delta)]
 
         return ExegeteRenderingRhTRow(t, cells)
@@ -99,10 +101,10 @@ class ExegeteRenderingRhTRow(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['t'] = str(self.t) + ' C'
+        jdict['t'] = str(self.t) + ' °C'
 
         for cell in self.cells():
-            jdict[cell.key()] = round(cell.error, 1)
+            jdict[cell.key()] = round(cell.error, ExegeteRenderingRhT.PRECISION)
 
         return jdict
 
