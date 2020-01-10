@@ -109,13 +109,21 @@ class PathDict(JSONable):
         if sub_path is None:
             return self.__dictionary
 
-        return self.__node(self.__dictionary, re.split(r"[.:]", sub_path))
+        try:
+            return self.__node(self.__dictionary, re.split(r"[.:]", sub_path))
+
+        except KeyError:
+            raise KeyError(sub_path)
 
 
     # Sets an internal node to the given value...
 
     def set_node(self, sub_path, value):
-        return self.__set_node(self.__dictionary, re.split(r"[.:]", sub_path), value)
+        try:
+            return self.__set_node(self.__dictionary, re.split(r"[.:]", sub_path), value)
+
+        except KeyError:
+            raise KeyError(sub_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -130,7 +138,11 @@ class PathDict(JSONable):
 
         nodes = re.findall('([^.:]+)([.:]*)', sub_path)
 
-        self.__append(self.__dictionary, nodes, other.node(sub_path))
+        try:
+            self.__append(self.__dictionary, nodes, other.node(sub_path))
+
+        except KeyError:
+            raise KeyError(sub_path)
 
 
     # Appends value at sub_path...
@@ -138,7 +150,11 @@ class PathDict(JSONable):
     def append(self, sub_path, value):
         nodes = re.findall('([^.:]+)([.:]*)', sub_path)
 
-        self.__append(self.__dictionary, nodes, value)
+        try:
+            self.__append(self.__dictionary, nodes, value)
+
+        except KeyError:
+            raise KeyError(sub_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
