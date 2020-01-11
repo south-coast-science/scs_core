@@ -19,6 +19,8 @@ Digital Single Interface:
 "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
+import json
+
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -87,6 +89,22 @@ class AFECalib(PersistentJSONable):
     @classmethod
     def persistence_location(cls, host):
         return host.conf_dir(), cls.__FILENAME
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def download(cls, http_client, serial_number):
+        http_client.connect(AFECalib.ALPHASENSE_HOST)
+
+        try:
+            path = AFECalib.ALPHASENSE_PATH + serial_number
+            jdict = json.loads(http_client.get(path, None, AFECalib.ALPHASENSE_HEADER))
+
+            return cls.construct_from_jdict(jdict)
+
+        finally:
+            http_client.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
