@@ -11,10 +11,7 @@ example JSON:
 "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
-from scs_core.data.datum import Datum
-
 from scs_core.gas.afe_calib import AFECalib
-from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
