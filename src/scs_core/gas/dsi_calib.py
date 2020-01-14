@@ -11,7 +11,10 @@ example JSON:
 "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
+import json
+
 from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -29,19 +32,42 @@ class DSICalib(AFECalib):
                 "ae_sensor_zero_mv": 0, "ae_total_zero_mv": 300, "we_sensitivity_na_ppb": "S.SSSSSSS", 
                 "we_cross_sensitivity_no2_na_ppb": -0.3, "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, 
                 "we_cross_sensitivity_no2_mv_ppb": "n/a"}}
-                  '''
+                '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_sensor(cls, calibrated_on, sensor_calib):
-        return AFECalib(None, 'ISI', calibrated_on, None, None, [sensor_calib])
+    def download(cls, http_client, serial_number):
+        http_client.connect(AFECalib.ALPHASENSE_HOST)
+
+        try:
+            path = SensorCalib.ALPHASENSE_PATH + serial_number
+            jstr = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
+
+            return cls.construct_from_jdict(json.loads(jstr))
+
+        finally:
+            http_client.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs):
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        sensor_calib = SensorCalib.construct_from_jdict(jdict)
+        sensor_calib.set_defaults()
+        sensor_calib.set_sens_mv_from_sens_na()
+
+        return cls('DSI', sensor_calib)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, afe_type, sensor_calib):
         """
         Constructor
         """
-        super().__init__(serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs)
+        super().__init__(None, afe_type, None, None, None, [sensor_calib])

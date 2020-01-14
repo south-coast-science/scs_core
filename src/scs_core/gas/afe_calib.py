@@ -10,13 +10,6 @@ example JSON:
 "sn2":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"287.0","we_total_zero_mv":"284.0", ...},
 "sn3":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"280.0","we_total_zero_mv":"284.0", ...},
 "sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0", ...}}
-
-Digital Single Interface:
-{"serial_number": "10-000056", "type": "810-0021-00", "calibrated_on": "YYYY-MM-DD", "dispatched_on": null,
-"pt1000_v20": 1.0, "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "NOGA4", "we_electronic_zero_mv": 300,
-"we_sensor_zero_mv": 6, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, "ae_sensor_zero_mv": 1,
-"ae_total_zero_mv": 300, "we_sensitivity_na_ppb": S.SSSSSSS, "we_cross_sensitivity_no2_na_ppb": -0.3,
-"pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
 import json
@@ -32,8 +25,6 @@ from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
 
 
-# TODO: rename as Interface Calib (GSCalib)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class AFECalib(PersistentJSONable):
@@ -44,8 +35,6 @@ class AFECalib(PersistentJSONable):
     ALPHASENSE_HOST =       "www.alphasense-technology.co.uk"
     ALPHASENSE_PATH =       "/api/v1/boards/"
     ALPHASENSE_HEADER =     {"Accept": "application/json"}
-
-    # https: // www.alphasense - technology.co.uk / api / v1 / sensors / 212810464.j
 
     TEST_LOAD = '''
                 {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
@@ -72,15 +61,6 @@ class AFECalib(PersistentJSONable):
                 "pcb_gain": 1.0, "we_sensitivity_mv_ppb": 1.0, "we_cross_sensitivity_no2_mv_ppb": "n/a"}}    
                 '''
 
-    DSI_WRAPPER = '''
-                {"serial_number": "00-000000", "type": "ISI", "calibrated_on": "YYYY-MM-DD", 
-                "dispatched_on": null, "pt1000_v20": 1.0, 
-                "sn1": {"serial_number": "NNNNNNNNN", "sensor_type": "A4", "we_electronic_zero_mv": 300, 
-                "we_sensor_zero_mv": 0, "we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, 
-                "ae_sensor_zero_mv": 0, "ae_total_zero_mv": 300, "we_sensitivity_na_ppb": "S.SSSSSSS", 
-                "we_cross_sensitivity_no2_na_ppb": -0.3, "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, 
-                "we_cross_sensitivity_no2_mv_ppb": "n/a"}}
-                  '''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -134,11 +114,6 @@ class AFECalib(PersistentJSONable):
                 sensor_calibs.append(SensorCalib.construct_from_jdict(jdict[key]))
 
         return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs)
-
-
-    @classmethod
-    def construct_for_sensor(cls, calibrated_on, sensor_calib):
-        return AFECalib(None, 'ISI', calibrated_on, None, None, [sensor_calib])
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -282,9 +257,10 @@ class AFECalib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        cls = self.__class__.__name__
         sensor_calibs = '[' + ', '.join(str(calib) for calib in self.__sensor_calibs) + ']'
 
-        return "AFECalib:{serial_number:%s, afe_type:%s, calibrated_on:%s, dispatched_on:%s, " \
-               "pt100_calib:%s, sensor_calibs:%s}" % \
-               (self.serial_number, self.afe_type, self.calibrated_on, self.dispatched_on,
-                self.pt1000_calib, sensor_calibs)
+        return cls + ":{serial_number:%s, afe_type:%s, calibrated_on:%s, " \
+                     "dispatched_on:%s, pt100_calib:%s, sensor_calibs:%s}" %  \
+                     (self.serial_number, self.afe_type, self.calibrated_on,
+                      self.dispatched_on, self.pt1000_calib, sensor_calibs)
