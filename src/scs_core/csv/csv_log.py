@@ -18,6 +18,31 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def directory_name(cls, datetime):
+        if datetime is None:
+            raise ValueError("datetime may not be None")
+
+        return "%04d-%02d" % (datetime.year, datetime.month)
+
+
+    @classmethod
+    def file_name(cls, datetime, topic, tag=None):
+        if datetime is None:
+            raise ValueError("datetime may not be None")
+
+        if tag is None:
+            return "%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
+                   (topic, datetime.year, datetime.month, datetime.day,
+                    datetime.hour, datetime.minute, datetime.second)
+
+        return "%s-%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
+               (tag, topic, datetime.year, datetime.month, datetime.day,
+                datetime.hour, datetime.minute, datetime.second)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, root_path, topic, tag=None):
         """
         Constructor
@@ -32,38 +57,15 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def mkdir(self):
-        Filesystem.mkdir(os.path.join(self.root_path, self.directory_name()))
+        Filesystem.mkdir(os.path.join(self.root_path, self.directory_name(self.timeline_start)))
 
 
     def directory_path(self):
-        return os.path.join(self.root_path, self.directory_name())
+        return os.path.join(self.root_path, self.directory_name(self.timeline_start))
 
 
     def file_path(self):
-        return os.path.join(self.directory_path(), self.file_name())
-
-
-    def directory_name(self):
-        if self.timeline_start is None:
-            raise ValueError("timeline_start has not been set")
-
-        return "%04d-%02d" % (self.timeline_start.year, self.timeline_start.month)
-
-
-    def file_name(self):
-        if self.timeline_start is None:
-            raise ValueError("timeline_start has not been set")
-
-        if self.tag is None:
-            return "%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-                   (self.topic,
-                    self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
-                    self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second)
-
-        return "%s-%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-               (self.tag, self.topic,
-                self.timeline_start.year, self.timeline_start.month, self.timeline_start.day,
-                self.timeline_start.hour, self.timeline_start.minute, self.timeline_start.second)
+        return os.path.join(self.directory_path(), self.file_name(self.timeline_start, self.topic, self.tag))
 
 
     def in_timeline(self, localised_datetime):
