@@ -24,10 +24,10 @@ class CSVArchive(ABC):
 
     @classmethod
     def retrieve(cls):
-        reader = CSVReader(filename=cls.archive_location(), cast=False)
+        reader = CSVReader(filename=cls.archive_location(), numeric_cast=False)
 
         try:
-            for row in reader.rows:
+            for row in reader.rows():
                 instance = cls.construct_from_jdict(json.loads(row))
 
                 if instance.pk in cls._retrieved:
