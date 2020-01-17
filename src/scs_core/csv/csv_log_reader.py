@@ -25,11 +25,12 @@ class CSVLogReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, log):
+    def __init__(self, log, empty_string_as_null=True):
         """
         Constructor
         """
-        self.__log = log                                # CSVLog
+        self.__log = log                                            # CSVLog
+        self.__empty_string_as_null = empty_string_as_null          # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -44,7 +45,7 @@ class CSVLogReader(object):
         reader = None
 
         try:
-            reader = CSVReader(filename=log_file.path(), empty_string_as_null=True)
+            reader = CSVReader(filename=log_file.path(), empty_string_as_null=self.__empty_string_as_null)
 
             for row in reader.rows():
                 try:
@@ -98,4 +99,4 @@ class CSVLogReader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogReader:{log:%s}" % self.__log
+        return "CSVLogReader:{log:%s, empty_string_as_null:%s}" % (self.__log, self.__empty_string_as_null)
