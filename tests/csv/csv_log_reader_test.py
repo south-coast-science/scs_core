@@ -22,7 +22,7 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 start_iso = '2019-01-25T13:37:00Z'
-topic = 'gases'
+topic_name = 'gases'
 
 start = LocalizedDatetime.construct_from_iso8601(start_iso)
 start_datetime = start.datetime
@@ -33,8 +33,7 @@ print("-")
 conf = CSVLoggerConf.load(Host)
 print(conf)
 
-log = CSVLog(conf.root_path, topic)
-log.timeline_start = start
+log = CSVLog(conf.root_path, topic_name, None, start)
 print(log)
 
 reader = CSVLogReader(log)
@@ -47,7 +46,7 @@ for file in reader.log_files():
 
     try:
         for datum in reader.documents(file, 'rec'):
-            publication = Publication(file.topic, datum)
+            publication = Publication(file.topic_name, datum)
             print(json.dumps(publication.as_json()))
 
     except CSVReaderException:

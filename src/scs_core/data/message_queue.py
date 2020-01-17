@@ -25,8 +25,8 @@ class MessageQueue(SynchronisedProcess):
     classdocs
     """
 
-    __PROCESS_LOCK_RELEASE_TIME =       0.2             # seconds
-    __CLIENT_LOCK_RELEASE_TIME =        0.3             # seconds - must be longer than __PROCESS_LOCK_RELEASE_TIME
+    __PROCESS_LOCK_RELEASE_TIME =       0.1             # seconds
+    __CLIENT_LOCK_RELEASE_TIME =        0.2             # seconds - must be longer than __PROCESS_LOCK_RELEASE_TIME
 
 
     # ----------------------------------------------------------------------------------------------------------------

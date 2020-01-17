@@ -32,15 +32,15 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, topic, tag=None):
+    def __init__(self, root_path, topic_name, tag=None, timeline_start=None):
         """
         Constructor
         """
         self.__root_path = root_path                        # string
-        self.__topic = topic                                # string
+        self.__topic_name = topic_name                      # string
         self.__tag = tag                                    # string
 
-        self.__timeline_start = None                        # datetime
+        self.__timeline_start = timeline_start              # datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ class CSVLog(object):
 
 
     def file_path(self):
-        return os.path.join(self.directory_path(), CSVLogFile.name(self.timeline_start, self.topic, self.tag))
+        return os.path.join(self.directory_path(), CSVLogFile.name(self.timeline_start, self.topic_name, self.tag))
 
 
     def in_timeline(self, localised_datetime):
@@ -74,8 +74,8 @@ class CSVLog(object):
 
 
     @property
-    def topic(self):
-        return self.__topic
+    def topic_name(self):
+        return self.__topic_name
 
 
     @property
@@ -101,8 +101,8 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLog:{root_path:%s, tag:%s, topic:%s, timeline_start:%s}" % \
-               (self.root_path, self.tag, self.topic, self.timeline_start)
+        return "CSVLog:{root_path:%s, tag:%s, topic_name:%s, timeline_start:%s}" % \
+               (self.root_path, self.tag, self.topic_name, self.timeline_start)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -115,17 +115,17 @@ class CSVLogFile(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def name(cls, datetime, topic, tag=None):
+    def name(cls, datetime, topic_name, tag=None):
         if datetime is None:
             raise ValueError("datetime may not be None")
 
         if tag is None:
             return "%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-                   (topic, datetime.year, datetime.month, datetime.day,
+                   (topic_name, datetime.year, datetime.month, datetime.day,
                     datetime.hour, datetime.minute, datetime.second)
 
         return "%s-%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-               (tag, topic, datetime.year, datetime.month, datetime.day,
+               (tag, topic_name, datetime.year, datetime.month, datetime.day,
                 datetime.hour, datetime.minute, datetime.second)
 
 
@@ -142,7 +142,7 @@ class CSVLogFile(object):
         # fields...
         tag = None if fields[0] is None else fields[0][:-1]
 
-        topic = fields[1]
+        topic_name = fields[1]
 
         year = int(fields[2])
         month = int(fields[3])
@@ -154,17 +154,17 @@ class CSVLogFile(object):
 
         created_datetime = dt(year, month, day, hour, minute, second, 0, pytz.UTC)
 
-        return cls(created_datetime, topic, tag, file)
+        return cls(created_datetime, topic_name, tag, file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, created_datetime, topic, tag, file: File):
+    def __init__(self, created_datetime, topic_name, tag, file: File):
         """
         Constructor
         """
         self.__created_datetime = created_datetime          # datetime (offset-aware to UTC)
-        self.__topic = topic                                # string
+        self.__topic_name = topic_name                      # string
         self.__tag = tag                                    # string
 
         self.__file = file                                  # File
@@ -184,8 +184,8 @@ class CSVLogFile(object):
 
 
     @property
-    def topic(self):
-        return self.__topic
+    def topic_name(self):
+        return self.__topic_name
 
 
     @property
@@ -196,5 +196,5 @@ class CSVLogFile(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogFile:{created_datetime:%s, tag:%s, topic:%s, file:%s}" % \
-               (self.created_datetime, self.tag, self.topic, self.__file)
+        return "CSVLogFile:{created_datetime:%s, tag:%s, topic_name:%s, file:%s}" % \
+               (self.created_datetime, self.tag, self.topic_name, self.__file)

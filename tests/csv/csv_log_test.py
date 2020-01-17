@@ -14,17 +14,17 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 # --------------------------------------------------------------------------------------------------------------------
 
 device_tag = 'scs-sys-001'
-topic = 'gases'
+topic_name = 'gases'
 
 now = LocalizedDatetime.now()
 
 path = '/home/pi/SCS/scs_core/tests/csv'
 
-log = CSVLog(path, topic, device_tag)
+log = CSVLog(path, topic_name, device_tag)
 log.timeline_start = now
 
 print(log)
-print("file_name: %s" % CSVLogFile.name(now.datetime, topic, device_tag))
+print("file_name: %s" % CSVLogFile.name(now.datetime, topic_name, device_tag))
 print("file_path: %s" % log.file_path())
 print("-")
 
@@ -40,11 +40,11 @@ print("-")
 
 path = 'data'
 
-log = CSVLog(path, topic, device_tag)
+log = CSVLog(path, topic_name, device_tag)
 log.timeline_start = now
 
 print(log)
-print("file_name: %s" % CSVLogFile.name(now.datetime, topic, device_tag))
+print("file_name: %s" % CSVLogFile.name(now.datetime, topic_name, device_tag))
 print("file_path: %s" % log.file_path())
 print("-")
 

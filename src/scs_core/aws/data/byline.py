@@ -71,6 +71,17 @@ class Byline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def topic_name(self):
+        split = self.topic.rsplit('/', 1)
+
+        if not split:
+            return None
+
+        return split[len(split) - 1]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 

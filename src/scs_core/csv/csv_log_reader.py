@@ -86,7 +86,7 @@ class CSVLogReader(object):
         for file in Filesystem.ls(directory_path):
             log_file = CSVLogFile.construct(file)
 
-            if log_file.topic != self.__log.topic:
+            if log_file.topic_name != self.__log.topic_name:
                 continue
 
             if log_file.created_datetime.date() < self.__log.timeline_start.date():
