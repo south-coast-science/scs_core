@@ -44,9 +44,9 @@ class CSVLogReader(object):
         reader = None
 
         try:
-            reader = CSVReader(log_file.path())
+            reader = CSVReader(filename=log_file.path(), empty_string_as_null=True)
 
-            for row in reader.rows:
+            for row in reader.rows():
                 try:
                     datum = json.loads(row, object_pairs_hook=OrderedDict)
                 except ValueError:

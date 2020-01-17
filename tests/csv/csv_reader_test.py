@@ -15,7 +15,7 @@ reader = CSVReader(filename='test.csv')
 print(reader)
 print("=")
 
-for datum in reader.rows:
+for datum in reader.rows():
     print(datum)
     print("-")
 

@@ -44,13 +44,18 @@ class CSVReader(object):
         return value
 
 
+    @staticmethod
+    def __nullify(value):
+        return None if value == "" else value
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None, cast=True):
+    def __init__(self, filename=None, numeric_cast=True, empty_string_as_null=False):
         """
         Constructor
         """
-        self.__filename = filename
+        self.__filename = filename                                          # string
         self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
 
         self.__reader = csv.reader(self.__file, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
@@ -61,9 +66,10 @@ class CSVReader(object):
         except StopIteration:                   # no input
             paths = []
 
-        self.__header = CSVHeader.construct_from_paths(paths)
+        self.__header = CSVHeader.construct_from_paths(paths)               # CSVHeader
 
-        self.__cast = cast
+        self.__numeric_cast = numeric_cast                                  # bool
+        self.__empty_string_as_null = empty_string_as_null                  # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -77,24 +83,27 @@ class CSVReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
     def rows(self):
         try:
             for row in self.__reader:
                 if len(row) == 0:
                     continue
 
-                if self.__cast:
-                    datum = self.__header.as_dict([CSVReader.__recast(cell) for cell in row])
+                if self.__numeric_cast:
+                    row = [self.__recast(cell) for cell in row]
 
-                else:
-                    datum = self.__header.as_dict([cell for cell in row])
+                if self.__empty_string_as_null:
+                    row = [self.__nullify(cell) for cell in row]
+
+                datum = self.__header.as_dict([cell for cell in row])
 
                 yield JSONify.dumps(datum)
 
         except _csv.Error as ex:
             raise CSVReaderException(ex)            # typically caused by a badly-closed CSV file
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def filename(self):
@@ -111,7 +120,8 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
-        return "CSVReader:{filename:%s, cast:%s, header:%s}" % (self.filename, self.__cast, header)
+        return "CSVReader:{filename:%s, numeric_cast:%s, empty_string_as_null:%s, header:%s}" % \
+               (self.filename, self.__numeric_cast, self.__empty_string_as_null, header)
 
 
 # --------------------------------------------------------------------------------------------------------------------
