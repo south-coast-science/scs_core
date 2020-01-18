@@ -14,8 +14,6 @@ from multiprocessing import Manager
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
-# TODO: can the run method be re-implemented as a co-routine with (yield)?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 # noinspection PyBroadException
@@ -31,7 +29,7 @@ class MessageQueue(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, max_size):
+    def __init__(self, max_size, max_priorities=1):
         """
         Constructor
         """
@@ -70,7 +68,7 @@ class MessageQueue(SynchronisedProcess):
                     self._value.length = len(self)
 
         except (BrokenPipeError, KeyboardInterrupt, SystemExit):
-            pass
+            return
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -168,6 +166,7 @@ class MessageQueueInterface(object):
     classdocs
     """
 
+    # fields...
     __ENQ =         'enq'
     __DEQ =         'deq'
     __LENGTH =      'len'

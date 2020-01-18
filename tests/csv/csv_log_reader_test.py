@@ -46,7 +46,7 @@ for file in reader.log_files():
 
     try:
         for datum in reader.documents(file, 'rec'):
-            publication = Publication(file.topic_name, datum)
+            publication = Publication(file.topic_name, 0, datum)
             print(json.dumps(publication.as_json()))
 
     except CSVReaderException:
