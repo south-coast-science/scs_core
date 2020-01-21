@@ -130,9 +130,13 @@ class TailEventHandler(ProcessEvent):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyPep8Naming
+
     def process_IN_MODIFY(self, _event):
         pass
 
+
+    # noinspection PyPep8Naming
 
     def process_IN_CLOSE_WRITE(self, _event):
         self.__terminate = True
@@ -159,7 +163,7 @@ class TailNotifier(Notifier):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def loop(self, callback=None, daemonize=False, **args):
+    def loop(self, callback=None, _daemonize=False, **_args):
         try:
             while True:
                 self.process_events()
