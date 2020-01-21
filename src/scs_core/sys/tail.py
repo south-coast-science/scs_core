@@ -18,7 +18,7 @@ class Tail(object):
     classdocs
     """
 
-    DEFAULT_TIMEOUT =   120000              # 2 minutes in milliseconds
+    DEFAULT_TIMEOUT =   2000        # TODO: 120000              # 2 minutes in milliseconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -53,6 +53,10 @@ class Tail(object):
         self.__handler = handler                                # TailEventHandler
 
 
+    def __iter__(self):
+        return self.readlines()
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
@@ -71,6 +75,8 @@ class Tail(object):
         # new lines...
         for line in self.__notifier.loop(self.__handler.readlines):
             yield line
+
+        raise StopIteration()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -135,7 +141,7 @@ class TailEventHandler(ProcessEvent):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TailEventHandler:{path:%s, file:%s, terminate:%s}" % (self.__path, self.__file, self.__terminate)
+        return "TailEventHandler:{path:%s, terminate:%s}" % (self.__path, self.__terminate)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -170,6 +176,9 @@ class TailNotifier(Notifier):
                     break                               # timeout
 
                 self.read_events()
+
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+            pass
 
         finally:
             self.stop()

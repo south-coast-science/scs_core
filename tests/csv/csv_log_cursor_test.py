@@ -8,23 +8,23 @@ Created on 20 Jan 2020
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_log_cursor import CSVLogCursorList
+from scs_core.csv.csv_log_cursor import CSVLogCursorQueue, CSVLogCursor
 from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jobs = CSVLogCursorList(OrderedDict())
+jobs = CSVLogCursorQueue(OrderedDict())
 print(jobs)
 print("-")
 
 print("include...")
-jobs.include('path/file1.csv', 22)
+jobs.include(CSVLogCursor('path/file1.csv', 22, False))
 print(jobs)
 print("-")
 
 print("include...")
-jobs.include('path/file2.csv')
+jobs.include(CSVLogCursor('path/file2.csv', 0, True))
 print(jobs)
 print("-")
 
@@ -34,7 +34,7 @@ print(jdict)
 print(JSONify.dumps(jdict))
 print("-")
 
-jobs = CSVLogCursorList.construct_from_jdict(jdict)
+jobs = CSVLogCursorQueue.construct_from_jdict(jdict)
 print(jobs)
 print("=")
 
