@@ -6,23 +6,21 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
-
 from scs_core.csv.csv_log import CSVLog
+from scs_core.csv.csv_log_cursor import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
-from scs_core.csv.csv_reader import CSVReaderException
 
 from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.data.publication import Publication
 
 from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-start_iso = '2019-01-25T13:37:00Z'
-topic_name = 'gases'
+start_iso = '2020-01-20T09:50:00Z'
+topic_name = 'climate'
+rec_field = 'rec'
 
 start = LocalizedDatetime.construct_from_iso8601(start_iso)
 start_datetime = start.datetime
@@ -33,21 +31,20 @@ print("-")
 conf = CSVLoggerConf.load(Host)
 print(conf)
 
-log = CSVLog(conf.root_path, topic_name, None, start)
+log = CSVLog(conf.root_path, topic_name, None, start_datetime)
 print(log)
-
-reader = CSVLogReader(log)
-print(reader)
-
 print("-")
 
-for file in reader.log_files():
-    print(file)
+cursor_queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
+print(cursor_queue)
+print("-")
 
-    try:
-        for datum in reader.documents(file, 'rec'):
-            publication = Publication(file.topic_name, datum)
-            print(json.dumps(publication.as_json()))
+reader = CSVLogReader()
+print(reader)
+print("-")
 
-    except CSVReaderException:
-        print("skipping file")
+reader.initialise(cursor_queue)
+print(reader)
+print("-")
+
+reader.run()

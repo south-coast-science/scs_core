@@ -82,8 +82,8 @@ class CSVWriter(object):
         # row...
         self.__writer.writerow(datum.row(self.__paths))
 
-        if self.filename is None:
-            self.__file.flush()
+        # if self.filename is None:
+        self.__file.flush()
 
         return True
 
