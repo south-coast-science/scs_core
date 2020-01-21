@@ -11,7 +11,7 @@ from scs_core.csv.csv_reader import CSVReader
 
 # --------------------------------------------------------------------------------------------------------------------
 
-reader = CSVReader(filename='test.csv')
+reader = CSVReader.construct_for_file('test.csv')
 print(reader)
 print("=")
 
@@ -20,3 +20,4 @@ for datum in reader.rows():
     print("-")
 
 reader.close()
+

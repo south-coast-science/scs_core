@@ -7,7 +7,6 @@ https://stackoverflow.com/questions/43717757/commas-and-double-quotes-in-csv-fil
 """
 
 import csv
-import _csv
 import sys
 
 from scs_core.csv.csv_dict import CSVHeader
@@ -51,25 +50,34 @@ class CSVReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None, numeric_cast=True, empty_string_as_null=False):
+    @classmethod
+    def construct_for_file(cls, filename, numeric_cast=True, empty_string_as_null=False, start_row=0):
+        iterable = sys.stdin if filename is None else open(filename, "r")
+
+        return cls(iterable, filename=filename, numeric_cast=numeric_cast, empty_string_as_null=empty_string_as_null,
+                   start_row=start_row)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, iterable, filename=None, numeric_cast=True, empty_string_as_null=False, start_row=0):
         """
         Constructor
         """
-        self.__filename = filename                                          # string
-        self.__file = sys.stdin if self.__filename is None else open(self.__filename, "r")
+        self.__iterable = iterable                                              # iterable
+        self.__filename = filename                                              # string
+        self.__numeric_cast = bool(numeric_cast)                                # bool
+        self.__empty_string_as_null = bool(empty_string_as_null)                # bool
+        self.__start_row = int(start_row)                                       # int
 
-        self.__reader = csv.reader(self.__file, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
-                                   skipinitialspace=True)
+        self.__reader = csv.reader(iterable, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
         try:
             paths = next(self.__reader)
         except StopIteration:                   # no input
             paths = []
 
-        self.__header = CSVHeader.construct_from_paths(paths)               # CSVHeader
-
-        self.__numeric_cast = numeric_cast                                  # bool
-        self.__empty_string_as_null = empty_string_as_null                  # bool
+        self.__header = CSVHeader.construct_from_paths(paths)                   # CSVHeader
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,15 +86,22 @@ class CSVReader(object):
         if self.__filename is None:
             return
 
-        self.__file.close()
+        self.__iterable.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def rows(self):
+        row_number = -1
+
         try:
             for row in self.__reader:
                 if len(row) == 0:
+                    continue
+
+                row_number += 1
+
+                if row_number < self.__start_row:
                     continue
 
                 if self.__numeric_cast:
@@ -99,8 +114,8 @@ class CSVReader(object):
 
                 yield JSONify.dumps(datum)
 
-        except _csv.Error as ex:
-            raise CSVReaderException(ex)            # typically caused by a badly-closed CSV file
+        except csv.Error as ex:
+            raise CSVReaderException(ex)            # typically on the last line of a badly-closed CSV file
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -120,8 +135,10 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
-        return "CSVReader:{filename:%s, numeric_cast:%s, empty_string_as_null:%s, header:%s}" % \
-               (self.filename, self.__numeric_cast, self.__empty_string_as_null, header)
+        return "CSVReader:{iterable:%s, filename:%s, numeric_cast:%s, empty_string_as_null:%s, " \
+               "start_row:%s, header:%s}" % \
+               (self.__iterable, self.filename, self.__numeric_cast, self.__empty_string_as_null,
+                self.__start_row, header)
 
 
 # --------------------------------------------------------------------------------------------------------------------

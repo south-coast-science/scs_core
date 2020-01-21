@@ -4,99 +4,120 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
+import sys
+import time
 
 from collections import OrderedDict
+from multiprocessing import Manager
 
-from scs_core.csv.csv_log import CSVLog, CSVLogFile
+from scs_core.csv.csv_log_cursor import CSVLogCursor, CSVLogCursorQueue
 from scs_core.csv.csv_reader import CSVReader
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.sync.synchronised_process import SynchronisedProcess
 
-from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.tail import Tail
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVLogReader(object):
+class CSVLogReader(SynchronisedProcess):
     """
     classdocs
     """
 
+    __IDLE_TIME =       2.0                 # seconds
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, log, empty_string_as_null=True):
+    @classmethod
+    def read(cls, cursor: CSVLogCursor):
+        reader = CSVReader.construct_for_file(cursor.file_path, empty_string_as_null=True, start_row=cursor.row_number)
+
+        try:
+            cls.__read_rows(reader)
+        finally:
+            reader.close()
+
+
+    @classmethod
+    def tail(cls, cursor: CSVLogCursor):
+        tail = Tail.construct(cursor.file_path)
+        tail.open()
+
+        reader = CSVReader(tail, empty_string_as_null=True, start_row=cursor.row_number)
+
+        try:
+            cls.__read_rows(reader)
+        finally:
+            reader.close()
+            tail.close()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def __read_rows(cls, reader):
+        try:
+            for datum in reader.rows():
+                print(datum)
+                sys.stdout.flush()
+
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+            pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
         """
         Constructor
         """
-        self.__log = log                                            # CSVLog
-        self.__empty_string_as_null = empty_string_as_null          # bool
+        manager = Manager()
+
+        SynchronisedProcess.__init__(self, manager.list())
+
+        cursor_queue = CSVLogCursorQueue(OrderedDict())
+        cursor_queue.as_list(self._value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def log_files(self):
-        for directory_path in self.__directory_paths():
-            for log_file in self.__log_files(directory_path):
-                yield log_file
-
-
-    def documents(self, log_file, rec_field):
-        reader = None
-
+    def run(self):
         try:
-            reader = CSVReader(filename=log_file.path(), empty_string_as_null=self.__empty_string_as_null)
+            while True:
+                with self._lock:
+                    cursor_queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                    cursor = cursor_queue.pop()
 
-            for row in reader.rows():
-                try:
-                    datum = json.loads(row, object_pairs_hook=OrderedDict)
-                except ValueError:
+                    cursor_queue.as_list(self._value)
+
+                if cursor is None:
+                    time.sleep(self.__IDLE_TIME)
                     continue
 
-                if rec_field not in datum:
-                    raise KeyError(rec_field)
+                self.tail(cursor) if cursor.is_live else self.read(cursor)
 
-                rec = LocalizedDatetime.construct_from_iso8601(datum[rec_field])
-
-                if rec is None:
-                    raise ValueError(datum[rec_field])
-
-                if rec.datetime <= self.__log.timeline_start:
-                    continue
-
-                yield datum
-
-        finally:
-            if reader is not None:
-                reader.close()
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+            pass
 
 
-    # ----------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
+    # setters for client process...
 
-    def __directory_paths(self):
-        from_directory = CSVLog.directory_name(self.__log.timeline_start)
-
-        for directory in Filesystem.ls(self.__log.root_path):
-            if directory.name < from_directory:
-                continue
-
-            yield directory.path()
+    def initialise(self, cursor_queue: CSVLogCursorQueue):
+        with self._lock:
+            cursor_queue.as_list(self._value)
 
 
-    def __log_files(self, directory_path):
-        for file in Filesystem.ls(directory_path):
-            log_file = CSVLogFile.construct(file)
+    def include(self, cursor: CSVLogCursor):
+        with self._lock:
+            cursor_queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+            cursor_queue.include(cursor)
 
-            if log_file.topic_name != self.__log.topic_name:
-                continue
-
-            if log_file.created_datetime.date() < self.__log.timeline_start.date():
-                continue
-
-            yield log_file
+            cursor_queue.as_list(self._value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogReader:{log:%s, empty_string_as_null:%s}" % (self.__log, self.__empty_string_as_null)
+        return "CSVLogReader:{cursor_queue:%s}" % CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))

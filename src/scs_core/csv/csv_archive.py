@@ -24,7 +24,7 @@ class CSVArchive(ABC):
 
     @classmethod
     def retrieve(cls):
-        reader = CSVReader(filename=cls.archive_location(), numeric_cast=False)
+        reader = CSVReader.construct_for_file(cls.archive_location(), numeric_cast=False)
 
         try:
             for row in reader.rows():
