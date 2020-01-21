@@ -46,7 +46,7 @@ class CSVLogger(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def write(self, jstr):
+    def write(self, jstr):                          # TODO: return cursor
         if self.writing_inhibited:
             return
 

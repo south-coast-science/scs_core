@@ -29,7 +29,7 @@ class MessageQueue(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, max_size, max_priorities=1):
+    def __init__(self, max_size):
         """
         Constructor
         """
