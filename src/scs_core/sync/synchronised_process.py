@@ -39,6 +39,8 @@ class SynchronisedProcess(ABC):
             self.__proc = Process(target=self.run)
             self.__proc.start()
 
+            return self.__proc
+
         except KeyboardInterrupt:       # (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 

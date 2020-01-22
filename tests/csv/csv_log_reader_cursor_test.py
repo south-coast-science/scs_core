@@ -47,4 +47,9 @@ reader.initialise(cursor_queue)
 print(reader)
 print("-")
 
-reader.run()
+proc = reader.start()
+
+try:
+    proc.join()
+except KeyboardInterrupt:
+    pass

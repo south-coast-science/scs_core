@@ -5,7 +5,6 @@ Created on 14 Jan 2020
 """
 
 import sys
-import time
 
 from collections import OrderedDict
 from multiprocessing import Manager
@@ -92,8 +91,10 @@ class CSVLogReader(SynchronisedProcess):
                     cursor_queue.as_list(self._value)
 
                 if cursor is None:
-                    time.sleep(self.__IDLE_TIME)
                     continue
+
+                print("cursor: %s" % cursor, file=sys.stderr)
+                sys.stderr.flush()
 
                 self.tail(cursor) if cursor.is_live else self.read(cursor)
 

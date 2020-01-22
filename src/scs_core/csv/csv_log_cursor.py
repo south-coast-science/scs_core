@@ -166,7 +166,7 @@ class CSVLogCursor(JSONable):
                     raise ValueError(datum[rec_field])
 
                 if rec.datetime > log.timeline_start:
-                    return CSVLogCursor(log_file.path(), row_number, True)      # TODO: False
+                    return CSVLogCursor(log_file.path(), row_number, False)      # TODO: False
 
                 row_number += 1
 
