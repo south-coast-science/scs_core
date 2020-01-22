@@ -23,22 +23,20 @@ class Publication(JSONable):
         if not jdict:
             return None
 
-        topic = jdict.get('topic')
-        priority = jdict.get('priority')
-        payload = jdict.get('payload')
+        for topic, payload in jdict.items():
+            return Publication(topic, payload)
 
-        return Publication(topic, priority, payload)
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, priority, payload):
+    def __init__(self, topic, payload):
         """
         Constructor
         """
-        self.__topic = topic                        # string
-        self.__priority = int(priority)             # int
-        self.__payload = payload                    # string
+        self.__topic = topic                    # string
+        self.__payload = payload                # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,9 +44,7 @@ class Publication(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['topic'] = self.topic
-        jdict['priority'] = self.priority
-        jdict['payload'] = self.payload
+        jdict[self.topic] = self.payload
 
         return jdict
 
@@ -61,11 +57,6 @@ class Publication(JSONable):
 
 
     @property
-    def priority(self):
-        return self.__priority
-
-
-    @property
     def payload(self):
         return self.__payload
 
@@ -73,4 +64,4 @@ class Publication(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Publication:{topic:%s, priority:%s, payload:%s}" % (self.topic, self.priority, self.payload)
+        return "Publication:{topic:%s, payload:%s}" % (self.topic, self.payload)
