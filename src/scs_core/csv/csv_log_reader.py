@@ -115,11 +115,6 @@ class CSVLogReader(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # setters for client process...
 
-    def initialise(self, queue: CSVLogCursorQueue):
-        with self._lock:
-            queue.as_list(self._value)
-
-
     def include(self, cursor: CSVLogCursor):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
