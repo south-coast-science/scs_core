@@ -40,8 +40,8 @@ class CSVLogCursorQueue(JSONable):
         return cls(queue)
 
 
-    @classmethod
-    def __directory_paths(cls, log: CSVLog):
+    @staticmethod
+    def __directory_paths(log: CSVLog):
         from_directory = CSVLog.directory_name(log.timeline_start)
 
         for directory in Filesystem.ls(log.root_path):

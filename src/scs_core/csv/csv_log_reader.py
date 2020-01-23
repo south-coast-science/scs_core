@@ -10,7 +10,7 @@ import time
 from collections import OrderedDict
 from multiprocessing import Manager
 
-from scs_core.csv.csv_log_cursor_queue import CSVLogCursor, CSVLogCursorQueue
+from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
