@@ -10,7 +10,6 @@ import re
 
 from datetime import datetime as dt
 
-from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.sys.filesystem import Filesystem, File
 
 
@@ -47,6 +46,9 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def cursor_queue(self, rec_field):
+        # late import...
+        from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
+
         return CSVLogCursorQueue.construct_for_log(self, rec_field)         # cursors are NOT live
 
 
