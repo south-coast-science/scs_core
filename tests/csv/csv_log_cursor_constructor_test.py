@@ -7,7 +7,7 @@ Created on 14 Jan 2020
 """
 
 from scs_core.csv.csv_log import CSVLog
-from scs_core.csv.csv_log_cursor import CSVLogCursorQueue
+from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -35,5 +35,5 @@ print(log)
 
 print("-")
 
-cursor_queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
-print(cursor_queue)
+queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
+print(queue)

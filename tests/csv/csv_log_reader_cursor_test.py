@@ -7,7 +7,7 @@ Created on 14 Jan 2020
 """
 
 from scs_core.csv.csv_log import CSVLog
-from scs_core.csv.csv_log_cursor import CSVLogCursorQueue
+from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -35,15 +35,11 @@ log = CSVLog(conf.root_path, topic_name, None, start_datetime)
 print(log)
 print("-")
 
-cursor_queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
-print(cursor_queue)
+queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
+print(queue)
 print("-")
 
-reader = CSVLogReader()
-print(reader)
-print("-")
-
-reader.initialise(cursor_queue)
+reader = CSVLogReader(queue, verbose=True)
 print(reader)
 print("-")
 

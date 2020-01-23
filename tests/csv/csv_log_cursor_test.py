@@ -6,15 +6,13 @@ Created on 20 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from collections import OrderedDict
-
-from scs_core.csv.csv_log_cursor import CSVLogCursorQueue, CSVLogCursor
+from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jobs = CSVLogCursorQueue(OrderedDict())
+jobs = CSVLogCursorQueue()
 print(jobs)
 print("-")
 

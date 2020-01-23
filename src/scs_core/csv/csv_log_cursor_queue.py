@@ -28,16 +28,16 @@ class CSVLogCursorQueue(JSONable):
 
     @classmethod
     def construct_for_log(cls, log: CSVLog, rec_field):
-        cursors = OrderedDict()
+        queue = OrderedDict()
 
         for directory_path in cls.__directory_paths(log):
             for log_file in cls.__log_files(log, directory_path):
                 cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
 
                 if cursor is not None:
-                    cursors[cursor.file_path] = cursor
+                    queue[cursor.file_path] = cursor
 
-        return CSVLogCursorQueue(cursors)
+        return cls(queue)
 
 
     @classmethod
@@ -72,26 +72,27 @@ class CSVLogCursorQueue(JSONable):
         if not jdict:
             return None
 
-        cursors = OrderedDict()
+        queue = OrderedDict()
 
-        for cursor_jdict in jdict.get('cursors'):
+        for cursor_jdict in jdict.get('queue'):
             cursor = CSVLogCursor.construct_from_jdict(cursor_jdict)
-            cursors[cursor.file_path] = cursor
+            queue[cursor.file_path] = cursor
 
-        return cls(cursors)
+        return cls(queue)
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    #
 
-    def __init__(self, cursors):
+    def __init__(self, queue=None):
         """
         Constructor
         """
-        self.__cursors = cursors                        # OrderedDict of file_path: LogCursor
+        self.__queue = OrderedDict() if queue is None else queue        # OrderedDict of CSVLogCursor
 
 
     def __len__(self):
-        return len(self.__cursors)
+        return len(self.__queue)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ class CSVLogCursorQueue(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['cursors'] = [cursor.as_json() for cursor in self.__cursors.values()]
+        jdict['queue'] = [cursor.as_json() for cursor in self.__queue.values()]
 
         return jdict
 
@@ -108,30 +109,30 @@ class CSVLogCursorQueue(JSONable):
 
     def include(self, cursor):
         if cursor.is_live:
-            for file_path in self.__cursors.keys():
-                self.__cursors[file_path].is_live = False           # there shall only be one live file
+            for file_path in self.__queue.keys():
+                self.__queue[file_path].is_live = False           # there shall only be one live file
 
-        self.__cursors[cursor.file_path] = cursor
+        self.__queue[cursor.file_path] = cursor
 
 
     def pop(self):
         try:
-            return self.__cursors.popitem(last=False)[1]
+            return self.__queue.popitem(last=False)[1]
         except KeyError:
             return None
 
 
-    def cursors(self):
-        for cursor in self.__cursors.values():
+    def queue(self):
+        for cursor in self.__queue.values():
             yield cursor
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        cursors = '[' + ', '.join(str(cursor) for cursor in self.__cursors.values()) + ']'
+        queue = '[' + ', '.join(str(cursor) for cursor in self.__queue.values()) + ']'
 
-        return "CSVLogCursorQueue:{cursors:%s}" %  cursors
+        return "CSVLogCursorQueue:{queue:%s}" %  queue
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -166,7 +167,7 @@ class CSVLogCursor(JSONable):
                     raise ValueError(datum[rec_field])
 
                 if rec.datetime > log.timeline_start:
-                    return CSVLogCursor(log_file.path(), row_number, False)      # TODO: False
+                    return cls(log_file.path(), row_number, False)
 
                 row_number += 1
 
