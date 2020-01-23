@@ -6,7 +6,6 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -34,7 +33,7 @@ log = conf.csv_log(topic_name, timeline_start=start_datetime)
 print(log)
 print("-")
 
-queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
+queue = log.cursor_queue(rec_field)
 print(queue)
 print("-")
 

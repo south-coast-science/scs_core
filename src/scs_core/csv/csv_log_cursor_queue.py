@@ -27,7 +27,7 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log(cls, log: CSVLog, rec_field):
+    def construct_for_log(cls, log: CSVLog, rec_field):                         # cursors are NOT live
         queue = OrderedDict()
 
         for directory_path in cls.__directory_paths(log):
@@ -145,7 +145,7 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):
+    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # cursors is NOT live
         reader = None
         row_number = 0
 
