@@ -29,6 +29,19 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def __read_rows(reader):
+        try:
+            for datum in reader.rows():
+                print(datum)
+                sys.stdout.flush()
+
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+            pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, queue: CSVLogCursorQueue, empty_string_as_null=False, verbose=False):
         """
         Constructor
@@ -97,17 +110,6 @@ class CSVLogReader(SynchronisedProcess):
         finally:
             reader.close()
             tail.close()
-
-
-    @staticmethod
-    def __read_rows(reader):
-        try:
-            for datum in reader.rows():
-                print(datum)
-                sys.stdout.flush()
-
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
-            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -51,8 +51,8 @@ class CSVLogCursorQueue(JSONable):
             yield directory.path()
 
 
-    @classmethod
-    def __log_files(cls, log: CSVLog, directory_path):
+    @staticmethod
+    def __log_files(log: CSVLog, directory_path):
         for file in Filesystem.ls(directory_path):
             log_file = CSVLogFile.construct(file)
 

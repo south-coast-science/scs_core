@@ -22,8 +22,8 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def directory_name(cls, datetime):
+    @staticmethod
+    def directory_name(datetime):
         if datetime is None:
             raise ValueError("datetime may not be None")
 
@@ -114,8 +114,8 @@ class CSVLogFile(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def name(cls, datetime, topic_name, tag=None):
+    @staticmethod
+    def name(datetime, topic_name, tag=None):
         if datetime is None:
             raise ValueError("datetime may not be None")
 
