@@ -49,7 +49,7 @@ class CSVLog(object):
         # late import...
         from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 
-        return CSVLogCursorQueue.construct_for_log(self, rec_field)         # cursors are NOT live
+        return CSVLogCursorQueue.construct_for_log(self, rec_field)             # cursors are NOT live
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -145,7 +145,7 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # cursors is NOT live
+    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # cursor is NOT live
         reader = None
         row_number = 0
 
