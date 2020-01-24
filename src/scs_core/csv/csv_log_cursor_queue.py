@@ -30,12 +30,13 @@ class CSVLogCursorQueue(JSONable):
     def construct_for_log(cls, log: CSVLog, rec_field):                         # cursors are NOT live
         queue = OrderedDict()
 
-        for directory_path in cls.__directory_paths(log):
-            for log_file in cls.__log_files(log, directory_path):
-                cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
+        if log.timeline_start is not None:
+            for directory_path in cls.__directory_paths(log):
+                for log_file in cls.__log_files(log, directory_path):
+                    cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
 
-                if cursor is not None:
-                    queue[cursor.file_path] = cursor
+                    if cursor is not None:
+                        queue[cursor.file_path] = cursor
 
         return cls(queue)
 
@@ -107,12 +108,17 @@ class CSVLogCursorQueue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def include(self, cursor):
-        if cursor.is_live:
-            for file_path in self.__queue.keys():
-                self.__queue[file_path].is_live = False           # there shall only be one live file
+    def set_live(self, file_path):
+        if file_path is None:
+            return
 
-        self.__queue[cursor.file_path] = cursor
+        if file_path in self.__queue.keys():
+            return                                          # assume that the cursor is already live
+
+        for key in self.__queue.keys():
+            self.__queue[key].is_live = False               # there shall only be one live file
+
+        self.__queue[file_path] = CSVLogCursor(file_path, 0, True)
 
 
     def pop(self):

@@ -15,6 +15,8 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.filesystem import Filesystem
 
 
+# TODO: remove deferred write functionality
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogger(object):
@@ -46,23 +48,23 @@ class CSVLogger(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def write(self, jstr):                          # TODO: return cursor
+    def write(self, jstr):
         if self.writing_inhibited:
-            return
+            return None
 
         if jstr is None or self.log is None:
-            return
+            return None
 
         datum = CSVDict.construct_from_jstr(jstr)
 
         if datum is None:
-            return
+            return None
 
         # direct write...
         if not self.write_interval:
             self.__write(datum)
             self.__file.flush()
-            return
+            return self.log.file_path()
 
         # interval write...
         now = time.time()
@@ -75,7 +77,7 @@ class CSVLogger(object):
         # append to buffer...
         if interval < self.write_interval:
             self.__buffer.append(datum)
-            return
+            return self.log.file_path()
 
         self.__latest_write = now
 
@@ -86,6 +88,8 @@ class CSVLogger(object):
         self.__file.flush()
 
         self.__buffer = []
+
+        return self.log.file_path()
 
 
     def close(self):

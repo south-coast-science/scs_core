@@ -18,7 +18,7 @@ class Tail(object):
     classdocs
     """
 
-    DEFAULT_TIMEOUT =   2000        # TODO: 120000              # 2 minutes in milliseconds
+    DEFAULT_TIMEOUT =   600000                  # 10 minutes in milliseconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -171,13 +171,13 @@ class TailNotifier(Notifier):
                 response = callback(self)
 
                 if response is False:
-                    break                               # file closed
+                    break                                   # file closed
 
                 for line in response:
                     yield line
 
                 if not self.check_events():
-                    break                               # timeout
+                    raise TimeoutError                      # timeout
 
                 self.read_events()
 

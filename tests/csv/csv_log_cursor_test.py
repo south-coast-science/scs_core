@@ -6,7 +6,7 @@ Created on 20 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
+from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.data.json import JSONify
 
 
@@ -17,12 +17,12 @@ print(jobs)
 print("-")
 
 print("include...")
-jobs.include(CSVLogCursor('path/file1.csv', 22, False))
+jobs.set_live('path/file1.csv')
 print(jobs)
 print("-")
 
 print("include...")
-jobs.include(CSVLogCursor('path/file2.csv', 0, True))
+jobs.set_live('path/file2.csv')
 print(jobs)
 print("-")
 

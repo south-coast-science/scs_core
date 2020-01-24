@@ -81,7 +81,7 @@ class CSVLogReader(SynchronisedProcess):
 
                 self.__tail(cursor) if cursor.is_live else self.__read(cursor)
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -107,6 +107,11 @@ class CSVLogReader(SynchronisedProcess):
                            start_row=cursor.row_number)
         try:
             self.__read_rows(reader)
+
+        except TimeoutError:
+            print("CSVLogReader: %s: TimeoutError" % cursor.file_path, file=sys.stderr)
+            sys.stderr.flush()
+
         finally:
             reader.close()
             tail.close()
@@ -115,10 +120,10 @@ class CSVLogReader(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # setters for client process...
 
-    def include(self, cursor: CSVLogCursor):
+    def set_live(self, file_path):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-            queue.include(cursor)
+            queue.set_live(file_path)
 
             queue.as_list(self._value)
 
