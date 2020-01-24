@@ -108,6 +108,9 @@ class CSVLogReader(SynchronisedProcess):
         try:
             self.__read_rows(reader)
 
+        except RuntimeError:
+            pass                    # catches StopIteration
+
         except TimeoutError:
             print("CSVLogReader: %s: TimeoutError" % cursor.file_path, file=sys.stderr)
             sys.stderr.flush()

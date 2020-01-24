@@ -76,7 +76,7 @@ class Tail(object):
         for line in self.__notifier.loop(self.__handler.readlines):
             yield line
 
-        raise StopIteration()
+        raise StopIteration()           # TODO: do we need StopIteration?
 
 
     # ----------------------------------------------------------------------------------------------------------------
