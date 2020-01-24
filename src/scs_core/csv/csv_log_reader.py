@@ -90,8 +90,8 @@ class CSVLogReader(SynchronisedProcess):
 
     def __read(self, cursor: CSVLogCursor):
         reader = CSVReader.construct_for_file(cursor.file_path,
-                                              empty_string_as_null=self.__empty_string_as_null,
-                                              start_row=cursor.row_number)
+                                              empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+
         try:
             self.__read_rows(reader)
         finally:
@@ -103,8 +103,8 @@ class CSVLogReader(SynchronisedProcess):
         tail.open()
 
         reader = CSVReader(tail,
-                           empty_string_as_null=self.__empty_string_as_null,
-                           start_row=cursor.row_number)
+                           empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+
         try:
             self.__read_rows(reader)
 

@@ -69,14 +69,12 @@ class Tail(object):
 
     def readlines(self):
         # existing lines...
-        for line in self.__handler.readlines():
+        for line in self.__handler.read_head():
             yield line
 
         # new lines...
-        for line in self.__notifier.loop(self.__handler.readlines):
+        for line in self.__notifier.loop(self.__handler.read_tail):
             yield line
-
-        raise StopIteration()           # TODO: do we need StopIteration?
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -120,24 +118,26 @@ class TailEventHandler(ProcessEvent):
         self.__file = None
 
 
-    def readlines(self, _notifier=None):
-        if self.__terminate:
-            return False
-
+    def read_head(self, _notifier=None):
         for line in self.__file.readlines():
             yield line.strip()
+
+
+    def read_tail(self, _notifier=None):
+        if self.__terminate:
+            return True
+
+        return [line.strip() for line in self.__file.readlines()]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyPep8Naming
-
     def process_IN_MODIFY(self, _event):
         pass
 
 
     # noinspection PyPep8Naming
-
     def process_IN_CLOSE_WRITE(self, _event):
         self.__terminate = True
 
@@ -170,7 +170,7 @@ class TailNotifier(Notifier):
 
                 response = callback(self)
 
-                if response is False:
+                if response is True:
                     break                                   # file closed
 
                 for line in response:

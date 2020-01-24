@@ -195,20 +195,20 @@ class CSVLogCursor(JSONable):
             return None
 
         file_path = jdict.get('file-path')
-        row_number = jdict.get('row-number')
+        row = jdict.get('row')
         is_live = jdict.get('is-live')
 
-        return cls(file_path, row_number, is_live)
+        return cls(file_path, row, is_live)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, file_path, row_number, is_live):
+    def __init__(self, file_path, row, is_live):
         """
         Constructor
         """
         self.__file_path = file_path                            # string
-        self.__row_number = int(row_number)                     # int
+        self.__row = int(row)                                   # int
         self.__is_live = bool(is_live)                          # bool
 
 
@@ -222,7 +222,7 @@ class CSVLogCursor(JSONable):
         jdict = OrderedDict()
 
         jdict['file-path'] = self.file_path
-        jdict['row-number'] = self.row_number
+        jdict['row'] = self.row
         jdict['is-live'] = self.is_live
 
         return jdict
@@ -236,8 +236,8 @@ class CSVLogCursor(JSONable):
 
 
     @property
-    def row_number(self):
-        return self.__row_number
+    def row(self):
+        return self.__row
 
 
     @property
@@ -253,5 +253,5 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogCursor:{file_path:%s, row_number:%s, is_live:%s}" %  \
-               (self.file_path, self.row_number, self.is_live)
+        return "CSVLogCursor:{file_path:%s, row:%s, is_live:%s}" %  \
+               (self.file_path, self.row, self.is_live)
