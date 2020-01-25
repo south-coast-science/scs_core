@@ -99,6 +99,9 @@ class CSVLogger(object):
         self.__file.close()
         self.__file = None
 
+        print("CSVLogger.close", file=sys.stderr)
+        sys.stderr.flush()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 

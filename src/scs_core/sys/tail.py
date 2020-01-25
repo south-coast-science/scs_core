@@ -8,6 +8,8 @@ https://stackoverflow.com/questions/16175745/read-new-line-with-pynotify
 https://www.linode.com/docs/development/monitor-filesystem-events-with-pyinotify/
 """
 
+import sys
+
 from pyinotify import EventsCodes, Notifier, ProcessEvent, WatchManager
 
 
@@ -24,8 +26,9 @@ class Tail(object):
 
     __IN_MODIFY =       EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_MODIFY']
     __IN_CLOSE_WRITE =  EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_CLOSE_WRITE']
+    __IN_MOVED_TO =     EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_MOVED_TO']
 
-    __IN_EVENTS =       __IN_MODIFY | __IN_CLOSE_WRITE
+    __IN_EVENTS =       __IN_MODIFY | __IN_CLOSE_WRITE | __IN_MOVED_TO
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -75,6 +78,8 @@ class Tail(object):
         # new lines...
         for line in self.__notifier.loop(self.__handler.read_tail):
             yield line
+
+        raise StopIteration()               # TODO: check that is is required
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -134,12 +139,30 @@ class TailEventHandler(ProcessEvent):
 
     # noinspection PyPep8Naming
     def process_IN_MODIFY(self, _event):
+        # self.__report("IN_MODIFY")
         pass
 
 
     # noinspection PyPep8Naming
     def process_IN_CLOSE_WRITE(self, _event):
+        self.__report("IN_CLOSE_WRITE")
+
         self.__terminate = True
+
+
+    # noinspection PyPep8Naming
+    def process_IN_MOVED_TO(self, _event):
+        self.__report("IN_MOVED_TO")
+
+        self.__terminate = True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def __report(cls, event_name):
+        print("TailEventHandler: %s" % event_name, file=sys.stderr)
+        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------

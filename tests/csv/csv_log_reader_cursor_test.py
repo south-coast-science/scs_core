@@ -37,7 +37,7 @@ queue = log.cursor_queue(rec_field)
 print(queue)
 print("-")
 
-reader = CSVLogReader(queue, verbose=True)
+reader = CSVLogReader(queue)
 print(reader)
 print("-")
 

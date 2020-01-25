@@ -7,6 +7,7 @@ Created on 14 Jan 2020
 import sys
 import time
 
+from abc import ABC, abstractmethod
 from collections import OrderedDict
 from multiprocessing import Manager
 
@@ -31,10 +32,16 @@ class CSVLogReader(SynchronisedProcess):
 
     @staticmethod
     def __read_rows(reader):
+        row_count = 0
+
         try:
             for datum in reader.rows():
                 print(datum)
                 sys.stdout.flush()
+
+                row_count += 1
+
+            return row_count
 
         except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
@@ -42,7 +49,7 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, queue: CSVLogCursorQueue, empty_string_as_null=False, verbose=False):
+    def __init__(self, queue: CSVLogCursorQueue, empty_string_as_null=False, reporter=None):
         """
         Constructor
         """
@@ -54,7 +61,7 @@ class CSVLogReader(SynchronisedProcess):
             queue.as_list(self._value)
 
         self.__empty_string_as_null = bool(empty_string_as_null)                # bool
-        self.__verbose = bool(verbose)                                          # bool
+        self.__reporter = reporter                                              # CSVLogReaderReporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -75,11 +82,13 @@ class CSVLogReader(SynchronisedProcess):
                         time.sleep(self.__IDLE_TIME)
                         continue
 
-                if self.__verbose:
-                    print("CSVLogReader: %s" % cursor, file=sys.stderr)
-                    sys.stderr.flush()
+                if self.__reporter:
+                    self.__reporter.opening(cursor)
 
-                self.__tail(cursor) if cursor.is_live else self.__read(cursor)
+                row_count = self.__tail(cursor) if cursor.is_live else self.__read(cursor)
+
+                if self.__reporter:
+                    self.__reporter.closing(cursor, row_count)
 
         except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -93,7 +102,8 @@ class CSVLogReader(SynchronisedProcess):
                                               empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
 
         try:
-            self.__read_rows(reader)
+            return self.__read_rows(reader)
+
         finally:
             reader.close()
 
@@ -106,14 +116,14 @@ class CSVLogReader(SynchronisedProcess):
                            empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
 
         try:
-            self.__read_rows(reader)
+            return self.__read_rows(reader)
 
         except RuntimeError:
-            pass                    # catches StopIteration
+            pass                                # Python 3.7 response to StopIteration
 
         except TimeoutError:
-            print("CSVLogReader: %s: TimeoutError" % cursor.file_path, file=sys.stderr)
-            sys.stderr.flush()
+            if self.__reporter:
+                self.__reporter.timeout(cursor)
 
         finally:
             reader.close()
@@ -137,5 +147,29 @@ class CSVLogReader(SynchronisedProcess):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
 
-        return "CSVLogReader:{queue:%s, empty_string_as_null:%s, verbose:%s}" % \
-               (queue, self.__empty_string_as_null, self.__verbose)
+        return "CSVLogReader:{queue:%s, empty_string_as_null:%s, reporter:%s}" % \
+               (queue, self.__empty_string_as_null, self.__reporter)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVLogReaderReporter(ABC):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def opening(self, cursor: CSVLogCursor):
+        pass
+
+
+    @abstractmethod
+    def closing(self, cursor: CSVLogCursor, row_count):
+        pass
+
+
+    @abstractmethod
+    def timeout(self, cursor: CSVLogCursor):
+        pass
