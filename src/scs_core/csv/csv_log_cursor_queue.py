@@ -9,7 +9,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.csv.csv_log import CSVLog, CSVLogFile
-from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 
 from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -27,7 +27,7 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log(cls, log: CSVLog, rec_field):                         # cursors are NOT live
+    def construct_for_log(cls, log: CSVLog, rec_field):                         # these cursors are NOT live
         queue = OrderedDict()
 
         if log.timeline_start is not None:
@@ -45,7 +45,12 @@ class CSVLogCursorQueue(JSONable):
     def __directory_paths(log: CSVLog):
         from_directory = CSVLog.directory_name(log.timeline_start)
 
-        for directory in Filesystem.ls(log.root_path):
+        root_directory = Filesystem.ls(log.root_path)
+
+        if root_directory is None:
+            raise RuntimeError("missing log root directory: %s" % log.root_path)
+
+        for directory in root_directory:
             if directory.name < from_directory:
                 continue
 
@@ -154,7 +159,7 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # cursor is NOT live
+    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # this cursor is NOT live
         reader = None
         row_number = 0
 
@@ -180,6 +185,9 @@ class CSVLogCursor(JSONable):
 
                 row_number += 1
 
+            return None
+
+        except CSVReaderException:
             return None
 
         finally:

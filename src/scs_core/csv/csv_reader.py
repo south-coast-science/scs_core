@@ -117,6 +117,8 @@ class CSVReader(object):
         except csv.Error as ex:
             raise CSVReaderException(ex)            # typically on the last line of a badly-closed CSV file
 
+        # TODO: catch RuntimeException for StopIteration here?
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
