@@ -48,7 +48,7 @@ class CSVLogCursorQueue(JSONable):
         root_directory = Filesystem.ls(log.root_path)
 
         if root_directory is None:
-            raise RuntimeError("missing log root directory: %s" % log.root_path)
+            raise RuntimeError("inaccessible log root directory: %s" % log.root_path)
 
         for directory in root_directory:
             if directory.name < from_directory:

@@ -32,16 +32,10 @@ class CSVLogReader(SynchronisedProcess):
 
     @staticmethod
     def __read_rows(reader):
-        row_count = 0
-
         try:
             for datum in reader.rows():
                 print(datum)
                 sys.stdout.flush()
-
-                row_count += 1
-
-            return row_count
 
         except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
@@ -102,10 +96,12 @@ class CSVLogReader(SynchronisedProcess):
                                               empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
 
         try:
-            return self.__read_rows(reader)
+            self.__read_rows(reader)
 
         finally:
             reader.close()
+
+            return reader.row_count
 
 
     def __tail(self, cursor: CSVLogCursor):
@@ -116,18 +112,20 @@ class CSVLogReader(SynchronisedProcess):
                            empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
 
         try:
-            return self.__read_rows(reader)
+            self.__read_rows(reader)
 
         except RuntimeError:
             pass                                # Python 3.7 response to StopIteration
 
         except TimeoutError:
             if self.__reporter:
-                self.__reporter.timeout(cursor)
+                self.__reporter.timeout(cursor, reader.read_count)
 
         finally:
             reader.close()
             tail.close()
+
+            return reader.read_count
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -166,10 +164,10 @@ class CSVLogReaderReporter(ABC):
 
 
     @abstractmethod
-    def closing(self, cursor: CSVLogCursor, row_count):
+    def closing(self, cursor: CSVLogCursor, read_count):
         pass
 
 
     @abstractmethod
-    def timeout(self, cursor: CSVLogCursor):
+    def timeout(self, cursor: CSVLogCursor, read_count):
         pass
