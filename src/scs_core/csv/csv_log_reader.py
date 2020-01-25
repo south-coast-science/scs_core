@@ -79,10 +79,10 @@ class CSVLogReader(SynchronisedProcess):
                 if self.__reporter:
                     self.__reporter.opening(cursor)
 
-                row_count = self.__tail(cursor) if cursor.is_live else self.__read(cursor)
+                read_count = self.__tail(cursor) if cursor.is_live else self.__read(cursor)
 
                 if self.__reporter:
-                    self.__reporter.closing(cursor, row_count)
+                    self.__reporter.closing(cursor, read_count)
 
         except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -101,7 +101,7 @@ class CSVLogReader(SynchronisedProcess):
         finally:
             reader.close()
 
-            return reader.row_count
+            return reader.read_count
 
 
     def __tail(self, cursor: CSVLogCursor):
