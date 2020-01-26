@@ -7,25 +7,28 @@ Created on 20 Jan 2020
 """
 
 import os
-
-from scs_core.sys.tail import Tail
+import sys
+import time
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 path = os.path.expanduser('~/SCS/scs_core/tests/sys/tail_test.json')
 
-tail = Tail.construct(path)
-print(tail)
+file = open(path, 'w')
 
 try:
-    tail.open()
+    for i in range(11):
+        file.write("line: %2d\n" % i)
+        file.flush()
 
-    for message in tail.readlines():
-        print("got: %s" % message)
+        print("line: %2d" % i)
+        sys.stdout.flush()
 
-except RuntimeError:
-    pass
+        time.sleep(1)
 
 finally:
-    tail.close()
+    file.close()
+
+while True:
+    time.sleep(1)

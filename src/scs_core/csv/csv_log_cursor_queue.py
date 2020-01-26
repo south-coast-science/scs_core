@@ -9,7 +9,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.csv.csv_log import CSVLog, CSVLogFile
-from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 
 from scs_core.data.json import JSONable
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -27,34 +27,43 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log(cls, log: CSVLog, rec_field):
-        cursors = OrderedDict()
+    def construct_for_log(cls, log: CSVLog, rec_field):                         # these cursors are NOT live
+        queue = OrderedDict()
 
-        for directory_path in cls.__directory_paths(log):
-            for log_file in cls.__log_files(log, directory_path):
-                cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
+        if log.timeline_start is not None:
+            for directory_path in cls.__directory_paths(log):
+                for log_file in cls.__log_files(log, directory_path):
+                    cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
 
-                if cursor is not None:
-                    cursors[cursor.file_path] = cursor
+                    if cursor is not None:
+                        queue[cursor.file_path] = cursor
 
-        return CSVLogCursorQueue(cursors)
+        return cls(queue)
 
 
-    @classmethod
-    def __directory_paths(cls, log: CSVLog):
+    @staticmethod
+    def __directory_paths(log: CSVLog):
         from_directory = CSVLog.directory_name(log.timeline_start)
 
-        for directory in Filesystem.ls(log.root_path):
+        root_directory = Filesystem.ls(log.root_path)
+
+        if root_directory is None:
+            raise RuntimeError("inaccessible log root directory: %s" % log.root_path)
+
+        for directory in root_directory:
             if directory.name < from_directory:
                 continue
 
             yield directory.path()
 
 
-    @classmethod
-    def __log_files(cls, log: CSVLog, directory_path):
+    @staticmethod
+    def __log_files(log: CSVLog, directory_path):
         for file in Filesystem.ls(directory_path):
             log_file = CSVLogFile.construct(file)
+
+            if log_file.tag != log.tag:
+                continue
 
             if log_file.topic_name != log.topic_name:
                 continue
@@ -72,26 +81,27 @@ class CSVLogCursorQueue(JSONable):
         if not jdict:
             return None
 
-        cursors = OrderedDict()
+        queue = OrderedDict()
 
-        for cursor_jdict in jdict.get('cursors'):
+        for cursor_jdict in jdict.get('queue'):
             cursor = CSVLogCursor.construct_from_jdict(cursor_jdict)
-            cursors[cursor.file_path] = cursor
+            queue[cursor.file_path] = cursor
 
-        return cls(cursors)
+        return cls(queue)
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    #
 
-    def __init__(self, cursors):
+    def __init__(self, queue=None):
         """
         Constructor
         """
-        self.__cursors = cursors                        # OrderedDict of file_path: LogCursor
+        self.__queue = OrderedDict() if queue is None else queue        # OrderedDict of CSVLogCursor
 
 
     def __len__(self):
-        return len(self.__cursors)
+        return len(self.__queue)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,39 +109,44 @@ class CSVLogCursorQueue(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['cursors'] = [cursor.as_json() for cursor in self.__cursors.values()]
+        jdict['queue'] = [cursor.as_json() for cursor in self.__queue.values()]
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def include(self, cursor):
-        if cursor.is_live:
-            for file_path in self.__cursors.keys():
-                self.__cursors[file_path].is_live = False           # there shall only be one live file
+    def set_live(self, file_path):
+        if file_path is None:
+            return
 
-        self.__cursors[cursor.file_path] = cursor
+        if file_path in self.__queue.keys():
+            return                                          # assume that the cursor is already live
+
+        for key in self.__queue.keys():
+            self.__queue[key].is_live = False               # there shall only be one live file
+
+        self.__queue[file_path] = CSVLogCursor(file_path, 0, True)
 
 
     def pop(self):
         try:
-            return self.__cursors.popitem(last=False)[1]
+            return self.__queue.popitem(last=False)[1]
         except KeyError:
             return None
 
 
-    def cursors(self):
-        for cursor in self.__cursors.values():
+    def queue(self):
+        for cursor in self.__queue.values():
             yield cursor
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        cursors = '[' + ', '.join(str(cursor) for cursor in self.__cursors.values()) + ']'
+        queue = '[' + ', '.join(str(cursor) for cursor in self.__queue.values()) + ']'
 
-        return "CSVLogCursorQueue:{cursors:%s}" %  cursors
+        return "CSVLogCursorQueue:{queue:%s}" %  queue
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -144,7 +159,7 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):
+    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # this cursor is NOT live
         reader = None
         row_number = 0
 
@@ -166,10 +181,13 @@ class CSVLogCursor(JSONable):
                     raise ValueError(datum[rec_field])
 
                 if rec.datetime > log.timeline_start:
-                    return CSVLogCursor(log_file.path(), row_number, True)      # TODO: False
+                    return cls(log_file.path(), row_number, False)
 
                 row_number += 1
 
+            return None
+
+        except CSVReaderException:
             return None
 
         finally:
@@ -185,20 +203,20 @@ class CSVLogCursor(JSONable):
             return None
 
         file_path = jdict.get('file-path')
-        row_number = jdict.get('row-number')
+        row = jdict.get('row')
         is_live = jdict.get('is-live')
 
-        return cls(file_path, row_number, is_live)
+        return cls(file_path, row, is_live)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, file_path, row_number, is_live):
+    def __init__(self, file_path, row, is_live):
         """
         Constructor
         """
         self.__file_path = file_path                            # string
-        self.__row_number = int(row_number)                     # int
+        self.__row = int(row)                                   # int
         self.__is_live = bool(is_live)                          # bool
 
 
@@ -212,7 +230,7 @@ class CSVLogCursor(JSONable):
         jdict = OrderedDict()
 
         jdict['file-path'] = self.file_path
-        jdict['row-number'] = self.row_number
+        jdict['row'] = self.row
         jdict['is-live'] = self.is_live
 
         return jdict
@@ -226,8 +244,8 @@ class CSVLogCursor(JSONable):
 
 
     @property
-    def row_number(self):
-        return self.__row_number
+    def row(self):
+        return self.__row
 
 
     @property
@@ -243,5 +261,5 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogCursor:{file_path:%s, row_number:%s, is_live:%s}" %  \
-               (self.file_path, self.row_number, self.is_live)
+        return "CSVLogCursor:{file_path:%s, row:%s, is_live:%s}" %  \
+               (self.file_path, self.row, self.is_live)

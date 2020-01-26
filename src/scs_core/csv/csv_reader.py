@@ -77,6 +77,7 @@ class CSVReader(object):
         except StopIteration:                   # no input
             paths = []
 
+        self.__read_count = 0                                                   # int
         self.__header = CSVHeader.construct_from_paths(paths)                   # CSVHeader
 
 
@@ -114,6 +115,8 @@ class CSVReader(object):
 
                 yield JSONify.dumps(datum)
 
+                self.__read_count += 1
+
         except csv.Error as ex:
             raise CSVReaderException(ex)            # typically on the last line of a badly-closed CSV file
 
@@ -123,6 +126,11 @@ class CSVReader(object):
     @property
     def filename(self):
         return self.__filename
+
+
+    @property
+    def read_count(self):
+        return self.__read_count
 
 
     @property
@@ -136,9 +144,9 @@ class CSVReader(object):
         header = '[' + ', '.join(self.header.paths()) + ']'
 
         return "CSVReader:{iterable:%s, filename:%s, numeric_cast:%s, empty_string_as_null:%s, " \
-               "start_row:%s, header:%s}" % \
+               "start_row:%s, read_count:%s, header:%s}" % \
                (self.__iterable, self.filename, self.__numeric_cast, self.__empty_string_as_null,
-                self.__start_row, header)
+                self.__start_row, self.read_count, header)
 
 
 # --------------------------------------------------------------------------------------------------------------------
