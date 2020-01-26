@@ -94,7 +94,6 @@ class CSVLogReader(SynchronisedProcess):
     def __read(self, cursor: CSVLogCursor):
         reader = CSVReader.construct_for_file(cursor.file_path,
                                               empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
-
         try:
             self.__read_rows(reader)
 
@@ -110,7 +109,6 @@ class CSVLogReader(SynchronisedProcess):
 
         reader = CSVReader(tail,
                            empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
-
         try:
             self.__read_rows(reader)
 
@@ -159,15 +157,15 @@ class CSVLogReaderReporter(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def opening(self, cursor: CSVLogCursor):
+    def opening(self, cursor):
         pass
 
 
     @abstractmethod
-    def closing(self, cursor: CSVLogCursor, read_count):
+    def closing(self, cursor, read_count):
         pass
 
 
     @abstractmethod
-    def timeout(self, cursor: CSVLogCursor, read_count):
+    def timeout(self, cursor, read_count):
         pass
