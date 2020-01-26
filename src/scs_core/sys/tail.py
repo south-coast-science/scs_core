@@ -79,7 +79,7 @@ class Tail(object):
         for line in self.__notifier.loop(self.__handler.read_tail):
             yield line
 
-        raise StopIteration()
+        # raise StopIteration
 
 
     # ----------------------------------------------------------------------------------------------------------------
