@@ -30,3 +30,5 @@ try:
 finally:
     reader.close()
     tail.close()
+
+    print("done")
