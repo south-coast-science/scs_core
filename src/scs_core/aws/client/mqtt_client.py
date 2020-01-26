@@ -9,6 +9,8 @@ https://s3.amazonaws.com/aws-iot-device-sdk-python-docs/sphinx/html/index.html
 https://github.com/aws/aws-iot-device-sdk-python/issues/57
 
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
+
+https://github.com/aws/aws-iot-device-sdk-python-V2
 """
 
 import logging
