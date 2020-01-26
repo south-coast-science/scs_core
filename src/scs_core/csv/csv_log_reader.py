@@ -132,6 +132,9 @@ class CSVLogReader(SynchronisedProcess):
     # setters for client process...
 
     def set_live(self, file_path):
+        if file_path is None:
+            return
+
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
             queue.set_live(file_path)
