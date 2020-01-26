@@ -22,8 +22,8 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def directory_name(cls, datetime):
+    @staticmethod
+    def directory_name(datetime):
         if datetime is None:
             raise ValueError("datetime may not be None")
 
@@ -41,6 +41,15 @@ class CSVLog(object):
         self.__tag = tag                                    # string
 
         self.__timeline_start = timeline_start              # datetime
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def cursor_queue(self, rec_field):
+        # late import...
+        from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
+
+        return CSVLogCursorQueue.construct_for_log(self, rec_field)             # cursors are NOT live
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -114,8 +123,8 @@ class CSVLogFile(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def name(cls, datetime, topic_name, tag=None):
+    @staticmethod
+    def name(datetime, topic_name, tag=None):
         if datetime is None:
             raise ValueError("datetime may not be None")
 

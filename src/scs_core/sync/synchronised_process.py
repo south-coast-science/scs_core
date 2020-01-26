@@ -34,17 +34,15 @@ class SynchronisedProcess(ABC):
     # process...
 
     def start(self):
-        print("starting")
         try:
             self.__proc = Process(target=self.run)
             self.__proc.start()
 
-        except KeyboardInterrupt:       # (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 
 
     def stop(self):
-        print("stopping")
         try:
             if self.__proc is None:
                 return
@@ -53,6 +51,13 @@ class SynchronisedProcess(ABC):
 
         except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
+
+
+    def join(self):
+        if self.__proc is None:
+            return
+
+        self.__proc.join()
 
 
     @abstractmethod

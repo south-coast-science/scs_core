@@ -6,8 +6,6 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.csv.csv_log import CSVLog
-from scs_core.csv.csv_log_cursor import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -31,20 +29,21 @@ print("-")
 conf = CSVLoggerConf.load(Host)
 print(conf)
 
-log = CSVLog(conf.root_path, topic_name, None, start_datetime)
+log = conf.csv_log(topic_name, timeline_start=start_datetime)
 print(log)
 print("-")
 
-cursor_queue = CSVLogCursorQueue.construct_for_log(log, rec_field)
-print(cursor_queue)
+queue = log.cursor_queue(rec_field)
+print(queue)
 print("-")
 
-reader = CSVLogReader()
+reader = CSVLogReader(queue)
 print(reader)
 print("-")
 
-reader.initialise(cursor_queue)
-print(reader)
-print("-")
+reader.start()
 
-reader.run()
+try:
+    reader.join()
+except KeyboardInterrupt:
+    pass

@@ -8,6 +8,8 @@ https://stackoverflow.com/questions/16175745/read-new-line-with-pynotify
 https://www.linode.com/docs/development/monitor-filesystem-events-with-pyinotify/
 """
 
+import sys
+
 from pyinotify import EventsCodes, Notifier, ProcessEvent, WatchManager
 
 
@@ -18,14 +20,15 @@ class Tail(object):
     classdocs
     """
 
-    DEFAULT_TIMEOUT =   2000        # TODO: 120000              # 2 minutes in milliseconds
+    DEFAULT_TIMEOUT =   600000                  # 10 minutes in milliseconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
     __IN_MODIFY =       EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_MODIFY']
     __IN_CLOSE_WRITE =  EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_CLOSE_WRITE']
+    __IN_MOVED_TO =     EventsCodes.FLAG_COLLECTIONS['OP_FLAGS']['IN_MOVED_TO']
 
-    __IN_EVENTS =       __IN_MODIFY | __IN_CLOSE_WRITE
+    __IN_EVENTS =       __IN_MODIFY | __IN_CLOSE_WRITE | __IN_MOVED_TO
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,11 +72,11 @@ class Tail(object):
 
     def readlines(self):
         # existing lines...
-        for line in self.__handler.readlines():
+        for line in self.__handler.read_head():
             yield line
 
         # new lines...
-        for line in self.__notifier.loop(self.__handler.readlines):
+        for line in self.__notifier.loop(self.__handler.read_tail):
             yield line
 
         raise StopIteration()
@@ -120,26 +123,46 @@ class TailEventHandler(ProcessEvent):
         self.__file = None
 
 
-    def readlines(self, _notifier=None):
-        if self.__terminate:
-            return False
-
+    def read_head(self, _notifier=None):
         for line in self.__file.readlines():
             yield line.strip()
+
+
+    def read_tail(self, _notifier=None):
+        if self.__terminate:
+            return True
+
+        return [line.strip() for line in self.__file.readlines()]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyPep8Naming
-
     def process_IN_MODIFY(self, _event):
+        # self.__report("IN_MODIFY")
         pass
 
 
     # noinspection PyPep8Naming
-
     def process_IN_CLOSE_WRITE(self, _event):
+        self.__report("IN_CLOSE_WRITE")
+
         self.__terminate = True
+
+
+    # noinspection PyPep8Naming
+    def process_IN_MOVED_TO(self, _event):
+        self.__report("IN_MOVED_TO")
+
+        self.__terminate = True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def __report(cls, event_name):
+        print("TailEventHandler: %s" % event_name, file=sys.stderr)
+        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -170,14 +193,14 @@ class TailNotifier(Notifier):
 
                 response = callback(self)
 
-                if response is False:
-                    break                               # file closed
+                if response is True:
+                    break                                   # file closed
 
                 for line in response:
                     yield line
 
                 if not self.check_events():
-                    break                               # timeout
+                    raise TimeoutError                      # timeout
 
                 self.read_events()
 

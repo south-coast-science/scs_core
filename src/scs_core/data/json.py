@@ -28,7 +28,7 @@ class JSONable(ABC):
 
         for key, value in self.as_json().items():
             try:
-                value = value.as_json()                 # TODO: recurse to construct a list
+                value = value.as_json()
             except AttributeError:
                 pass
 
