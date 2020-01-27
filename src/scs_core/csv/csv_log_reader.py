@@ -64,10 +64,21 @@ class CSVLogReader(SynchronisedProcess):
 
     def run(self, halt_on_empty_queue=False):
         try:
+            file_path = None
+
             while True:
                 with self._lock:
                     queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-                    cursor = queue.pop()
+
+                    while True:
+                        cursor = queue.pop()
+
+                        if cursor is None:
+                            break
+
+                        if cursor.file_path != file_path:
+                            file_path = cursor.file_path
+                            break
 
                     queue.as_list(self._value)
 
@@ -140,6 +151,7 @@ class CSVLogReader(SynchronisedProcess):
             queue.set_live(file_path)
 
             queue.as_list(self._value)
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
