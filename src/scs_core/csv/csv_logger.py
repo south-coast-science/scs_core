@@ -45,6 +45,8 @@ class CSVLogger(object):
 
         self.__buffer = []                              # array of CSVDict
 
+        self.__write_count = 0                          # for test purposes only
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -99,13 +101,12 @@ class CSVLogger(object):
         self.__file.close()
         self.__file = None
 
-        print("CSVLogger.close", file=sys.stderr)
-        sys.stderr.flush()
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __write(self, datum):
+        self.__write_count += 1
+
         # first run...
         if not self.__file:
             if self.log.tag is None and 'tag' in datum.collection:
@@ -114,7 +115,8 @@ class CSVLogger(object):
             self.__open_file()
 
         # start log for new day...
-        if not self.log.in_timeline(LocalizedDatetime.now()):
+        # if not self.log.in_timeline(LocalizedDatetime.now()):
+        if self.__write_count > 6:
             self.close()
             self.__open_file()
 
@@ -128,6 +130,8 @@ class CSVLogger(object):
 
 
     def __open_file(self):
+        self.__write_count = 0
+
         self.log.timeline_start = LocalizedDatetime.now()
 
         self.__clear_space()

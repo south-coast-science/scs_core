@@ -116,29 +116,29 @@ class CSVLogCursorQueue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set_live(self, file_path):
+    def include(self, file_path, is_live):
         if file_path is None:
             return
 
         if file_path in self.__queue.keys():
             return                                          # assume that the cursor is already live
 
-        for key in self.__queue.keys():
-            self.__queue[key].is_live = False               # there shall only be one live file
+        if is_live:
+            for key in self.__queue.keys():
+                self.__queue[key].is_live = False           # there shall only be one live file
 
-        self.__queue[file_path] = CSVLogCursor(file_path, 0, True)
+        self.__queue[file_path] = CSVLogCursor(file_path, 0, is_live)
 
 
-    def pop(self):
+    def next(self):
+        return next(iter(self.__queue.values()), None)      # the first item is the oldest item
+
+
+    def remove(self, file_path):
         try:
-            return self.__queue.popitem(last=False)[1]
+            del self.__queue[file_path]
         except KeyError:
-            return None
-
-
-    def queue(self):
-        for cursor in self.__queue.values():
-            yield cursor
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
