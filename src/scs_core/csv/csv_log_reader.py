@@ -65,10 +65,10 @@ class CSVLogReader(SynchronisedProcess):
     def run(self, halt_on_empty_queue=False):
         try:
             while True:
+                # find oldest...
                 with self._lock:
                     queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-                    cursor = queue.pop()
-
+                    cursor = queue.next()
                     queue.as_list(self._value)
 
                 if cursor is None:
@@ -81,10 +81,17 @@ class CSVLogReader(SynchronisedProcess):
                 if self.__reporter:
                     self.__reporter.opening(cursor)
 
+                # process...
                 read_count = self.__tail(cursor) if cursor.is_live else self.__read(cursor)
 
                 if self.__reporter:
                     self.__reporter.closing(cursor, read_count)
+
+                # remove...
+                with self._lock:
+                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                    queue.remove(cursor.file_path)
+                    queue.as_list(self._value)
 
         except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -131,15 +138,15 @@ class CSVLogReader(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # setters for client process...
 
-    def set_live(self, file_path):
+    def include(self, file_path):
         if file_path is None:
             return
 
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-            queue.set_live(file_path)
-
+            queue.include(file_path, True)
             queue.as_list(self._value)
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
