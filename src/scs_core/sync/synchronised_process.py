@@ -54,10 +54,8 @@ class SynchronisedProcess(ABC):
 
 
     def join(self):
-        if self.__proc is None:
-            return
-
-        self.__proc.join()
+        if self.__proc:
+            self.__proc.join()
 
 
     @abstractmethod
