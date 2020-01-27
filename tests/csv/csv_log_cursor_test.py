@@ -17,12 +17,12 @@ print(jobs)
 print("-")
 
 print("include...")
-jobs.set_live('path/file1.csv')
+jobs.include('path/file1.csv', False)
 print(jobs)
 print("-")
 
 print("include...")
-jobs.set_live('path/file2.csv')
+jobs.include('path/file2.csv', True)
 print(jobs)
 print("-")
 
