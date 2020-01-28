@@ -16,7 +16,6 @@ class QueueReport(JSONReport):
     """
     classdocs
    """
-    __BACKLOG_MIN =             4           # documents
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -45,11 +44,7 @@ class QueueReport(JSONReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def has_backlog(self):
-        return self.__length is not None and self.__length > self.__BACKLOG_MIN
-
-
-    def status(self):
+    def queue_state(self):
         # client INHIBITED...
         if self.client_state == ClientStatus.INHIBITED:
             return QueueStatus.INHIBITED
@@ -62,14 +57,14 @@ class QueueReport(JSONReport):
         if self.client_state == ClientStatus.CONNECTING:
             return QueueStatus.CONNECTING
 
-        # any client state...
-        if not self.has_backlog() and self.publish_success:
-            return QueueStatus.PUBLISHING
+        # client CONNECTED...
+        if self.client_state == ClientStatus.CONNECTED:
+            if self.publish_success:
+                return QueueStatus.PUBLISHING
 
-        if self.has_backlog() and self.publish_success:
-            return QueueStatus.CLEARING
+            if self.length == 0:
+                return QueueStatus.PUBLISHING                   # assume publishing will be succeed
 
-        if not self.publish_success:
             return QueueStatus.QUEUING
 
         # unknown / error...
@@ -133,6 +128,7 @@ class ClientStatus(Enum):
     """
     classdocs
    """
+    NONE =              0
     INHIBITED =         1
     WAITING =           2
     CONNECTING =        3
