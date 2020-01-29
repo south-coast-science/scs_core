@@ -51,7 +51,7 @@ class QueueReport(JSONReport):
 
         # client WAITING...
         if self.client_state == ClientStatus.WAITING:
-            return QueueStatus.WAITING
+            return QueueStatus.STARTING
 
         # client CONNECTING...
         if self.client_state == ClientStatus.CONNECTING:
@@ -59,11 +59,11 @@ class QueueReport(JSONReport):
 
         # client CONNECTED...
         if self.client_state == ClientStatus.CONNECTED:
+            if self.length == 0:
+                return QueueStatus.WAITING_FOR_DATA
+
             if self.publish_success:
                 return QueueStatus.PUBLISHING
-
-            if self.length == 0:
-                return QueueStatus.PUBLISHING                   # assume publishing will be succeed
 
             return QueueStatus.QUEUING
 
@@ -143,8 +143,9 @@ class QueueStatus(Enum):
    """
     NONE =              1
     INHIBITED =         2
-    WAITING =           3
+    STARTING =          3
     CONNECTING =        4
-    PUBLISHING =        5
-    QUEUING =           6
-    CLEARING =          7
+    WAITING_FOR_DATA =  5
+    PUBLISHING =        6
+    QUEUING =           7
+    CLEARING =          8
