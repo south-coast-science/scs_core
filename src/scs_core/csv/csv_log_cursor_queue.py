@@ -17,6 +17,8 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.filesystem import Filesystem
 
 
+# TODO: needs improved file finder, based on "datetime of next file"
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogCursorQueue(JSONable):
@@ -70,6 +72,8 @@ class CSVLogCursorQueue(JSONable):
 
             if log_file.created_datetime.date() < log.timeline_start.date():
                 continue
+
+            # TODO: grab current file, now check next file
 
             yield log_file
 
