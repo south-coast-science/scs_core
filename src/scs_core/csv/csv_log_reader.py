@@ -57,8 +57,8 @@ class CSVLogReader(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
-        with self._lock:
-            queue.as_list(self._value)
+        # with self._lock:
+        #     queue.as_list(self._value)
 
         print("*** CSVLogReader: self._value: %s" % self._value, file=sys.stderr)
         sys.stderr.flush()
