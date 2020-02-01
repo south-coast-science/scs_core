@@ -6,7 +6,6 @@ Created on 14 Jan 2020
 https://stackoverflow.com/questions/51700960/runtimeerror-generator-raised-stopiteration-every-time-i-try-to-run-app
 """
 
-import copy
 import sys
 import time
 
