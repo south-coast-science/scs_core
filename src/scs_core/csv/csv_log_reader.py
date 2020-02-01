@@ -72,8 +72,9 @@ class CSVLogReader(SynchronisedProcess):
                         cursor = queue.next()
                         queue.as_list(self._value)
 
-                    except FileNotFoundError:               # empty queue
-                        cursor = None
+                    except FileNotFoundError as ex:                 # parent process has no input
+                        self.__reporter.exception(ex)
+                        return
 
                 if cursor is None:
                     if halt_on_empty_queue:
@@ -184,4 +185,9 @@ class CSVLogReaderReporter(ABC):
 
     @abstractmethod
     def timeout(self, cursor, read_count):
+        pass
+
+
+    @abstractmethod
+    def exception(self, ex):
         pass
