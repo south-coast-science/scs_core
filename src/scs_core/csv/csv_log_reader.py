@@ -28,7 +28,7 @@ class CSVLogReader(SynchronisedProcess):
     classdocs
     """
 
-    __IDLE_TIME =       2.0                 # seconds
+    __IDLE_TIME =       4.0                 # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -67,9 +67,13 @@ class CSVLogReader(SynchronisedProcess):
             while True:
                 # find oldest...
                 with self._lock:
-                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-                    cursor = queue.next()
-                    queue.as_list(self._value)
+                    try:
+                        queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                        cursor = queue.next()
+                        queue.as_list(self._value)
+
+                    except FileNotFoundError:               # empty queue
+                        cursor = None
 
                 if cursor is None:
                     if halt_on_empty_queue:
