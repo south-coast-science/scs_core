@@ -67,14 +67,9 @@ class CSVLogReader(SynchronisedProcess):
             while True:
                 # find oldest...
                 with self._lock:
-                    try:
-                        queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-                        cursor = queue.next()
-                        queue.as_list(self._value)
-
-                    except FileNotFoundError as ex:             # parent process terminating with no input
-                        self.__reporter.exception(ex)
-                        return
+                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                    cursor = queue.next()
+                    queue.as_list(self._value)
 
                 if cursor is None:
                     if halt_on_empty_queue:
@@ -100,6 +95,9 @@ class CSVLogReader(SynchronisedProcess):
 
         except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
             pass
+
+        except FileNotFoundError as ex:                     # parent process is terminating
+            self.__reporter.exception(ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------
