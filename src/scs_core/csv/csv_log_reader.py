@@ -29,7 +29,7 @@ class CSVLogReader(SynchronisedProcess):
     classdocs
     """
 
-    __IDLE_TIME =       2.0                 # seconds
+    __IDLE_TIME =       4.0                 # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -57,8 +57,8 @@ class CSVLogReader(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
-        # with self._lock:
-        #     queue.as_list(self._value)
+        with self._lock:
+            queue.as_list(self._value)
 
         print("*** CSVLogReader: self._value: %s" % self._value, file=sys.stderr)
         sys.stderr.flush()
@@ -74,14 +74,19 @@ class CSVLogReader(SynchronisedProcess):
             while True:
                 # find oldest...
                 with self._lock:
-                    value = copy.deepcopy(self._value)
+                    try:
+                        print("*** CSVLogReader.run: self._value: %s" % self._value, file=sys.stderr)
+                        sys.stderr.flush()
 
-                    print("*** CSVLogReader.run: value: %s" % value, file=sys.stderr)
-                    sys.stderr.flush()
+                        queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                        cursor = queue.next()
+                        queue.as_list(self._value)
 
-                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(value))
-                    cursor = queue.next()
-                    queue.as_list(self._value)
+                    except FileNotFoundError as ex:
+                        print("*** CSVLogReader.run: %s" % ex, file=sys.stderr)
+                        sys.stderr.flush()
+
+                        cursor = None
 
                 if cursor is None:
                     if halt_on_empty_queue:
