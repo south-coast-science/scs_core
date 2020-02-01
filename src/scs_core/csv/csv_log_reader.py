@@ -72,7 +72,7 @@ class CSVLogReader(SynchronisedProcess):
                         cursor = queue.next()
                         queue.as_list(self._value)
 
-                    except FileNotFoundError as ex:                 # parent process has no input
+                    except FileNotFoundError as ex:             # parent process terminating with no input
                         self.__reporter.exception(ex)
                         return
 
