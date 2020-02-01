@@ -6,6 +6,7 @@ Created on 14 Jan 2020
 https://stackoverflow.com/questions/51700960/runtimeerror-generator-raised-stopiteration-every-time-i-try-to-run-app
 """
 
+import copy
 import sys
 import time
 
@@ -73,11 +74,12 @@ class CSVLogReader(SynchronisedProcess):
             while True:
                 # find oldest...
                 with self._lock:
+                    value = copy.deepcopy(self._value)
 
-                    print("*** CSVLogReader.run: self._value: %s" % self._value, file=sys.stderr)
+                    print("*** CSVLogReader.run: value: %s" % value, file=sys.stderr)
                     sys.stderr.flush()
 
-                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(value))
                     cursor = queue.next()
                     queue.as_list(self._value)
 
