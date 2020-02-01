@@ -50,8 +50,8 @@ class CSVLogReader(SynchronisedProcess):
         """
         Constructor
         """
-        print("*** CSVLogReader: queue: %s" % queue, file=sys.stderr)
-        sys.stderr.flush()
+        # print("*** CSVLogReader: queue: %s" % queue, file=sys.stderr)
+        # sys.stderr.flush()
 
         manager = Manager()
 
@@ -60,8 +60,8 @@ class CSVLogReader(SynchronisedProcess):
         with self._lock:
             queue.as_list(self._value)
 
-        print("*** CSVLogReader: self._value: %s" % self._value, file=sys.stderr)
-        sys.stderr.flush()
+        # print("*** CSVLogReader: self._value: %s" % self._value, file=sys.stderr)
+        # sys.stderr.flush()
 
         self.__empty_string_as_null = bool(empty_string_as_null)                # bool
         self.__reporter = reporter                                              # CSVLogReaderReporter
@@ -75,8 +75,8 @@ class CSVLogReader(SynchronisedProcess):
                 # find oldest...
                 with self._lock:
                     try:
-                        print("*** CSVLogReader.run: self._value: %s" % self._value, file=sys.stderr)
-                        sys.stderr.flush()
+                        # print("*** CSVLogReader.run: self._value: %s" % self._value, file=sys.stderr)
+                        # sys.stderr.flush()
 
                         queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
                         cursor = queue.next()
