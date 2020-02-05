@@ -113,7 +113,7 @@ class ErrorSurface(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def error(self, t, rh):
+    def error(self, rh, t):
         # numpy poly...
         m_t = self.__m_t_poly(rh)
         c_t = self.__c_t_poly(rh)

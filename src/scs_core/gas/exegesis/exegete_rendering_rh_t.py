@@ -28,7 +28,7 @@ class ExegeteRenderingRhT(JSONable):
 
     @classmethod
     def construct(cls, gas, rh_min, rh_max, rh_delta, t_min, t_max, t_delta, exegete: Exegete):
-        rows = [ExegeteRenderingRhTRow.construct(gas, t, rh_min, rh_max, rh_delta, exegete)
+        rows = [ExegeteRenderingRhTRow.construct(gas, rh_min, rh_max, rh_delta, t, exegete)
                 for t in range(t_min, t_max + 1, t_delta)]
 
         return ExegeteRenderingRhT(rows)
@@ -79,8 +79,8 @@ class ExegeteRenderingRhTRow(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, gas, t, rh_min, rh_max, rh_delta, exegete: Exegete):
-        cells = [ExegeteRenderingRhTCell(rh, exegete.error(gas, t, rh))
+    def construct(cls, gas, rh_min, rh_max, rh_delta, t, exegete: Exegete):
+        cells = [ExegeteRenderingRhTCell(rh, exegete.error(gas, rh, t))
                  for rh in range(rh_min, rh_max + 1, rh_delta)]
 
         return ExegeteRenderingRhTRow(t, cells)

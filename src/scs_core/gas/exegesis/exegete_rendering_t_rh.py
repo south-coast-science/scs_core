@@ -81,7 +81,7 @@ class ExegeteRenderingTRhRow(JSONable):
 
     @classmethod
     def construct(cls, gas, rh, t_min, t_max, t_delta, exegete: Exegete):
-        cells = [ExegeteRenderingTRhCell(t, exegete.error(gas, t, rh))
+        cells = [ExegeteRenderingTRhCell(t, exegete.error(gas, rh, t))
                  for t in range(t_min, t_max + 1, t_delta)]
 
         return ExegeteRenderingTRhRow(rh, cells)
