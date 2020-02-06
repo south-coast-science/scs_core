@@ -27,7 +27,7 @@ class StatusSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, airnow, rec, timezone, position, temperature, schedule, uptime, psu_status):
+    def __init__(self, tag, airnow, rec, timezone, position, temperature, schedule, uptime, psu_report):
         """
         Constructor
         """
@@ -46,7 +46,7 @@ class StatusSample(Sample):
         jdict['tmp'] = temperature
         jdict['up'] = uptime
 
-        if psu_status is not None:
-            jdict['psu'] = psu_status
+        if psu_report is not None:
+            jdict['psu'] = psu_report
 
         super().__init__(tag, None, rec, jdict)
