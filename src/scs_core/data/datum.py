@@ -151,7 +151,7 @@ class Datum(object):
             return None
 
         try:
-            value = float(number)
+            value = int(number)
         except ValueError:
             return None
 
