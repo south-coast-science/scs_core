@@ -53,7 +53,7 @@ class MQTTPeerSet(PersistentJSONable):
         """
         super().__init__()
 
-        self.__peers = peers                                # dictionary of string: MQTTPeer
+        self.__peers = peers                                # OrderedDict of string: MQTTPeer
 
 
     # ----------------------------------------------------------------------------------------------------------------

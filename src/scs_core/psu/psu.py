@@ -1,29 +1,20 @@
 """
-Created on 17 Dec 2019
+Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-an abstract electrochem exegesis model
+An abstract PSU
 """
 
 from abc import ABC, abstractmethod
 
-from scs_core.data.json import PersistentJSONable
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Exegete(PersistentJSONable, ABC):
+class PSU(ABC):
     """
     classdocs
     """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), "gas_exegete_" + cls.name() + "_calib.json"
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -35,36 +26,72 @@ class Exegete(PersistentJSONable, ABC):
 
     @classmethod
     @abstractmethod
-    def standard(cls):
+    def requires_interface(cls):
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def report_class(cls):
         pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def __eq__(self, other):
+    def open(self):
+        pass
+
+
+    @abstractmethod
+    def close(self):
         pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def tag(self):
-        if self == self.standard():
-            return self.name()
+    @abstractmethod
+    def status(self):
+        pass
 
-        return self.name() + '?'                            # indicates non-standard coefficients
 
+    # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def gas_names(self):
+    def version(self):
         pass
 
 
     @abstractmethod
-    def interpretation(self, gas_name, text, rh, t):
+    def uptime(self):
         pass
 
 
     @abstractmethod
-    def error(self, gas_name, rh, t):
+    def host_shutdown_initiated(self):
+        pass
+
+
+    @abstractmethod
+    def watchdog_start(self, interval):
+        pass
+
+
+    @abstractmethod
+    def watchdog_stop(self):
+        pass
+
+
+    @abstractmethod
+    def watchdog_touch(self):
+        pass
+
+
+    @abstractmethod
+    def charge_pause(self, on):
+        pass
+
+
+    @abstractmethod
+    def charge_dead(self, on):
         pass

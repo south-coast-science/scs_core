@@ -43,7 +43,7 @@ print("-")
 
 for rh in range(10, 91, 5):
     for t in range(0, 46, 5):
-        interpretation = exegete.interpretation('NO2', text, t, rh)
+        interpretation = exegete.interpretation('NO2', text, rh, t)
         print("rh: %2d t: %2d text: %3.1f interpretation: %3.1f" % (rh, t, text, interpretation))
 
     print("-")

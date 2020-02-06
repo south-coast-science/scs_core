@@ -1,55 +1,50 @@
 """
-Created on 21 Jun 2017
+Created on 13 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A stub PSUConf
+Defines the functionality and fields required by PSUMonitor
 """
+
+from abc import ABC, abstractmethod
+
+from scs_core.data.json import JSONReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUConf(object):
+class PSUReport(JSONReport, ABC):
     """
     classdocs
     """
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
-    def models(cls):
-        return []
+    @abstractmethod
+    def construct_from_jdict(cls, jdict):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def load(cls, _host):
-        return cls()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def psu(cls, _host, _interface_model):
-        return None
-
-
-    @classmethod
-    def psu_monitor(cls, _host, _interface_model, _auto_shutdown):
-        return None
-
-
-    @classmethod
-    def psu_report_class(cls):
-        return None
+    @abstractmethod
+    def below_power_threshold(self):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def model(self):
+    @abstractmethod
+    def standby(self):
         return None
 
 
-    @property
-    def report_file(self):
-        return None
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def as_json(self):
+        pass
+
+

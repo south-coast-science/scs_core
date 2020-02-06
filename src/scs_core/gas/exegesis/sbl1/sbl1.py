@@ -62,13 +62,13 @@ class SBL1(Exegete, ABC):
         """
         super().__init__()
 
-        self.__surfaces = surfaces                              # dict of gas: ErrorSurface
+        self.__surfaces = surfaces                              # OrderedDict of gas: ErrorSurface
 
 
     def __eq__(self, other):
         try:
-            for gas in self.gases():
-                if self.__surfaces[gas] != other.__surfaces[gas]:
+            for gas_name in self.gas_names():
+                if self.__surfaces[gas_name] != other.__surfaces[gas_name]:
                     return False
 
         except KeyError:
@@ -79,18 +79,21 @@ class SBL1(Exegete, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def gases(self):
+    def gas_names(self):
         return list(self.__surfaces.keys())
 
 
-    def interpretation(self, gas, text, t, rh):
-        return text - self.error(gas, t, rh)
+    def interpretation(self, gas_name, text, rh, t):
+        if text is None:
+            return None
+
+        return float(text) - self.error(gas_name, rh, t)
 
 
-    def error(self, gas, t, rh):
-        surface = self.__surfaces[gas]                          # may raise KeyError
+    def error(self, gas_name, rh, t):
+        surface = self.__surfaces[gas_name]                     # may raise KeyError
 
-        return surface.error(t, rh)
+        return surface.error(rh, t)
 
 
     # ----------------------------------------------------------------------------------------------------------------
