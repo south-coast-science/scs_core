@@ -204,7 +204,7 @@ class TailNotifier(Notifier):
 
                 self.read_events()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
         finally:
