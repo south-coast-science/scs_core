@@ -39,7 +39,7 @@ class CSVLogReader(SynchronisedProcess):
                 print(datum)
                 sys.stdout.flush()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -93,7 +93,7 @@ class CSVLogReader(SynchronisedProcess):
                     queue.remove(cursor.file_path)
                     queue.as_list(self._value)
 
-        except (BrokenPipeError, ConnectionResetError, EOFError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
             pass
 
         except FileNotFoundError as ex:                     # parent process is terminating
