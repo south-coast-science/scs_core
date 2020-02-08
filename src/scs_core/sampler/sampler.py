@@ -36,7 +36,7 @@ class Sampler(ABC):
             try:
                 yield sample
 
-            except (BrokenPipeError, StopIteration):
+            except (ConnectionError, StopIteration):
                 break
 
 
