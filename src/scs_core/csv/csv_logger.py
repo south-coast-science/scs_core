@@ -10,7 +10,7 @@ import time
 
 from scs_core.csv.csv_dict import CSVDict
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sys.filesystem import Filesystem
 

@@ -10,8 +10,8 @@ import pytz
 
 from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------

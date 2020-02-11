@@ -18,9 +18,9 @@ from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
 from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Format
 from scs_core.data.json import JSONable, PersistentJSONable
-from scs_core.data.localized_datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------

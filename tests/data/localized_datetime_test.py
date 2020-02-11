@@ -11,7 +11,7 @@ from datetime import timezone
 
 from pytz import timezone as pytz_timezone
 
-from scs_core.data.localized_datetime import DateParser, LocalizedDatetime
+from scs_core.data.datetime import DateParser, LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------

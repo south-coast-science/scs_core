@@ -6,7 +6,7 @@ Created on 14 Oct 2016
 
 from decimal import Decimal
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.regression import Regression
 
 
