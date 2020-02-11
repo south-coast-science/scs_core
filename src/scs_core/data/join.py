@@ -6,7 +6,7 @@ Created on 22 Feb 2019
 https://www.w3schools.com/sql/sql_join.asp
 """
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.path_dict import PathDict
 
 

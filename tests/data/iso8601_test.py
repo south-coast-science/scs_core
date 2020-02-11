@@ -6,7 +6,7 @@ Created on 21 Jun 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.localized_datetime import LocalizedDatetime, ISO8601
+from scs_core.data.datetime import LocalizedDatetime, ISO8601
 
 
 # --------------------------------------------------------------------------------------------------------------------

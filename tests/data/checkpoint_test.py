@@ -9,7 +9,7 @@ Created on 24 Oct 2018
 import time
 
 from scs_core.data.checkpoint_generator import CheckpointGenerator
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
