@@ -8,7 +8,7 @@ Created on 26 Sep 2019
 
 from pytz import timezone as pytz_timezone
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------

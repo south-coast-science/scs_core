@@ -14,10 +14,9 @@ NN - exactly matching NN
 For example, **:/5:30 is used to indicate 30 seconds past the minute, every 5 minutes, during every hour.
 """
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
