@@ -202,7 +202,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OPCDatum:{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
+        return self.__class__.__name__ + ":{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
                "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s, sfr:%s, sht:%s}" % \
-                    (self.source, self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
-                     self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof, self.sfr, self.sht)
+               (self.source, self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
+                self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof, self.sfr, self.sht)

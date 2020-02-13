@@ -214,6 +214,12 @@ class Encode(object):
     # ----------------------------------------------------------------------------------------------------------------
     # encode byte array...
 
+
+    @staticmethod
+    def bool(value):
+        return 1 if value else 0
+
+
     @staticmethod
     def int(value, order):
         unpacked = struct.unpack('BB', struct.pack(order + 'h', int(value)))
