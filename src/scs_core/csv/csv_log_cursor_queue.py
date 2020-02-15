@@ -191,7 +191,7 @@ class CSVLogCursor(JSONable):
 
             return None
 
-        except CSVReaderException:
+        except (CSVReaderException, UnicodeDecodeError):                # skip corrupt files
             return None
 
         finally:
