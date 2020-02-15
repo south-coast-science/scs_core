@@ -5,6 +5,7 @@ Created on 20 Jan 2020
 """
 
 import json
+import sys
 
 from collections import OrderedDict
 
@@ -191,8 +192,11 @@ class CSVLogCursor(JSONable):
 
             return None
 
-        except (CSVReaderException, UnicodeDecodeError):                # skip corrupt files
-            return None
+        except (CSVReaderException, UnicodeDecodeError) as ex:
+            print("CSVLogCursor: %s: %s" % (log_file.path(), ex), file=sys.stderr)
+            sys.stderr.flush()
+
+            return None                         # skip corrupt files
 
         finally:
             if reader is not None:
