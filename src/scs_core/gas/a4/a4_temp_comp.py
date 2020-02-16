@@ -160,7 +160,7 @@ class A4TempComp(object):
         """
         # below MIN_TEMP...
         if temp < A4TempComp.__MIN_TEMP:
-            return self.__values[A4TempComp.__MIN_TEMP]
+            return self.__values[0]
 
         index = int((temp - A4TempComp.__MIN_TEMP) // A4TempComp.__INTERVAL)        # index of start of interval
 
