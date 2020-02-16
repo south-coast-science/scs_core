@@ -6,6 +6,11 @@ Created on 2 Nov 2019
 one cell of a statistical model, with one independent variable and one or more dependent variables
 
 https://en.wikipedia.org/wiki/Dependent_and_independent_variables
+
+example:
+{"domain": "70.0 - 75.0", "praxis": {"climate": {"val": {"hmd": {"min": 70.0, "avg": 72.6, "max": 74.9}}}},
+"error": {"pm1": {"avg": 2.648, "stdev": 2.458}, "pm2p5": {"avg": 2.992, "stdev": 2.652},
+"pm10": {"avg": 2.77, "stdev": 2.456}}, "samples": 2307}
 """
 
 from collections import OrderedDict
@@ -30,20 +35,22 @@ class ModelDelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, ind_name, ind_prec, dep_names, dep_prec):
+    def construct(cls, domain, ind_name, ind_prec, dep_names, dep_prec):
         dependents = OrderedDict()
         for dep_name in dep_names:
             dependents[dep_name] = []
 
-        return ModelDelta(ind_name, [], ind_prec, dependents, dep_prec)
+        return ModelDelta(domain, ind_name, [], ind_prec, dependents, dep_prec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, ind_name, ind_values, ind_prec, dependents, dep_prec):
+    def __init__(self, domain, ind_name, ind_values, ind_prec, dependents, dep_prec):
         """
         Constructor
         """
+        self.__domain = domain                                  # string
+
         self.__ind_name = ind_name                              # string
         self.__ind_values = ind_values                          # array of float
         self.__ind_prec = ind_prec                              # int precision
@@ -73,7 +80,7 @@ class ModelDelta(JSONable):
     def as_json(self):
         jdict = PathDict()
 
-        jdict.append('samples', len(self))
+        jdict.append('domain', self.domain)
 
         jdict.append(self.ind_name + '.min', self.ind_min())
         jdict.append(self.ind_name + '.avg', self.ind_avg())
@@ -82,6 +89,8 @@ class ModelDelta(JSONable):
         for name in self.dep_names:
             jdict.append(name + '.avg', self.dep_avg(name))
             jdict.append(name + '.stdev', self.dep_stdev(name))
+
+        jdict.append('samples', len(self))
 
         return jdict
 
@@ -131,6 +140,11 @@ class ModelDelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def domain(self):
+        return self.__domain
+
+
+    @property
     def ind_name(self):
         return self.__ind_name
 
@@ -143,5 +157,5 @@ class ModelDelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ModelDelta:{independent:%s, ind_prec:%s, dependents:%s, dep_prec:%s, length:%d}" % \
-               (self.ind_name, self.__ind_prec, self.dep_names, self.__dep_prec, len(self))
+        return "ModelDelta:{domain:%s, ind_name:%s, ind_prec:%s, dependents:%s, dep_prec:%s, length:%d}" % \
+               (self.domain, self.ind_name, self.__ind_prec, self.dep_names, self.__dep_prec, len(self))

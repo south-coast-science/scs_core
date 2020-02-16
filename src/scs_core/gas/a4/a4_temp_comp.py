@@ -12,6 +12,8 @@ AAN 803-02 070916_DRAFT03.doc
 from scs_core.gas.sensor import Sensor
 
 
+# TODO: indicate with "alg" field to identify which equation is being used
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class A4TempComp(object):
@@ -61,7 +63,7 @@ class A4TempComp(object):
         if temp is None:
             return False
 
-        return cls.__MIN_TEMP <= temp <= cls.__MAX_TEMP
+        return temp <= cls.__MAX_TEMP
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -156,6 +158,10 @@ class A4TempComp(object):
         """
         Compute the linear-interpolated temperature compensation factor.
         """
+        # below MIN_TEMP...
+        if temp < A4TempComp.__MIN_TEMP:
+            return self.__values[A4TempComp.__MIN_TEMP]
+
         index = int((temp - A4TempComp.__MIN_TEMP) // A4TempComp.__INTERVAL)        # index of start of interval
 
         # on boundary...
