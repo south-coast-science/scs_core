@@ -37,7 +37,7 @@ exegete = ISECEEN2v1.load(Host)
 print(exegete)
 print("-")
 
-path_name = Sample.EXEGESIS_TAG + '.' + exegete.tag()
+path_name = '.'.join((Sample.EXEGESIS_TAG, exegete.tag()))
 
 datum = PathDict.construct_from_jstr(jstr)
 
