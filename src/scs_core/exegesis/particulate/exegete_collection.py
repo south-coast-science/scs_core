@@ -30,12 +30,12 @@ class ExegeteCollection(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def has_members():
+    def has_member(_name):
         return False
 
 
     @staticmethod
-    def has_member(_name):
+    def has_members():
         return False
 
 
