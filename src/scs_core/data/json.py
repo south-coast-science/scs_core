@@ -89,7 +89,7 @@ class JSONReport(JSONable):
         jstr = JSONify.dumps(self)
 
         # file...
-        tmp_filename = filename + '.' + str(int(time.time()))
+        tmp_filename = '.'.join((filename, str(int(time.time()))))
 
         f = open(tmp_filename, 'w')
         f.write(jstr + '\n')
@@ -186,7 +186,7 @@ class PersistentJSONable(JSONable):
         Filesystem.mkdir(directory)
 
         abs_filename = os.path.join(directory, filename)
-        tmp_filename = abs_filename + '.' + str(int(time.time()))
+        tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
         f = open(tmp_filename, "w")
         f.write(jstr + '\n')
