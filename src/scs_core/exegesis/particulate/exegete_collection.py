@@ -35,6 +35,11 @@ class ExegeteCollection(object):
 
 
     @staticmethod
+    def has_member(_name):
+        return False
+
+
+    @staticmethod
     def uses_external_sht():
         return False
 
