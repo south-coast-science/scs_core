@@ -107,3 +107,4 @@ class Node(ABC):
     @abstractmethod
     def software_update_report(self):
         pass
+
