@@ -102,3 +102,8 @@ class Node(ABC):
     @abstractmethod
     def eep_image(self):
         pass
+
+
+    @abstractmethod
+    def software_update_report(self):
+        pass
