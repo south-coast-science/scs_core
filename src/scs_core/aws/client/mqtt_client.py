@@ -15,7 +15,8 @@ https://github.com/aws/aws-iot-device-sdk-python-V2
 
 import logging
 
-import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
+from AWSIoTPythonSDK.exception.AWSIoTExceptions import connectError, connectTimeoutException
+from AWSIoTPythonSDK.exception.AWSIoTExceptions import disconnectError, disconnectTimeoutException
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
@@ -102,8 +103,8 @@ class MQTTClient(object):
         try:
             return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
 
-        except (AWSIoTExceptions.connectTimeoutException, AWSIoTExceptions.connectError):
-            return False
+        except (connectError, connectTimeoutException) as ex:
+            raise OSError(ex.__class__.__name__)
 
 
     def disconnect(self):
@@ -113,7 +114,7 @@ class MQTTClient(object):
         try:
             self.__client.disconnect()
 
-        except (AWSIoTExceptions.disconnectError, AWSIoTExceptions.disconnectTimeoutException):
+        except (disconnectError, disconnectTimeoutException):
             pass
 
         self.__client = None
