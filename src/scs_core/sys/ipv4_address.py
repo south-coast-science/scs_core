@@ -33,10 +33,10 @@ class IPv4Address(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def lso_range(self, start, end):
-        if not 0 <= start <= 255:
+        if not 0 < start < 255:
             raise ValueError(start)
 
-        if not 0 <= end <= 255:
+        if not 0 < end < 255:
             raise ValueError(end)
 
         for i in range(start, end + 1, 1):

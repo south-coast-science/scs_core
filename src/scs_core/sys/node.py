@@ -23,12 +23,13 @@ class Node(ABC):
     """
 
     @classmethod
-    def scan(cls, start=0, end=254, timeout=1):
+    def scan(cls, start=1, end=254, timeout=1):
         pings = OrderedDict()
 
         # start...
         for addr in cls.ipv4_address().lso_range(start, end):
             dot_decimal = addr.dot_decimal()
+
             pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # wait...
