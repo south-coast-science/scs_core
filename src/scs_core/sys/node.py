@@ -29,7 +29,7 @@ class Node(ABC):
         # start...
         for addr in cls.ipv4_address().lso_range(start, end):
             dot_decimal = addr.dot_decimal()
-            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', str(timeout), '-t', '1', dot_decimal],
+            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # wait...
         for dot_decimal in pings:
@@ -41,7 +41,8 @@ class Node(ABC):
 
     @staticmethod
     def ping(host, timeout=1):
-        p = Popen(['ping', '-q', '-c', '1', '-t', str(timeout), host], stdout=DEVNULL, stderr=DEVNULL)
+        p = Popen(['ping', '-q', '-c', '1', '-t', str(timeout), host],
+                  stdout=DEVNULL, stderr=DEVNULL)
         p.wait()
 
         return p.returncode == 0
