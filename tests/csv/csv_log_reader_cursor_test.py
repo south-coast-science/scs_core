@@ -17,7 +17,7 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 start_iso = '2020-01-20T09:50:00Z'
-topic_name = 'climate'
+topic_subject = 'climate'
 rec_field = 'rec'
 
 start = LocalizedDatetime.construct_from_iso8601(start_iso)
@@ -29,7 +29,7 @@ print("-")
 conf = CSVLoggerConf.load(Host)
 print(conf)
 
-log = conf.csv_log(topic_name, timeline_start=start_datetime)
+log = conf.csv_log(topic_subject, timeline_start=start_datetime)
 print(log)
 print("-")
 

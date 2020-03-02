@@ -105,7 +105,7 @@ class BylineManager(object):
             self.__rest_client.close()
 
 
-    def find_byline_for_device_topic(self, device, topic_name):
+    def find_byline_for_device_topic(self, device, topic):
         request_path = '/device-topics'
 
         params = {self.__DEVICE: device}
@@ -123,7 +123,7 @@ class BylineManager(object):
             for item in jdict:
                 byline = Byline.construct_from_jdict(item)
 
-                if byline.topic_name() == topic_name:
+                if byline.topic == topic:
                     return byline
 
             return None

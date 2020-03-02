@@ -32,12 +32,12 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, topic_name, tag=None, timeline_start=None):
+    def __init__(self, root_path, topic_subject, tag=None, timeline_start=None):
         """
         Constructor
         """
         self.__root_path = root_path                        # string
-        self.__topic_name = topic_name                      # string
+        self.__topic_subject = topic_subject                # string
         self.__tag = tag                                    # string
 
         self.__timeline_start = timeline_start              # datetime
@@ -49,7 +49,7 @@ class CSVLog(object):
         # late import...
         from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 
-        return CSVLogCursorQueue.construct_for_log(self, rec_field)             # cursors are NOT live
+        return CSVLogCursorQueue.construct_for_log(self, rec_field)             # these cursors are NOT live
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ class CSVLog(object):
 
 
     def file_path(self):
-        return os.path.join(self.directory_path(), CSVLogFile.name(self.timeline_start, self.topic_name, self.tag))
+        return os.path.join(self.directory_path(), CSVLogFile.name(self.timeline_start, self.topic_subject, self.tag))
 
 
     def in_timeline(self, localised_datetime):
@@ -83,8 +83,8 @@ class CSVLog(object):
 
 
     @property
-    def topic_name(self):
-        return self.__topic_name
+    def topic_subject(self):
+        return self.__topic_subject
 
 
     @property
@@ -110,8 +110,8 @@ class CSVLog(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLog:{root_path:%s, tag:%s, topic_name:%s, timeline_start:%s}" % \
-               (self.root_path, self.tag, self.topic_name, self.timeline_start)
+        return "CSVLog:{root_path:%s, tag:%s, topic_subject:%s, timeline_start:%s}" % \
+               (self.root_path, self.tag, self.topic_subject, self.timeline_start)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -124,17 +124,17 @@ class CSVLogFile(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def name(datetime, topic_name, tag=None):
+    def name(datetime, topic_subject, tag=None):
         if datetime is None:
             raise ValueError("datetime may not be None")
 
         if tag is None:
             return "%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-                   (topic_name, datetime.year, datetime.month, datetime.day,
+                   (topic_subject, datetime.year, datetime.month, datetime.day,
                     datetime.hour, datetime.minute, datetime.second)
 
         return "%s-%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-               (tag, topic_name, datetime.year, datetime.month, datetime.day,
+               (tag, topic_subject, datetime.year, datetime.month, datetime.day,
                 datetime.hour, datetime.minute, datetime.second)
 
 
@@ -151,7 +151,7 @@ class CSVLogFile(object):
         # fields...
         tag = None if fields[0] is None else fields[0][:-1]
 
-        topic_name = fields[1]
+        topic_subject = fields[1]
 
         year = int(fields[2])
         month = int(fields[3])
@@ -163,17 +163,17 @@ class CSVLogFile(object):
 
         created_datetime = dt(year, month, day, hour, minute, second, 0, pytz.UTC)
 
-        return cls(created_datetime, topic_name, tag, file)
+        return cls(created_datetime, topic_subject, tag, file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, created_datetime, topic_name, tag, file: File):
+    def __init__(self, created_datetime, topic_subject, tag, file: File):
         """
         Constructor
         """
         self.__created_datetime = created_datetime          # datetime (offset-aware to UTC)
-        self.__topic_name = topic_name                      # string
+        self.__topic_subject = topic_subject                # string
         self.__tag = tag                                    # string
 
         self.__file = file                                  # File
@@ -193,8 +193,8 @@ class CSVLogFile(object):
 
 
     @property
-    def topic_name(self):
-        return self.__topic_name
+    def topic_subject(self):
+        return self.__topic_subject
 
 
     @property
@@ -205,5 +205,5 @@ class CSVLogFile(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogFile:{created_datetime:%s, tag:%s, topic_name:%s, file:%s}" % \
-               (self.created_datetime, self.tag, self.topic_name, self.__file)
+        return "CSVLogFile:{created_datetime:%s, tag:%s, topic_subject:%s, file:%s}" % \
+               (self.created_datetime, self.tag, self.topic_subject, self.__file)
