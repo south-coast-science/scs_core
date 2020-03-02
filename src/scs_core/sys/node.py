@@ -23,13 +23,13 @@ class Node(ABC):
     """
 
     @classmethod
-    def scan(cls, start, end):
+    def scan(cls, start=0, end=254, timeout=1):
         pings = OrderedDict()
 
         # start...
         for addr in cls.ipv4_address().lso_range(start, end):
             dot_decimal = addr.dot_decimal()
-            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', '1', dot_decimal],
+            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', str(timeout), '-t', '1', dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # wait...
         for dot_decimal in pings:
@@ -40,8 +40,8 @@ class Node(ABC):
 
 
     @staticmethod
-    def ping(host):
-        p = Popen(['ping', '-q', '-c', '1', '-t', '1', host], stdout=DEVNULL, stderr=DEVNULL)
+    def ping(host, timeout=1):
+        p = Popen(['ping', '-q', '-c', '1', '-t', str(timeout), host], stdout=DEVNULL, stderr=DEVNULL)
         p.wait()
 
         return p.returncode == 0
