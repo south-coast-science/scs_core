@@ -27,7 +27,7 @@ class IPv4Address(object):
         """
         Constructor
         """
-        self.__octets = octets
+        self.__octets = octets                          # array of int
 
 
     # ----------------------------------------------------------------------------------------------------------------
