@@ -68,7 +68,7 @@ class CSVLogCursorQueue(JSONable):
             if log_file.tag != log.tag:
                 continue
 
-            if log_file.topic_name != log.topic_name:
+            if log_file.topic_subject != log.topic_subject:
                 continue
 
             if log_file.created_datetime.date() < log.timeline_start.date():
