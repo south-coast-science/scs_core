@@ -56,8 +56,8 @@ class CSVLoggerConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def csv_log(self, topic_name, tag=None, timeline_start=None):
-        return CSVLog(self.root_path, topic_name, tag=tag, timeline_start=timeline_start)
+    def csv_log(self, topic_subject, tag=None, timeline_start=None):
+        return CSVLog(self.root_path, topic_subject, tag=tag, timeline_start=timeline_start)
 
 
     # ----------------------------------------------------------------------------------------------------------------

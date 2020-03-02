@@ -87,43 +87,31 @@ class Project(PersistentJSONable):
 
     def channel_path(self, channel, system_id):
         if channel == 'C':
-            return self.climate_topic_path()
+            return self.subject_path('climate', system_id)
 
         if channel == 'G':
-            return self.gases_topic_path()
+            return self.subject_path('gases', system_id)
 
         if channel == 'P':
-            return self.particulates_topic_path()
+            return self.subject_path('particulates', system_id)
 
         if channel == 'S':
-            return self.status_topic_path(system_id)
+            return self.subject_path('status', system_id)
 
         if channel == 'X':
-            return self.control_topic_path(system_id)
+            return self.subject_path('control', system_id)
 
-        raise ValueError("channel_path: unrecognised channel: %s" % channel)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def climate_topic_path(self):
-        return self.__location_path + '/climate'
+        raise ValueError(channel)
 
 
-    def gases_topic_path(self):
-        return self.__location_path + '/gases'
+    def subject_path(self, subject, system_id):
+        if subject == 'climate' or subject == 'gases' or subject == 'particulates':
+            return '/'.join((self.__location_path, subject))
 
+        if subject == 'status' or subject == 'control':
+            return '/'.join((self.__device_path, system_id.topic_label(), subject))
 
-    def particulates_topic_path(self):
-        return self.__location_path + '/particulates'
-
-
-    def status_topic_path(self, system_id):
-        return '/'.join((self.__device_path, system_id.topic_label(), 'status'))
-
-
-    def control_topic_path(self, system_id):
-        return '/'.join((self.__device_path, system_id.topic_label(), 'control'))
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
