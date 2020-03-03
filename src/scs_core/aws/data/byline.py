@@ -30,7 +30,7 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))     # TODO: change to latest-rec
+        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))         # as provided by web API
 
         return cls(device, topic, rec)
 
@@ -71,24 +71,13 @@ class Byline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # def topic_subject(self):
-    #     split = self.topic.rsplit('/', 1)
-    #
-    #     if not split:
-    #         return None
-    #
-    #     return split[len(split) - 1]
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['last_write'] = self.rec.as_iso8601()
+        jdict['rec'] = self.rec.as_iso8601()
 
         return jdict
 
