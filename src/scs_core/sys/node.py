@@ -10,7 +10,7 @@ import socket
 
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from subprocess import Popen, DEVNULL
+from subprocess import Popen, DEVNULL, TimeoutExpired
 
 from scs_core.sys.ipv4_address import IPv4Address
 
@@ -23,18 +23,20 @@ class Node(ABC):
     """
 
     @classmethod
-    def scan(cls, start=1, end=254, timeout=1):
+    def scan(cls, start=1, end=254, timeout=10):
         pings = OrderedDict()
 
         # start...
         for addr in cls.ipv4_address().lso_range(start, end):
             dot_decimal = addr.dot_decimal()
-
             pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
-        # wait...
+        # report...
         for dot_decimal in pings:
-            pings[dot_decimal].wait()
+            try:
+                pings[dot_decimal].wait(timeout=timeout * 2)
+            except (TimeoutExpired, TimeoutError):
+                continue
 
             if pings[dot_decimal].returncode == 0:
                 yield dot_decimal
