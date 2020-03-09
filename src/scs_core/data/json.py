@@ -38,7 +38,7 @@ class JSONable(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def as_json(self):              # TODO: handle named parameters of JSONify.dumps(..)
+    def as_json(self, *args, **kwargs):                 # TODO: handle named parameters of JSONify.dumps(..)
         pass
 
 
@@ -97,13 +97,6 @@ class JSONReport(JSONable):
 
         # atomic operation...
         os.rename(tmp_filename, filename)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
-    def as_json(self):
-        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -194,13 +187,6 @@ class PersistentJSONable(JSONable):
 
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
-    def as_json(self):
-        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
