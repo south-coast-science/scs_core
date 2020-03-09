@@ -3,6 +3,8 @@ Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://github.com/flyte/upnpclient
+
 https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
 """
 
@@ -14,6 +16,8 @@ from subprocess import Popen, DEVNULL, TimeoutExpired
 
 from scs_core.sys.ipv4_address import IPv4Address
 
+
+# TODO: ipv4_address() needs to be aware of all of its ports
 
 # --------------------------------------------------------------------------------------------------------------------
 
