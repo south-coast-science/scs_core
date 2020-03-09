@@ -75,6 +75,10 @@ class Node(ABC):
         pass
 
 
+    @abstractmethod
+    def server_ip_address(self):
+        pass
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
