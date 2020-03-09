@@ -36,7 +36,7 @@ class Node(ABC):
 
 
     @classmethod
-    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=1.0):
+    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10.0):
         if ipv4_address is None:
             return
 
