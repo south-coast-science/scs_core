@@ -59,7 +59,7 @@ class Node(ABC):
 
 
     @staticmethod
-    def ping(host, timeout=1):
+    def ping(host, timeout=1.0):
         p = Popen(['ping', '-q', '-c', '1', '-t', str(timeout), host],
                   stdout=DEVNULL, stderr=DEVNULL)
         p.wait()
