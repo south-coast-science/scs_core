@@ -55,6 +55,13 @@ class Node(ABC):
         return p.returncode == 0
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def name(self):
+        pass
+
+
     @staticmethod
     def ipv4_address():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -72,10 +79,8 @@ class Node(ABC):
         return IPv4Address.construct(dot_decimal)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     @abstractmethod
-    def name(self):
+    def server_ipv4_address(self):
         pass
 
 
