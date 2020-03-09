@@ -27,7 +27,7 @@ class Node(ABC):
     """
 
     @classmethod
-    def scan_accessible_subnets(cls, start=1, end=254, timeout=10):
+    def scan_accessible_subnets(cls, start=1, end=254, timeout=10.0):
         for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, timeout=timeout):
             yield dot_decimal
 
@@ -36,7 +36,7 @@ class Node(ABC):
 
 
     @classmethod
-    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10):
+    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10.0):
         if ipv4_address is None:
             return
 
@@ -50,7 +50,7 @@ class Node(ABC):
         # report...
         for dot_decimal in pings:
             try:
-                pings[dot_decimal].wait(timeout=timeout * 2)
+                pings[dot_decimal].wait(timeout=timeout * 2.0)
             except (TimeoutExpired, TimeoutError):
                 continue
 
