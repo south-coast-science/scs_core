@@ -9,18 +9,18 @@ Created on 2 Mar 2020
 import sys
 import time
 
-from scs_core.sys.node import Node
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-ip = Node.ipv4_address()
+ip = Host.ipv4_address()
 print("ipv4 address: %s" % str(ip))
 
 start_time = time.time()
 
-for dot_decimal in Node.scan():
+for dot_decimal in Host.scan_accessible_subnets():
     print("found: %s" % dot_decimal)
     sys.stdout.flush()
 

@@ -16,6 +16,9 @@ class IPv4Address(object):
 
     @classmethod
     def construct(cls, dot_decimal):
+        if dot_decimal is None:
+            return None
+
         octets = [int(octet) for octet in dot_decimal.split('.')]
 
         return cls(octets)
