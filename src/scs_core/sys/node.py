@@ -79,11 +79,6 @@ class Node(ABC):
         pass
 
 
-    @abstractmethod
-    def server_ipv4_address(self):
-        pass
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
