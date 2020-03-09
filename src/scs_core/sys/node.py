@@ -17,7 +17,7 @@ from subprocess import Popen, DEVNULL, TimeoutExpired
 from scs_core.sys.ipv4_address import IPv4Address
 
 
-# TODO: ipv4_address() needs to be aware of all of its ports
+# TODO: server IP address should not be hard-coded
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -27,12 +27,26 @@ class Node(ABC):
     """
 
     @classmethod
-    def scan(cls, start=1, end=254, timeout=10):
+    def scan_accessible_subnets(cls, start=1, end=254, timeout=10):
+        for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, timeout=timeout):
+            yield dot_decimal
+
+        for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, timeout=timeout):
+            yield dot_decimal
+
+
+    @classmethod
+    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10):
         pings = OrderedDict()
 
+        if ipv4_address is None:
+            return pings
+
         # start...
-        for addr in cls.ipv4_address().lso_range(start, end):
+        for addr in ipv4_address.lso_range(start, end):
             dot_decimal = addr.dot_decimal()
+            print("dot_decimal: %s" % dot_decimal)
+
             pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # report...
@@ -57,8 +71,9 @@ class Node(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
     @abstractmethod
-    def name(self):
+    def name(cls):
         pass
 
 
@@ -79,8 +94,9 @@ class Node(ABC):
         return IPv4Address.construct(dot_decimal)
 
 
+    @classmethod
     @abstractmethod
-    def server_ipv4_address(self):
+    def server_ipv4_address(cls):
         pass
 
 
