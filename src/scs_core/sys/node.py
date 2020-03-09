@@ -3,8 +3,6 @@ Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://github.com/flyte/upnpclient
-
 https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
 """
 
@@ -28,10 +26,10 @@ class Node(ABC):
 
     @classmethod
     def scan_accessible_subnets(cls, start=1, end=254, timeout=10.0):
-        for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, timeout=timeout):
+        for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, timeout=timeout):
             yield dot_decimal
 
-        for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, timeout=timeout):
+        for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, timeout=timeout):
             yield dot_decimal
 
 
