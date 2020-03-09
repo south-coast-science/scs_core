@@ -37,16 +37,14 @@ class Node(ABC):
 
     @classmethod
     def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10):
-        pings = OrderedDict()
-
         if ipv4_address is None:
-            return pings
+            return
+
+        pings = OrderedDict()
 
         # start...
         for addr in ipv4_address.lso_range(start, end):
             dot_decimal = addr.dot_decimal()
-            print("dot_decimal: %s" % dot_decimal)
-
             pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # report...
