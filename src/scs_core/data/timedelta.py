@@ -33,7 +33,7 @@ class Timedelta(JSONable):
             return None
 
         # command-line utility flag...
-        match = re.match(r'^(((\d+)-)?(\d{1,2}):)?(\d{1,2})$', report)
+        match = re.match(r'^(((\d+)-)?(\d{1,2}):)?(\d{1,2})?(:(\d{1,2}))?$', report)
 
         if match is None:
             return None
@@ -42,9 +42,13 @@ class Timedelta(JSONable):
 
         days = 0 if fields[2] is None else int(fields[2])
         hours = 0 if fields[3] is None else int(fields[3])
-        minutes = int(fields[4])
+        minutes = 0 if fields[4] is None else int(fields[4])
+        seconds = 0 if fields[6] is None else int(fields[6])
 
-        return Timedelta(days=days, hours=hours, minutes=minutes)
+        if days is None and hours is None and minutes is None and seconds is None:
+            return None
+
+        return cls(days=days, hours=hours, minutes=minutes, seconds=seconds)
 
 
     @classmethod
@@ -91,7 +95,7 @@ class Timedelta(JSONable):
         minutes = int(fields[3])
         seconds = int(fields[4])
 
-        return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+        return cls(days=days, hours=hours, minutes=minutes, seconds=seconds)
 
 
     @classmethod
@@ -133,7 +137,7 @@ class Timedelta(JSONable):
                 print(ExceptionReport.construct(ex), file=sys.stderr)
                 return None
 
-            return Timedelta(days=days, hours=hours, minutes=minutes)
+            return cls(days=days, hours=hours, minutes=minutes)
 
 
     @classmethod
@@ -154,7 +158,12 @@ class Timedelta(JSONable):
         seconds = int(fields[3])
         milliseconds = 0 if fields[5] is None else int(fields[5])
 
-        return Timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
+        return cls(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
+
+
+    @classmethod
+    def construct(cls, td: timedelta):
+        return cls(seconds=int(round(td.total_seconds())))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -165,6 +174,8 @@ class Timedelta(JSONable):
         """
         self.__td = timedelta(days=days, seconds=seconds, microseconds=microseconds, milliseconds=milliseconds,
                               minutes=minutes, hours=hours, weeks=weeks)
+
+        self.__td.total_seconds()
 
 
     # ----------------------------------------------------------------------------------------------------------------
