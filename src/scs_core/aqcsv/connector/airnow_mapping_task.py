@@ -237,7 +237,7 @@ class MappingTask(JSONable):
 
 
     def file_prefix(self):
-        dt = AQCSVDatetime(LocalizedDatetime.now().datetime)
+        dt = AQCSVDatetime(LocalizedDatetime.now().utc().datetime)
         site = AQCSVSite.construct_from_code(self.site_code)
 
         return dt.filename_prefix() + '_' + str(site.country_code)          # goal is YYYYMMDDhhmm_CCC.AAAAAAAAAA

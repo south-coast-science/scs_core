@@ -111,7 +111,7 @@ class CSVLogger(object):
             self.__open_file()
 
         # start log for new day...
-        if not self.log.in_timeline(LocalizedDatetime.now()):
+        if not self.log.in_timeline(LocalizedDatetime.now().utc()):
             self.close()
             self.__open_file()
 
@@ -125,7 +125,7 @@ class CSVLogger(object):
 
 
     def __open_file(self):
-        self.log.timeline_start = LocalizedDatetime.now()
+        self.log.timeline_start = LocalizedDatetime.now().utc()
 
         self.__clear_space()
         self.log.mkdir()

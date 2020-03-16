@@ -48,7 +48,7 @@ class MessageManager(object):
                 collection.extend(batch)
 
                 if self.__verbose:
-                    now = LocalizedDatetime.now()
+                    now = LocalizedDatetime.now().utc()
                     batch_count = len(batch)
                     total += batch_count
 

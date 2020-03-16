@@ -16,7 +16,7 @@ from scs_core.data.datetime import LocalizedDatetime
 device_tag = 'scs-sys-001'
 topic_subject = 'gases'
 
-now = LocalizedDatetime.now()
+now = LocalizedDatetime.now().utc()
 
 path = '/home/pi/SCS/scs_core/tests/csv'
 
