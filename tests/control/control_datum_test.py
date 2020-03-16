@@ -19,7 +19,7 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 
 serial = '00000000cda1f8b9'
-now = LocalizedDatetime.now()
+now = LocalizedDatetime.now().utc()
 
 datum = ControlDatum.construct('my-laptop', 'scs-ap1-6', now, ['test'], serial)
 print(datum)
@@ -43,7 +43,7 @@ print("datum valid: %s" % valid)
 print("=")
 
 time.sleep(1)
-now = LocalizedDatetime.now()
+now = LocalizedDatetime.now().utc()
 
 command = 'COMMAND'
 

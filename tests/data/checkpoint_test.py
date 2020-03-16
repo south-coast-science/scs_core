@@ -28,7 +28,7 @@ for minutes in range(0, 60):
 
 
 while True:
-    now = LocalizedDatetime.now()
+    now = LocalizedDatetime.now().utc()
     print(now)
 
     next_checkpoint = checkpoint.next_localised_datetime(now)

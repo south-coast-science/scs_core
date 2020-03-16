@@ -27,7 +27,7 @@ tag = "scs-ap1-0"
 print(tag)
 print("-")
 
-now = LocalizedDatetime.now()
+now = LocalizedDatetime.now().utc()
 print(now)
 print("-")
 

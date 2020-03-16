@@ -45,7 +45,7 @@ class SPSDatum(PMxDatum):
 
     @classmethod
     def null_datum(cls):
-        return SPSDatum(None, LocalizedDatetime.now(), None, None, None, None, [], None)
+        return SPSDatum(None, LocalizedDatetime.now().utc(), None, None, None, None, [], None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
