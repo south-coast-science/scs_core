@@ -63,7 +63,7 @@ class OPCDatum(PMxDatum):
 
     @classmethod
     def null_datum(cls):
-        return OPCDatum(None, LocalizedDatetime.now(), None, None, None, 0.0, [], 0, 0, 0, 0)
+        return OPCDatum(None, LocalizedDatetime.now().utc(), None, None, None, 0.0, [], 0, 0, 0, 0)
 
 
     # ----------------------------------------------------------------------------------------------------------------
