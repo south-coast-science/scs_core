@@ -104,7 +104,8 @@ class LinearRegression(Regression):
         d_x = (sum_x2 * n) - (sum_x * sum_x)
         d_y = (sum_xy * n) - (sum_x * sum_y)
 
-        slope = d_y / d_x
+        slope = d_y / d_x                                   # raises decimal.InvalidOperation if d_x is zero
+
         intercept = avg_y - (slope * avg_x)
 
         return float(slope), float(intercept)
