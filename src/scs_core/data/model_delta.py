@@ -14,7 +14,7 @@ example:
 """
 
 from collections import OrderedDict
-from statistics import stdev
+from statistics import mean, stdev
 
 from scs_core.data.json import JSONable
 from scs_core.data.path_dict import PathDict
@@ -35,21 +35,22 @@ class ModelDelta(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, domain, ind_name, ind_prec, dep_names, dep_prec):
+    def construct(cls, domain_min, domain_max, ind_name, ind_prec, dep_names, dep_prec):
         dependents = OrderedDict()
         for dep_name in dep_names:
             dependents[dep_name] = []
 
-        return ModelDelta(domain, ind_name, [], ind_prec, dependents, dep_prec)
+        return ModelDelta(domain_min, domain_max, ind_name, [], ind_prec, dependents, dep_prec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, domain, ind_name, ind_values, ind_prec, dependents, dep_prec):
+    def __init__(self, domain_min, domain_max, ind_name, ind_values, ind_prec, dependents, dep_prec):
         """
         Constructor
         """
-        self.__domain = domain                                  # string
+        self.__domain_min = domain_min                          # float
+        self.__domain_max = domain_max                          # float
 
         self.__ind_name = ind_name                              # string
         self.__ind_values = ind_values                          # array of float
@@ -80,7 +81,8 @@ class ModelDelta(JSONable):
     def as_json(self):
         jdict = PathDict()
 
-        jdict.append('domain', self.domain)
+        jdict.append('domain', self.domain())
+        jdict.append('domain-midpoint', self.domain_midpoint())
 
         jdict.append(self.ind_name + '.min', self.ind_min())
         jdict.append(self.ind_name + '.avg', self.ind_avg())
@@ -139,9 +141,24 @@ class ModelDelta(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
     def domain(self):
-        return self.__domain
+        return ' - '.join((str(round(self.domain_min, 1)), str(round(self.domain_max, 1))))
+
+
+    def domain_midpoint(self):
+        return round(mean((self.domain_min, self.domain_max)), 1)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def domain_min(self):
+        return self.__domain_min
+
+
+    @property
+    def domain_max(self):
+        return self.__domain_max
 
 
     @property
@@ -158,4 +175,4 @@ class ModelDelta(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "ModelDelta:{domain:%s, ind_name:%s, ind_prec:%s, dependents:%s, dep_prec:%s, length:%d}" % \
-               (self.domain, self.ind_name, self.__ind_prec, self.dep_names, self.__dep_prec, len(self))
+               (self.domain(), self.ind_name, self.__ind_prec, self.dep_names, self.__dep_prec, len(self))

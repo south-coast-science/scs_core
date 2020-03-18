@@ -5,6 +5,7 @@ Created on 14 Oct 2016
 """
 
 from decimal import Decimal
+from statistics import mean
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.regression import Regression
@@ -130,7 +131,7 @@ class LinearRegression(Regression):
         min_x = min(x_data)
         max_x = max(x_data)
 
-        mid_x = min_x + ((max_x - min_x) / 2)
+        mid_x = mean((min_x, max_x))
 
         rec = LocalizedDatetime.construct_from_timestamp(mid_x, self.__tzinfo)
 
