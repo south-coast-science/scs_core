@@ -22,9 +22,12 @@ class ClientAuth(PersistentJSONable):
     """
 
     __FILENAME = "aws_client_auth.json"
+    __HOST = None
 
     @classmethod
     def persistence_location(cls, host):
+        cls.__HOST = host
+
         return host.aws_dir(), cls.__FILENAME
 
 
@@ -100,22 +103,22 @@ class ClientAuth(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------
