@@ -159,14 +159,15 @@ class PersistentJSONable(JSONable):
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, filename):
+    def save_to_file(self, directory, filename=None):
         # data...
         jstr = JSONify.dumps(self)
 
         # file...
-        Filesystem.mkdir(directory)
+        if filename:
+            Filesystem.mkdir(directory)
 
-        abs_filename = os.path.join(directory, filename)
+        abs_filename = os.path.join(directory, filename) if filename else directory
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
         f = open(tmp_filename, "w")
