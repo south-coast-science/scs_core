@@ -3,6 +3,8 @@ Created on 2 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+WARNING: Path methods require that the __HOST field must be instantiated.
+
 example document:
 {"endpoint": "asrft7e5j5ecz.iot.us-west-2.amazonaws.com", "client-id": "bruno", "cert-id": "9f08402232"}
 """
@@ -24,11 +26,17 @@ class ClientAuth(PersistentJSONable):
     __FILENAME = "aws_client_auth.json"
     __HOST = None
 
+
     @classmethod
     def persistence_location(cls, host):
         cls.__HOST = host
 
         return host.aws_dir(), cls.__FILENAME
+
+
+    @classmethod
+    def set_host(cls, host):
+        cls.__HOST = host
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,8 +70,6 @@ class ClientAuth(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__endpoint = endpoint                  # String
         self.__client_id = client_id                # String
         self.__cert_id = cert_id                    # String

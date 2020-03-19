@@ -60,8 +60,6 @@ class SharedSecret(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__key = key            # String
 
 

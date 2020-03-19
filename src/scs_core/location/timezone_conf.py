@@ -61,8 +61,6 @@ class TimezoneConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__set_on = set_on                          # LocalizedDatetime
         self.__name = name                              # a Pytz timezone name or None
 
