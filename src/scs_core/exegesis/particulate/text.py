@@ -56,6 +56,19 @@ class Text(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def pm(self, species):
+        if species == 'pm1':
+            return self.__pm1
+
+        if species == 'pm2p5':
+            return self.__pm2p5
+
+        if species == 'pm10':
+            return self.__pm10
+
+        raise ValueError(species)
+
+
     @property
     def pm1(self):
         return self.__pm1
