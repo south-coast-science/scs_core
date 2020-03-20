@@ -48,8 +48,6 @@ class MQTTConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__inhibit_publishing = bool(inhibit_publishing)                # do not attempt to publish
         self.__report_file = report_file                                    # tmp file to store current queue length
         self.__debug = bool(debug)                                          # DEBUG log level

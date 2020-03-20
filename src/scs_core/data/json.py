@@ -115,12 +115,7 @@ class PersistentJSONable(JSONable):
         except NotImplementedError:
             return None
 
-        instance = cls.load_from_file(filename)
-
-        if instance is not None:
-            instance.__host = host
-
-        return instance
+        return cls.load_from_file(filename)
 
 
     @classmethod
@@ -147,38 +142,32 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls, _):
+    def persistence_location(cls, _host):
+        # the implementer may assign the _host object to a class variable here
         return None, None
 
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, _):
+    def construct_from_jdict(cls, _jdict):
         return PersistentJSONable()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
-        self.__host = None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def save(self, host):
-        self.__host = host
-
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, filename):
+    def save_to_file(self, directory, filename=None):
         # data...
         jstr = JSONify.dumps(self)
 
         # file...
-        Filesystem.mkdir(directory)
+        if filename:
+            Filesystem.mkdir(directory)
 
-        abs_filename = os.path.join(directory, filename)
+        abs_filename = os.path.join(directory, filename) if filename else directory
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
         f = open(tmp_filename, "w")
@@ -187,21 +176,6 @@ class PersistentJSONable(JSONable):
 
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def host(self):
-        return self.__host
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        hostname = None if self.host is None else self.host.name()
-
-        return "PersistentJSONable:{host:%s}" % hostname
 
 
 # --------------------------------------------------------------------------------------------------------------------

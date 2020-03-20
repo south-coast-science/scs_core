@@ -66,8 +66,6 @@ class Project(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__location_path = location_path          # string
         self.__device_path = device_path              # string
 
