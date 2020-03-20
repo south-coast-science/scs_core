@@ -57,8 +57,6 @@ class Pt1000Calib(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
         self.__v20 = Datum.float(v20, 6)            # voltage at 20 °C
 

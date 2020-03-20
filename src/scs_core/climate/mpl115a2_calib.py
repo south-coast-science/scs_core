@@ -51,8 +51,6 @@ class MPL115A2Calib(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
         self.__c25 = Datum.int(c25)                 # T adc count at 25 °C
 

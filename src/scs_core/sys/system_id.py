@@ -54,8 +54,6 @@ class SystemID(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__vendor_id = vendor_id                # string (3 chars)
         self.__model_id = model_id                  # string (3 chars)
 

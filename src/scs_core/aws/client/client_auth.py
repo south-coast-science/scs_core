@@ -3,6 +3,8 @@ Created on 2 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+WARNING: Path methods require that the __HOST field must be instantiated.
+
 example document:
 {"endpoint": "asrft7e5j5ecz.iot.us-west-2.amazonaws.com", "client-id": "bruno", "cert-id": "9f08402232"}
 """
@@ -22,10 +24,19 @@ class ClientAuth(PersistentJSONable):
     """
 
     __FILENAME = "aws_client_auth.json"
+    __HOST = None
+
 
     @classmethod
     def persistence_location(cls, host):
+        cls.__HOST = host
+
         return host.aws_dir(), cls.__FILENAME
+
+
+    @classmethod
+    def set_host(cls, host):
+        cls.__HOST = host
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -59,8 +70,6 @@ class ClientAuth(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__endpoint = endpoint                  # String
         self.__client_id = client_id                # String
         self.__cert_id = cert_id                    # String
@@ -100,22 +109,22 @@ class ClientAuth(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return os.path.join(self.host.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
+        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------

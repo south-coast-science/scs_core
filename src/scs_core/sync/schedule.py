@@ -63,8 +63,6 @@ class Schedule(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__items = items                # dict of name: ScheduleItem
 
 

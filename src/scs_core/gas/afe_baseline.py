@@ -61,8 +61,6 @@ class AFEBaseline(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__sensor_baselines = sensor_baselines        # array of SensorBaseline
 
 
