@@ -18,8 +18,6 @@ from scs_core.data.json import JSONable
 from scs_core.sys.filesystem import Filesystem
 
 
-# TODO: needs improved file finder, based on "datetime of next file"
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogCursorQueue(JSONable):
@@ -30,8 +28,8 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log(cls, log: CSVLog, rec_field):                         # these cursors are NOT live
-        queue = OrderedDict()
+    def find_cursors_for_log(cls, log: CSVLog, rec_field):                         # these cursors are NOT live
+        cursors = []
 
         if log.timeline_start is not None:
             for directory_path in cls.__directory_paths(log):
@@ -39,10 +37,12 @@ class CSVLogCursorQueue(JSONable):
                     cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
 
                     if cursor is not None:
-                        queue[cursor.file_path] = cursor
+                        cursors.append(cursor)
 
-        return cls(queue)
+        return cursors
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
     def __directory_paths(log: CSVLog):
@@ -96,13 +96,12 @@ class CSVLogCursorQueue(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    #
 
     def __init__(self, queue=None):
         """
         Constructor
         """
-        self.__queue = OrderedDict() if queue is None else queue        # OrderedDict of CSVLogCursor
+        self.__queue = {} if queue is None else queue           # dict of file_path: CSVLogCursor
 
 
     def __len__(self):
@@ -114,29 +113,30 @@ class CSVLogCursorQueue(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['queue'] = [cursor.as_json() for cursor in self.__queue.values()]
+        jdict['queue'] = [cursor.as_json() for cursor in self.cursors()]
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def include(self, file_path, is_live):
-        if file_path is None:
+    def include(self, cursor):
+        if cursor is None:
             return
 
-        if file_path in self.__queue.keys():
-            return                                          # assume that the cursor is already live
+        if cursor.file_path in self.__queue.keys():
+            return                                              # assume that the cursor is already live
 
-        if is_live:
+        if cursor.is_live:
             for key in self.__queue.keys():
-                self.__queue[key].is_live = False           # there shall only be one live file
+                self.__queue[key].is_live = False               # there shall only be one live file
 
-        self.__queue[file_path] = CSVLogCursor(file_path, 0, is_live)
+        self.__queue[cursor.file_path] = cursor
 
 
     def next(self):
-        return next(iter(self.__queue.values()), None)      # the first item is the oldest item
+        for cursor in self.cursors():
+            return cursor
 
 
     def remove(self, file_path):
@@ -148,8 +148,15 @@ class CSVLogCursorQueue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def cursors(self):
+        for file_path in sorted(list(self.__queue.keys())):
+            yield self.__queue[file_path]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        queue = '[' + ', '.join(str(cursor) for cursor in self.__queue.values()) + ']'
+        queue = '[' + ', '.join(str(cursor) for cursor in self.cursors()) + ']'
 
         return "CSVLogCursorQueue:{queue:%s}" %  queue
 

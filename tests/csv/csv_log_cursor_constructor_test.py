@@ -30,8 +30,3 @@ print(conf)
 
 log = conf.csv_log(topic_subject, timeline_start=start_datetime)
 print(log)
-
-print("-")
-
-queue = log.cursor_queue(rec_field)
-print(queue)
