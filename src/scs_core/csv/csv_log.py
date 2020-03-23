@@ -45,15 +45,6 @@ class CSVLog(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def cursor_queue(self, rec_field):
-        # late import...
-        from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
-
-        return CSVLogCursorQueue.construct_for_log(self, rec_field)             # these cursors are NOT live
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def mkdir(self):
         Filesystem.mkdir(self.directory_path())
 

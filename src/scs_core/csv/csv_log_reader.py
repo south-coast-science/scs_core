@@ -45,7 +45,7 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, queue: CSVLogCursorQueue, empty_string_as_null=False, reporter=None):
+    def __init__(self, queue_builder, empty_string_as_null=False, reporter=None):
         """
         Constructor
         """
@@ -53,17 +53,33 @@ class CSVLogReader(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
+        queue = CSVLogCursorQueue()
+
         with self._lock:
             queue.as_list(self._value)
 
+        self.__queue_builder = queue_builder                                    # CSVLogQueueBuilder
         self.__empty_string_as_null = bool(empty_string_as_null)                # bool
-        self.__reporter = reporter                                              # CSVLogReaderReporter
+        self.__reporter = reporter                                              # CSVLogReporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def run(self, halt_on_empty_queue=False):
         try:
+            # build queue...
+            timeline_start, cursors = self.__queue_builder.find_cursors()       # waits indefinitely for network
+
+            if self.__reporter:
+                self.__reporter.timeline_start(timeline_start)
+
+            with self._lock:
+                queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                for cursor in cursors:
+                    queue.include(cursor)
+                queue.as_list(self._value)
+
+            # drain queue...
             while True:
                 # find oldest...
                 with self._lock:
@@ -145,11 +161,12 @@ class CSVLogReader(SynchronisedProcess):
         if file_path is None:
             return
 
+        cursor = CSVLogCursor(file_path, 0, True)
+
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
-            queue.include(file_path, True)
+            queue.include(cursor)
             queue.as_list(self._value)
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -158,13 +175,51 @@ class CSVLogReader(SynchronisedProcess):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
 
-        return "CSVLogReader:{queue:%s, empty_string_as_null:%s, reporter:%s}" % \
-               (queue, self.__empty_string_as_null, self.__reporter)
+        return "CSVLogReader:{queue_builder:%s, queue:%s, empty_string_as_null:%s, reporter:%s}" % \
+               (self.__queue_builder, queue, self.__empty_string_as_null, self.__reporter)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVLogReaderReporter(ABC):
+class CSVLogQueueBuilder(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, topic_name, topic_path, byline_manager, system_id, conf):
+        self.__topic_name = topic_name
+        self.__topic_path = topic_path
+        self.__byline_manager = byline_manager
+        self.__system_id = system_id
+        self.__conf = conf
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def find_cursors(self):                                                     # waits indefinitely for network
+        # timeline_start...
+        byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(), self.__topic_path)
+        timeline_start = None if byline is None else byline.rec.datetime
+
+        # CSVLog...
+        read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
+                                       timeline_start=timeline_start)
+
+        return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self):
+        return "CSVLogQueueBuilder:{topic_name:%s, topic_path:%s, byline_manager:%s, system_id:%s, conf:%s}" % \
+               (self.__topic_name, self.__topic_path, self.__byline_manager, self.__system_id, self.__conf)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVLogReporter(ABC):
     """
     classdocs
     """
@@ -173,6 +228,11 @@ class CSVLogReaderReporter(ABC):
 
     @abstractmethod
     def opening(self, cursor):
+        pass
+
+
+    @abstractmethod
+    def timeline_start(self, timeline_start):
         pass
 
 
