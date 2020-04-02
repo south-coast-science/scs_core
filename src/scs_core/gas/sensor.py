@@ -26,6 +26,7 @@ class Sensor(ABC):
     CODE_VOC_PPM =      '142'           # PID-A12
     CODE_VOC_PPB_T1 =   '143'           # PID-AH
     CODE_VOC_PPB_T2 =   '354'           # PID-AH (since June 2019)
+    CODE_VOC_PPB_T3 =   '401'           # PID-AH (since April 2020)
 
     CODE_TEST_1 =       '01'            # test load
     CODE_TEST_2 =       '02'            # test load
