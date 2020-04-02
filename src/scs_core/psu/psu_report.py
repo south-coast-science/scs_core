@@ -41,6 +41,12 @@ class PSUReport(JSONReport, ABC):
         return None
 
 
+    @property
+    @abstractmethod
+    def batt_percent(self):
+        return None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod

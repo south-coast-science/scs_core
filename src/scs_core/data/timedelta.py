@@ -175,8 +175,6 @@ class Timedelta(JSONable):
         self.__td = timedelta(days=days, seconds=seconds, microseconds=microseconds, milliseconds=milliseconds,
                               minutes=minutes, hours=hours, weeks=weeks)
 
-        self.__td.total_seconds()
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

@@ -26,6 +26,7 @@ class MessageManager(object):
     __TOPIC =       'topic'
     __START =       'startTime'
     __END =         'endTime'
+    __REC_ONLY =    'rec_only'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -40,12 +41,13 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_for_topic(self, topic, start_date, end_date):
+    def find_for_topic(self, topic, start_date, end_date, rec_only):
         request_path = '/topicMessages'
 
-        params = {self.__TOPIC: topic,
-                  self.__START: start_date.utc().as_iso8601(True),
-                  self.__END:   end_date.utc().as_iso8601(True)}
+        params = {self.__TOPIC:     topic,
+                  self.__START:     start_date.utc().as_iso8601(True),
+                  self.__END:       end_date.utc().as_iso8601(True),
+                  self.__REC_ONLY:  str(rec_only).lower()}
 
         # request...
         self.__rest_client.connect()
