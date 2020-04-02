@@ -46,10 +46,8 @@ class MessageManager(object):
 
         params = {self.__TOPIC: topic,
                   self.__START: start_date.utc().as_iso8601(True),
-                  self.__END:   end_date.utc().as_iso8601(True)}
-
-        if rec_only:
-            params[self.__REC_ONLY] = 'true'
+                  self.__END:   end_date.utc().as_iso8601(True),
+                  self.__REC_ONLY: str(rec_only).lower()}
 
         # request...
         self.__rest_client.connect()
