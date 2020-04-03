@@ -32,6 +32,12 @@ class PSU(ABC):
 
     @classmethod
     @abstractmethod
+    def uses_batt_pack(cls):
+        pass
+
+
+    @classmethod
+    @abstractmethod
     def report_class(cls):
         pass
 
