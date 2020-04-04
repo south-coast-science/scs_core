@@ -61,6 +61,11 @@ class PSU(ABC):
         pass
 
 
+    @abstractmethod
+    def charge_min(self):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
