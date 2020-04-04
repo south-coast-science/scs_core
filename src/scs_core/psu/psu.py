@@ -32,6 +32,12 @@ class PSU(ABC):
 
     @classmethod
     @abstractmethod
+    def uses_batt_pack(cls):
+        pass
+
+
+    @classmethod
+    @abstractmethod
     def report_class(cls):
         pass
 
@@ -52,6 +58,11 @@ class PSU(ABC):
 
     @abstractmethod
     def status(self):
+        pass
+
+
+    @abstractmethod
+    def charge_min(self):
         pass
 
 
@@ -94,4 +105,12 @@ class PSU(ABC):
 
     @abstractmethod
     def charge_dead(self, on):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def batt_pack(self):
         pass
