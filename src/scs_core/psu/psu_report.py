@@ -29,7 +29,7 @@ class PSUReport(JSONReport, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def below_power_threshold(self):
+    def below_power_threshold(self, charge_min):
         pass
 
 
