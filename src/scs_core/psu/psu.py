@@ -106,3 +106,11 @@ class PSU(ABC):
     @abstractmethod
     def charge_dead(self, on):
         pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def batt_pack(self):
+        pass
