@@ -22,6 +22,8 @@ class CSVArchive(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnresolvedReferences
+
     @classmethod
     def retrieve(cls):
         reader = CSVReader.construct_for_file(cls.archive_location(), numeric_cast=False)
@@ -77,6 +79,7 @@ class CSVArchive(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     @abstractmethod
     def pk(self):
         return None
