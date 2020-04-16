@@ -136,6 +136,7 @@ class HTTPClient(object):
             except (socket.gaierror, http.client.CannotSendRequest) as ex:
                 if not self.__wait_for_network:
                     raise ConnectionError(ex)
+                self.__conn.close()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
 
