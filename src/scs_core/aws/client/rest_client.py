@@ -46,7 +46,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint, timeout=3000)
+        self.__http_client.connect(self.__auth.endpoint, timeout=60)
 
 
     def close(self):
