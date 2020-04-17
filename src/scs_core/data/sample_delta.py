@@ -15,13 +15,13 @@ class SampleDelta(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def deltas(cls, domain_lower, domain_upper, delta):
-        return [cls(lower_bound, lower_bound + delta) for lower_bound in range(domain_lower, domain_upper, delta)]
+    def deltas(cls, domain_lower, domain_upper, delta, name=None):
+        return [cls(lower_bound, lower_bound + delta, name) for lower_bound in range(domain_lower, domain_upper, delta)]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lower_bound, upper_bound):
+    def __init__(self, lower_bound, upper_bound, name=None):
         """
         Constructor
         """
@@ -30,6 +30,7 @@ class SampleDelta(object):
 
         self.__lower_bound = int(lower_bound)                       # int
         self.__upper_bound = int(upper_bound)                       # int
+        self.__name = name                                          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,10 +54,18 @@ class SampleDelta(object):
         return self.__upper_bound
 
 
+    @property
+    def name(self):
+        return self.__name
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def description(self):
-        return '-'.join((str(self.lower_bound), str(self.upper_bound)))
+        delta = '-'.join((str(self.lower_bound), str(self.upper_bound)))
+        description = delta if self.name is None else '_'.join((self.name, delta))
+
+        return description
 
 
     def __str__(self, *args, **kwargs):
