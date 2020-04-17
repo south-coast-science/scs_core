@@ -2,8 +2,6 @@
 Created on 9 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-if wait_for_network is False, then a ConnectionError should be handled
 """
 
 import socket
