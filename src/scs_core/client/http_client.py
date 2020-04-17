@@ -9,6 +9,7 @@ if wait_for_network is False, then a ConnectionError should be handled
 import socket
 import ssl
 import time
+#import sys
 
 import http.client
 
@@ -42,7 +43,7 @@ class HTTPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self, host, secure=True, verified=True, timeout=None):
-        # print("connect: host: %s" % host)
+        # print("connect: host: {}, timeout: {}".format(host, timeout), file=sys.stderr)
 
         if secure:
             # noinspection PyProtectedMember
@@ -74,7 +75,7 @@ class HTTPClient(object):
         params = urllib.parse.urlencode(payload) if payload else None
         query = path + '?' + params if params else path
 
-        # print("get: query: %s" % query)
+        # print("get: query: {}".format(query), file=sys.stderr)
 
         # request...
         response = self.__request("GET", query, None, headers)
@@ -127,6 +128,7 @@ class HTTPClient(object):
 
     def __request(self, method, url, body, headers):
         while True:
+            # print("Retrying request", file=sys.stderr)
             try:
                 self.__conn.request(method, url, body=body, headers=headers)
                 return self.__conn.getresponse()
@@ -134,6 +136,7 @@ class HTTPClient(object):
             except (socket.gaierror, http.client.CannotSendRequest) as ex:
                 if not self.__wait_for_network:
                     raise ConnectionError(ex)
+                self.__conn.close()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
 

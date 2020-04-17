@@ -128,7 +128,7 @@ class PersistentJSONable(JSONable):
         jstr = f.read().strip()
         f.close()
 
-        jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+        jdict = json.loads(jstr, object_hook=OrderedDict)
 
         return cls.construct_from_jdict(jdict)
 

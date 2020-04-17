@@ -46,7 +46,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint, timeout=3000)
+        self.__http_client.connect(self.__auth.endpoint, timeout=60)
 
 
     def close(self):
@@ -68,7 +68,7 @@ class RESTClient(object):
                 raise exc
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr, object_hook=OrderedDict)
         except ValueError:
             response = None
 
@@ -83,7 +83,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr, object_hook=OrderedDict)
         except ValueError:
             response = None
 
@@ -98,7 +98,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr, object_hook=OrderedDict)
         except ValueError:
             response = None
 
@@ -109,7 +109,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.delete(path, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr, object_hook=OrderedDict)
         except ValueError:
             response = None
 
