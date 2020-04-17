@@ -9,7 +9,6 @@ if wait_for_network is False, then a ConnectionError should be handled
 import socket
 import ssl
 import time
-#import sys
 
 import http.client
 
