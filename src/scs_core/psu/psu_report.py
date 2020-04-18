@@ -47,6 +47,18 @@ class PSUReport(JSONReport, ABC):
         return None
 
 
+    @property
+    @abstractmethod
+    def power_in(self):
+        return None
+
+
+    @property
+    @abstractmethod
+    def charge_status(self):
+        return None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
