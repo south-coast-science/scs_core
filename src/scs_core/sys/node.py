@@ -15,8 +15,6 @@ from subprocess import Popen, DEVNULL, TimeoutExpired
 from scs_core.sys.ipv4_address import IPv4Address
 
 
-# TODO: server IP address should not be hard-coded
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Node(ABC):
