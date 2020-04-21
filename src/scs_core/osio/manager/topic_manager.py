@@ -218,7 +218,7 @@ class TopicManager(object):
         self.__rest_client.connect(timeout=self.__TIMEOUT)
 
         try:
-            self.__rest_client.put(request_path, topic.as_json())       # TODO: check what it looks like
+            self.__rest_client.put(request_path, topic.as_json())
 
         except socket.timeout:
             pass
