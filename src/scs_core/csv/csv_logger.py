@@ -15,8 +15,6 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.sys.filesystem import Filesystem
 
 
-# TODO: remove deferred write functionality
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class CSVLogger(object):
