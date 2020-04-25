@@ -96,7 +96,5 @@ class SFTPClientConf(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        classname = self.__class__.__name__
-
-        return classname + ":{host:%s, port:%s, username:%s, password:%s, remote_path:%s}" %  \
+        return self.__class__.__name__ + ":{host:%s, port:%s, username:%s, password:%s, remote_path:%s}" %  \
             (self.host, self.port, self.username, self.password, self.remote_path)

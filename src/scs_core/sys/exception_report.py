@@ -61,7 +61,7 @@ class ExceptionReport(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['cls'] = self.cls.__name__
+        jdict['cls'] = self.__class__.__name__
         jdict['args'] = self.args
         jdict['trace'] = self.trace
         jdict['sum'] = self.summary
@@ -98,4 +98,4 @@ class ExceptionReport(JSONable):
         trace = '[' + ', '.join(str(entry) for entry in self.trace) + ']'
 
         return "ExceptionReport:{cls:%s, args:%s, trace:%s, summary:%s}" % \
-               (self.cls.__name__, args, trace, self.summary)
+               (self.__class__.__name__, args, trace, self.summary)
