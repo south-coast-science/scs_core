@@ -147,6 +147,4 @@ class HTTPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        # hostname = None if self.__host is None else self.__host.name()
-
         return "HTTPClient:{host:%s, wait_for_network:%s}" % (self.__host, self.__wait_for_network)
