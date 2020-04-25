@@ -130,7 +130,7 @@ class HTTPClient(object):
                 self.__conn.request(method, url, body=body, headers=headers)
                 return self.__conn.getresponse()
 
-            except (socket.gaierror, http.client.CannotSendRequest) as ex:
+            except (socket.gaierror, socket.timeout, http.client.CannotSendRequest) as ex:
                 print("*** HTTPClient.__request: %s" % ex, file=sys.stderr)
                 sys.stderr.flush()
 
@@ -147,6 +147,6 @@ class HTTPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        hostname = None if self.__host is None else self.__host.name()
+        # hostname = None if self.__host is None else self.__host.name()
 
-        return "HTTPClient:{host:%s, wait_for_network:%s}" % (hostname, self.__wait_for_network)
+        return "HTTPClient:{host:%s, wait_for_network:%s}" % (self.__host, self.__wait_for_network)
