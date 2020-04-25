@@ -6,6 +6,7 @@ Created on 9 Nov 2016
 
 import socket
 import ssl
+import sys
 import time
 
 import http.client
@@ -125,15 +126,20 @@ class HTTPClient(object):
 
     def __request(self, method, url, body, headers):
         while True:
-            # print("Retrying request", file=sys.stderr)
             try:
                 self.__conn.request(method, url, body=body, headers=headers)
                 return self.__conn.getresponse()
 
             except (socket.gaierror, http.client.CannotSendRequest) as ex:
+                print("*** HTTPClient.__request: %s" % ex, file=sys.stderr)
+                sys.stderr.flush()
+
                 if not self.__wait_for_network:
                     raise ConnectionError(ex)
+
                 self.__conn.close()
+                print("*** HTTPClient.__request: connection closed.", file=sys.stderr)
+                sys.stderr.flush()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
 
