@@ -6,47 +6,47 @@ Created on 9 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import socket
+import time
+
 from scs_core.client.http_client import HTTPClient
 
+# --------------------------------------------------------------------------------------------------------------------
+
+host = "slowwly.robertomurray.co.uk"
+print("host:%s" % host)
+
+# headers = {"Accept": "application/json", "Authorization": "api-key 43308b72-ad41-4555-b075-b4245c1971db"}
+# print("headers:%s" % headers)
+
+path = "/delay/3000/url/https://github.com"
+print("path:%s" % path)
+
+# params = {
+#     'topic': 'south-coast-science-demo/brighton/loc/1/gases',
+#     'startTime': '2020-04-22T10:14:00Z',
+#     'endTime': '2020-04-22T10:15:00Z'
+# }
+#
+# print("params:%s" % params)
 
 # --------------------------------------------------------------------------------------------------------------------
 
-host = "pokemon.p3d.co.uk"
-print("host:%s" % host)
-
-headers = {"Accept": "application/json", "Authorization": "api-key 43308b72-ad41-4555-b075-b4245c1971db"}
-print("headers:%s" % headers)
-
-path = "/get"
-print("path:%s" % path)
-
-params = {'a': 1}
-print("params:%s" % params)
-
-'''
-host = "api.opensensors.io"
-print("host:%s" % host)
-
-headers = {"Accept": "application/json", "Authorization": "api-key 43308b72-ad41-4555-b075-b4245c1971db"}
-print("headers:%s" % headers)
-
-path = "/v1/orgs/south-coast-science-dev/topics"
-print("path:%s" % path)
-'''
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-client = HTTPClient(False)
-client.connect(host)
+client = HTTPClient(True)
+client.connect(host, secure=False, timeout=2)
 print(client)
 
 try:
-    data = client.get(path, params, headers)
-    print(data)
+    while True:
+        try:
+            data = client.get(path, {}, {})
+            print(data)
 
-except Exception as ex:
-    raise ex
+        except socket.timeout:
+            print("timeout")
+            time.sleep(2)
+
+            client.connect(host, secure=False, timeout=2)
 
 finally:
     client.close()
