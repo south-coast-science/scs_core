@@ -29,9 +29,9 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self):
+    def connect(self, wait_for_availability=True):
         if self.__uds:
-            self.__uds.connect()
+            self.__uds.connect(wait_for_availability=wait_for_availability)
 
 
     def close(self):
