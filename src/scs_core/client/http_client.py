@@ -131,7 +131,7 @@ class HTTPClient(object):
                 return self.__conn.getresponse()
 
             except (socket.gaierror, socket.timeout, http.client.CannotSendRequest, OSError) as ex:
-                print("*** HTTPClient.__request: %s" % ex, file=sys.stderr)
+                print("HTTPClient.__request: %s" % ex, file=sys.stderr)
                 sys.stderr.flush()
 
                 if not self.__wait_for_network:
