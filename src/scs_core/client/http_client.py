@@ -130,7 +130,7 @@ class HTTPClient(object):
                 self.__conn.request(method, url, body=body, headers=headers)
                 return self.__conn.getresponse()
 
-            except (socket.gaierror, socket.timeout, http.client.CannotSendRequest) as ex:
+            except (socket.gaierror, socket.timeout, http.client.CannotSendRequest, OSError) as ex:
                 print("*** HTTPClient.__request: %s" % ex, file=sys.stderr)
                 sys.stderr.flush()
 
