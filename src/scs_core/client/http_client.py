@@ -135,11 +135,9 @@ class HTTPClient(object):
                 sys.stderr.flush()
 
                 if not self.__wait_for_network:
-                    raise ConnectionError(ex)
+                    raise ex
 
                 self.__conn.close()
-                print("*** HTTPClient.__request: connection closed.", file=sys.stderr)
-                sys.stderr.flush()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
 
