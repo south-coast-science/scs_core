@@ -39,7 +39,7 @@ class UDSWriter(object):
             self.__uds.close()
 
 
-    def write(self, message, wait_for_availability=False):
+    def write(self, message, wait_for_availability=True):
         if self.__uds:
             self.__uds.write(message, wait_for_availability)
 
