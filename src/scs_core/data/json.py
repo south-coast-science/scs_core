@@ -91,12 +91,18 @@ class JSONReport(JSONable):
         # file...
         tmp_filename = '.'.join((filename, str(int(time.time()))))
 
-        f = open(tmp_filename, 'w')
-        f.write(jstr + '\n')
-        f.close()
+        try:
+            f = open(tmp_filename, 'w')
+            f.write(jstr + '\n')
+            f.close()
+
+        except FileNotFoundError:       # the containing directory does not exist (yet)
+            return False
 
         # atomic operation...
         os.rename(tmp_filename, filename)
+
+        return True
 
 
 # --------------------------------------------------------------------------------------------------------------------
