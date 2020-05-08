@@ -28,6 +28,15 @@ class MQTTPeerSet(PersistentJSONable):
         return host.conf_dir(), cls.__FILENAME
 
 
+    @classmethod
+    def load(cls, host):
+        instance = super().load(host)
+
+        if instance is None:
+            instance = cls(OrderedDict())
+
+        return instance
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -42,7 +51,7 @@ class MQTTPeerSet(PersistentJSONable):
 
             peers[hostname] = peer
 
-        return MQTTPeerSet(peers)
+        return cls(peers)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -82,9 +91,10 @@ class MQTTPeerSet(PersistentJSONable):
     def remove(self, hostname):
         try:
             del(self.__peers[hostname])
+            return True
 
         except KeyError:
-            pass
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -97,12 +107,17 @@ class MQTTPeerSet(PersistentJSONable):
             return None
 
 
-    def subset(self, hostname_substring):
+    def subset(self, hostname_substring=None, topic_substring=None):
         subset = []
 
         for hostname, peer in self.__peers.items():
-            if hostname_substring in hostname:
-                subset.append(peer)
+            if hostname_substring is not None and hostname_substring not in hostname:
+                continue
+
+            if topic_substring is not None and topic_substring not in peer.topic:
+                continue
+
+            subset.append(peer)
 
         return subset
 
