@@ -74,11 +74,15 @@ class CSVReader(object):
 
         try:
             paths = next(self.__reader)
-        except StopIteration:                   # no input
+        except StopIteration:                                                   # no input
             paths = []
 
         self.__read_count = 0                                                   # int
-        self.__header = CSVHeader.construct_from_paths(paths)                   # CSVHeader
+
+        try:
+            self.__header = CSVHeader.construct_from_paths(paths)               # CSVHeader
+        except KeyError:
+            raise KeyError(', '.join(paths))
 
 
     # ----------------------------------------------------------------------------------------------------------------
