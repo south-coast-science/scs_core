@@ -107,6 +107,8 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_dict(self, row):
+        print("as_dict - row: %s" % row)
+
         if len(row) != len(self):
             raise ValueError("unmatched lengths: header: %s row: %s" % (self, row))
 
@@ -145,6 +147,9 @@ class CSVHeaderCell(object):
     def construct_from_path(cls, path):
         p = re.compile("([^.:]+)([.:])?")
         nodes = p.findall(path)
+
+        if not nodes:
+            raise KeyError(path)
 
         return CSVHeaderCell(nodes)
 
