@@ -107,8 +107,6 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_dict(self, row):
-        print("as_dict - row: %s" % row)
-
         if len(row) != len(self):
             raise ValueError("unmatched lengths: header: %s row: %s" % (self, row))
 
