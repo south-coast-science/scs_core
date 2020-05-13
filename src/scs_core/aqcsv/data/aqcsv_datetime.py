@@ -75,7 +75,10 @@ class AQCSVDatetime(JSONable):
 
 
     def __eq__(self, other):
-        return self.datetime == other.datetime
+        try:
+            return self.datetime == other.datetime
+        except AttributeError:
+            return False
 
 
     def __ge__(self, other):
