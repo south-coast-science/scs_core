@@ -63,7 +63,6 @@ class Country(CSVArchive, JSONable, ABC):
     def __eq__(self, other):
         try:
             return self.numeric == other.numeric and self.name == other.name and self.iso == other.iso
-
         except AttributeError:
             return False
 
