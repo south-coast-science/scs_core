@@ -236,7 +236,11 @@ class CSVLogCursor(JSONable):
 
 
     def __eq__(self, other):
-        return self.file_path == other.file_path
+        try:
+            return self.file_path == other.file_path
+
+        except AttributeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
