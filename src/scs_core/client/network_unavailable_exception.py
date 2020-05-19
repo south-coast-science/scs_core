@@ -7,7 +7,7 @@ Created on 19 May 2020
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NetworkUnavailableException(Exception):
+class NetworkUnavailableException(RuntimeError):
     """
     classdocs
     """
