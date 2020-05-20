@@ -38,10 +38,9 @@ class ClientException(RuntimeError, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, error):
-        """
-        Constructor
-        """
+    def __init__(self, error, *args):
+        super().__init__(*args)
+
         self.__error = error
 
 

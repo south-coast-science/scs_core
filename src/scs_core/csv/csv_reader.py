@@ -156,7 +156,7 @@ class CSVReader(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVReaderException(Exception):
+class CSVReaderException(RuntimeError):
     """
     classdocs
     """
