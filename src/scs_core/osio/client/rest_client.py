@@ -57,11 +57,11 @@ class RESTClient(object):
     def get(self, path, params=None):
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
-        except HTTPException as exc:
-            if exc.status == HTTPStatus.NOT_FOUND:
+        except HTTPException as ex:
+            if ex.status == HTTPStatus.NOT_FOUND:
                 return None
             else:
-                raise ClientException.construct(exc) from exc
+                raise ClientException.construct(ex) from ex
 
         try:
             response = json.loads(response_jstr)

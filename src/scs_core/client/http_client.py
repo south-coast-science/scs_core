@@ -4,7 +4,6 @@ Created on 9 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import socket
 import ssl
 import sys
 import time
@@ -12,6 +11,10 @@ import time
 import http.client
 
 import urllib.parse
+
+from socket import gaierror, timeout as timeout_error
+
+from scs_core.client.network_unavailable_exception import NetworkUnavailableException
 
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
@@ -130,14 +133,14 @@ class HTTPClient(object):
                 self.__conn.request(method, url, body=body, headers=headers)
                 return self.__conn.getresponse()
 
-            except (socket.gaierror, socket.timeout, http.client.CannotSendRequest, OSError) as ex:
-                print("HTTPClient.__request: %s" % ex, file=sys.stderr)
-                sys.stderr.flush()
+            except (gaierror, timeout_error, http.client.CannotSendRequest, OSError) as ex:
+                self.__conn.close()
 
                 if not self.__wait_for_network:
-                    raise ex
+                    raise NetworkUnavailableException.construct(ex)
 
-                self.__conn.close()
+                print("HTTPClient.__request: %s" % ex, file=sys.stderr)
+                sys.stderr.flush()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
 
