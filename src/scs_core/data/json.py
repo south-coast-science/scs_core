@@ -141,7 +141,12 @@ class PersistentJSONable(JSONable):
 
     @classmethod
     def delete(cls, host):
-        os.remove(os.path.join(*cls.persistence_location(host)))
+        try:
+            os.remove(os.path.join(*cls.persistence_location(host)))
+            return True
+
+        except FileNotFoundError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
