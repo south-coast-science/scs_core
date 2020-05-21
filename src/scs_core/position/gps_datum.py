@@ -56,7 +56,7 @@ class GPSDatum(JSONReport):
 
     @classmethod
     def null_datum(cls):
-        return GPSDatum(Position(None, None), None, 0)
+        return GPSDatum(Position(None, None), None, None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
