@@ -35,9 +35,13 @@ class CheckpointGenerator(object):
         if len(pieces) != 3:
             raise ValueError(specification)
 
-        hour = CheckpointField.construct(pieces[0], 24)
-        minute = CheckpointField.construct(pieces[1], 60)
-        second = CheckpointField.construct(pieces[2], 60)
+        try:
+            hour = CheckpointField.construct(pieces[0], 24)
+            minute = CheckpointField.construct(pieces[1], 60)
+            second = CheckpointField.construct(pieces[2], 60)
+
+        except ValueError:
+            raise ValueError(specification)
 
         return CheckpointGenerator(hour, minute, second)
 
@@ -72,6 +76,8 @@ class CheckpointGenerator(object):
         return self.next_localised_datetime(localised_datetime)
 
 
+    # if localised_datetime is on a boundary then next_localised_datetime(..) returns a future checkpoint
+
     def next_localised_datetime(self, localised_datetime):
         # parse...
         date_time = localised_datetime.datetime
@@ -93,6 +99,29 @@ class CheckpointGenerator(object):
         return LocalizedDatetime(checkpoint)
 
 
+    # if localised_datetime is on a boundary then prev_localised_datetime(..) returns the same checkpoint
+
+    def prev_localised_datetime(self, localised_datetime):
+        # parse...
+        date_time = localised_datetime.datetime
+        tzinfo = localised_datetime.tzinfo
+
+        date = date_time.date()
+        time = date_time.time()
+
+        # compute...
+        day_decrement, prev_hour, prev_minute, prev_second = self.prev(time.hour, time.minute, time.second)
+
+        # construct...
+        checkpoint = datetime(date.year, month=date.month, day=date.day,
+                              hour=prev_hour, minute=prev_minute, second=prev_second, tzinfo=tzinfo)
+
+        if day_decrement:
+            checkpoint -= timedelta(days=1)
+
+        return LocalizedDatetime(checkpoint)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def aligns(self, localised_datetime):
@@ -102,6 +131,8 @@ class CheckpointGenerator(object):
         return self.__hour.aligns(t.hour) and self.__minute.aligns(t.minute) and self.__second.aligns(t.second) \
             and t.microsecond == 0
 
+
+    # if hour, minute, second are on a boundary then next(..) returns a future checkpoint
 
     def next(self, hour, minute, second):
         # seconds...
@@ -123,6 +154,24 @@ class CheckpointGenerator(object):
         day_increment = self.is_24h() or (next_hour < hour)
 
         return day_increment, next_hour, next_minute, next_second
+
+
+    # if hour, minute, second are on a boundary then prev(..) returns the same checkpoint
+
+    def prev(self, hour, minute, second):
+        # seconds...
+        prev_second = self.__second.prev(second)
+
+        # minutes...
+        prev_minute = self.__minute.prev(minute)
+
+        # hours...
+        prev_hour = self.__hour.prev(hour)
+
+        # dateline...
+        day_decrement = prev_hour > hour
+
+        return day_decrement, prev_hour, prev_minute, prev_second
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -148,7 +197,7 @@ class CheckpointField(object):
 
     @classmethod
     def construct(cls, specification, size):
-        if not 1 < len(specification) < 4:
+        if not 0 < len(specification) < 4:
             raise ValueError(specification)
 
         # all ticks...
@@ -198,6 +247,14 @@ class CheckpointField(object):
                 return tick
 
         return self.__ticks[0]
+
+
+    def prev(self, value):
+        for tick in reversed(self.__ticks):
+            if tick <= value:
+                return tick
+
+        return self.__ticks[len(self.__ticks) - 1]
 
 
     # ----------------------------------------------------------------------------------------------------------------
