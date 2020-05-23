@@ -15,6 +15,9 @@ from urllib.parse import urlparse, parse_qs
 from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
+from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.timedelta import Timedelta
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +43,21 @@ class MessageManager(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def find_latest_for_topic(self, topic, latest_at):
+        end_date = latest_at
+
+        for back_off in (10, 30, 50):                                                   # total = 90 mins
+            start_date = LocalizedDatetime(end_date - Timedelta(minutes=back_off))
+            documents = list(self.find_for_topic(topic, start_date, end_date, False))
+
+            if documents:
+                return documents[-1]
+
+            end_date = start_date
+
+        return None
+
 
     def find_for_topic(self, topic, start_date, end_date, rec_only):
         request_path = '/topicMessages'
