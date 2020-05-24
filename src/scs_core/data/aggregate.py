@@ -140,8 +140,8 @@ class Aggregate(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def complies_with_rule(self, sampling_interval, aggregate_interval):
-        expected_points = aggregate_interval.total_seconds() / sampling_interval.total_seconds()
-        ratio = self.block_sample_count / expected_points
+        expected_count = aggregate_interval.total_seconds() / sampling_interval.total_seconds()
+        ratio = self.block_sample_count / expected_count
 
         return ratio >= self.RULE_RATIO
 
