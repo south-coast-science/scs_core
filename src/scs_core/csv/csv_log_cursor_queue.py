@@ -199,7 +199,7 @@ class CSVLogCursor(JSONable):
 
             return None
 
-        except (CSVReaderException, UnicodeDecodeError) as ex:
+        except (CSVReaderException, UnicodeDecodeError, ValueError) as ex:
             print("CSVLogCursor: %s: %s" % (log_file.path(), ex), file=sys.stderr)
             sys.stderr.flush()
 
