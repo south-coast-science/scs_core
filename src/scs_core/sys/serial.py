@@ -63,7 +63,7 @@ class Serial(ABC):
         line = ""
         while True:
             if timeout is not None and time.time() > end_time:
-                TimeoutError(timeout)
+                TimeoutError(timeout)                               # TODO: add except
 
             char = self._ser.read().decode(errors='ignore')
             line += char

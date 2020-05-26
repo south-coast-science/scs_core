@@ -203,6 +203,8 @@ class CSVLogCursor(JSONable):
             print("CSVLogCursor: %s: %s" % (log_file.path(), ex), file=sys.stderr)
             sys.stderr.flush()
 
+            # TODO: return what we have so far?
+
             return None                         # skip corrupt files
 
         finally:
