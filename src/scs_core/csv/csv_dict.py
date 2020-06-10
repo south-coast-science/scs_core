@@ -116,7 +116,7 @@ class CSVHeader(object):
             try:
                 self.__cells[i].insert(dictionary, row[i])
             except TypeError:
-                raise TypeError((self.__cells[i - 1].path, self.__cells[i].path))       # clashing column names
+                raise CSVHeaderError(self.__cells[i - 1].path, self.__cells[i].path)        # clashing column names
 
         return dictionary
 
@@ -197,7 +197,7 @@ class CSVHeaderCell(object):
             item = [] if self._is_list(i) else OrderedDict()
 
             if key not in container:
-                container[key] = item
+                container[key] = item       # TypeError if key identifies a leaf node and item is an internal node
 
         self.insert(container[key], value, i + 1)
 
@@ -229,3 +229,38 @@ class CSVHeaderCell(object):
 
     def __str__(self, *args, **kwargs):
         return "CSVHeaderCell:{nodes:%s}" % self.__nodes
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVHeaderError(TypeError):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, left, right):
+        """
+        Constructor
+        """
+        self.__left = left
+        self.__right = right
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def left(self):
+        return self.__left
+
+
+    @property
+    def right(self):
+        return self.__right
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CSVHeaderError:{left:%s, right:%s}" % (self.left, self.right)
