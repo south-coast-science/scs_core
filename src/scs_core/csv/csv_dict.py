@@ -113,7 +113,10 @@ class CSVHeader(object):
         dictionary = OrderedDict()
 
         for i in range(len(row)):
-            self.__cells[i].insert(dictionary, row[i])
+            try:
+                self.__cells[i].insert(dictionary, row[i])
+            except TypeError:
+                raise TypeError((self.__cells[i - 1].path, self.__cells[i].path))       # clashing column names
 
         return dictionary
 
