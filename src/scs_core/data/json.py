@@ -53,6 +53,9 @@ class JSONReport(JSONable):
 
     @classmethod
     def load(cls, filename):
+        if filename is None:
+            return None
+
         if not os.path.isfile(filename):
             return cls.construct_from_jdict(None)
 
