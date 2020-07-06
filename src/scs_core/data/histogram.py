@@ -4,7 +4,7 @@ Created on 9 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import _csv
+import csv
 import sys
 
 
@@ -21,20 +21,21 @@ class Histogram(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, minimum, maximum, bin_count, path):
+    def __init__(self, minimum, maximum, bin_count, precision, path):
         """
         Constructor
         """
-        self.__minimum = minimum
-        self.__maximum = maximum
-        self.__bin_count = bin_count
+        self.__minimum = minimum                                    # float
+        self.__maximum = maximum                                    # float
+        self.__bin_count = bin_count                                # int
+        self.__precision = precision                                # int
 
-        self.__path = path
+        self.__path = path                                          # string
 
-        self.__counts = [0] * bin_count
-        self.__max_count = int(0)
+        self.__counts = [0] * bin_count                             # array of int
+        self.__max_count = int(0)                                   # int
 
-        self.__delta = (maximum - minimum) / bin_count
+        self.__delta = (maximum - minimum) / bin_count              # float
 
 
     def __len__(self):
@@ -63,12 +64,12 @@ class Histogram(object):
 
     def to_csv(self, filename=None):
         file = sys.stdout if filename is None else open(filename, "w")
-        writer = _csv.writer(file)
+        writer = csv.writer(file)
 
         writer.writerow((self.__path + Histogram.__HEADER_BIN, self.__path + Histogram.__HEADER_COUNT))
 
         for i in range(self.bin_count):
-            writer.writerow((format(self.__bin(i), '.6f'), self.__counts[i]))
+            writer.writerow((round(self.__bin(i), self.precision), self.__counts[i]))   # format(self.__bin(i), '.6f')
 
         if filename is not None:
             file.close()
@@ -94,6 +95,11 @@ class Histogram(object):
     @property
     def bin_count(self):
         return self.__bin_count
+
+
+    @property
+    def precision(self):
+        return self.__precision
 
 
     @property
@@ -125,7 +131,7 @@ class Histogram(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Histogram:{minimum:%0.6f, maximum:%0.6f, bin_count:%d, delta:%0.6f, max_count:%d, counts:%s, " \
-               "path:%s}" % \
-                    (self.minimum, self.maximum, self.bin_count, self.delta, self.max_count, self.counts,
-                     self.path)
+        return "Histogram:{minimum:%0.6f, maximum:%0.6f, bin_count:%d, bin_count:%d, delta:%0.6f, max_count:%d, " \
+               "counts:%s, path:%s}" % \
+                    (self.minimum, self.maximum, self.bin_count, self.precision, self.delta, self.max_count,
+                     self.counts, self.path)
