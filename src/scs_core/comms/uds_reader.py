@@ -35,7 +35,7 @@ class UDSReader(object):
         except OSError:
             pass
 
-        self.__uds = DomainSocket(uds_name, logger)
+        self.__uds = DomainSocket(uds_name, logger=logger)
 
 
     # ----------------------------------------------------------------------------------------------------------------

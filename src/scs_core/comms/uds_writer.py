@@ -24,7 +24,7 @@ class UDSWriter(object):
         """
         Constructor
         """
-        self.__uds = DomainSocket(address, logger) if address else None
+        self.__uds = DomainSocket(address, logger=logger) if address else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
