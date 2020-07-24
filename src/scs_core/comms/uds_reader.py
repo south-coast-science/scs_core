@@ -22,7 +22,7 @@ class UDSReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_name):
+    def __init__(self, uds_name, logger=None):
         """
         Constructor
         """
@@ -35,7 +35,7 @@ class UDSReader(object):
         except OSError:
             pass
 
-        self.__uds = DomainSocket(uds_name)
+        self.__uds = DomainSocket(uds_name, logger=logger)
 
 
     # ----------------------------------------------------------------------------------------------------------------
