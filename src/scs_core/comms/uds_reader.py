@@ -22,20 +22,20 @@ class UDSReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_name, logger=None):
+    def __init__(self, path, logger=None):
         """
         Constructor
         """
-        if uds_name is None:
+        if path is None:
             self.__uds = None
             return
 
         try:
-            os.remove(uds_name)             # override any previous use of the UDS
+            os.remove(path)             # override any previous use of the UDS
         except OSError:
             pass
 
-        self.__uds = DomainSocket(uds_name, logger)
+        self.__uds = DomainSocket(path, logger=logger)
 
 
     # ----------------------------------------------------------------------------------------------------------------
