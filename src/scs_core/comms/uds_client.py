@@ -56,7 +56,7 @@ class UDSClient(object):
 
             except (BrokenPipeError, OSError):
                 if self.__disconnecting:
-                    return
+                    return                          # don't wait forever if terminating
 
                 time.sleep(self._RECONNECT_WAIT)
 
