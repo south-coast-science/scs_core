@@ -24,18 +24,17 @@ class Sample(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, val, exegeses=None):
+    def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
-        source = jdict.get('src')
-
+        tag = jdict.get('tag')
+        src = jdict.get('src')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        values = jdict.get('val')
+        exegeses = jdict.get('exg')
 
-        # TODO: implement Sample.construct_from_jdict(..)
-
-        # val is an object - OPCDatum, SHTDatum
-        # exg is None or dict
+        return cls(tag, src, rec, values, exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
