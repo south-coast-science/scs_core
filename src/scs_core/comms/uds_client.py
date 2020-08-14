@@ -30,14 +30,20 @@ class UDSClient(object):
         self.__path = path
         self.__uds = DomainSocket(path, logger=logger)
 
+        self.__disconnecting = False
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
+        self.__disconnecting = False
+
         self.__uds.connect()
 
 
     def disconnect(self):
+        self.__disconnecting = True
+
         self.request(self.EOS)
         self.__uds.close()
 
@@ -49,6 +55,9 @@ class UDSClient(object):
                 return
 
             except (BrokenPipeError, OSError):
+                if self.__disconnecting:
+                    return
+
                 time.sleep(self._RECONNECT_WAIT)
 
                 self.__uds.close()                  # attempt to restart session
