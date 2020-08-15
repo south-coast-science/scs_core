@@ -18,8 +18,10 @@ from scs_core.comms.uds_client import UDSClient
 # --------------------------------------------------------------------------------------------------------------------
 # resources...
 
-location = os.getcwd()
-path = os.path.join(location, 'test.uds')
+# location = os.getcwd()
+# path = os.path.join(location, 'lambda-model.uds')
+
+path = '/home/scs/SCS/pipes/lambda-model.uds'
 
 client = UDSClient(path)
 
