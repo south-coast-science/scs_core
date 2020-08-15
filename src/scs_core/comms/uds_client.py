@@ -43,7 +43,6 @@ class UDSClient(object):
         self.__log('connected')
 
 
-
     def disconnect(self):
         self.__disconnecting = True
         self.request(self.EOS)
