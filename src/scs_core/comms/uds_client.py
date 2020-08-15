@@ -10,16 +10,15 @@ from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# input reader...
 
 class UDSClient(object):
     """
     classdocs
     """
 
-    EOS = 'UDS-CLIENT-EOS'              # end of session message
+    EOS = 'UDS-CLIENT-EOS'                          # end of session message
 
-    _RECONNECT_WAIT = 10.0              # seconds
+    _RECONNECT_WAIT = 10.0                          # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +42,6 @@ class UDSClient(object):
         self.__log('connected')
 
 
-
     def disconnect(self):
         self.__disconnecting = True
         self.request(self.EOS)
@@ -55,7 +53,7 @@ class UDSClient(object):
     def request(self, message):
         while True:
             try:
-                self.__uds.client_send(message)
+                self.__uds.client_send(message.strip())
                 return
 
             except (BrokenPipeError, OSError):
