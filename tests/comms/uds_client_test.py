@@ -4,12 +4,11 @@
 Created on 14 Aug 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-BrokenPipeError: [Errno 32] Broken pipe
-OSError: [Errno 57] Socket is not connected
 """
 
+import logging
 import os
+import sys
 import time
 
 from scs_core.comms.uds_client import UDSClient
@@ -18,10 +17,15 @@ from scs_core.comms.uds_client import UDSClient
 # --------------------------------------------------------------------------------------------------------------------
 # resources...
 
-location = os.getcwd()
-path = os.path.join(location, 'test.uds')
+# logging...
+logger = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-client = UDSClient(path)
+# client...
+location = os.getcwd()
+path = os.path.join(location, 'lambda-model.uds')
+
+client = UDSClient(path, logger=logger)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -45,4 +49,3 @@ except KeyboardInterrupt:
 
 finally:
     client.disconnect()
-    print('disconnected')

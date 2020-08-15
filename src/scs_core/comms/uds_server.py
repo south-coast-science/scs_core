@@ -3,7 +3,7 @@ Created on 14 Aug 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-supports single client only
+a non-threadsafe server
 """
 
 import os
@@ -26,8 +26,10 @@ class UDSServer(object):
         """
         Constructor
         """
-        self.__path = path
-        self.__uds = DomainSocket(path, logger=logger)
+        self.__path = path                          # string
+        self.__logger = logger                      # Logger
+
+        self.__uds = DomainSocket(path)             # DomainSocket
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -41,6 +43,8 @@ class UDSServer(object):
         self.__uds.connect()
         self.__uds.accept()
 
+        self.__log('started')
+
 
     def stop(self):
         self.__uds.close()
@@ -50,6 +54,8 @@ class UDSServer(object):
         except FileNotFoundError:
             pass
 
+        self.__log('stopped')
+
 
     def wait_for_request(self):
         while True:
@@ -57,6 +63,8 @@ class UDSServer(object):
 
             if message != UDSClient.EOS:
                 return message
+
+            self.__log('restarting...')
 
             self.stop()                         # attempt to restart session
             self.start()
@@ -68,5 +76,14 @@ class UDSServer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __log(self, message):
+        if not self.__logger:
+            return
+
+        self.__logger.info("UDSServer(%s): %s" % (self.__uds.path, message))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "UDSServer:{uds:%s}" % self.__uds
+        return "UDSServer:{uds:%s, logger=%s}" % (self.__uds, self.__logger)
