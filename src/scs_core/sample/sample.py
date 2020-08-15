@@ -6,6 +6,7 @@ Created on 22 Sep 2016
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Format
 from scs_core.data.json import JSONable
 
@@ -19,6 +20,22 @@ class Sample(JSONable):
 
     EXEGESIS_TAG =              "exg"
     INCLUDE_MILLIS =            False
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        tag = jdict.get('tag')
+        src = jdict.get('src')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        values = jdict.get('val')
+        exegeses = jdict.get('exg')
+
+        return cls(tag, src, rec, values, exegeses)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
