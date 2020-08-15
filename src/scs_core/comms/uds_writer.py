@@ -20,11 +20,11 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, logger=None):
+    def __init__(self, path, _logger=None):
         """
         Constructor
         """
-        self.__uds = DomainSocket(path, logger=logger) if path else None
+        self.__uds = DomainSocket(path) if path else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
