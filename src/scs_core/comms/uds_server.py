@@ -36,7 +36,7 @@ class UDSServer(object):
 
     def start(self):
         try:
-            os.remove(self.__path)              # override any previous use of the UDS
+            os.remove(self.__path)                  # override any previous use of the UDS
         except FileNotFoundError:
             pass
 
@@ -66,12 +66,12 @@ class UDSServer(object):
 
             self.__log('restarting...')
 
-            self.stop()                         # attempt to restart session
+            self.stop()                             # attempt to restart session
             self.start()
 
 
     def respond(self, message):
-        self.__uds.server_send(message)
+        self.__uds.server_send(message.strip())
 
 
     # ----------------------------------------------------------------------------------------------------------------
