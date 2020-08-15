@@ -4,9 +4,6 @@
 Created on 14 Aug 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-BrokenPipeError: [Errno 32] Broken pipe
-OSError: [Errno 57] Socket is not connected
 """
 
 import os
@@ -18,10 +15,8 @@ from scs_core.comms.uds_client import UDSClient
 # --------------------------------------------------------------------------------------------------------------------
 # resources...
 
-# location = os.getcwd()
-# path = os.path.join(location, 'lambda-model.uds')
-
-path = '/home/scs/SCS/pipes/lambda-model.uds'
+location = os.getcwd()
+path = os.path.join(location, 'lambda-model.uds')
 
 client = UDSClient(path)
 
