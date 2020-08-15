@@ -10,7 +10,6 @@ from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# input reader...
 
 class UDSClient(object):
     """

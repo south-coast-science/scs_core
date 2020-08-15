@@ -13,7 +13,6 @@ from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# input reader...
 
 class UDSServer(object):
     """
