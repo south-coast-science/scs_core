@@ -39,7 +39,7 @@ try:
         message = server.wait_for_request()
         print('request: %s' % message)
 
-        server.respond('response: %s' % message)
+        server.respond(message)
 
 except KeyboardInterrupt:
     print()
