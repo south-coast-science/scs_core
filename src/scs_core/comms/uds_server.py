@@ -63,7 +63,7 @@ class UDSServer(object):
             if message != UDSClient.EOS:
                 return message
 
-            self.__log('restarting...')
+            self.__log('restart...')
 
             self.stop()                             # attempt to restart session
             self.start()
