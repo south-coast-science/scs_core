@@ -64,6 +64,7 @@ class UDSServer(object):
 
             if message != UDSClient.EOS:
                 yield message
+                continue
 
             self.__log('restart...')
 
