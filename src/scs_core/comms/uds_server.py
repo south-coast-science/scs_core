@@ -56,12 +56,14 @@ class UDSServer(object):
         self.__log('stopped')
 
 
-    def wait_for_request(self):
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def requests(self):
         while True:
             message = self.__uds.server_receive()
 
             if message != UDSClient.EOS:
-                return message
+                yield message
 
             self.__log('restart...')
 
