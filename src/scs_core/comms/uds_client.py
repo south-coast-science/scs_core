@@ -50,6 +50,8 @@ class UDSClient(object):
         self.__log('disconnected')
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def request(self, message):
         while True:
             try:
