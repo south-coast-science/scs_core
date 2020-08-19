@@ -35,8 +35,7 @@ try:
     server.start()
     print(server)
 
-    while True:
-        message = server.wait_for_request()
+    for message in server.requests():
         print('request: %s' % message)
 
         server.respond(message)
