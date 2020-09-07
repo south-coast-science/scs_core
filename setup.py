@@ -14,8 +14,8 @@ with open('requirements.txt') as req_txt:
     required = [line for line in req_txt.read().splitlines() if line]
 
 setuptools.setup(
-    name="SCS_CORE",
-    version="0.0.1",
+    name="scs-core",
+    version="1.0.1",
     author="South Coast Science",
     author_email="contact@southcoastscience.com",
     description="The root of all South Coast Science environmental monitoring applications.",
@@ -26,7 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages('src'),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
