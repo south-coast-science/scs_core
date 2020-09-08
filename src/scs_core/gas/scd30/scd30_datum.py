@@ -2,6 +2,9 @@
 Created on 7 Sep 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example JSON:
+{"co2": 1265.0, "tmp": 28.9, "hmd": 51.0}
 """
 
 from collections import OrderedDict
