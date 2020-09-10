@@ -31,14 +31,14 @@ class GasesSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, ndir_datum, electrochem_datum, sht_datum):
+    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum):
         """
         Constructor
         """
         jdict = OrderedDict()
 
-        if ndir_datum is not None:
-            jdict['CO2'] = ndir_datum
+        if scd30_datum is not None:
+            jdict['CO2'] = {'cnc': scd30_datum.co2}
 
         if electrochem_datum is not None:
             for key, value in electrochem_datum.sns.items():
