@@ -62,7 +62,7 @@ class MPL115A2Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, c25, p_comp, t_adc, altitude):
+    def construct(cls, c25, p_comp, t_adc, altitude, include_temp=True):
         if p_comp is None or t_adc is None:
             return None
 
@@ -71,7 +71,9 @@ class MPL115A2Datum(JSONable):
         actual_press = cls.__actual_press(p_comp)
         sl_press = cls.__sl_press(actual_press, temp, altitude)
 
-        return MPL115A2Datum(actual_press, sl_press, t_adc, temp)
+        reported_temp = temp if include_temp else None
+
+        return cls(actual_press, sl_press, t_adc, reported_temp)
 
 
     # ----------------------------------------------------------------------------------------------------------------
