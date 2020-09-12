@@ -63,13 +63,13 @@ class Datum(object):
     # formatting...
 
     @classmethod
-    def format(cls, value, leading_zeros=False):
+    def format(cls, value, leading_zeroes=False):
         # string...
         if not cls.is_numeric(value):
             return "%s"
 
         # numeric...
-        prefix = "0" if leading_zeros else ""
+        prefix = "0" if leading_zeroes else ""
         length = str(len((str(value))))
 
         if cls.is_int(value):
