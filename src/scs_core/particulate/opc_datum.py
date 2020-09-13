@@ -123,7 +123,7 @@ class OPCDatum(PMxDatum):
 
         jdict['src'] = self.source
 
-        jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
 
         jdict['per'] = self.period
 
@@ -149,7 +149,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_zero(self):
-        return not self.pm1 and not self.pm2p5 and not self.pm10            # 0 or None
+        return self.pm1 == 0.0 and self.pm2p5 == 0.0 and self.pm10 == 0.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
