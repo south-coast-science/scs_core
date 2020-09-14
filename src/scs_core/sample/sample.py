@@ -63,7 +63,7 @@ class Sample(JSONable):
         if self.src is not None:
             jdict['src'] = self.src
 
-        jdict['rec'] = self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(self.INCLUDE_MILLIS)
         jdict['val'] = self.values
 
         if self.exegeses:
