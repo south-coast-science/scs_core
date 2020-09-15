@@ -22,13 +22,13 @@ class Serial(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_path, baud_rate, hard_handshake=False):
+    def __init__(self, device_identifier, baud_rate, hard_handshake=False):
         """
         Constructor
         """
-        self._device_path = device_path
-        self._baud_rate = baud_rate
-        self._hard_handshake = hard_handshake
+        self._device_identifier = device_identifier             # string device path or int port number
+        self._baud_rate = baud_rate                             # int
+        self._hard_handshake = hard_handshake                   # bool
 
         self._ser = None
 
@@ -107,7 +107,7 @@ class Serial(ABC):
 
     @property
     @abstractmethod
-    def port(self):
+    def device_identifier(self):
         return None
 
 
@@ -116,5 +116,5 @@ class Serial(ABC):
     def __str__(self, *args, **kwargs):
         is_open = False if self._ser is None else self._ser.is_open
 
-        return self.__class__.__name__ + ":{device_path:%s, baud_rate=%d, hard_handshake=%s, serial_open:%s}" % \
-            (self._device_path, self._baud_rate, self._hard_handshake, is_open)
+        return self.__class__.__name__ + ":{device_identifier:%s, baud_rate=%d, hard_handshake=%s, serial_open:%s}" % \
+            (self._device_identifier, self._baud_rate, self._hard_handshake, is_open)
