@@ -85,7 +85,7 @@ class SystemID(PersistentJSONable):
         if self.model_name is None or self.system_serial_number is None:
             return None
 
-        topic_model_name = self.model_name.replace(' ', '-').replace('.', '').lower()
+        topic_model_name = self.model_name.replace('/', '-').replace(' ', '-').replace('.', '').lower()
         topic_system_serial_number = str(self.system_serial_number).rjust(6, '0')
 
         return topic_model_name + '-' + topic_system_serial_number
