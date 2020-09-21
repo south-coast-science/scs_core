@@ -27,6 +27,7 @@ class AWSGroup:
         self.__client = client
         self.__groupinfo = PathDict()
         self.__groupinfo.append("GroupName", [group_name])
+        self.__verbose_group_info = PathDict()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -91,7 +92,7 @@ class AWSGroup:
             CoreDefinitionId=arn[0],
             CoreDefinitionVersionId=arn[1]
         )
-        print(json.dumps(response, indent=2))
+        self.__verbose_group_info.append("Core Definition Response", response)
 
     # ----------------------------------------------------------------------------------------------------------------
     def get_function_definition(self):
@@ -106,7 +107,7 @@ class AWSGroup:
             FunctionDefinitionId=arn[0],
             FunctionDefinitionVersionId=arn[1]
         )
-        print(json.dumps(response, indent=2))
+        self.__verbose_group_info.append("Function Definition Response", response)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -122,7 +123,7 @@ class AWSGroup:
             LoggerDefinitionId=arn[0],
             LoggerDefinitionVersionId=arn[1]
         )
-        print(json.dumps(response, indent=2))
+        self.__verbose_group_info.append("Logger Definition Response", response)
 
     # ----------------------------------------------------------------------------------------------------------------
     def get_resource_definition(self):
@@ -137,7 +138,7 @@ class AWSGroup:
             ResourceDefinitionId=arn[0],
             ResourceDefinitionVersionId=arn[1]
         )
-        print(json.dumps(response, indent=2))
+        self.__verbose_group_info.append("Resource Definition Response", response)
 
     # ----------------------------------------------------------------------------------------------------------------
     def get_subscription_definition_version(self):
@@ -152,7 +153,7 @@ class AWSGroup:
             SubscriptionDefinitionId=arn[0],
             SubscriptionDefinitionVersionId=arn[1]
         )
-        print(json.dumps(response, indent=2))
+        self.__verbose_group_info.append("Subscription Definition Response", response)
 
     # ----------------------------------------------------------------------------------------------------------------
     def __append_to_group_info(self, path, value):

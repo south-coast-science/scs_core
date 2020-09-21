@@ -10,10 +10,10 @@ the amazon greengrass API. It's dependent on aws_json_reader to collect informat
 import grp
 import json
 import sys
-
 import os
 
 from collections import OrderedDict
+from scs_core.aws.greengrass.gg_exceptions import ProjectMissingError
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.aws.config.project import Project
 from scs_core.data.json import PersistentJSONable
@@ -89,12 +89,10 @@ class AWSGroupConfigurator(PersistentJSONable):
         device_path = "south-coast-science-dev/development/device/" + str(device)
         temp_json = temp.as_json()
         self.__awsinfo.append("SystemID", temp_json['system-sn'])  # can only run on a setup device
-        # self.__awsinfo.append("SystemID", "Test001") test str
 
-        # to test on device
         project = Project.load(host)
         if not project:
-            print("Project not configured", file = sys.stderr)
+            raise ProjectMissingError()
             return
         else:
             project_json = project.as_json()
