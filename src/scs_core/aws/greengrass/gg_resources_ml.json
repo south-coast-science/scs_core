@@ -1,0 +1,63 @@
+{
+    "Name": "RESOURCE_CONTAINER_NAME",
+    "InitialVersion": {
+        "Resources": [
+            {
+                "Id": "SYSTEM_ID-data-volume",
+                "Name": "SCS",
+                "ResourceDataContainer": {
+                    "LocalVolumeResourceData": {
+                        "SourcePath": "SCS_DIR",
+                        "DestinationPath": "/SCS",
+                        "GroupOwnerSetting": {
+                            "AutoAddGroupOwner": false,
+                            "GroupOwner": "UNIX_GROUP_OWNER_NAME"
+                        }
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm1",
+                "Name": "ML-PM1",
+                "ResourceDataContainer": {
+                    "SageMakerMachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/pm1-s1-2020h1",
+                        "OwnerSetting": {
+                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
+                            "GroupPermission": "ro"
+                        },
+                        "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm1-h1-xgboost-regression-2020-08-13-13-33-05"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm2p5",
+                "Name": "PM2P5",
+                "ResourceDataContainer": {
+                    "SageMakerMachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/pm2p5-s1-2020h1",
+                        "OwnerSetting": {
+                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
+                            "GroupPermission": "ro"
+                        },
+                        "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm2p5-h1-xgboost-regression-2020-08-13-12-51-13"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm10",
+                "Name": "ML-PM10",
+                "ResourceDataContainer": {
+                    "SageMakerMachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/pm10-s1-2020h1",
+                        "OwnerSetting": {
+                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
+                            "GroupPermission": "ro"
+                        },
+                        "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm10-h1-xgboost-regression-2020-08-17-16-59-46"
+                    }
+                }
+            }
+        ]
+    }
+}

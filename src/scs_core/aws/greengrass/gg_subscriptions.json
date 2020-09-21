@@ -1,0 +1,42 @@
+{
+"InitialVersion": {
+  "Subscriptions": [
+    {
+      "Id": "DEV_ID-particulates-subscription",
+      "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+      "Subject": "LOC_PATH/particulates",
+      "Target": "cloud"
+    },
+    {
+      "Id": "DEV_ID-control-from-cloud-subscription",
+      "Source": "cloud",
+      "Subject": "DEV_PATH/control",
+      "Target": "arn:aws:lambda:us-west-2:696437392763:function:GGControlSubscriber:ControlSubscriber"
+    },
+    {
+      "Id": "DEV_ID-climate-subscription",
+      "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+      "Subject": "LOC_PATH/climate",
+      "Target": "cloud"
+    },
+    {
+      "Id": "DEV_ID-status-subscription",
+      "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+      "Subject": "DEV_PATH/status",
+      "Target": "cloud"
+    },
+    {
+      "Id": "DEV_ID-control-to-cloud-subscription",
+      "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+      "Subject": "DEV_PATH/control",
+      "Target": "cloud"
+    },
+    {
+      "Id": "DEV_ID-gases-subscription",
+      "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+      "Subject": "LOC_PATH/gases",
+      "Target": "cloud"
+    }
+  ]
+}
+}
