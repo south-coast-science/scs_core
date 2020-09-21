@@ -32,7 +32,7 @@ class AWSGroup:
 
     def get_group_info_from_name(self):
         response = ""
-        response = self.__client.list_groups
+        response = self.__client.list_groups()
 
         d_groups = PathDict.construct_from_jstr(json.dumps(response))
         g_node = d_groups.node("Groups")
@@ -101,7 +101,7 @@ class AWSGroup:
         if not self.__groupinfo.node("FunctionDefinitionVersionArn"):
             return
 
-        arn = self.split_id_from_version_id("function", self.__groupinfo.node("FunctionDefinitionVersionArn"))
+        arn = self.__split_id_from_version_id("function", self.__groupinfo.node("FunctionDefinitionVersionArn"))
         response = self.__client.get_function_definition_version(
             FunctionDefinitionId=arn[0],
             FunctionDefinitionVersionId=arn[1]
@@ -117,7 +117,7 @@ class AWSGroup:
         if not self.__groupinfo.node("LoggerDefinitionVersionArn"):
             return
 
-        arn = self.split_id_from_version_id("logger", self.__groupinfo.node("LoggerDefinitionVersionArn"))
+        arn = self.__split_id_from_version_id("logger", self.__groupinfo.node("LoggerDefinitionVersionArn"))
         response = self.__client.get_logger_definition_version(
             LoggerDefinitionId=arn[0],
             LoggerDefinitionVersionId=arn[1]
@@ -159,7 +159,7 @@ class AWSGroup:
         self.__groupinfo.append(path, value)
 
     # ----------------------------------------------------------------------------------------------------------------
-    def __retrieve_node(self, path):
+    def retrieve_node(self, path):
         if self.__groupinfo.has_path(path):
             return self.__groupinfo.node(path)
         else:

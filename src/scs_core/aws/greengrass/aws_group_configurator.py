@@ -18,7 +18,7 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.aws.config.project import Project
 from scs_core.data.json import PersistentJSONable
 from scs_core.sys.system_id import SystemID
-from scs_core.aws.greengrass.aws_json_reader import AWSGroup
+from scs_core.aws.greengrass.aws_group import AWSGroup
 from scs_core.data.path_dict import PathDict
 
 
@@ -48,7 +48,7 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __as_json(self):
+    def as_json(self):
         jdict = OrderedDict()
 
         jdict["time-initiated"] = self.__init_time
@@ -74,15 +74,15 @@ class AWSGroupConfigurator(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
     def collect_information(self, host):
         aws_json_reader = AWSGroup(self.__group_name, self.__client)
-        aws_json_reader.__get_group_info_from_name()
-        aws_json_reader.__get_group_arns()
-        self.__awsinfo.append("GroupID", aws_json_reader.__retrieve_node("GroupID"))
-        self.__awsinfo.append("GroupVersionID", aws_json_reader.__retrieve_node("GroupLatestVersionID"))
-        self.__awsinfo.append("CoreDefinitionARN", aws_json_reader.__retrieve_node("CoreDefinitionVersionArn"))
-        self.__awsinfo.append("FunctionDefinitionARN", aws_json_reader.__retrieve_node("FunctionDefinitionVersionArn"))
-        self.__awsinfo.append("ResourceDefinitionARN", aws_json_reader.__retrieve_node("ResourceDefinitionVersionArn"))
+        aws_json_reader.get_group_info_from_name()
+        aws_json_reader.get_group_arns()
+        self.__awsinfo.append("GroupID", aws_json_reader.retrieve_node("GroupID"))
+        self.__awsinfo.append("GroupVersionID", aws_json_reader.retrieve_node("GroupLatestVersionID"))
+        self.__awsinfo.append("CoreDefinitionARN", aws_json_reader.retrieve_node("CoreDefinitionVersionArn"))
+        self.__awsinfo.append("FunctionDefinitionARN", aws_json_reader.retrieve_node("FunctionDefinitionVersionArn"))
+        self.__awsinfo.append("ResourceDefinitionARN", aws_json_reader.retrieve_node("ResourceDefinitionVersionArn"))
         self.__awsinfo.append("SubscriptionDefinitionARN",
-                              aws_json_reader.__retrieve_node("SubscriptionDefinitionVersionArn"))
+                              aws_json_reader.retrieve_node("SubscriptionDefinitionVersionArn"))
 
         temp = SystemID.load(host)
         device = temp.topic_label()
