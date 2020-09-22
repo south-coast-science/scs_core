@@ -86,7 +86,6 @@ class AWSGroupConfigurator(PersistentJSONable):
 
         temp = SystemID.load(host)
         device = temp.topic_label()
-        device_path = "south-coast-science-dev/development/device/" + str(device)
         temp_json = temp.as_json()
         self.__awsinfo.append("SystemID", temp_json['system-sn'])  # can only run on a setup device
 
@@ -96,6 +95,7 @@ class AWSGroupConfigurator(PersistentJSONable):
             return
         else:
             project_json = project.as_json()
+            device_path = project_json["device-path"] + "/" + str(device)
             self.__awsinfo.append("LocationPath", project_json["location-path"])
             self.__awsinfo.append("DevicePath", device_path)
 

@@ -9,6 +9,7 @@ api
 
 import json
 import sys
+from collections import OrderedDict
 
 from botocore.exceptions import ClientError
 from scs_core.data.path_dict import PathDict
@@ -29,6 +30,16 @@ class AWSGroup:
         self.__groupinfo.append("GroupName", [group_name])
         self.__verbose_group_info = PathDict()
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict["client"] = self.client
+        jdict['info'] = self.__groupinfo
+        jdict['v-info'] = self.__verbose_group_info
+
+        return jdict
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_group_info_from_name(self):
