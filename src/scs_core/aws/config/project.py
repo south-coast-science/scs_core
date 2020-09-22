@@ -30,7 +30,10 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    CHANNELS =  ('C', 'G', 'P', 'S', 'X')
+    ENVIRONMENT_CHANNELS =  ('C', 'G', 'P')
+    SYSTEM_CHANNELS =  ('S', 'X')
+
+    CHANNELS = ENVIRONMENT_CHANNELS + SYSTEM_CHANNELS
 
     @classmethod
     def is_valid_channel(cls, channel):
@@ -82,6 +85,10 @@ class Project(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def environment_paths(self, system_id):
+        return [self.channel_path(channel, system_id) for channel in self.ENVIRONMENT_CHANNELS]
+
 
     def channel_path(self, channel, system_id):
         if channel == 'C':
