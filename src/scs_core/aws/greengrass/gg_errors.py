@@ -5,6 +5,10 @@ Created on 21 Sep 2020
 
 DESCRIPTION User defined exceptions for the aws_group_setup script
 """
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class Error(Exception):
     """Base class for other exceptions"""
     pass
