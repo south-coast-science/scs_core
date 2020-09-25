@@ -64,15 +64,25 @@ class AWSGroup(JSONable):
         sub_v_group = v_group.node("Definition")
 
         if "CoreDefinitionVersionArn" in sub_v_group:
-            self.__group_info.append("CoreDefinitionVersionArn", sub_v_group["CoreDefinitionVersionArn"])
+            self.__group_info.append("CoreDefinitionVersionArn",
+                                     sub_v_group["CoreDefinitionVersionArn"])
+
         if "FunctionDefinitionVersionArn" in sub_v_group:
-            self.__group_info.append("FunctionDefinitionVersionArn", sub_v_group["FunctionDefinitionVersionArn"])
+            self.__group_info.append("FunctionDefinitionVersionArn",
+                                     sub_v_group["FunctionDefinitionVersionArn"])
+
         if "LoggerDefinitionVersionArn" in sub_v_group:
-            self.__group_info.append("LoggerDefinitionVersionArn", sub_v_group["LoggerDefinitionVersionArn"])
+            self.__group_info.append("LoggerDefinitionVersionArn",
+                                     sub_v_group["LoggerDefinitionVersionArn"])
+
         if "ResourceDefinitionVersionArn" in sub_v_group:
-            self.__group_info.append("ResourceDefinitionVersionArn", sub_v_group["ResourceDefinitionVersionArn"])
+            self.__group_info.append("ResourceDefinitionVersionArn",
+                                     sub_v_group["ResourceDefinitionVersionArn"])
+
         if "SubscriptionDefinitionVersionArn" in sub_v_group:
-            self.__group_info.append("SubscriptionDefinitionVersionArn", sub_v_group["SubscriptionDefinitionVersionArn"])
+            self.__group_info.append("SubscriptionDefinitionVersionArn",
+                                     sub_v_group["SubscriptionDefinitionVersionArn"])
+
 
     # ----------------------------------------------------------------------------------------------------------------
     def output_current_info(self):
@@ -156,7 +166,9 @@ class AWSGroup(JSONable):
         if not self.__group_info.node("SubscriptionDefinitionVersionArn"):
             return
 
-        arn = self.__split_id_from_version_id("subscriptions", self.__group_info.node("SubscriptionDefinitionVersionArn"))
+        arn = self.__split_id_from_version_id("subscriptions",
+                                              self.__group_info.node("SubscriptionDefinitionVersionArn"))
+
         response = self.__client.get_subscription_definition_version(
             SubscriptionDefinitionId=arn[0],
             SubscriptionDefinitionVersionId=arn[1]

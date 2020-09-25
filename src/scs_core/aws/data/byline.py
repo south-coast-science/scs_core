@@ -4,7 +4,8 @@ Created on 25 Dec 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"device": "scs-be2-3", "topic": "south-coast-science-dev/development/loc/1/gases", "rec": "2018-12-25T20:31:04Z"}
+{"device": "scs-bgx-401", "topic": "south-coast-science-demo/brighton/loc/1/particulates",
+"latest-pub": "2020-09-25T11:49:46Z", "latest-rec": "2020-09-25T11:49:40Z"}
 """
 
 from collections import OrderedDict
@@ -30,21 +31,23 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))         # as provided by web API
+        latest_pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))    # as provided by web API
+        latest_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))      # as provided by web API
 
-        return cls(device, topic, rec)
+        return cls(device, topic, latest_pub, latest_rec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, rec):
+    def __init__(self, device, topic, latest_pub, latest_rec):
         """
         Constructor
         """
         self.__device = device                      # string tag
         self.__topic = topic                        # string path
 
-        self.__rec = rec                            # LocalizedDatetime
+        self.__latest_pub = latest_pub              # LocalizedDatetime
+        self.__latest_rec = latest_rec              # LocalizedDatetime
 
 
     def __lt__(self, other):
@@ -62,8 +65,8 @@ class Byline(JSONable):
         if self.__topic > other.__topic:
             return False
 
-        # rec...
-        if self.__rec < other.__rec:
+        # latest_rec...
+        if self.__latest_rec < other.__latest_rec:
             return True
 
         return False
@@ -77,7 +80,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['rec'] = self.rec.as_iso8601()
+        jdict['latest-pub'] = self.__latest_pub.as_iso8601()
+        jdict['latest-rec'] = self.latest_rec.as_iso8601()
 
         return jdict
 
@@ -95,11 +99,17 @@ class Byline(JSONable):
 
 
     @property
-    def rec(self):
-        return self.__rec
+    def latest_pub(self):
+        return self.__latest_pub
+
+
+    @property
+    def latest_rec(self):
+        return self.__latest_rec
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Byline:{device:%s, topic:%s, rec:%s}" %  (self.device, self.topic, self.rec)
+        return "Byline:{device:%s, topic:%s, latest_pub:%s, latest_rec:%s}" %  \
+               (self.device, self.topic, self.latest_pub, self.latest_rec)
