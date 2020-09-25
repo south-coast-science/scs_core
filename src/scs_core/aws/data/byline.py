@@ -80,8 +80,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['latest-pub'] = self.__latest_pub.as_iso8601()
-        jdict['latest-rec'] = self.latest_rec.as_iso8601()
+        jdict['latest-pub'] = None if self.latest_pub is None else self.latest_pub.as_iso8601()
+        jdict['latest-rec'] = None if self.latest_rec is None else self.latest_rec.as_iso8601()
 
         return jdict
 
