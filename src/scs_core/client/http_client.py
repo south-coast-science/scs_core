@@ -139,7 +139,7 @@ class HTTPClient(object):
                 if not self.__wait_for_network:
                     raise NetworkUnavailableException.construct(ex)
 
-                print("HTTPClient.__request: %s: %s" % (url, ex), file=sys.stderr)
+                print("HTTPClient.__request: %s%s: %s" % (self.__host, url, ex), file=sys.stderr)
                 sys.stderr.flush()
 
                 time.sleep(self.__NETWORK_WAIT_TIME)
