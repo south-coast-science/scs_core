@@ -54,7 +54,7 @@ class BylineManager(object):
             for item in jdict:
                 byline = Byline.construct_from_jdict(item)
 
-                if latest_byline is None or latest_byline.rec < byline.rec:
+                if latest_byline is None or latest_byline.latest_rec < byline.latest_rec:
                     latest_byline = byline
 
             return latest_byline
