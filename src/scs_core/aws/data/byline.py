@@ -5,7 +5,7 @@ Created on 25 Dec 2018
 
 example:
 {"device": "scs-bgx-401", "topic": "south-coast-science-demo/brighton/loc/1/particulates",
-"latest-pub": "2020-09-25T11:49:46Z", "latest-rec": "2020-09-25T11:49:40Z"}
+"pub": "2020-09-25T11:49:46Z", "rec": "2020-09-25T11:49:40Z"}
 """
 
 from collections import OrderedDict
@@ -86,8 +86,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['latest-pub'] = None if self.pub is None else self.pub.as_iso8601()
-        jdict['latest-rec'] = None if self.rec is None else self.rec.as_iso8601()
+        jdict['pub'] = None if self.pub is None else self.pub.as_iso8601()
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601()
 
         return jdict
 
