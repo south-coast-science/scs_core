@@ -14,18 +14,18 @@ class ResourceUnavailableException(RuntimeError):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, resource, original_exception,  *args, **kwargs):
+    def __init__(self, url, original_exception,  *args, **kwargs):
         super().__init__(args, kwargs)
 
-        self.__resource = resource                                      # string
+        self.__url = url                                                # string
         self.__original_exception = original_exception                  # Exception
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def resource(self):
-        return self.__resource
+    def url(self):
+        return self.__url
 
 
     @property
@@ -37,9 +37,9 @@ class ResourceUnavailableException(RuntimeError):
 
     def __repr__(self):
         return "%s: %s: %s" % \
-               (self.resource, self.original_exception.__class__.__name__, str(self.original_exception))
+               (self.url, self.original_exception.__class__.__name__, str(self.original_exception))
 
 
     def __str__(self, *args, **kwargs):
-        return "ResourceUnavailableException:{resource:%s, original_exception:%s}" % \
-               (self.resource, str(self.original_exception))
+        return "ResourceUnavailableException:{url:%s, original_exception:%s}" % \
+               (self.url, str(self.original_exception))
