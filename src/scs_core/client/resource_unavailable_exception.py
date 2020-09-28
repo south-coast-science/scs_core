@@ -14,7 +14,7 @@ class ResourceUnavailableException(RuntimeError):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, url, original_exception,  *args, **kwargs):
+    def __init__(self, url, original_exception, *args, **kwargs):
         super().__init__(args, kwargs)
 
         self.__url = url                                                # string
