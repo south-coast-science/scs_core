@@ -27,6 +27,7 @@ class ResourceUnavailableException(RuntimeError):
     def resource(self):
         return self.__resource
 
+
     @property
     def original_exception(self):
         return self.__original_exception
