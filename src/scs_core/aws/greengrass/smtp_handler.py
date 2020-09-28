@@ -3,10 +3,11 @@ Created on 28 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-https://blog.mailtrap.io/sending-emails-in-python-tutorial-with-code-examples/
+https://realpython.com/python-send-email/#option-1-setting-up-a-gmail-account-for-development
 """
 
 import smtplib
+import ssl
 from socket import gaierror
 
 
@@ -23,8 +24,10 @@ class EmailHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
     def send_email(self, sender, receiver, message):
+        context = ssl.create_default_context()
+
         try:
-            with smtplib.SMTP(self.__smtp_server, self.__port) as server:
+            with smtplib.SMTP_SSL(self.__smtp_server, self.__port, context=context) as server:
                 server.login(self.__login, self.__password)
                 server.sendmail(sender, receiver, message)
                 print("Message sent")
