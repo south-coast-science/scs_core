@@ -22,6 +22,11 @@ class Network(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def is_available(cls):
+        return cls.resource_is_available(cls.__TEST_RESOURCE)
+
+
+    @classmethod
     def wait(cls):
         cls.wait_for_resource(cls.__TEST_RESOURCE)
 

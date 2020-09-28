@@ -34,11 +34,11 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, api_key, reporter=None):
+    def __init__(self, api_key, reporter=None):
         """
         Constructor
         """
-        self.__rest_client = RESTClient(http_client, api_key)
+        self.__rest_client = RESTClient(api_key)
         self.__reporter = reporter
 
 
