@@ -26,8 +26,7 @@ class HTTPClient(object):
     """
     classdocs
     """
-
-    __NETWORK_WAIT_TIME = 10.0                      # seconds
+    __NETWORK_WAIT_TIME =   5.0                     # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -47,7 +46,7 @@ class HTTPClient(object):
         # print("connect: host: {}, timeout: {}".format(host, timeout), file=sys.stderr)
 
         if secure:
-            # noinspection PyProtectedMember
+            # noinspection PyProtectedMember,PyUnresolvedReferences
             context = None if verified else ssl._create_unverified_context()
 
             if timeout is not None:
