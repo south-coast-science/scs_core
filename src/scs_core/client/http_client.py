@@ -13,7 +13,7 @@ import urllib.parse
 
 from socket import gaierror, timeout as timeout_error
 
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
@@ -130,10 +130,10 @@ class HTTPClient(object):
         except (gaierror, timeout_error, http.client.CannotSendRequest, OSError) as ex:
             self.__conn.close()
 
-            print("HTTPClient.__request: %s%s: %s" % (self.__host, url, ex), file=sys.stderr)
+            print("HTTPClient.__request: %s: %s" % (self.__host + url, ex), file=sys.stderr)
             sys.stderr.flush()
 
-            raise NetworkUnavailableException.construct(ex)
+            raise ResourceUnavailableException(self.__host + url, ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------

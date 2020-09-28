@@ -7,28 +7,33 @@ Created on 19 May 2020
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NetworkUnavailableException(RuntimeError):
+class ResourceUnavailableException(RuntimeError):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def construct(cls, ex):
-        return cls(ex.__class__.__name__, str(ex))
+    def __init__(self, resource, original_exception,  *args, **kwargs):
+        super().__init__(args, kwargs)
+
+        self.__resource = resource                                      # string
+        self.__original_exception = original_exception                  # Exception
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, original_exception_classname, original_message,  *args):
-        super().__init__(*args)
+    @property
+    def resource(self):
+        return self.__resource
 
-        self.__original_exception_classname = original_exception_classname
-        self.__original_message = original_message
+    @property
+    def original_exception(self):
+        return self.__original_exception
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return ': '.join((self.__original_exception_classname, self.__original_message))
+        return "ResourceUnavailableException:{resource:%s, original_exception:%s}" % \
+               (self.resource, str(self.original_exception))
