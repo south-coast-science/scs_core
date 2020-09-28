@@ -34,6 +34,11 @@ class ResourceUnavailableException(RuntimeError):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __repr__(self):
+        return "%s: %s: %s" % \
+               (self.resource, self.original_exception.__class__.__name__, str(self.original_exception))
+
+
     def __str__(self, *args, **kwargs):
         return "ResourceUnavailableException:{resource:%s, original_exception:%s}" % \
                (self.resource, str(self.original_exception))
