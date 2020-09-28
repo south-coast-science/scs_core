@@ -201,7 +201,8 @@ class CSVLogQueueBuilder(object):
     def find_cursors(self):                                                     # waits indefinitely for network
         # timeline_start...
         byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(), self.__topic_path)
-        timeline_start = None if byline is None else byline.rec.datetime
+        rec = None if byline is None else byline.rec
+        timeline_start = None if rec is None else rec.utc_datetime
 
         # CSVLog...
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),

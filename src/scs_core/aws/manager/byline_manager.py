@@ -9,7 +9,7 @@ curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 """
 
 from scs_core.aws.client.rest_client import RESTClient
-from scs_core.aws.data.byline import Byline
+from scs_core.aws.data.byline import Byline, BylineGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -75,10 +75,7 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            if jdict is None:
-                return []
-
-            return sorted([Byline.construct_from_jdict(item) for item in jdict])
+            return BylineGroup.construct_from_jdict(jdict)
 
         finally:
             self.__rest_client.close()
@@ -96,10 +93,7 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            if jdict is None:
-                return []
-
-            return sorted([Byline.construct_from_jdict(item) for item in jdict])
+            return BylineGroup.construct_from_jdict(jdict)
 
         finally:
             self.__rest_client.close()
