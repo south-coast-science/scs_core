@@ -5,7 +5,6 @@ Created on 9 Nov 2016
 """
 
 import ssl
-import sys
 
 import http.client
 
@@ -129,9 +128,6 @@ class HTTPClient(object):
 
         except (gaierror, timeout_error, http.client.CannotSendRequest, OSError) as ex:
             self.__conn.close()
-
-            print("HTTPClient.__request: %s: %s" % (self.__host + url, ex), file=sys.stderr)
-            sys.stderr.flush()
 
             raise ResourceUnavailableException(self.__host + url, ex)
 
