@@ -9,7 +9,7 @@ import os
 from scs_core.data.path_dict import PathDict
 
 
-class BucketManager(object):
+class S3Manager(object):
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, client, resource_client):
         """
