@@ -11,6 +11,10 @@ from scs_host.sys.host import Host
 def run_device_monitor(interval):
     dm = DeviceMonitor(interval, Host)
     dm.get_watched_device_list()
-    dm.get_unresponsive_devices_list()
+    dm.get_changed_devices_list()
     dm.send_email_alerts()
 # --------------------------------------------------------------------------------------------------------------------
+
+
+run_device_monitor(10)
+

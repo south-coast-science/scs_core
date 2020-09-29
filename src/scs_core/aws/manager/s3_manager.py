@@ -9,7 +9,7 @@ import os
 from scs_core.data.path_dict import PathDict
 
 
-class BucketManager(object):
+class S3Manager(object):
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, client, resource_client):
         """
@@ -22,7 +22,7 @@ class BucketManager(object):
 
     def list_buckets(self):
         # Retrieve the list of existing buckets
-        response = self.__client.list_buckets()
+        response = self.__client.get_list()
         bucket_list = PathDict()
         # Output the bucket names
         inters = 0
@@ -44,3 +44,10 @@ class BucketManager(object):
     def upload_file_to_bucket(self, bucket_name, filepath, object_name):
         self.__resource_client.Bucket(bucket_name).upload_file(filepath, object_name)
         return "Done"
+
+    def list_bucket_objects(self, bucket_name):
+        response = self.__client.list_objects_v2(
+            Bucket=bucket_name,
+            Delimiter=",",
+        )
+        return response

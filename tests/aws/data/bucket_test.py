@@ -4,7 +4,7 @@ from getpass import getpass
 
 import boto3
 
-from scs_core.aws.manager.s3_manager import BucketManager
+from scs_core.aws.manager.s3_manager import S3Manager
 
 
 
@@ -44,7 +44,7 @@ fp = cwd + "/bucket_file.txt"
 print(fp)
 exit()
 boto_client = create_aws_client()
-manager = BucketManager(boto_client)
+manager = S3Manager(boto_client)
 # b = manager.list_buckets()
 # print (b)
 # d = manager.retrieve_from_bucket("scs-device-monitor", "MOCK_DATA.json")
