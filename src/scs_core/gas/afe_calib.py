@@ -19,6 +19,8 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
 
 from scs_core.gas.sensor import Sensor
@@ -74,7 +76,8 @@ class AFECalib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def download(cls, http_client, serial_number):
+    def download(cls, serial_number):
+        http_client = HTTPClient()
         http_client.connect(AFECalib.ALPHASENSE_HOST)
 
         try:

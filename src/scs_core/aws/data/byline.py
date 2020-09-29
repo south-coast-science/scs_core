@@ -5,7 +5,7 @@ Created on 25 Dec 2018
 
 example:
 {"device": "scs-bgx-401", "topic": "south-coast-science-demo/brighton/loc/1/particulates",
-"latest-pub": "2020-09-25T11:49:46Z", "latest-rec": "2020-09-25T11:49:40Z"}
+"pub": "2020-09-25T11:49:46Z", "rec": "2020-09-25T11:49:40Z"}
 """
 
 from collections import OrderedDict
@@ -31,23 +31,23 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-        latest_pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))    # as provided by web API
-        latest_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))      # as provided by web API
+        pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))    # as provided by web API
+        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))      # as provided by web API
 
-        return cls(device, topic, latest_pub, latest_rec)
+        return cls(device, topic, pub, rec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, latest_pub, latest_rec):
+    def __init__(self, device, topic, pub, rec):
         """
         Constructor
         """
         self.__device = device                      # string tag
         self.__topic = topic                        # string path
 
-        self.__latest_pub = latest_pub              # LocalizedDatetime
-        self.__latest_rec = latest_rec              # LocalizedDatetime
+        self.__pub = pub                            # LocalizedDatetime
+        self.__rec = rec                            # LocalizedDatetime
 
 
     def __lt__(self, other):
@@ -65,8 +65,14 @@ class Byline(JSONable):
         if self.__topic > other.__topic:
             return False
 
-        # latest_rec...
-        if self.__latest_rec < other.__latest_rec:
+        # rec...
+        if self.__rec is None:
+            return True
+
+        if other.__rec is None:
+            return False
+
+        if self.__rec < other.__rec:
             return True
 
         return False
@@ -80,8 +86,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['latest-pub'] = None if self.latest_pub is None else self.latest_pub.as_iso8601()
-        jdict['latest-rec'] = None if self.latest_rec is None else self.latest_rec.as_iso8601()
+        jdict['pub'] = None if self.pub is None else self.pub.as_iso8601()
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601()
 
         return jdict
 
@@ -99,17 +105,86 @@ class Byline(JSONable):
 
 
     @property
-    def latest_pub(self):
-        return self.__latest_pub
+    def pub(self):
+        return self.__pub
 
 
     @property
-    def latest_rec(self):
-        return self.__latest_rec
+    def rec(self):
+        return self.__rec
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Byline:{device:%s, topic:%s, latest_pub:%s, latest_rec:%s}" %  \
-               (self.device, self.topic, self.latest_pub, self.latest_rec)
+        return "Byline:{device:%s, topic:%s, pub:%s, rec:%s}" %  \
+               (self.device, self.topic, self.pub, self.rec)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class BylineGroup(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        return cls(sorted([Byline.construct_from_jdict(byline_jdict) for byline_jdict in jdict]))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, bylines):
+        """
+        Constructor
+        """
+        self.__bylines = bylines                    # list of Byline
+
+
+    def __len__(self):
+        return len(self.bylines)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def latest_pub(self):
+        if not self.bylines:
+            return None
+
+        return max([byline.pub for byline in self.bylines if byline.pub is not None])
+
+
+    def latest_rec(self):
+        if not self.bylines:
+            return None
+
+        return max([byline.rec for byline in self.bylines if byline.rec is not None])
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['bylines'] = self.bylines
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def bylines(self):
+        return self.__bylines
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "BylineGroup:{bylines:%s}" %  self.bylines

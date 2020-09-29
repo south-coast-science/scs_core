@@ -9,8 +9,6 @@ Created on 14 Jan 2020
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -42,7 +40,7 @@ print(api_auth)
 system_id = SystemID.load(Host)
 print(system_id)
 
-manager = BylineManager(HTTPClient(True), api_auth)
+manager = BylineManager(api_auth)
 print(manager)
 
 queue_builder = CSVLogQueueBuilder(topic_name, topic_path, manager, system_id, conf)
