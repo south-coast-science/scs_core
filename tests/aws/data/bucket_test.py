@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+
+"""
+Created on 28 Sep 2020
+
+@author: Jade Page (jade.page@southcoastscience.com)
+"""
 import os
 import sys
 from getpass import getpass

@@ -231,7 +231,7 @@ class LocalizedDatetime(JSONable):
             operand = other.delta
 
         else:
-            operand = other
+            operand = other         # TODO: TypeError?
 
         return LocalizedDatetime(self.datetime + operand)
 
@@ -244,7 +244,7 @@ class LocalizedDatetime(JSONable):
             operand = other.delta
 
         else:
-            operand = other
+            operand = other         # TODO: TypeError?
 
         return self.datetime - operand                  # result may be datetime or timedelta
 

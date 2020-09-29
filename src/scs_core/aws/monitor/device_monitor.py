@@ -4,18 +4,21 @@ Created on 25 Sep 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-# --------------------------------------------------------------------------------------------------------------------
 import boto3
 
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.client.email_client import EmailHandler
+
 from scs_core.aws.data.device_line import DeviceLine
+
 from scs_core.aws.manager.byline_manager import BylineManager
 from scs_core.aws.manager.s3_manager import S3Manager
-from scs_core.data import datetime
-from scs_core.data.path_dict import PathDict
-from scs_core.data.datetime import LocalizedDatetime, DateParser
 
+from scs_core.data.path_dict import PathDict
+from scs_core.data.datetime import LocalizedDatetime, Timedelta
+
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
     # ----------------------------------------------------------------------------------------------------------------
@@ -86,18 +89,37 @@ class DeviceMonitor(object):
         res = manager.find_bylines_for_device(device_tag)
         return res.as_json()
 
-    def is_unresponsive(self, latest_activity):
-        parser = DateParser.construct('YYYY-MM-DD')
-        if latest_activity is None:
+
+    def is_unresponsive(self, latest_pub_iso):
+        latest_pub = LocalizedDatetime.construct_from_iso8601(latest_pub_iso)
+
+        if latest_pub is None:
             return True
-        now = LocalizedDatetime.now().utc()
-        cutoff_time = LocalizedDatetime.now().utc() - datetime.timedelta(minutes=self.__unresponsive_minutes_allowed)
-        iso_cutoff = LocalizedDatetime.construct_from_date_time(parser, str(cutoff_time.date()),
-                                                                (cutoff_time.time()).strftime("%H:%M:%S "))
-        if iso_cutoff > now:
-            return True
-        else:
-            return False
+
+        now = LocalizedDatetime.now()
+        delta = Timedelta.construct(now - latest_pub)
+
+        return delta.minutes > self.__unresponsive_minutes_allowed
+
+
+    # def is_unresponsive(self, latest_activity):
+    #     print("latest_activity: %s" % latest_activity)
+    #
+    #     latest = LocalizedDatetime.construct_from_iso8601(latest_activity)
+    #
+    #     parser = DateParser.construct('YYYY-MM-DD')
+    #     if latest_activity is None:
+    #         return True
+    #     now = LocalizedDatetime.now().utc()
+    #     cutoff_time = LocalizedDatetime.now().utc() - Timedelta(minutes=self.__unresponsive_minutes_allowed)
+    #     iso_cutoff = LocalizedDatetime.construct_from_date_time(parser, str(cutoff_time.date()),
+    #                                                             (cutoff_time.time()).strftime("%H:%M:%S "))
+    #     if iso_cutoff > now:
+    #         return True
+    #     else:
+    #         return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
     @staticmethod
     def get_latest_response(byline_data):
@@ -114,11 +136,10 @@ class DeviceMonitor(object):
         return cur_latest
 
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "device_monitor:{unresponsive_minutes_allowed:%s, watched_device_list:%s, unresponsive_device_list:%s " \
-               "api_auth:%s, email_author:%s, number_unresponsive:%s }" % \
+        return "device_monitor:{unresponsive_minutes_allowed:%s, watched_device_list:%s, " \
+               "unresponsive_device_list:%s api_auth:%s, email_author:%s, number_unresponsive:%s }" % \
                (self.__unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list,
                 self.__api_auth, self.__email_author, self.__number_changed)
