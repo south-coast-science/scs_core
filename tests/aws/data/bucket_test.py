@@ -39,11 +39,12 @@ def create_aws_client():
 
     return client
 
-    # access_key_id = "AKIA2EJXHIV53CJBS7UY"
-    # access_key_secret = "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"
 boto_client = create_aws_client()
 manager = BucketManager(boto_client)
 # b = manager.list_buckets()
 # print (b)
-d = manager.retrieve_from_bucket("scs-device-monitor", "MOCK_DATA.json")
-print (d)
+# d = manager.retrieve_from_bucket("scs-device-monitor", "MOCK_DATA.json")
+# print (d)
+cwd = os.getcwd()
+fp = cwd + "/bucket_file.txt"
+u = manager.upload_file_to_bucket("scs-device-monitor", fp, "testfile.txt")

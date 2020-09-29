@@ -37,6 +37,7 @@ class BucketManager(object):
             print(json_data)
         os.remove('temp_file.json')
 
-    def put_into_bucket(self):
-        pass
+    def upload_file_to_bucket(self, bucket_name, filepath, object_name):
+        self.__resource_client.Bucket(bucket_name).upload_file(filepath, object_name)
+
 
