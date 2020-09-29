@@ -5,8 +5,6 @@ Created on 9 Nov 2016
 """
 
 import ssl
-import sys
-import time
 
 import http.client
 
@@ -14,7 +12,7 @@ import urllib.parse
 
 from socket import gaierror, timeout as timeout_error
 
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
@@ -27,16 +25,12 @@ class HTTPClient(object):
     classdocs
     """
 
-    __NETWORK_WAIT_TIME = 10.0                      # seconds
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, wait_for_network):
+    def __init__(self):
         """
         Constructor
         """
-        self.__wait_for_network = wait_for_network
-
         self.__conn = None
         self.__host = None
 
@@ -47,7 +41,7 @@ class HTTPClient(object):
         # print("connect: host: {}, timeout: {}".format(host, timeout), file=sys.stderr)
 
         if secure:
-            # noinspection PyProtectedMember
+            # noinspection PyProtectedMember,PyUnresolvedReferences
             context = None if verified else ssl._create_unverified_context()
 
             if timeout is not None:
@@ -128,24 +122,17 @@ class HTTPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __request(self, method, url, body, headers):
-        while True:
-            try:
-                self.__conn.request(method, url, body=body, headers=headers)
-                return self.__conn.getresponse()
+        try:
+            self.__conn.request(method, url, body=body, headers=headers)
+            return self.__conn.getresponse()
 
-            except (gaierror, timeout_error, http.client.CannotSendRequest, OSError) as ex:
-                self.__conn.close()
+        except (gaierror, timeout_error, http.client.CannotSendRequest, OSError) as ex:
+            self.__conn.close()
 
-                if not self.__wait_for_network:
-                    raise NetworkUnavailableException.construct(ex)
-
-                print("HTTPClient.__request: %s%s: %s" % (self.__host, url, ex), file=sys.stderr)
-                sys.stderr.flush()
-
-                time.sleep(self.__NETWORK_WAIT_TIME)
+            raise ResourceUnavailableException(self.__host + url, ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "HTTPClient:{host:%s, wait_for_network:%s}" % (self.__host, self.__wait_for_network)
+        return "HTTPClient:{conn:%s, host:%s}" % (self.__conn, self.__host)
