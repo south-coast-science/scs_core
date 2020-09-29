@@ -11,6 +11,7 @@ import time
 
 from scs_core.client.http_client import HTTPClient
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 host = "slowwly.robertomurray.co.uk"
@@ -32,7 +33,7 @@ print("path:%s" % path)
 
 # --------------------------------------------------------------------------------------------------------------------
 
-client = HTTPClient(True)
+client = HTTPClient()
 client.connect(host, secure=False, timeout=2)
 print(client)
 

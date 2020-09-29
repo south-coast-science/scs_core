@@ -25,11 +25,11 @@ class BylineManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, api_key):
+    def __init__(self, api_key):
         """
         Constructor
         """
-        self.__rest_client = RESTClient(http_client, api_key)
+        self.__rest_client = RESTClient(api_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
