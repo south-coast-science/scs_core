@@ -13,6 +13,8 @@ example JSON:
 
 import json
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.gas.afe_calib import AFECalib
 from scs_core.gas.sensor_calib import SensorCalib
 
@@ -37,7 +39,8 @@ class DSICalib(AFECalib):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def download(cls, http_client, serial_number):
+    def download(cls, serial_number):
+        http_client = HTTPClient()
         http_client.connect(AFECalib.ALPHASENSE_HOST)
 
         try:
