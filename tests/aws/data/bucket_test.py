@@ -39,6 +39,10 @@ def create_aws_client():
 
     return client
 
+cwd = os.getcwd()
+fp = cwd + "/bucket_file.txt"
+print(fp)
+exit()
 boto_client = create_aws_client()
 manager = BucketManager(boto_client)
 # b = manager.list_buckets()
