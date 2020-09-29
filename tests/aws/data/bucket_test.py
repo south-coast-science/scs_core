@@ -4,7 +4,7 @@ from getpass import getpass
 
 import boto3
 
-from scs_core.aws.data.bucket import BucketManager
+from scs_core.aws.manager.s3_manager import BucketManager
 
 
 
