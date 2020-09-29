@@ -5,7 +5,6 @@ Created on 28 Sep 2020
 
 https://realpython.com/python-send-email/#option-1-setting-up-a-gmail-account-for-development
 """
-
 import smtplib
 import ssl
 from socket import gaierror
