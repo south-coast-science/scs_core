@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+
+"""
+Created on 28 Sep 2020
+
+@author: Jade Page (jade.page@southcoastscience.com)
+"""
 import os
 import sys
 from getpass import getpass
@@ -39,10 +46,12 @@ def create_aws_client():
 
     return client
 
+
 cwd = os.getcwd()
 fp = cwd + "/bucket_file.txt"
 print(fp)
 exit()
+
 boto_client = create_aws_client()
 manager = S3Manager(boto_client)
 # b = manager.list_buckets()
