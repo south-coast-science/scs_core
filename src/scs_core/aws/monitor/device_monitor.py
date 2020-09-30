@@ -97,7 +97,7 @@ class DeviceMonitor(object):
             return True
 
         now = LocalizedDatetime.now()
-        delta = Timedelta.construct(now - latest_pub)
+        delta = now - latest_pub
 
         return delta.minutes > self.__unresponsive_minutes_allowed
 
