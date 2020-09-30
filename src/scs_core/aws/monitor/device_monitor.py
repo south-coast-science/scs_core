@@ -21,6 +21,9 @@ from scs_core.data.datetime import LocalizedDatetime, Timedelta
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
+
+    __REGION = 'us-west-2'
+
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, unresponsive_minutes_allowed, host):
         """
@@ -40,7 +43,7 @@ class DeviceMonitor(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_watched_device_list(self):
-        aws_client = boto3.client('s3', region_name='us-west-2')
+        aws_client = boto3.client('s3', region_name=self.__REGION)
         aws_resource_client = boto3.resource('s3', region_name='us-west-2')
         bucket_manager = S3Manager(aws_client, aws_resource_client)
         data = bucket_manager.retrieve_from_bucket(self.__bucket_name, self.__bucket_resource)
@@ -100,24 +103,6 @@ class DeviceMonitor(object):
         delta = now - latest_pub
 
         return delta.minutes > self.__unresponsive_minutes_allowed
-
-
-    # def is_unresponsive(self, latest_activity):
-    #     print("latest_activity: %s" % latest_activity)
-    #
-    #     latest = LocalizedDatetime.construct_from_iso8601(latest_activity)
-    #
-    #     parser = DateParser.construct('YYYY-MM-DD')
-    #     if latest_activity is None:
-    #         return True
-    #     now = LocalizedDatetime.now().utc()
-    #     cutoff_time = LocalizedDatetime.now().utc() - Timedelta(minutes=self.__unresponsive_minutes_allowed)
-    #     iso_cutoff = LocalizedDatetime.construct_from_date_time(parser, str(cutoff_time.date()),
-    #                                                             (cutoff_time.time()).strftime("%H:%M:%S "))
-    #     if iso_cutoff > now:
-    #         return True
-    #     else:
-    #         return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
