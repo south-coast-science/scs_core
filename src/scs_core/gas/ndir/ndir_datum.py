@@ -2,6 +2,8 @@
 Created on 20 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Alphasense A4 IRC-AT non-dispersive infra-red detector
 """
 
 from collections import OrderedDict
@@ -98,6 +100,11 @@ class NDIRDatum(JSONable):
     @property
     def cnc(self):
         return self.__cnc
+
+
+    @property
+    def co2(self):              # a synonym of cnc for compatibility with GasesSample and SCD30Datum
+        return self.cnc_igl
 
 
     @property
