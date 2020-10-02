@@ -1,10 +1,8 @@
 """
 Created on 28 Sep 2020
-
 @author: Jade Page (jade.page@southcoastscience.com)
 """
-import json
-import os
+
 
 from scs_core.data.path_dict import PathDict
 
@@ -33,16 +31,17 @@ class S3Manager(object):
         return bucket_list
 
     def retrieve_from_bucket(self, bucket_name, resource_name):
-        bucket = self.__resource_client.Bucket(bucket_name)
-        with open('temp_file.json', 'wb') as data:
-            bucket.download_fileobj(resource_name, data)
-        with open('temp_file.json', 'rb') as data:
-            json_data = json.load(data)
-        os.remove('temp_file.json')
-        return json_data
+        response = self.__client.get_object(Bucket=bucket_name, Key=resource_name)
+        content_body = response.get("Body")
+        data = content_body.read()
+        return data.decode('utf-8')
 
-    def upload_file_to_bucket(self, bucket_name, filepath, object_name):
-        self.__resource_client.Bucket(bucket_name).upload_file(filepath, object_name)
+    def upload_file_to_bucket(self, bucket_name, filepath, key_name):
+        self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
+        return "Done"
+
+    def upload_bytes_to_bucket(self, bucket_name, body, key_name):
+        self.__resource_client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
         return "Done"
 
     def list_bucket_objects(self, bucket_name):

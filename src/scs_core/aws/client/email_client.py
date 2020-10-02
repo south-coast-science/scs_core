@@ -11,27 +11,43 @@ from socket import gaierror
 
 
 # --------------------------------------------------------------------------------------------------------------------
-class EmailHandler(object):
-    def __init__(self, port, smtp_server, login, password):
+class EmailClient(object):
+
+    __PORT = 465
+    __SMTP_SERVER = "smtp.gmail.com"
+    __EMAIL_ADDRESS = "devicetest147147@gmail.com"
+    __EMAIL_PASSWORD = "Southern!"
+
+    # Change from private class vars to conf eventually ?
+
+    def __init__(self, port=0, smtp_server="", login_address="", password=""):
         """
         Constructor
         """
         self.__port = port
         self.__smtp_server = smtp_server
-        self.__login = login
+        self.__sender_email = login_address
         self.__password = password
 
     # ----------------------------------------------------------------------------------------------------------------
-    def send_email(self, sender, receiver, message):
+    def send_email(self, receiver, message):
         context = ssl.create_default_context()
-
+        message = 'Subject: {}\n\n{}'.format("SCS Device Status", message)
+        if not self.__port or not self.__smtp_server or not self.__sender_email or not self.__password:
+            return "Email Client Not Configured"
         try:
             with smtplib.SMTP_SSL(self.__smtp_server, self.__port, context=context) as server:
-                server.login(self.__login, self.__password)
-                server.sendmail(sender, receiver, message)
+                server.login(self.__sender_email, self.__password)
+                server.sendmail(self.__sender_email, receiver, message)
         except (gaierror, ConnectionRefusedError):
-            print('Failed to connect to SMTP Server (Refused) ')
+            return 'Failed to connect to SMTP Server (Refused) '
         except smtplib.SMTPServerDisconnected:
-            print('Failed to connect to SMTP Server (Disconnected) ')
+            return 'Failed to connect to SMTP Server (Disconnected) '
         except smtplib.SMTPException as e:
-            print('SMTP error occurred: ' + str(e))
+            return 'SMTP error occurred: ' + str(e)
+        return "Sent"
+
+    def default_client(self):
+        return EmailClient(self.__PORT, self.__SMTP_SERVER, self.__EMAIL_ADDRESS, self.__EMAIL_PASSWORD)
+
+    # ----------------------------------------------------------------------------------------------------------------
