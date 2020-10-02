@@ -3,11 +3,11 @@ Created on 25 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+import os
 
 import boto3
 
 from scs_core.aws.client.api_auth import APIAuth
-from scs_core.aws.client.email_client import EmailHandler
 
 from scs_core.aws.data.device_line import DeviceLine
 
@@ -15,38 +15,35 @@ from scs_core.aws.manager.byline_manager import BylineManager
 from scs_core.aws.manager.s3_manager import S3Manager
 
 from scs_core.data.path_dict import PathDict
-from scs_core.data.datetime import LocalizedDatetime, Timedelta
+from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
 
-    __REGION = 'us-west-2'
-
     # ----------------------------------------------------------------------------------------------------------------
-    def __init__(self, unresponsive_minutes_allowed, host):
+    def __init__(self, device_monitor_conf, host, email_client):
         """
         Constructor
         """
-        self.__unresponsive_minutes_allowed = unresponsive_minutes_allowed
+        self.__config = device_monitor_conf
         self.__watched_device_list = {}
         self.__changed_device_list = {}
         self.__email_list = PathDict()
         self.__api_auth = APIAuth.load(host)
-        self.__email_author = "devicetest147147@gmail.com"
-        self.__email_password = "Southern!"
+        self.__email_client = email_client
         self.__number_changed = 0
-        self.__bucket_name = "scs-device-monitor"
-        self.__bucket_resource = "TEST_DATA.json"
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_watched_device_list(self):
-        aws_client = boto3.client('s3', region_name=self.__REGION)
-        aws_resource_client = boto3.resource('s3', region_name='us-west-2')
+        # reads auth keys from environment, if you want it to be used externally programmatically (not as a lambda)
+        # this will probably need to be changed
+        aws_client = boto3.client('s3', region_name=self.__config.aws_region)
+        aws_resource_client = boto3.resource('s3', region_name=self.__config.aws_region)
         bucket_manager = S3Manager(aws_client, aws_resource_client)
-        data = bucket_manager.retrieve_from_bucket(self.__bucket_name, self.__bucket_resource)
+        data = bucket_manager.retrieve_from_bucket(self.__config.bucket_name, self.__config.resource_name)
 
         iterator = 0
         for line in data:
@@ -64,27 +61,26 @@ class DeviceMonitor(object):
             latest_activity = self.get_latest_response(device_data)
             if self.is_unresponsive(latest_activity):
                 if this_dev.status_active:
-                    this_dev.dm_status = "Status: Became inactive"
+                    this_dev.dm_status = "inactive"
                     self.__changed_device_list[self.__number_changed] = this_dev
                     self.__number_changed += 1
                 this_dev.status_active = False
             else:
                 if not this_dev.status_active:
-                    this_dev.dm_status = "Status: Became active"
+                    this_dev.dm_status = "active"
                     self.__changed_device_list[self.__number_changed] = this_dev
                     self.__number_changed += 1
                 this_dev.status_active = True
 
     def send_email_alerts(self):
-        email_handler = EmailHandler(465, "smtp.gmail.com", self.__email_author, self.__email_password)
         iterations = 0
-        while iterations < self.__number_changed - 1:
+        while iterations < self.__number_changed:
             this_dev = self.__changed_device_list[iterations]
             recipients = this_dev.email_list
 
-            message = "Device with ID %s \n message \n %s" % (this_dev.device_tag, this_dev.dm_status)
+            message = self.generate_email_message(this_dev)
             for recipient in recipients:
-                email_handler.send_email(self.__email_author, recipient, message)
+                self.__email_client.send_email(recipient, message)
             iterations += 1
 
     def get_byline_data(self, device_tag):
@@ -102,8 +98,7 @@ class DeviceMonitor(object):
         now = LocalizedDatetime.now()
         delta = now - latest_pub
 
-        return delta.minutes > self.__unresponsive_minutes_allowed
-
+        return delta.minutes > self.__config.unresponsive_minutes_allowed
 
     # ----------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -120,11 +115,27 @@ class DeviceMonitor(object):
                         cur_latest = latest
         return cur_latest
 
+    @staticmethod
+    def generate_email_message(device):
+        old_status = "active" if not device.status_active else "inactive"
+        if device.dm_status == "active" or "inactive":
+            template = "status_changed.txt"
+        else:
+            template = None
+        filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', template)
+        f = open(filepath, "r")
+        message = f.read()
+        message = (message.replace("DEVICE_NAME", device.device_tag))
+        message = (message.replace("LAST_CHECK_TIME", device.last_checked))
+        message = (message.replace("OLD_STATUS", old_status))
+        message = (message.replace("NEW_STATUS", device.dm_status))
+        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
+        return message
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "device_monitor:{unresponsive_minutes_allowed:%s, watched_device_list:%s, " \
-               "unresponsive_device_list:%s api_auth:%s, email_author:%s, number_unresponsive:%s }" % \
-               (self.__unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list,
-                self.__api_auth, self.__email_author, self.__number_changed)
+               "changed_device_list:%s, number_changed:%s }" % \
+               (self.__config.unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list,
+                self.__number_changed)
