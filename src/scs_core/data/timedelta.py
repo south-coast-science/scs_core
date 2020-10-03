@@ -176,6 +176,30 @@ class Timedelta(JSONable):
                               minutes=minutes, hours=hours, weeks=weeks)
 
 
+    def __eq__(self, other):
+        try:
+            return self.delta == other.delta
+
+        except AttributeError:
+            return False
+
+
+    def __ge__(self, other):
+        return self.delta >= other.delta
+
+
+    def __gt__(self, other):
+        return self.delta > other.delta
+
+
+    def __le__(self, other):
+        return self.delta <= other.delta
+
+
+    def __lt__(self, other):
+        return self.delta < other.delta
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
