@@ -49,6 +49,8 @@ class JSONReport(JSONable):
     classdocs
     """
 
+    __JSON_INDENT = 4
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -89,7 +91,7 @@ class JSONReport(JSONable):
             return
 
         # data...
-        jstr = JSONify.dumps(self)
+        jstr = JSONify.dumps(self, indent=self.__JSON_INDENT)
 
         # file...
         tmp_filename = '.'.join((filename, str(int(time.time()))))
@@ -99,7 +101,7 @@ class JSONReport(JSONable):
             f.write(jstr + '\n')
             f.close()
 
-        except FileNotFoundError:       # the containing directory does not exist (yet)
+        except FileNotFoundError:           # the containing directory does not exist (yet)
             return False
 
         # atomic operation...
@@ -114,6 +116,8 @@ class PersistentJSONable(JSONable):
     """
     classdocs
     """
+
+    __JSON_INDENT = 4
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -175,7 +179,7 @@ class PersistentJSONable(JSONable):
 
     def save_to_file(self, directory, filename=None):
         # data...
-        jstr = JSONify.dumps(self)
+        jstr = JSONify.dumps(self, indent=self.__JSON_INDENT)
 
         # file...
         if filename:
