@@ -49,7 +49,7 @@ class JSONReport(JSONable):
     classdocs
     """
 
-    __JSON_INDENT = 4
+    INDENT = 4
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ class JSONReport(JSONable):
             return
 
         # data...
-        jstr = JSONify.dumps(self, indent=self.__JSON_INDENT)
+        jstr = JSONify.dumps(self, indent=self.INDENT)
 
         # file...
         tmp_filename = '.'.join((filename, str(int(time.time()))))
@@ -117,7 +117,31 @@ class PersistentJSONable(JSONable):
     classdocs
     """
 
-    __JSON_INDENT = 4
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def save_jstr_to_file(jstr, directory, filename=None):
+        # file...
+        if filename:
+            Filesystem.mkdir(directory)
+
+        abs_filename = os.path.join(directory, filename) if filename else directory
+        tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
+
+        with open(tmp_filename, "w") as f:
+            f.write(jstr)
+
+        # atomic operation...
+        os.rename(tmp_filename, abs_filename)
+
+
+    @staticmethod
+    def load_jstr_from_file(filename):
+        with open(filename, "r") as f:
+            text = f.read()
+
+        return text.strip()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -132,14 +156,11 @@ class PersistentJSONable(JSONable):
 
 
     @classmethod
-    def load_from_file(cls, filename):
+    def load_from_file(cls, filename):                              # TODO: make this private
         try:
-            f = open(filename, "r")
+            jstr = cls.load_jstr_from_file(filename)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
-
-        jstr = f.read().strip()
-        f.close()
 
         jdict = json.loads(jstr, object_hook=OrderedDict)
 
@@ -161,7 +182,6 @@ class PersistentJSONable(JSONable):
     @classmethod
     @abstractmethod
     def persistence_location(cls, _host):
-        # the implementer may assign the _host object to a class variable here
         return None, None
 
 
@@ -177,23 +197,87 @@ class PersistentJSONable(JSONable):
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, filename=None):
+    def save_to_file(self, directory, filename=None):               # TODO: make this private
         # data...
-        jstr = JSONify.dumps(self, indent=self.__JSON_INDENT)
+        jstr = JSONify.dumps(self, indent=JSONReport.INDENT)
 
-        # file...
-        if filename:
-            Filesystem.mkdir(directory)
+        PersistentJSONable.save_jstr_to_file(jstr, directory, filename=filename)
 
-        abs_filename = os.path.join(directory, filename) if filename else directory
-        tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
-        f = open(tmp_filename, "w")
-        f.write(jstr + '\n')
-        f.close()
+# --------------------------------------------------------------------------------------------------------------------
 
-        # atomic operation...
-        os.rename(tmp_filename, abs_filename)
+class MultiPersistentJSONable(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load(cls, host, name):
+        try:
+            filename = os.path.join(*cls.persistence_location(host, name))
+        except NotImplementedError:
+            return None
+
+        return cls.load_from_file(filename)
+
+
+    @classmethod
+    def load_from_file(cls, filename):                              # TODO: make this private
+        try:
+            jstr = PersistentJSONable.load_jstr_from_file(filename)
+        except FileNotFoundError:
+            return cls.construct_from_jdict(None)
+
+        jdict = json.loads(jstr, object_hook=OrderedDict)
+
+        return cls.construct_from_jdict(jdict)
+
+
+    @classmethod
+    def delete(cls, host, name):
+        try:
+            os.remove(os.path.join(*cls.persistence_location(host, name)))
+            return True
+
+        except FileNotFoundError:
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    @abstractmethod
+    def persistence_location(cls, _host, _name):
+        return None, None
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, _jdict):
+        return PersistentJSONable()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, host):
+        self.save_to_file(*self.persistence_location(host, self.name))
+
+
+    def save_to_file(self, directory, filename=None):              # TODO: make this private
+        # data...
+        jstr = JSONify.dumps(self, indent=JSONReport.INDENT)
+
+        PersistentJSONable.save_jstr_to_file(jstr, directory, filename=filename)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def name(self):
+        return None
 
 
 # --------------------------------------------------------------------------------------------------------------------
