@@ -1,0 +1,2 @@
+DEVICE_NAME has changed status since it was last checked on LAST_CHECK_TIME
+Device was OLD_STATUS and is now NEW_STATUS as of THIS_CHECK_TIME
