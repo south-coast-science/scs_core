@@ -229,7 +229,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls, host):
+    def persistence_location(cls, _host):
         return None, None
 
 
@@ -283,7 +283,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls, host, name):
+    def persistence_location(cls, _host, _name):
         return None, None
 
 
