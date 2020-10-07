@@ -89,11 +89,10 @@ class JSONReport(JSONable):
         if not os.path.isfile(filename):
             return cls.construct_from_jdict(None)
 
-        f = open(filename, 'r')
-        jstr = f.readline()
-        f.close()
+        with open(filename, 'r') as f:
+            jstr = f.read()
 
-        jdict = json.loads(jstr)
+        jdict = json.loads(jstr.strip())
 
         return cls.construct_from_jdict(jdict)
 
