@@ -14,10 +14,6 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
-# TopicBylineGroup - one topic, multiple devices - from find_bylines_for_topic() used to find full list of devices
-
-# DeviceBylineGroup - one device, multiple topics - from find_bylines_for_device - used to find the health of a device
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Byline(JSONable):
@@ -135,11 +131,19 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, excluded=None):
         if not jdict:
             return None
 
-        return cls(sorted([Byline.construct_from_jdict(byline_jdict) for byline_jdict in jdict]))
+        bylines = []
+
+        for byline_jdict in jdict:
+            byline = Byline.construct_from_jdict(byline_jdict)
+
+            if not excluded or not byline.topic.endswith(excluded):
+                bylines.append(byline)
+
+        return cls(sorted(bylines))
 
 
     # ----------------------------------------------------------------------------------------------------------------
