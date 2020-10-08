@@ -204,7 +204,7 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{device_bylines:{%s}}" %  Format.collection(self._device_bylines)
+        return self.__class__.__name__ + ":{device_bylines:%s}" %  Format.collection(self._device_bylines)
 
 
 # --------------------------------------------------------------------------------------------------------------------
