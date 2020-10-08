@@ -131,11 +131,19 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, excluded=None):
         if not jdict:
             return None
 
-        return cls(sorted([Byline.construct_from_jdict(byline_jdict) for byline_jdict in jdict]))
+        bylines = []
+
+        for byline_jdict in jdict:
+            byline = Byline.construct_from_jdict(byline_jdict)
+
+            if not excluded or not byline.topic.endswith(excluded):
+                bylines.append(byline)
+
+        return cls(sorted(bylines))
 
 
     # ----------------------------------------------------------------------------------------------------------------

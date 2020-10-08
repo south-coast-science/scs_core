@@ -63,7 +63,7 @@ class BylineManager(object):
             self.__rest_client.close()
 
 
-    def find_bylines_for_topic(self, topic):
+    def find_bylines_for_topic(self, topic, excluded=None):
         request_path = '/device-topics'
 
         params = {self.__TOPIC: topic}
@@ -75,13 +75,13 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            return TopicBylineGroup.construct_from_jdict(jdict)
+            return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded)
 
         finally:
             self.__rest_client.close()
 
 
-    def find_bylines_for_device(self, device):
+    def find_bylines_for_device(self, device, excluded=None):
         request_path = '/device-topics'
 
         params = {self.__DEVICE: device}
@@ -93,7 +93,7 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            return DeviceBylineGroup.construct_from_jdict(jdict)
+            return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded)
 
         finally:
             self.__rest_client.close()
