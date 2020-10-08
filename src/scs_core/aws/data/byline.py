@@ -14,10 +14,6 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
-# TopicBylineGroup - one topic, multiple devices - from find_bylines_for_topic() used to find full list of devices
-
-# DeviceBylineGroup - one device, multiple topics - from find_bylines_for_device - used to find the health of a device
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class Byline(JSONable):
