@@ -14,6 +14,10 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
+# TopicBylineGroup - one topic, multiple devices - from find_bylines_for_topic() used to find full list of devices
+
+# DeviceBylineGroup - one device, multiple topics - from find_bylines_for_device - used to find the health of a device
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Byline(JSONable):
@@ -187,4 +191,63 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BylineGroup:{bylines:%s}" %  self.bylines
+        bylines = ', '.join([str(byline) for byline in self.bylines])
+
+        return self.__class__.__name__ + ":{bylines:[%s]}" %  bylines
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceBylineGroup(BylineGroup):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, bylines):
+        """
+        Constructor
+        """
+        super().__init__(bylines)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device(self):
+        return self.bylines[0].device if self.bylines else None
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class TopicBylineGroup(BylineGroup):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, bylines):
+        """
+        Constructor
+        """
+        super().__init__(bylines)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def bylines_for_device(self, device):
+        return [byline for byline in self.bylines if byline.device == device]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def devices(self):
+        devices = OrderedDict()
+
+        for byline in self.bylines:
+            devices[byline.device] = None
+
+        return list(devices.keys())
