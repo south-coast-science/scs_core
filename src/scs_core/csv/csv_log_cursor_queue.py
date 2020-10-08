@@ -13,6 +13,7 @@ from scs_core.csv.csv_log import CSVLog, CSVLogFile
 from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.format import Format
 from scs_core.data.json import JSONable
 
 from scs_core.sys.filesystem import Filesystem
@@ -156,9 +157,7 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        queue = '[' + ', '.join(str(cursor) for cursor in self.cursors()) + ']'
-
-        return "CSVLogCursorQueue:{queue:%s}" %  queue
+        return "CSVLogCursorQueue:{queue:%s}" %  Format.collection(self.cursors())
 
 
 # --------------------------------------------------------------------------------------------------------------------

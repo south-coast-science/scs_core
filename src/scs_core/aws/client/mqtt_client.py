@@ -20,6 +20,7 @@ from AWSIoTPythonSDK.exception.AWSIoTExceptions import disconnectError, disconne
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
+from scs_core.data.format import Format
 from scs_core.data.json import JSONify
 
 
@@ -134,9 +135,7 @@ class MQTTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        subscribers = '[' + ', '.join(str(subscriber) for subscriber in self.__subscribers) + ']'
-
-        return "MQTTClient:{subscribers:%s}" % subscribers
+        return "MQTTClient:{subscribers:%s}" % Format.collection(self.__subscribers)
 
 
 # --------------------------------------------------------------------------------------------------------------------

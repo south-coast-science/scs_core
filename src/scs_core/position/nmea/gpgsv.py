@@ -20,6 +20,7 @@ https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
 """
 
+from scs_core.data.format import Format
 from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
@@ -89,10 +90,8 @@ class GPGSV(NMEASentence):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        sats = '[' + ', '.join(str(sat) for sat in self.__sats) + ']'
-
         return "GPGSV:{source:%s, num_msg:%s, msg_num:%s, num_sv:%s, sats:%s}" % \
-               (self.source, self.num_msg, self.msg_num, self.num_sv, sats)
+               (self.source, self.num_msg, self.msg_num, self.num_sv, Format.collection(self.__sats))
 
 
 # --------------------------------------------------------------------------------------------------------------------

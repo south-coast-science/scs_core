@@ -13,6 +13,7 @@ from decimal import InvalidOperation
 from scs_core.data.categorical_regression import CategoricalRegression
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
+from scs_core.data.format import Format
 from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
 from scs_core.data.path_dict import PathDict
@@ -156,7 +157,5 @@ class Aggregate(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        regressions = '{' + ', '.join(topic + ': ' + str(reg) for topic, reg in self.__regressions.items()) + '}'
-
         return "Aggregate:{min_max:%s, iso_path:%s block_sample_count:%s, regressions:%s}" % \
-               (self.__min_max, self.__iso_path, self.block_sample_count, regressions)
+               (self.__min_max, self.__iso_path, self.block_sample_count, Format.collection(self.__regressions))

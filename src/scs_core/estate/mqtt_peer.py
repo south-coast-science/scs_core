@@ -10,7 +10,7 @@ example:
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Format
+from scs_core.data.format import Format
 from scs_core.data.json import JSONable, PersistentJSONable
 
 

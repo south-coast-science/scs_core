@@ -10,8 +10,8 @@ document example:
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.format import Format
+from scs_core.data.json import JSONable, PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -133,9 +133,7 @@ class Schedule(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        items = '[' + ', '.join(str(item) for item in self.__items.values()) + ']'
-
-        return "Schedule:{items:%s}" % items
+        return "Schedule:{items:%s}" % Format.collection(self.__items)
 
 
 # --------------------------------------------------------------------------------------------------------------------

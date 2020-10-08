@@ -6,7 +6,7 @@ Created on 10 Dec 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.datum import Format
+from scs_core.data.format import Format
 
 
 # --------------------------------------------------------------------------------------------------------------------

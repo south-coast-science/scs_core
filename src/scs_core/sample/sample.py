@@ -7,7 +7,7 @@ Created on 22 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Format
+from scs_core.data.format import Format
 from scs_core.data.json import JSONable
 
 
