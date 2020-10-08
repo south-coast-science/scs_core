@@ -42,5 +42,3 @@ class Str(object):
 
         except TypeError:
             return str(value)
-
-
