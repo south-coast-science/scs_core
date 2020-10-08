@@ -9,8 +9,8 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.data.format import Format
 from scs_core.data.path_dict import PathDict
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVHeader:{cells:%s}" % Format.collection(self.__cells)
+        return "CSVHeader:{cells:%s}" % Str.collection(self.__cells)
 
 
 # --------------------------------------------------------------------------------------------------------------------

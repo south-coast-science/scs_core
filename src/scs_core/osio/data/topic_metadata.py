@@ -49,7 +49,7 @@ example:
 }
 """
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 
 from scs_core.osio.data.abstract_topic import AbstractTopic
 from scs_core.osio.data.derived_topic import DerivedTopic
@@ -144,4 +144,4 @@ class TopicMetadata(AbstractTopic):
         return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "derived_topics:%s, bookmark_count:%s, stats:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.info,
-                Format.collection(self.derived_topics), self.bookmark_count, self.stats)
+                Str.collection(self.derived_topics), self.bookmark_count, self.stats)

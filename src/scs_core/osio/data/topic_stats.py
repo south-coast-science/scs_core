@@ -25,8 +25,8 @@ example:
 
 from collections import OrderedDict
 
-from scs_core.data.format import Format
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 from scs_core.osio.data.topic_contributor import TopicContributor
 from scs_core.osio.data.location import Location
@@ -130,4 +130,4 @@ class TopicStats(JSONable):
         return "TopicStats:{period:%s, last_reading:%s, average_frequency:%s, total:%s, " \
                "contributors:%s, last_location:%s}" % \
                (self.period, self.last_reading, self.average_frequency, self.total,
-                Format.collection(self.contributors), self.last_location)
+                Str.collection(self.contributors), self.last_location)

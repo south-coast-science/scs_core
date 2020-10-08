@@ -6,7 +6,7 @@ Created on 30 Apr 2019
 
 from subprocess import check_output, Popen, PIPE
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -86,4 +86,4 @@ class Pipe(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Pipe:{commands:%s}" % Format.collection(self.__commands)
+        return "Pipe:{commands:%s}" % Str.collection(self.__commands)

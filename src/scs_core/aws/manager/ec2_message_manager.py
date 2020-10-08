@@ -12,7 +12,7 @@ topic=south-coast-science-dev/production-test/loc/1/gases&startTime=2018-03-31T1
 from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -113,4 +113,4 @@ class MessageResponse(object):
 
     def __str__(self, *args, **kwargs):
         return "MessageResponse:{items:%s, count:%s, scanned_count:%s}" % \
-               (Format.collection(self.items), self.count, self.scanned_count)
+               (Str.collection(self.items), self.count, self.scanned_count)

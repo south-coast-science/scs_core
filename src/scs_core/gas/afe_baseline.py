@@ -12,8 +12,8 @@ example JSON:
 
 from collections import OrderedDict
 
-from scs_core.data.format import Format
 from scs_core.data.json import PersistentJSONable
+from scs_core.data.str import Str
 
 from scs_core.gas.sensor_baseline import SensorBaseline
 
@@ -93,4 +93,4 @@ class AFEBaseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AFEBaseline:{sensor_baselines:%s}" % Format.collection(self.__sensor_baselines)
+        return "AFEBaseline:{sensor_baselines:%s}" % Str.collection(self.__sensor_baselines)

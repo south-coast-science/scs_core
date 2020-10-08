@@ -39,7 +39,7 @@ example:
     ]}
 """
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 
 from scs_core.osio.data.user import User
 from scs_core.osio.data.user_topic import UserTopic
@@ -117,4 +117,4 @@ class UserMetadata(User):
         return "UserMetadata:{id:%s, name:%s, email:%s, password:%s, start:%s, gravatar_hash:%s, " \
                "topics:%s}" % \
                (self.id, self.name, self.email, self.password, self.start, self.gravatar_hash,
-                Format.collection(self.topics))
+                Str.collection(self.topics))

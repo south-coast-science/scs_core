@@ -11,8 +11,8 @@ import sys
 
 from scs_core.csv.csv_dict import CSVHeader
 
-from scs_core.data.format import Format
 from scs_core.data.json import JSONify
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ class CSVReader(object):
         return "CSVReader:{iterable:%s, filename:%s, numeric_cast:%s, empty_string_as_null:%s, " \
                "start_row:%s, read_count:%s, header:%s}" % \
                (iterable, self.filename, self.__numeric_cast, self.__empty_string_as_null,
-                self.__start_row, self.read_count, Format.collection(self.header.paths()))
+                self.__start_row, self.read_count, Str.collection(self.header.paths()))
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -7,8 +7,8 @@ Created on 22 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.format import Format
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -107,8 +107,8 @@ class Sample(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        values = Format.collection(self.values)
-        exegeses = Format.collection(self.exegeses)
+        values = Str.collection(self.values)
+        exegeses = Str.collection(self.exegeses)
 
         return self.__class__.__name__ + ":{tag:%s, src:%s, rec:%s, values:%s, exegeses:%s}" % \
             (self.tag, self.src, self.rec, values, exegeses)

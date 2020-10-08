@@ -15,7 +15,7 @@ from urllib.parse import urlparse, parse_qs
 from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
 
@@ -152,4 +152,4 @@ class MessageResponse(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{items:%s, next_url:%s}" % (Format.collection(self.items), self.next_url)
+        return "MessageResponse:{items:%s, next_url:%s}" % (Str.collection(self.items), self.next_url)
