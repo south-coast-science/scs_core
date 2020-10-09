@@ -12,6 +12,8 @@ import traceback
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
+
 from scs_core.sys.trace_entry import TraceEntry
 
 
@@ -94,8 +96,5 @@ class ExceptionReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        args = '[' + ', '.join(str(arg) for arg in self.args) + ']'
-        trace = '[' + ', '.join(str(entry) for entry in self.trace) + ']'
-
         return "ExceptionReport:{cls:%s, args:%s, trace:%s, summary:%s}" % \
-               (self.__class__.__name__, args, trace, self.summary)
+               (self.__class__.__name__, Str.collection(self.args), Str.collection(self.trace), self.summary)

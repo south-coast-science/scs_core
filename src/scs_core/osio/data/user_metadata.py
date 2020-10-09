@@ -39,6 +39,8 @@ example:
     ]}
 """
 
+from scs_core.data.str import Str
+
 from scs_core.osio.data.user import User
 from scs_core.osio.data.user_topic import UserTopic
 
@@ -112,7 +114,7 @@ class UserMetadata(User):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        topics = '[' + ', '.join(str(topic) for topic in self.topics) + ']'
-
-        return "UserMetadata:{id:%s, name:%s, email:%s, password:%s, start:%s, gravatar_hash:%s, topics:%s}" % \
-               (self.id, self.name, self.email, self.password, self.start, self.gravatar_hash, topics)
+        return "UserMetadata:{id:%s, name:%s, email:%s, password:%s, start:%s, gravatar_hash:%s, " \
+               "topics:%s}" % \
+               (self.id, self.name, self.email, self.password, self.start, self.gravatar_hash,
+                Str.collection(self.topics))

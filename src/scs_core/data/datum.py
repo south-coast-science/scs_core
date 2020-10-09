@@ -16,44 +16,6 @@ from scs_core.data.datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Format(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # formatting...
-
-    @staticmethod
-    def bin16(value, separator=' '):
-        formatted = ''
-
-        for shift in (12, 8, 4, 0):
-            nibble = (value >> shift) & 0x000f
-            nibble_str = "{0:b}".format(nibble).rjust(4, '0')
-
-            formatted += nibble_str + separator
-
-        return formatted.strip(separator)
-
-
-    @classmethod
-    def collection(cls, value):
-        if isinstance(value, list):
-            return '[' + ', '.join(cls.collection(item) for item in value) + ']'
-
-        if isinstance(value, tuple):
-            return '(' + ', '.join(cls.collection(item) for item in value) + ')'
-
-        try:
-            return '{' + ', '.join(str(key) + ': ' + cls.collection(value[key]) for key in value) + '}'
-
-        except TypeError:
-            return str(value)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
 class Datum(object):
     """
     classdocs
@@ -64,7 +26,7 @@ class Datum(object):
 
     @classmethod
     def format(cls, value, leading_zeroes=False):
-        # string...
+        # string or bool...
         if not cls.is_numeric(value):
             return "%s"
 
@@ -213,7 +175,6 @@ class Encode(object):
 
     # ----------------------------------------------------------------------------------------------------------------
     # encode byte array...
-
 
     @staticmethod
     def bool(value):
