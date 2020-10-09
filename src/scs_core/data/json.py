@@ -107,7 +107,7 @@ class JSONReport(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, _):
+    def construct_from_jdict(cls, _jdict):
         return JSONReport()
 
 

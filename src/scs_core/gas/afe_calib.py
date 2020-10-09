@@ -18,6 +18,7 @@ from collections import OrderedDict
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
+from scs_core.data.str import Str
 
 from scs_core.client.http_client import HTTPClient
 
@@ -259,9 +260,7 @@ class AFECalib(PersistentJSONable):
 
     def __str__(self, *args, **kwargs):
         cls = self.__class__.__name__
-        sensor_calibs = '[' + ', '.join(str(calib) for calib in self.__sensor_calibs) + ']'
-
         return cls + ":{serial_number:%s, afe_type:%s, calibrated_on:%s, " \
                      "dispatched_on:%s, pt100_calib:%s, sensor_calibs:%s}" %  \
                      (self.serial_number, self.afe_type, self.calibrated_on,
-                      self.dispatched_on, self.pt1000_calib, sensor_calibs)
+                      self.dispatched_on, self.pt1000_calib, Str.collection(self.__sensor_calibs))

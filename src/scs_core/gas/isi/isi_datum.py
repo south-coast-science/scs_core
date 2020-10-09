@@ -8,8 +8,8 @@ Datum for Integrated Electrochem Interface (ISI)
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Format
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 
 # TODO: rename as Gas Sensor Interface Datum
@@ -51,4 +51,4 @@ class ISIDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ISIDatum:{sns:%s}" % Format.collection(self.sns)
+        return "ISIDatum:{sns:%s}" % Str.collection(self.sns)

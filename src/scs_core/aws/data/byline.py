@@ -12,6 +12,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -86,8 +87,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['pub'] = None if self.pub is None else self.pub.as_iso8601()
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601()
+        jdict['lastSeenTime'] = None if self.pub is None else self.pub.as_iso8601()
+        jdict['last_write'] = None if self.rec is None else self.rec.as_iso8601()
 
         return jdict
 
@@ -135,6 +136,7 @@ class BylineGroup(JSONable):
         if not jdict:
             return None
 
+        # bylines...
         bylines = []
 
         for byline_jdict in jdict:
@@ -143,20 +145,29 @@ class BylineGroup(JSONable):
             if not excluded or not byline.topic.endswith(excluded):
                 bylines.append(byline)
 
-        return cls(sorted(bylines))
+        # device_bylines...
+        device_bylines = OrderedDict()
+
+        for byline in sorted(bylines):
+            if byline.device not in device_bylines:
+                device_bylines[byline.device] = []
+
+            device_bylines[byline.device].append(byline)
+
+        return cls(device_bylines)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, bylines):
+    def __init__(self, device_bylines):
         """
         Constructor
         """
-        self.__bylines = bylines                    # list of Byline
+        self._device_bylines = device_bylines                   # dict of device: Byline
 
 
     def __len__(self):
-        return len(self.bylines)
+        return len(list(self.bylines))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -178,26 +189,22 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['bylines'] = self.bylines
-
-        return jdict
+        return [byline.as_json() for byline in self.bylines]    # matches the structure of the API response
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def bylines(self):
-        return self.__bylines
+        for bylines in self._device_bylines.values():
+            for byline in bylines:
+                yield byline
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        bylines = ', '.join([str(byline) for byline in self.bylines])
-
-        return self.__class__.__name__ + ":{bylines:[%s]}" %  bylines
+        return self.__class__.__name__ + ":{device_bylines:%s}" % Str.collection(self._device_bylines)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -209,18 +216,21 @@ class DeviceBylineGroup(BylineGroup):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, bylines):
+    def __init__(self, device_bylines):
         """
         Constructor
         """
-        super().__init__(bylines)
+        super().__init__(device_bylines)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def device(self):
-        return self.bylines[0].device if self.bylines else None
+        for device in self._device_bylines.keys():
+            return device                                       # return the first device
+
+        return None
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -232,26 +242,21 @@ class TopicBylineGroup(BylineGroup):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, bylines):
+    def __init__(self, device_bylines):
         """
         Constructor
         """
-        super().__init__(bylines)
+        super().__init__(device_bylines)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def bylines_for_device(self, device):
-        return [byline for byline in self.bylines if byline.device == device]
+        return self._device_bylines[device]                     # may raise KeyError
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def devices(self):
-        devices = OrderedDict()
-
-        for byline in self.bylines:
-            devices[byline.device] = None
-
-        return list(devices.keys())
+        return list(self._device_bylines.keys())

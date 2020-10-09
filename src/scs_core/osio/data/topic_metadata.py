@@ -49,6 +49,8 @@ example:
 }
 """
 
+from scs_core.data.str import Str
+
 from scs_core.osio.data.abstract_topic import AbstractTopic
 from scs_core.osio.data.derived_topic import DerivedTopic
 from scs_core.osio.data.topic_info import TopicInfo
@@ -139,9 +141,7 @@ class TopicMetadata(AbstractTopic):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        derived_topics = '[' + ', '.join(str(derived_topic) for derived_topic in self.derived_topics) + ']'
-
         return "TopicMetadata:{path:%s, name:%s, description:%s, is_public:%s, info:%s, " \
                "derived_topics:%s, bookmark_count:%s, stats:%s}" % \
                (self.path, self.name, self.description, self.is_public, self.info,
-                derived_topics, self.bookmark_count, self.stats)
+                Str.collection(self.derived_topics), self.bookmark_count, self.stats)
