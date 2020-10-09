@@ -19,8 +19,8 @@ from scs_core.aqcsv.data.aqcsv_datetime import AQCSVDatetime
 from scs_core.aqcsv.data.aqcsv_site import AQCSVSite
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Format
 from scs_core.data.json import JSONable, PersistentJSONable
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ class AirNowMappingTaskList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AirNowMappingTaskList:{tasks:%s}" % Format.collection(self.__tasks)
+        return "AirNowMappingTaskList:{tasks:%s}" % Str.collection(self.__tasks)
 
 
 # --------------------------------------------------------------------------------------------------------------------

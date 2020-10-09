@@ -20,6 +20,7 @@ https://www.nmea.org
 https://en.wikipedia.org/wiki/NMEA_0183
 """
 
+from scs_core.data.str import Str
 from scs_core.position.nmea.nmea_sentence import NMEASentence
 
 
@@ -120,7 +121,5 @@ class GPGSA(NMEASentence):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        svs = '[' + ', '.join(str(sv) for sv in self.__sv) + ']'
-
         return "GPGSA:{source:%s, op_mode:%s, nav_mode:%s, sv:%s, pdop:%s, hdop:%s, vdop:%s}" % \
-               (self.source, self.op_mode, self.nav_mode, svs, self.pdop, self.hdop, self.vdop)
+               (self.source, self.op_mode, self.nav_mode, Str.collection(self.__sv), self.pdop, self.hdop, self.vdop)
