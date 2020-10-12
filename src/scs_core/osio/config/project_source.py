@@ -25,8 +25,6 @@ class ProjectSource(object):
     def tags(cls, afe_calib, include_particulates):
         gases_topic = ProjectTopic.get_gases_topic(afe_calib.gas_names())
 
-        # TODO: check for CO2 / NDIR topic
-
         tags = ['SCS']
 
         if gases_topic:
