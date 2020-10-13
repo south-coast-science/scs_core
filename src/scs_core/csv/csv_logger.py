@@ -23,7 +23,7 @@ class CSVLogger(object):
     """
 
     __MIN_FREE_SPACE = 10485760                         # 10MB
-
+    __CLEAR_SPACE_CHECK_INTERVAL = 1000
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +40,8 @@ class CSVLogger(object):
         self.__file = None                              # file handle
         self.__latest_write = None                      # timestamp
         self.__writing_inhibited = False                # bool
+
+        self.__clear_space_count = self.__CLEAR_SPACE_CHECK_INTERVAL     # int (do check at start)
 
         self.__buffer = []                              # array of CSVDict
 
@@ -125,12 +127,21 @@ class CSVLogger(object):
     def __open_file(self):
         self.log.timeline_start = LocalizedDatetime.now().utc()
 
-        self.__clear_space()
+        # check clear space...
+        self.__clear_space_count += 1
+
+        if self.__clear_space_count > self.__CLEAR_SPACE_CHECK_INTERVAL:
+            self.__clear_space_count = 0
+            self.__clear_space()
+
+        # check dir...
         self.log.mkdir()
 
+        # file...
         self.__file = open(self.log.file_path(), "w")
         self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
 
+        # header...
         if self.__paths:
             self.__writer.writerow(self.__paths)
 

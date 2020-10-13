@@ -112,7 +112,7 @@ class CSVLogReader(SynchronisedProcess):
         except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
             pass
 
-        except FileNotFoundError as ex:                     # parent process is terminating
+        except FileNotFoundError as ex:
             self.__reporter.exception(ex)
 
 
@@ -208,7 +208,7 @@ class CSVLogQueueBuilder(object):
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
                                        timeline_start=timeline_start)
 
-        return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')
+        return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')  # may raise FileNotFoundError
 
 
     # ----------------------------------------------------------------------------------------------------------------
