@@ -13,6 +13,8 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 from multiprocessing import Manager
 
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
+
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
 
@@ -109,11 +111,11 @@ class CSVLogReader(SynchronisedProcess):
                     queue.remove(cursor.file_path)
                     queue.as_list(self._value)
 
-        except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
-            pass
-
         except FileNotFoundError as ex:
             self.__reporter.exception(ex)
+
+        except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -186,6 +188,8 @@ class CSVLogQueueBuilder(object):
     classdocs
     """
 
+    __BYLINE_WAIT_TIME = 10.0                   # seconds
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic_name, topic_path, byline_manager, system_id, conf):
@@ -198,9 +202,16 @@ class CSVLogQueueBuilder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_cursors(self):                                                     # waits indefinitely for network
+    def find_cursors(self):
         # timeline_start...
-        byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(), self.__topic_path)
+        while True:
+            try:
+                byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(),
+                                                                            self.__topic_path)
+                break
+            except ResourceUnavailableException:
+                time.sleep(self.__BYLINE_WAIT_TIME)
+
         rec = None if byline is None else byline.rec
         timeline_start = None if rec is None else rec.utc_datetime
 
@@ -250,3 +261,4 @@ class CSVLogReporter(ABC):
     @abstractmethod
     def exception(self, ex):
         pass
+
