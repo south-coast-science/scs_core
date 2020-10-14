@@ -5,10 +5,16 @@ Created on 09 Oct 2020
 """
 import json
 import os
+import shutil
 import sys
-from pathlib import Path
+from urllib.request import urlopen
+
 
 class AWSSetup(object):
+    __AWS_REGION = "us-west-2"
+    __CERTS_PATH = "/greengrass/certs/"
+    __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
+
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, iot_client, gg_client, core_name, group_name):
         """
@@ -133,19 +139,26 @@ class AWSSetup(object):
         print("Logger created", file=sys.stderr)
 
     def persist_certs(self):
+        # download_file_from_url(url=ATS_ROOT_CA_RSA_2048_REMOTE_LOATION, filepath=cls.ROOT_CA_FILE)
+        # os.chmod(cls.ROOT_CA_FILE, 0o644)
         # Keys are saved with first 10 chars of the certs ARN
         # Delete existing keys from dir
         # Add new keys
         keys = self.__certificate["keyPair"]
         self.__hash = self.__certificate["certificateId"]
         self.__hash = self.__hash[0: 10]
-        certificate_path = self.__hash + "-certificate.pem.crt"
-        private_path = self.__hash + "-private.pem.key"
-        public_path = self.__hash + "-public.pem.key"
+        certificate_path = self.__hash + ".cert.pem"
+        private_path = self.__hash + ".private.key"
+        public_path = self.__hash + ".public.key"
 
-        certs_dir = "/greengrass/certs"
-        os.remove(certs_dir)
+        certs_dir = self.__CERTS_PATH
+        if os.path.isdir(certs_dir):
+            shutil.rmtree(certs_dir)  # remove dir and all contains
         os.mkdir(certs_dir)
+
+        data = urlopen(url=self.__ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION)
+        with open(certs_dir + "root.ca.pem", "wb") as local_file:
+            local_file.write(data.read())
 
         f = open(certs_dir + "/" + certificate_path, "w")
         f.write(self.__certificate["certificatePem"])
@@ -162,44 +175,47 @@ class AWSSetup(object):
         f.close()
         print("Public key saved", file=sys.stderr)
 
-#"CmdAWSSetup:{group-name:%s, core-name:%s, verbose:%s}" % (self.group_name, self.core_name, self.verbose)
+    # "CmdAWSSetup:{group-name:%s, core-name:%s, verbose:%s}" % (self.group_name, self.core_name, self.verbose)
 
     def update_config_file(self):
+        res = self.__iot_client.describe_endpoint()
+        endpoint = res["endpointAddress"]
         config_dir = "/greengrass/config"
-        os.remove(config_dir)
+        if os.path.isdir(config_dir):
+            shutil.rmtree(config_dir)  # remove dir and all contains
         os.mkdir(config_dir)
         default_config = {
-              "coreThing" : {
-                "caPath" : "root.ca.pem",
-                "certPath" : "%s.cert.pem" % self.__hash,
-                "keyPath" : "%s.private.key" % self.__hash,
-                "thingArn" : "arn:partition:iot:region:account-id:thing/core-thing-name",
-                "iotHost" : "host-prefix-ats.iot.region.amazonaws.com",
-                "ggHost" : "greengrass-ats.iot.region.amazonaws.com",
-                "keepAlive" : 600,
+            "coreThing": {
+                "caPath": "root.ca.pem",
+                "certPath": "%s.cert.pem" % self.__hash,
+                "keyPath": "%s.private.key" % self.__hash,
+                "thingArn": self.__thing_arn,
+                "iotHost": "%s-ats.iot.%s.amazonaws.com" % (endpoint, self.__AWS_REGION),
+                "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % self.__AWS_REGION,
+                "keepAlive": 600,
                 "ggDaemonPort": 8000,
                 "systemComponentAuthTimeout": 5000
-              },
-              "runtime" : {
-                "maxWorkItemCount" : 1024,
-                "cgroup" : {
-                  "useSystemd" : "yes"
+            },
+            "runtime": {
+                "maxWorkItemCount": 1024,
+                "cgroup": {
+                    "useSystemd": "yes"
                 }
-              },
-              "managedRespawn" : "false",
-              "crypto" : {
-                "principals" : {
-                  "SecretsManager" : {
-                    "privateKeyPath" : "file:///greengrass/certs/%s.private.key" % self.__hash
-                  },
-                  "IoTCertificate" : {
-                    "privateKeyPath" : "file:///greengrass/certs/%s.private.key" % self.__hash,
-                    "certificatePath" : "file:///greengrass/certs/%s.cert.pem" % self.__hash
-                  }
+            },
+            "managedRespawn": "false",
+            "crypto": {
+                "principals": {
+                    "SecretsManager": {
+                        "privateKeyPath": "file:///greengrass/certs/%s.private.key" % self.__hash
+                    },
+                    "IoTCertificate": {
+                        "privateKeyPath": "file:///greengrass/certs/%s.private.key" % self.__hash,
+                        "certificatePath": "file:///greengrass/certs/%s.cert.pem" % self.__hash
+                    }
                 },
-                "caPath" : "file:///greengrass/certs/root.ca.pem"
-              }
+                "caPath": "file:///greengrass/certs/root.ca.pem"
             }
+        }
 
         f = open(config_dir + "/config.json", "w")
         f.write(json.dumps(default_config))
@@ -207,7 +223,6 @@ class AWSSetup(object):
         print("Config saved", file=sys.stderr)
 
     # ----------------------------------------------------------------------------------------------------------------
-
 
     @staticmethod
     def return_default_policy():
@@ -235,5 +250,3 @@ class AWSSetup(object):
             ]
         }
         return core_policy_doc
-
-
