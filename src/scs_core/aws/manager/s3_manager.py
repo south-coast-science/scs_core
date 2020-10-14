@@ -41,8 +41,11 @@ class S3Manager(object):
         return "Done"
 
     def upload_bytes_to_bucket(self, bucket_name, body, key_name):
-        self.__resource_client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
+        self.__client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
         return "Done"
+
+    def put_object(self, bucket_name, body, key_name):
+        self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
 
     def list_bucket_objects(self, bucket_name):
         response = self.__client.list_objects_v2(
