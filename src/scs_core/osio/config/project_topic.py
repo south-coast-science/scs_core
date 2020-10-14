@@ -29,8 +29,6 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
-# TODO: fix for CO2
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class ProjectTopic(JSONable):
@@ -85,12 +83,12 @@ class ProjectTopic(JSONable):
                              'NO2, O3, CO, SO2 electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'SO2')),
 
-            ('NO2', 'Ox', 'CO', 'VOC'):                         # TODO: request an OSIO schema
+            ('NO2', 'Ox', 'CO', 'VOC'):
                 ProjectTopic(None, 'Gas concentrations',
                              'NO2, O3, CO, VOC electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('NO2', 'O3', 'CO', 'VOC')),
 
-            ('CO', 'SO2', 'H2S', 'VOC'):                        # TODO: request an OSIO schema
+            ('CO', 'SO2', 'H2S', 'VOC'):
                 ProjectTopic(None, 'Gas concentrations',
                              'CO, SO2, H2S, VOCs electrochemical we (V), ae (V), wc (V), cnc (ppb), '
                              'Pt1000 temp, internal SHT', ('CO', 'SO2', 'H2S', 'VOC')),

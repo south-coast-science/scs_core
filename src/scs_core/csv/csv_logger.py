@@ -23,17 +23,27 @@ class CSVLogger(object):
     """
 
     __MIN_FREE_SPACE = 10485760                         # 10MB
+    __CHECK_INTERVAL = 4                                # normally once per day
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, log, delete_oldest, write_interval):
+    @classmethod
+    def construct(cls, host, log, delete_oldest, write_interval):
+        manager = CSVSpaceManager(host, log, delete_oldest, cls.__MIN_FREE_SPACE, cls.__CHECK_INTERVAL)
+
+        return cls(host, log, manager, write_interval)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, host, log, manager, write_interval):
         """
         Constructor
         """
         self.__host = host                              # Host
         self.__log = log                                # CSVLog
-        self.__delete_oldest = delete_oldest            # bool
+        self.__manager = manager                        # CSVSpaceManager
         self.__write_interval = write_interval          # int
 
         self.__paths = None                             # array of string
@@ -125,67 +135,19 @@ class CSVLogger(object):
     def __open_file(self):
         self.log.timeline_start = LocalizedDatetime.now().utc()
 
-        self.__clear_space()
+        # check...
+        if not self.__manager.clear_space():
+            self.writing_inhibited = True
+
         self.log.mkdir()
 
+        # file...
         self.__file = open(self.log.file_path(), "w")
         self.__writer = csv.writer(self.__file, quoting=csv.QUOTE_MINIMAL)
 
+        # header...
         if self.__paths:
             self.__writer.writerow(self.__paths)
-
-
-    def __clear_space(self):
-        if self.__has_sufficient_space():
-            return
-
-        # stop on no-delete...
-        if not self.delete_oldest:
-            print("CSVLogger.__clear_space: volume full.", file=sys.stderr)
-            self.writing_inhibited = True
-            return
-
-        # delete until enough free...
-        while not self.__has_sufficient_space():
-            success = self.__delete_oldest_log()
-
-            if not success:
-                print("CSVLogger.__clear_space: delete failed.", file=sys.stderr)
-                self.writing_inhibited = True
-                return
-
-
-    def __has_sufficient_space(self):
-        du = self.__host.disk_usage(self.log.root_path)
-
-        return du.free > self.__MIN_FREE_SPACE
-
-
-    def __delete_oldest_log(self):
-        # walk the directories...
-        containers = Filesystem.ls(self.log.root_path)
-
-        for container in containers:
-            if not container.is_directory:
-                continue
-
-            # walk the files...
-            files = Filesystem.ls(container.path())
-
-            for file in files:
-                if not file.is_directory and file.has_suffix('csv'):
-                    print("CSVLogger.__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
-
-                    success = file.delete()
-
-                    if not success:
-                        return False
-
-                    Filesystem.rmdir(container.path())          # remove empty directories
-
-                    return True
-
-        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -193,11 +155,6 @@ class CSVLogger(object):
     @property
     def log(self):
         return self.__log
-
-
-    @property
-    def delete_oldest(self):
-        return self.__delete_oldest
 
 
     @property
@@ -218,5 +175,98 @@ class CSVLogger(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogger:{log:%s, delete_oldest:%s, write_interval:%s, writing_inhibited:%s}" % \
-               (self.log, self.delete_oldest, self.write_interval, self.writing_inhibited)
+        return "CSVLogger:{log:%s, manager:%s, write_interval:%s, writing_inhibited:%s}" % \
+               (self.log, self.__manager, self.write_interval, self.writing_inhibited)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CSVSpaceManager(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, host, log, delete_oldest, min_free_space, check_interval):
+        self.__host = host                                          # Host
+        self.__log = log                                            # CSVLog
+        self.__delete_oldest = delete_oldest                        # bool
+        self.__min_free_space = min_free_space                      # int
+        self.__check_interval = check_interval                      # int
+
+        self.__check_count = check_interval
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def clear_space(self):
+        self.__check_count += 1
+
+        if self.__check_count < self.__check_interval:
+            return True
+
+        self.__check_count = 0
+        return self.__clear_space()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __clear_space(self):
+        if self.__has_sufficient_space():
+            return True
+
+        # stop on no-delete...
+        if not self.__delete_oldest:
+            print("CSVSpaceManager.__clear_space: volume full.", file=sys.stderr)
+            return False
+
+        # delete until enough free...
+        while not self.__has_sufficient_space():
+            success = self.__delete_oldest_log()
+
+            if not success:
+                print("CSVSpaceManager.__clear_space: delete failed.", file=sys.stderr)
+                return False
+
+        return True
+
+
+    def __has_sufficient_space(self):
+        du = self.__host.disk_usage(self.__log.root_path)
+
+        return du.free > self.__min_free_space
+
+
+    def __delete_oldest_log(self):
+        # walk the directories...
+        containers = Filesystem.ls(self.__log.root_path)
+
+        for container in containers:
+            if not container.is_directory:
+                continue
+
+            # walk the files...
+            files = Filesystem.ls(container.path())
+
+            for file in files:
+                if not file.is_directory and file.has_suffix('csv'):
+                    print("CSVSpaceManager.__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
+
+                    success = file.delete()
+
+                    if not success:
+                        return False
+
+                    Filesystem.rmdir(container.path())          # remove empty directories
+
+                    return True
+
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CSVSpaceManager:{delete_oldest:%s, min_free_space:%s}" %  \
+               (self.__delete_oldest, self.__min_free_space)

@@ -34,7 +34,6 @@ class RESTClient(object):
     __HEADER_ACCEPT = "application/json"
     __HEADER_AUTHORIZATION = "api-key "
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, auth):
@@ -48,7 +47,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint, timeout=60)
+        self.__http_client.connect(self.__auth.endpoint, timeout=None)
 
 
     def close(self):
