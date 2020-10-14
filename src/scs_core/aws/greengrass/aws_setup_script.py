@@ -71,9 +71,8 @@ class AWSSetup(object):
             policyName=policy_name,
             policyDocument=json.dumps(policy_doc)
         )
-
         print("Policy created", file=sys.stderr)
-
+        print(json.dumps(policy_doc), file=sys.stderr)
         # Attach policy
         # associate iot policy with core cert
         self.__iot_client.attach_policy(
@@ -99,6 +98,7 @@ class AWSSetup(object):
         )
         self.__latest_core_version_arn = res['LatestVersionArn']
         print("Core created", file=sys.stderr)
+        print(initial_core_definition_version, file=sys.stderr)
 
     def create_group(self):
         initial_group_definition_version = {
@@ -112,6 +112,7 @@ class AWSSetup(object):
         )
         self.__latest_group_version_arn = res['LatestVersionArn']
         print("Group definition created", file=sys.stderr)
+        print(initial_group_definition_version, file=sys.stderr)
 
     def create_logger(self):
         res = self.__gg_client.create_logger_definition(
@@ -138,10 +139,8 @@ class AWSSetup(object):
         self.__latest_logger_version_arn = res['LatestVersionArn']
         print("Logger created", file=sys.stderr)
 
+
     def persist_certs(self):
-        # download_file_from_url(url=ATS_ROOT_CA_RSA_2048_REMOTE_LOATION, filepath=cls.ROOT_CA_FILE)
-        # os.chmod(cls.ROOT_CA_FILE, 0o644)
-        # Keys are saved with first 10 chars of the certs ARN
         # Delete existing keys from dir
         # Add new keys
         keys = self.__certificate["keyPair"]
@@ -154,6 +153,8 @@ class AWSSetup(object):
         certs_dir = self.__CERTS_PATH
         if os.path.isdir(certs_dir):
             shutil.rmtree(certs_dir)  # remove dir and all contains
+            print("Removed old keys", file=sys.stderr)
+
         os.mkdir(certs_dir)
 
         data = urlopen(url=self.__ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION)
@@ -178,11 +179,15 @@ class AWSSetup(object):
     # "CmdAWSSetup:{group-name:%s, core-name:%s, verbose:%s}" % (self.group_name, self.core_name, self.verbose)
 
     def update_config_file(self):
-        res = self.__iot_client.describe_endpoint()
+        res = self.__iot_client.describe_endpoint(
+            endpointType='iot:Data-ATS'
+        )
         endpoint = res["endpointAddress"]
         config_dir = "/greengrass/config"
         if os.path.isdir(config_dir):
             shutil.rmtree(config_dir)  # remove dir and all contains
+            print("Removed old config", file=sys.stderr)
+
         os.mkdir(config_dir)
         default_config = {
             "coreThing": {
@@ -190,7 +195,7 @@ class AWSSetup(object):
                 "certPath": "%s.cert.pem" % self.__hash,
                 "keyPath": "%s.private.key" % self.__hash,
                 "thingArn": self.__thing_arn,
-                "iotHost": "%s-ats.iot.%s.amazonaws.com" % (endpoint, self.__AWS_REGION),
+                "iotHost": endpoint,
                 "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % self.__AWS_REGION,
                 "keepAlive": 600,
                 "ggDaemonPort": 8000,
@@ -221,6 +226,7 @@ class AWSSetup(object):
         f.write(json.dumps(default_config))
         f.close()
         print("Config saved", file=sys.stderr)
+        print(json.dumps(default_config), file=sys.stderr)
 
     # ----------------------------------------------------------------------------------------------------------------
 
