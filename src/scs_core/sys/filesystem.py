@@ -23,8 +23,11 @@ class Filesystem(object):
         if head and not os.path.exists(head):
             cls.mkdir(head)
 
-        if not os.path.exists(path):        # handles case of trailing /
-            os.mkdir(path)
+        if not os.path.exists(path):                # handles case of trailing /
+            try:
+                os.mkdir(path)
+            except FileExistsError:
+                raise FileNotFoundError(path)       # covers a Python bug
 
 
     @classmethod
