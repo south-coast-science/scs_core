@@ -23,7 +23,7 @@ class AWSSetup(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
     @classmethod
     def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+        return host.aws_dir(), cls.__FILENAME
 
     @classmethod
     def construct_from_jdict(cls, jdict):
