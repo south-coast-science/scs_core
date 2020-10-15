@@ -27,7 +27,16 @@ class AWSSetup(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        pass
+        if jdict is None:
+            return None
+
+        core_name = jdict.get('core-name')
+        group_name = jdict.get('group-name')
+        iot_client = None
+        gg_client = None
+
+        return AWSSetup(iot_client, gg_client, core_name, group_name)
+
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, iot_client, gg_client, core_name, group_name):
