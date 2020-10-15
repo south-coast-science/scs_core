@@ -4,7 +4,7 @@ Created on 14 Oct 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"filesystem": "/dev/mmcblk0p1", "size": 15384184, "used": 319296, "free": 14892092,
+{"filesystem": "/dev/mmcblk0p1", "total": 15384184, "used": 319296, "free": 14892092,
 "mounted-on": "/srv/SCS_logging", "is-available": false}
 
 https://stackoverflow.com/questions/35469685/in-python-how-do-i-get-a-list-of-all-partitions-in-mac-os-x
@@ -37,22 +37,22 @@ class DiskVolume(JSONable):
         groups = match.groups()
 
         filesystem = groups[0]
-        size = groups[1]
+        total = groups[1]
         used = groups[2]
         free = groups[3]
         mounted_on = groups[5]
 
-        return cls(filesystem, size, used, free, mounted_on)
+        return cls(filesystem, free, used, total, mounted_on)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filesystem, size, used, free, mounted_on):
+    def __init__(self, filesystem, free, used, total, mounted_on):
         """
         Constructor
         """
         self.__filesystem = filesystem                      # string
-        self.__size = int(size)                             # int blocks
+        self.__total = int(total)                           # int blocks
         self.__used = int(used)                             # int blocks
         self.__free = int(free)                             # int blocks
         self.__mounted_on = mounted_on                      # string
@@ -64,9 +64,9 @@ class DiskVolume(JSONable):
         jdict = OrderedDict()
 
         jdict['filesystem'] = self.filesystem
-        jdict['size'] = self.size
-        jdict['used'] = self.used
         jdict['free'] = self.free
+        jdict['used'] = self.used
+        jdict['total'] = self.total
         jdict['mounted-on'] = self.mounted_on
 
         jdict['is-available'] = self.is_available
@@ -94,8 +94,8 @@ class DiskVolume(JSONable):
 
 
     @property
-    def size(self):
-        return self.__size
+    def free(self):
+        return self.__free
 
 
     @property
@@ -104,8 +104,8 @@ class DiskVolume(JSONable):
 
 
     @property
-    def free(self):
-        return self.__free
+    def total(self):
+        return self.__total
 
 
     @property
@@ -116,8 +116,8 @@ class DiskVolume(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskVolume:{filesystem:%s, size:%s, used:%s, free:%s, mounted_on:%s}" %  \
-               (self.filesystem, self.size, self.used, self.free, self.mounted_on)
+        return "DiskVolume:{filesystem:%s, free:%s, used:%s, total:%s, mounted_on:%s}" %  \
+               (self.filesystem, self.free, self.used, self.total, self.mounted_on)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -135,23 +135,23 @@ class ReportedDiskVolume(DiskVolume):
             return None
 
         filesystem = jdict.get('filesystem')
-        size = jdict.get('size')
-        used = jdict.get('used')
         free = jdict.get('free')
+        used = jdict.get('used')
+        total = jdict.get('total')
         mounted_on = jdict.get('mounted-on')
 
         is_available = jdict.get('is-available')
 
-        return cls(filesystem, size, used, free, mounted_on, is_available)
+        return cls(filesystem, free, used, total, mounted_on, is_available)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filesystem, size, used, free, mounted_on, is_available):
+    def __init__(self, filesystem, free, used, total, mounted_on, is_available):
         """
         Constructor
         """
-        super().__init__(filesystem, size, used, free, mounted_on)
+        super().__init__(filesystem, free, used, total, mounted_on)
 
         self.__is_available = is_available                  # bool
 
@@ -166,5 +166,5 @@ class ReportedDiskVolume(DiskVolume):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ReportedDiskVolume:{filesystem:%s, size:%s, used:%s, free:%s, mounted_on:%s, is_available:%s}" %  \
-               (self.filesystem, self.size, self.used, self.free, self.mounted_on, self.is_available)
+        return "ReportedDiskVolume:{filesystem:%s, free:%s, used:%s, total:%s, mounted_on:%s, is_available:%s}" %  \
+               (self.filesystem, self.free, self.used, self.total, self.mounted_on, self.is_available)
