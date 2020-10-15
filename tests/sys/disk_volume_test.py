@@ -15,6 +15,7 @@ from scs_core.sys.disk_volume import DiskVolume
 
 volume = DiskVolume.construct_from_df_row('/dev/mmcblk1p2   3513504 2331488    983824  71% /')
 print(volume)
+print("percent_used: %s" % volume.percent_used)
 print("-")
 
 print(JSONify.dumps(volume))
