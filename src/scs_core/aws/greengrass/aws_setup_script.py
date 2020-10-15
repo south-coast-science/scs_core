@@ -7,13 +7,27 @@ import json
 import os
 import shutil
 import sys
+from collections import OrderedDict
 from urllib.request import urlopen
 
+from scs_core.data.json import PersistentJSONable
 
-class AWSSetup(object):
+
+class AWSSetup(PersistentJSONable):
+
     __AWS_REGION = "us-west-2"
     __CERTS_PATH = "/greengrass/certs/"
     __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
+    __FILENAME = "greengrass_identity.json"
+
+    # ----------------------------------------------------------------------------------------------------------------
+    @classmethod
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        pass
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, iot_client, gg_client, core_name, group_name):
@@ -139,7 +153,6 @@ class AWSSetup(object):
         self.__latest_logger_version_arn = res['LatestVersionArn']
         print("Logger created", file=sys.stderr)
 
-
     def persist_certs(self):
         # Delete existing keys from dir
         # Add new keys
@@ -227,6 +240,16 @@ class AWSSetup(object):
         f.close()
         print("Config saved", file=sys.stderr)
         print(json.dumps(default_config), file=sys.stderr)
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self, *args, **kwargs):
+        jdict = OrderedDict()
+
+        jdict['core-name'] = self.__core_name
+        jdict['group-name'] = self.__group_name
+
+        return jdict
 
     # ----------------------------------------------------------------------------------------------------------------
 
