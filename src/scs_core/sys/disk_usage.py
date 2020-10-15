@@ -9,6 +9,8 @@ JSON example:
 https://www.geeksforgeeks.org/python-os-statvfs-method/
 """
 
+import os
+
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
@@ -24,9 +26,9 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_statvfs(cls, path, st):
-        free = st.f_bfree * st.f_bsize
-        total = st.f_blocks * st.f_bsize
+    def construct_from_statvfs(cls, path, statvfs):
+        free = statvfs.f_bfree * statvfs.f_bsize
+        total = statvfs.f_blocks * statvfs.f_bsize
         used = total - free
 
         return cls(path, free, used, total)
@@ -61,6 +63,27 @@ class DiskUsage(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def percent_used(self):
+        if not self.is_available:
+            return None
+
+        percent = self.used / self.total * 100
+
+        return round(percent, 1)
+
+
+    @property
+    def is_available(self):
+        try:
+            os.listdir(self.path)
+            return True
+
+        except OSError:
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -69,6 +92,8 @@ class DiskUsage(JSONable):
         jdict['free'] = self.free
         jdict['used'] = self.used
         jdict['total'] = self.total
+
+        jdict['is-available'] = self.is_available
 
         return jdict
 

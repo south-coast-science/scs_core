@@ -76,7 +76,6 @@ class DiskVolume(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
     def percent_used(self):
         if not self.is_available:
             return None
