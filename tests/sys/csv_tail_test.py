@@ -8,8 +8,9 @@ Created on 26 Jan 2020
 
 import os
 
-from scs_core.sys.tail import Tail
 from scs_core.csv.csv_reader import CSVReader
+from scs_core.sys.tail import Tail
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
