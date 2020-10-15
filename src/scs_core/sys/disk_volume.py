@@ -77,6 +77,16 @@ class DiskVolume(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def percent_used(self):
+        if not self.is_available:
+            return None
+
+        percent = self.used / self.total * 100
+
+        return round(percent, 1)
+
+
+    @property
     def is_available(self):
         try:
             os.listdir(self.mounted_on)
