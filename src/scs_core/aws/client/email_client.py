@@ -32,7 +32,7 @@ class EmailClient(object):
     # ----------------------------------------------------------------------------------------------------------------
     def send_email(self, receiver, message):
         context = ssl.create_default_context()
-        message = 'Subject: {}\n\n{}'.format("SCS Device Status", message)
+        message = 'Subject: {}\n\n{}'.format("SCS Device Message", message)
         if not self.__port or not self.__smtp_server or not self.__sender_email or not self.__password:
             return "Email Client Not Configured"
         try:
