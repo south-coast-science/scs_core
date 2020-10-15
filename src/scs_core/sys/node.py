@@ -119,18 +119,6 @@ class Node(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def disk_volume(self, volume):
-        pass
-
-
-    @abstractmethod
-    def disk_usage(self, volume):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
     def time_is_synchronized(self):
         pass
 
