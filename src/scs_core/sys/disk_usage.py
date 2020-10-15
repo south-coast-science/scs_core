@@ -4,7 +4,9 @@ Created on 16 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"volume": "/etc", "free": 2375217152, "used": 4958257152, "total": 7710990336}
+{"path": "/etc", "free": 2375217152, "used": 4958257152, "total": 7710990336}
+
+https://www.geeksforgeeks.org/python-os-statvfs-method/
 """
 
 from collections import OrderedDict
@@ -22,30 +24,39 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_statvfs(cls, path, st):
+        free = st.f_bfree * st.f_bsize
+        total = st.f_blocks * st.f_bsize
+        used = total - free
+
+        return cls(path, free, used, total)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
-        volume = jdict.get('volume')
+        path = jdict.get('path')
 
         free = jdict.get('free')
         used = jdict.get('used')
         total = jdict.get('total')
 
-        return DiskUsage(volume, free, used, total)
+        return cls(path, free, used, total)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, volume, free, used, total):
+    def __init__(self, path, free, used, total):
         """
         Constructor
         """
-        self.__volume = volume                      # string
+        self.__path = path                          # string
 
-        self.__free = int(free)                     # int
-        self.__used = int(used)                     # int
-        self.__total = int(total)                   # int
+        self.__free = int(free)                     # int bytes
+        self.__used = int(used)                     # int bytes
+        self.__total = int(total)                   # int bytes
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,7 +64,7 @@ class DiskUsage(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['volume'] = self.volume
+        jdict['path'] = self.path
 
         jdict['free'] = self.free
         jdict['used'] = self.used
@@ -65,8 +76,8 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def volume(self):
-        return self.__volume
+    def path(self):
+        return self.__path
 
 
     @property
@@ -87,4 +98,4 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskUsage:{volume:%s, free:%s, used:%s, total:%s}" %  (self.volume, self.free, self.used, self.total)
+        return "DiskUsage:{path:%s, free:%s, used:%s, total:%s}" %  (self.path, self.free, self.used, self.total)
