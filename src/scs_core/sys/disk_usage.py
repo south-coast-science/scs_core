@@ -4,7 +4,8 @@ Created on 16 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"path": "/etc", "free": 2375217152, "used": 4958257152, "total": 7710990336}
+{"path": "/srv/removable_data_storage", "free": 15423610880, "used": 329793536, "total": 15753404416,
+"is-available": true}
 
 https://www.geeksforgeeks.org/python-os-statvfs-method/
 """
@@ -30,20 +31,6 @@ class DiskUsage(JSONable):
         free = statvfs.f_bfree * statvfs.f_bsize
         total = statvfs.f_blocks * statvfs.f_bsize
         used = total - free
-
-        return cls(path, free, used, total)
-
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        path = jdict.get('path')
-
-        free = jdict.get('free')
-        used = jdict.get('used')
-        total = jdict.get('total')
 
         return cls(path, free, used, total)
 
@@ -123,4 +110,55 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskUsage:{path:%s, free:%s, used:%s, total:%s}" %  (self.path, self.free, self.used, self.total)
+        return "DiskUsage:{path:%s, free:%s, used:%s, total:%s}" %  \
+               (self.path, self.free, self.used, self.total)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ReportedDiskUsage(DiskUsage):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        path = jdict.get('path')
+
+        free = jdict.get('free')
+        used = jdict.get('used')
+        total = jdict.get('total')
+
+        is_available = jdict.get('is-available')
+
+        return cls(path, free, used, total, is_available)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, path, free, used, total, is_available):
+        """
+        Constructor
+        """
+        super().__init__(path, free, used, total)
+
+        self.__is_available = is_available                      # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def is_available(self):
+        return self.__is_available
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ReportedDiskUsage:{path:%s, free:%s, used:%s, total:%s, is_available:%s}" %  \
+               (self.path, self.free, self.used, self.total, self.is_available)
