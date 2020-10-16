@@ -68,7 +68,7 @@ class S3Manager(object):
             bucket_list.append(str(inters), bucket["Name"])
             inters += 1
 
-        return bucket_list
+        return response
 
 
     def retrieve_from_bucket(self, bucket_name, resource_name):
