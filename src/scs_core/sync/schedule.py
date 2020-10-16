@@ -95,11 +95,11 @@ class Schedule(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         if not self.is_valid():
             raise ValueError("Schedule.save: schedule is not valid.")
 
-        super().save(host)
+        super().save(host, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -151,7 +151,7 @@ class AbstractPersistentJSONable(JSONable):
 
     @staticmethod
     def _load_jstr_from_file(abs_filename, encryption_key=None):
-        with open(abs_filename, "r") as f:                  # may raise FileNotFoundError
+        with open(abs_filename, "r") as f:                          # may raise FileNotFoundError
             text = f.read()
 
         jstr = Crypt.decrypt(encryption_key, text) if encryption_key else text
