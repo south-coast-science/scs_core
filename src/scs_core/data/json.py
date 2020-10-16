@@ -2,6 +2,8 @@
 Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/42568262/how-to-encrypt-text-with-a-password-in-python
 """
 
 import json
@@ -11,6 +13,7 @@ import time
 from abc import abstractmethod
 from collections import OrderedDict
 
+from scs_core.data.crypt import Crypt
 from scs_core.sys.filesystem import Filesystem
 
 
@@ -147,15 +150,17 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def _load_jstr_from_file(abs_filename):
+    def _load_jstr_from_file(encryption_key, abs_filename):
         with open(abs_filename, "r") as f:                  # may raise FileNotFoundError
-            jstr = f.read()
+            text = f.read()
+
+        jstr = Crypt.decrypt(encryption_key, text) if encryption_key else text
 
         return jstr.strip()
 
 
     @staticmethod
-    def _save_jstr_to_file(jstr, directory, rel_filename=None):
+    def _save_jstr_to_file(encryption_key, jstr, directory, rel_filename=None):
         # file...
         if rel_filename:
             Filesystem.mkdir(directory)
@@ -163,8 +168,10 @@ class AbstractPersistentJSONable(JSONable):
         abs_filename = os.path.join(directory, rel_filename) if rel_filename else directory
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
+        text = Crypt.encrypt(encryption_key, jstr) if encryption_key else jstr + '\n'
+
         with open(tmp_filename, "w") as f:
-            f.write(jstr.strip())
+            f.write(text)
 
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
@@ -173,9 +180,9 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load_from_file(cls, filename):
+    def load_from_file(cls, filename, encryption_key=None):
         try:
-            jstr = cls._load_jstr_from_file(filename)
+            jstr = cls._load_jstr_from_file(encryption_key, filename)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
 
@@ -205,13 +212,13 @@ class PersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, host):
+    def load(cls, host, encryption_key=None):
         try:
             filename = os.path.join(*cls.persistence_location(host))
         except NotImplementedError:
             return None
 
-        return cls.load_from_file(filename)
+        return cls.load_from_file(filename, encryption_key=encryption_key)
 
 
     @classmethod
@@ -234,14 +241,14 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         self.save_to_file(*self.persistence_location(host))
 
 
-    def save_to_file(self, directory, filename=None):               # TODO: make this private
+    def save_to_file(self, directory, filename=None, encryption_key=None):                  # TODO: make this private
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
-        self._save_jstr_to_file(jstr, directory, rel_filename=filename)
+        self._save_jstr_to_file(encryption_key, jstr, directory, rel_filename=filename)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -254,14 +261,14 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, host, name):
+    def load(cls, host, name, encryption_key=None):
         try:
             filename = os.path.join(*cls.persistence_location(host, name))
         except NotImplementedError:
             return None
 
         try:
-            jstr = cls._load_jstr_from_file(filename)
+            jstr = cls._load_jstr_from_file(encryption_key, filename)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
 
@@ -294,11 +301,11 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         jstr = JSONify.dumps(self, indent=self._INDENT)
         directory, filename = self.persistence_location(host, self.name)
 
-        self._save_jstr_to_file(jstr, directory, rel_filename=filename)
+        self._save_jstr_to_file(encryption_key, jstr, directory, rel_filename=filename)
 
 
     # ----------------------------------------------------------------------------------------------------------------
