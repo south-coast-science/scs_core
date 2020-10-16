@@ -3,7 +3,7 @@ Created on 21 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-DESCRIPTION The aws_json_reader is a class used by aws_group_setup to collect information from the amazon greengrass
+DESCRIPTION The aws_group is a class used by aws_group_setup to collect information from the amazon greengrass
 api
 """
 

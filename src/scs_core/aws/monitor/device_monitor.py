@@ -6,13 +6,13 @@ Created on 25 Sep 2020
 import os
 
 import boto3
+from scs_core.aws.manager.byline_manager import BylineManager
 
 from scs_core.aws.client.api_auth import APIAuth
+from scs_core.aws.monitor.device_status_resource import S3DeviceStatusList
+from scs_core.aws.monitor.device_tester import DeviceTester
 
-from scs_core.aws.data.device_line import DeviceLine
-
-from scs_core.aws.manager.byline_manager import BylineManager
-from scs_core.aws.manager.s3_manager import S3Manager
+from scs_core.aws.monitor.scs_device import SCSDevice
 
 from scs_core.data.path_dict import PathDict
 from scs_core.data.datetime import LocalizedDatetime
@@ -28,114 +28,116 @@ class DeviceMonitor(object):
         Constructor
         """
         self.__config = device_monitor_conf
-        self.__watched_device_list = {}
-        self.__changed_device_list = {}
+        self.__watched_device_list = []
+        self.__changed_device_list = []
         self.__email_list = PathDict()
         self.__api_auth = APIAuth.load(host)
         self.__email_client = email_client
-        self.__number_changed = 0
+        self.__aws_client = boto3.client('s3', region_name=self.__config.aws_region)
+        self.__aws_resource_client = boto3.resource('s3', region_name="us-west-2")
+        # reads auth keys from environment, if you want it to be used externally programmatically (not as a lambda)
+        # this will need to be changed
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_watched_device_list(self):
-        # reads auth keys from environment, if you want it to be used externally programmatically (not as a lambda)
-        # this will probably need to be changed
-        aws_client = boto3.client('s3', region_name=self.__config.aws_region)
-        aws_resource_client = boto3.resource('s3', region_name=self.__config.aws_region)
-        bucket_manager = S3Manager(aws_client, aws_resource_client)
-        data = bucket_manager.retrieve_from_bucket(self.__config.bucket_name, self.__config.resource_name)
+        self.get_devices_by_byline()
+        # Do e-mails
 
-        iterator = 0
-        for line in data:
-            temp = DeviceLine.construct_from_jdict(line)
-            if temp.email_list:
-                # If no one is assigned to receive e-mail alerts, don't check
-                self.__watched_device_list[iterator] = temp
-                iterator += 1
-
-
-    def get_changed_devices_list(self):
-        for key in self.__watched_device_list:
-            this_dev = self.__watched_device_list[key]
-            device_data = self.get_byline_data(this_dev.device_tag)
-            latest_activity = self.get_latest_response(device_data)
-            if self.is_unresponsive(latest_activity):
-                if this_dev.status_active:
-                    this_dev.dm_status = "inactive"
-                    self.__changed_device_list[self.__number_changed] = this_dev
-                    self.__number_changed += 1
-                this_dev.status_active = False
+    def check_devices(self):
+        s3_list = S3DeviceStatusList(self.__aws_client, self.__aws_client)
+        old_device_statuses = s3_list.get_device_status_list()
+        iterating = 0
+        while iterating < len(self.__watched_device_list):
+            this_dev = self.__watched_device_list[iterating]
+            self.get_latest_pubs(this_dev)
+            device_tester = DeviceTester(this_dev, self.__config)
+            # Check if device has stopped/started reporting
+            if device_tester.is_inactive():
+                this_dev.is_active = False
             else:
-                if not this_dev.status_active:
-                    this_dev.dm_status = "active"
-                    self.__changed_device_list[self.__number_changed] = this_dev
-                    self.__number_changed += 1
-                this_dev.status_active = True
+                this_dev.is_active = True
+            if device_tester.has_status_changed(old_device_statuses):
+                this_dev.dm_status = "activity_change"
+                # self.generate_email_message(this_dev)
+            else:
+                # see if all topics are published on recently
+                inactive, byline = device_tester.is_publishing_on_all_channels()
+                if inactive:
+                    topic = byline.topic
+                    this_dev.dm_status = "byline"
+                    self.generate_email_message(this_dev, topic)
+                else:
+                    # do next test...
+                    pass
+            iterating += 1
 
-    def send_email_alerts(self):
-        iterations = 0
-        while iterations < self.__number_changed:
-            this_dev = self.__changed_device_list[iterations]
-            recipients = this_dev.email_list
+        # Update device list on S3 when done!
 
-            message = self.generate_email_message(this_dev)
-            for recipient in recipients:
-                self.__email_client.send_email(recipient, message)
-            iterations += 1
+    @staticmethod
+    def send_email_alert(this_dev, message):
+        recipients = this_dev.email_list
+        if recipients is None:
+            recipients = "devicetest147147@gmail.com"
+        else:
+            recipients = this_dev.email_list + "devicetest147147@gmail.com"
+        for recipient in recipients:
+            pass
+            # self.__email_client.send_email(recipient, message)
 
-    def get_byline_data(self, device_tag):
+    def get_devices_by_byline(self):
         manager = BylineManager(self.__api_auth)
-        res = manager.find_bylines_for_device(device_tag)
-        return res.as_json()
+        group = manager.find_bylines_for_topic("", "/control")
+        for device in group.devices:
+            device_bylines = group.bylines_for_device(device)
+            temp = SCSDevice(device, None, False, device_bylines)
+            self.__watched_device_list.append(temp)
 
+    def generate_email_message(self, device, byline_topic=None):
+        message = ""
+        if device.dm_status == "activity_change":
+            template = "status_changed.txt"
+            old_status = "active" if not device.is_active else "inactive"
+            filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', template)
+            f = open(filepath, "r")
+            message = f.read()
+            message = (message.replace("DEVICE_NAME", device.device_tag))
+            message = (message.replace("LAST_CHECK_TIME", device.last_checked))
+            message = (message.replace("OLD_STATUS", old_status))
+            message = (message.replace("NEW_STATUS", device.dm_status))
+            message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
+        elif device.dm_status == "byline":
+            template = "byline_inactive.txt"
+            filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', template)
+            f = open(filepath, "r")
+            message = f.read()
+            message = (message.replace("DEVICE_NAME", device.device_tag))
+            message = (message.replace("LAST_CHECK_TIME", device.last_checked))
+            message = (message.replace("TOPIC_NAME", byline_topic))
+            message = (message.replace("TIME_DELTA", self.__config.unresponsive_minutes_allowed))
+            message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
 
-    def is_unresponsive(self, latest_pub_iso):
-        latest_pub = LocalizedDatetime.construct_from_iso8601(latest_pub_iso)
-
-        if latest_pub is None:
-            return True
-
-        now = LocalizedDatetime.now()
-        delta = now - latest_pub
-
-        return delta.minutes > self.__config.unresponsive_minutes_allowed
+        if message is not None:
+            self.send_email_alert(device, message)
 
     # ----------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_latest_response(byline_data):
-        cur_latest = None
-        for byline in byline_data["bylines"]:
-            j_byline = byline.as_json()
-            latest = j_byline["pub"]
-            if latest is not None:
-                if cur_latest is None:
-                    cur_latest = latest
-                else:
-                    if latest > cur_latest:
-                        cur_latest = latest
-        return cur_latest
 
     @staticmethod
-    def generate_email_message(device):
-        old_status = "active" if not device.status_active else "inactive"
-        if device.dm_status == "active" or "inactive":
-            template = "status_changed.txt"
+    def get_latest_pubs(scs_device):
+        values = False
+        device_bylines = scs_device.bylines
+        for byline in device_bylines:
+            if byline.pub is not None:
+                values = True
+        if values:
+            latest = max([device_bylines.pub for device_bylines in device_bylines if device_bylines.pub is not None])
         else:
-            template = None
-        filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', template)
-        f = open(filepath, "r")
-        message = f.read()
-        message = (message.replace("DEVICE_NAME", device.device_tag))
-        message = (message.replace("LAST_CHECK_TIME", device.last_checked))
-        message = (message.replace("OLD_STATUS", old_status))
-        message = (message.replace("NEW_STATUS", device.dm_status))
-        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
-        return message
+            latest = None
+        scs_device.latest_pub = latest
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "device_monitor:{unresponsive_minutes_allowed:%s, watched_device_list:%s, " \
-               "changed_device_list:%s, number_changed:%s }" % \
-               (self.__config.unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list,
-                self.__number_changed)
+               "changed_device_list:%s }" % \
+               (self.__config.unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list)

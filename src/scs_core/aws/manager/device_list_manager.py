@@ -6,7 +6,7 @@ Created on 02 Oct 2020
 
 import json
 
-from scs_core.aws.data.device_line import DeviceLine
+from scs_core.aws.monitor.scs_device import SCSDevice
 from scs_core.aws.manager.s3_manager import S3Manager
 
 
@@ -30,7 +30,7 @@ class DeviceListManager(object):
             emails = device_emails.split(",")
         else:
             emails = json.dumps(device_emails)
-        new_dev = DeviceLine(device_tag, emails, None, None, None).as_json()
+        new_dev = SCSDevice(device_tag, emails, None, None, None).as_json()
         new_dev_json = dict(new_dev)
         json_data = json.loads(data)
         json_data.append(new_dev_json)
@@ -45,7 +45,7 @@ class DeviceListManager(object):
         json_data = json.loads(data)
         new_json_data = json.loads(json_string)
         for line in new_json_data:
-            new_dev = DeviceLine(line['dev-tag'], line['email'], None, None, None).as_json()
+            new_dev = SCSDevice(line['dev-tag'], line['email'], None, None, None).as_json()
             new_dev_json = dict(new_dev)
             json_data.append(new_dev_json)
         data_string = json.dumps(json_data)

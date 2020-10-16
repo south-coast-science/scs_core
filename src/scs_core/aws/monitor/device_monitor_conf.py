@@ -4,6 +4,7 @@ Created on 30 Sep 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 import ast
+
 from collections import OrderedDict
 
 from scs_core.aws.manager.s3_manager import S3Manager
