@@ -44,7 +44,7 @@ class Crypt(object):
         iv = Random.new().read(AES.block_size)              # generate IV
         encryptor = AES.new(key, AES.MODE_CBC, iv)
 
-        padding = AES.block_size - len(source) % AES.block_size  # calculate needed padding
+        padding = AES.block_size - len(source) % AES.block_size     # calculate needed padding
         source += bytes([padding]) * padding
         data = iv + encryptor.encrypt(source)               # store the IV at the beginning and encrypt
 
