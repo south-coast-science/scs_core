@@ -5,18 +5,22 @@ Created on 08 Oct 2020
 """
 import ast
 
+from scs_core.aws.manager.lambda_message_manager import MessageManager
+
 from scs_core.data.datetime import LocalizedDatetime
+# TODO For test use only, delete before making a lambda!
 
 
 class DeviceTester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, scs_device, config):
+    def __init__(self, scs_device, config, host):
         """
         Constructor
         """
         self.__scs_device = scs_device
         self.__config = config
+        self.__host = host
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +53,6 @@ class DeviceTester(object):
         else:
             return True
 
-
     def is_publishing_on_all_channels(self):
         device_bylines = self.__scs_device.bylines
         for byline in device_bylines:
@@ -57,5 +60,19 @@ class DeviceTester(object):
                 return True, byline
             return False, None
 
+    def was_rebooted(self):
+        message_manager = MessageManager(self.__host)
+        device_bylines = self.__scs_device.bylines
+        for byline in device_bylines:
+            if "status" in byline.topic:
+                res = message_manager.find_latest_for_topic(byline.topic, LocalizedDatetime.now())
+                if res is None:
+                    pass
+                    # TODO check if it was ever up
+                else:
+                    json_response = res.as_json()
+                    period = json_response['payload']["val"]["up"]["period"]
+                    print(period)
+                    # TODO compare old UT to new UT
+        # TODO save new up times
     # ----------------------------------------------------------------------------------------------------------------
-

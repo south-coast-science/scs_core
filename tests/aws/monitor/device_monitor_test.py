@@ -9,7 +9,6 @@ import sys
 
 import boto3
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.aws.client.email_client import EmailClient
 from scs_core.aws.monitor.device_monitor_conf import DeviceMonitorConf
 from scs_host.sys.host import Host
@@ -33,7 +32,6 @@ def run_device_monitor():
 
     dm.get_watched_device_list()
     dm.check_devices()
-    dm.send_email_alerts()
 
 
 # --------------------------------------------------------------------------------------------------------------------

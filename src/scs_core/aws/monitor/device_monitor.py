@@ -18,9 +18,13 @@ from scs_core.data.path_dict import PathDict
 from scs_core.data.datetime import LocalizedDatetime
 
 
+# TO DO:
+# delete host for when using as lambda!
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
+    __RUN_FREQUENCY_MINUTES = 60
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, host, email_client):
@@ -42,7 +46,6 @@ class DeviceMonitor(object):
 
     def get_watched_device_list(self):
         self.get_devices_by_byline()
-        # Do e-mails
 
     def check_devices(self):
         s3_list = S3DeviceStatusList(self.__aws_client, self.__aws_client)
@@ -51,7 +54,7 @@ class DeviceMonitor(object):
         while iterating < len(self.__watched_device_list):
             this_dev = self.__watched_device_list[iterating]
             self.get_latest_pubs(this_dev)
-            device_tester = DeviceTester(this_dev, self.__config)
+            device_tester = DeviceTester(this_dev, self.__config, self.__api_auth)
             # Check if device has stopped/started reporting
             if device_tester.is_inactive():
                 this_dev.is_active = False
@@ -59,7 +62,7 @@ class DeviceMonitor(object):
                 this_dev.is_active = True
             if device_tester.has_status_changed(old_device_statuses):
                 this_dev.dm_status = "activity_change"
-                # self.generate_email_message(this_dev)
+                self.generate_email_message(this_dev)
             else:
                 # see if all topics are published on recently
                 inactive, byline = device_tester.is_publishing_on_all_channels()
@@ -68,11 +71,11 @@ class DeviceMonitor(object):
                     this_dev.dm_status = "byline"
                     self.generate_email_message(this_dev, topic)
                 else:
-                    # do next test...
-                    pass
+                    device_tester.was_rebooted()
+                    # TODO add separate file in bucket to store uptime for each device
             iterating += 1
 
-        # Update device list on S3 when done!
+        # TODO Update device list on S3 when done!
 
     @staticmethod
     def send_email_alert(this_dev, message):
@@ -83,7 +86,7 @@ class DeviceMonitor(object):
             recipients = this_dev.email_list + "devicetest147147@gmail.com"
         for recipient in recipients:
             pass
-            # self.__email_client.send_email(recipient, message)
+            # self.__email_client.send_email(recipient, message) commented out so I don't get spammed whilst developing
 
     def get_devices_by_byline(self):
         manager = BylineManager(self.__api_auth)
@@ -112,13 +115,19 @@ class DeviceMonitor(object):
             f = open(filepath, "r")
             message = f.read()
             message = (message.replace("DEVICE_NAME", device.device_tag))
-            message = (message.replace("LAST_CHECK_TIME", device.last_checked))
+            message = (message.replace("LAST_CHECK_TIME", self.get_last_run_time()))
             message = (message.replace("TOPIC_NAME", byline_topic))
-            message = (message.replace("TIME_DELTA", self.__config.unresponsive_minutes_allowed))
+            message = (message.replace("TIME_DELTA", str(self.__config.unresponsive_minutes_allowed)))
             message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
 
         if message is not None:
             self.send_email_alert(device, message)
+
+    def get_last_run_time(self):
+        now = LocalizedDatetime.now().as_json()
+        # TODO
+        # return now - now.minutes(self.__RUN_FREQUENCY_MINUTES)
+        return now
 
     # ----------------------------------------------------------------------------------------------------------------
 
