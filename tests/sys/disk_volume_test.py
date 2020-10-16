@@ -6,8 +6,10 @@ Created on 14 Oct 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
+
 from scs_core.data.json import JSONify
-from scs_core.sys.disk_volume import DiskVolume
+from scs_core.sys.disk_volume import DiskVolume, ReportedDiskVolume
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -18,4 +20,10 @@ print(volume)
 print("percent_used: %s" % volume.percent_used())
 print("-")
 
-print(JSONify.dumps(volume))
+jstr = JSONify.dumps(volume)
+print(jstr)
+
+jdict = json.loads(jstr)
+volume = ReportedDiskVolume.construct_from_jdict(jdict)
+print(volume)
+
