@@ -20,7 +20,7 @@ class S3Manager(object):
 
     def list_buckets(self):
         # Retrieve the list of existing buckets
-        response = self.__client.get_list()
+        response = self.__client.list_buckets()
         bucket_list = PathDict()
         # Output the bucket names
         inters = 0
