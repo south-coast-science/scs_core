@@ -150,7 +150,7 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def _load_jstr_from_file(encryption_key, abs_filename):
+    def _load_jstr_from_file(abs_filename, encryption_key=None):
         with open(abs_filename, "r") as f:                  # may raise FileNotFoundError
             text = f.read()
 
@@ -160,7 +160,7 @@ class AbstractPersistentJSONable(JSONable):
 
 
     @staticmethod
-    def _save_jstr_to_file(encryption_key, jstr, directory, rel_filename=None):
+    def _save_jstr_to_file(jstr, directory, rel_filename=None, encryption_key=None):
         # file...
         if rel_filename:
             Filesystem.mkdir(directory)
@@ -182,7 +182,7 @@ class AbstractPersistentJSONable(JSONable):
     @classmethod
     def load_from_file(cls, filename, encryption_key=None):
         try:
-            jstr = cls._load_jstr_from_file(encryption_key, filename)
+            jstr = cls._load_jstr_from_file(filename, encryption_key=encryption_key)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
 
@@ -242,13 +242,13 @@ class PersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, host, encryption_key=None):
-        self.save_to_file(*self.persistence_location(host))
+        self.save_to_file(*self.persistence_location(host), encryption_key=encryption_key)
 
 
-    def save_to_file(self, directory, filename=None, encryption_key=None):                  # TODO: make this private
+    def save_to_file(self, directory, filename=None, encryption_key=None):              # TODO: make this private
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
-        self._save_jstr_to_file(encryption_key, jstr, directory, rel_filename=filename)
+        self._save_jstr_to_file(jstr, directory, rel_filename=filename, encryption_key=encryption_key)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
             return None
 
         try:
-            jstr = cls._load_jstr_from_file(encryption_key, filename)
+            jstr = cls._load_jstr_from_file(filename, encryption_key=encryption_key)
         except FileNotFoundError:
             return cls.construct_from_jdict(None)
 
@@ -305,7 +305,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
         jstr = JSONify.dumps(self, indent=self._INDENT)
         directory, filename = self.persistence_location(host, self.name)
 
-        self._save_jstr_to_file(encryption_key, jstr, directory, rel_filename=filename)
+        self._save_jstr_to_file(jstr, directory, rel_filename=filename, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

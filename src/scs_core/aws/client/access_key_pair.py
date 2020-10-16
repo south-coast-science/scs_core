@@ -23,25 +23,34 @@ class AccessKeyPair(PersistentJSONable):
     ID_NAME = 'AWS_ACCESS_KEY_ID'
     SECRET_NAME = 'AWS_SECRET_ACCESS_KEY'
 
-    __FILENAME =    "access_key_pair.json"
+    __FILENAME = "access_key_pair.json"
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def from_user(cls):
-        if cls.ID_NAME in os.environ:
-            key_id = os.environ[cls.ID_NAME]
-        else:
-            print("Enter AWS Access Key ID: ", file=sys.stderr)
-            key_id = input()
-
-        if cls.SECRET_NAME in os.environ:
-            secret_key = os.environ[cls.SECRET_NAME]
-        else:
-            print("Enter Secret AWS Access Key: ", file=sys.stderr)
-            secret_key = getpass()
+        key_id = cls.key_id_from_user()
+        secret_key = cls.secret_key_from_user()
 
         return cls(key_id, secret_key)
+
+
+    @classmethod
+    def key_id_from_user(cls):
+        if cls.ID_NAME in os.environ:
+            return os.environ[cls.ID_NAME]
+
+        print("Enter AWS Access Key ID: ", file=sys.stderr)
+        return input()
+
+
+    @classmethod
+    def secret_key_from_user(cls):
+        if cls.SECRET_NAME in os.environ:
+            return os.environ[cls.SECRET_NAME]
+
+        print("Enter Secret AWS Access Key: ", file=sys.stderr)
+        return getpass()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,5 +108,3 @@ class AccessKeyPair(PersistentJSONable):
 
     def __str__(self, *args, **kwargs):
         return "AccessKeyPair:{key_id:%s, secret_key:%s}" %  (self.key_id, self.secret_key)
-
-
