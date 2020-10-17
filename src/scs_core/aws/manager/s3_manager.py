@@ -12,6 +12,8 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
+# TODO: needs move or rename object
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class S3Manager(object):

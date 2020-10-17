@@ -37,6 +37,7 @@ class MQTTPeerSet(PersistentJSONable):
 
         return instance
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
