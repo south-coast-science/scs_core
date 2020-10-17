@@ -22,18 +22,18 @@ class S3Manager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create_clients(cls, access_key_id, access_key_secret):
-        if access_key_id and access_key_secret:
+    def create_clients(cls, access_key=None):
+        if access_key:
             aws_client = boto3.client(
                 's3',
-                aws_access_key_id=access_key_id,
-                aws_secret_access_key=access_key_secret,
+                aws_access_key_id=access_key.key_id,
+                aws_secret_access_key=access_key.secret_key,
                 region_name='us-west-2'
             )
             aws_resource_client = boto3.resource(
                 's3',
-                aws_access_key_id=access_key_id,
-                aws_secret_access_key=access_key_secret,
+                aws_access_key_id=access_key.key_id,
+                aws_secret_access_key=access_key.secret_key,
                 region_name='us-west-2'
             )
 
@@ -73,19 +73,13 @@ class S3Manager(object):
     def upload_file_to_bucket(self, bucket_name, filepath, key_name):
         self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
 
-        return "Done"
-
 
     def upload_bytes_to_bucket(self, bucket_name, body, key_name):
         self.__client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
 
-        return "Done"
-
 
     def put_object(self, bucket_name, body, key_name):
         self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
-
-        return "Done"
 
 
     def list_bucket_objects(self, bucket_name):

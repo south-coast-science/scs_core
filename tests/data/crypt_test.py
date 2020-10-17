@@ -28,6 +28,9 @@ print("\nSecond round....")
 encrypted = Crypt.encrypt(my_password, my_data)
 print("\nenc:  {}".format(encrypted))
 
+print("\nwrong pass....")
+my_password = "secret_AES_key_string_to_encrypt/decrypt"
+
 decrypted = Crypt.decrypt(my_password, encrypted)
 print("dec:  {}".format(decrypted))
 print("\ndata match: {}".format(my_data == decrypted))

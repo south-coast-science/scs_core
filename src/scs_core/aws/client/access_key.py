@@ -15,7 +15,7 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AccessKeyPair(PersistentJSONable):
+class AccessKey(PersistentJSONable):
     """
     classdocs
     """
@@ -23,33 +23,35 @@ class AccessKeyPair(PersistentJSONable):
     __ID_NAME = 'AWS_ACCESS_KEY_ID'
     __SECRET_NAME = 'AWS_SECRET_ACCESS_KEY'
 
-    __FILENAME = "access_key_pair.json"
+    __FILENAME = "access_key.json"
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def from_user(cls):
-        key_id = cls.key_id_from_user()
-        secret_key = cls.secret_key_from_user()
+    def from_environment(cls):
+        if cls.__ID_NAME not in os.environ or cls.__SECRET_NAME not in os.environ:
+            return None
+
+        key_id = os.environ[cls.__ID_NAME]
+        secret_key = os.environ[cls.__SECRET_NAME]
 
         return cls(key_id, secret_key)
 
 
     @classmethod
-    def key_id_from_user(cls):
-        if cls.__ID_NAME in os.environ:
-            return os.environ[cls.__ID_NAME]
-
+    def from_user(cls):
         print("Enter AWS Access Key ID: ", file=sys.stderr)
-        return input()
+        key_id = input()
+
+        print("Enter AWS Secret Access Key: ", file=sys.stderr)
+        secret_key = getpass()
+
+        return cls(key_id, secret_key)
 
 
-    @classmethod
-    def secret_key_from_user(cls):
-        if cls.__SECRET_NAME in os.environ:
-            return os.environ[cls.__SECRET_NAME]
-
-        print("Enter Secret AWS Access Key: ", file=sys.stderr)
+    @staticmethod
+    def password_from_user():
+        print("Enter password for key: ", file=sys.stderr)
         return getpass()
 
 
@@ -107,4 +109,4 @@ class AccessKeyPair(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AccessKeyPair:{key_id:%s, secret_key:%s}" %  (self.key_id, self.secret_key)
+        return "AccessKey:{key_id:%s, secret_key:%s}" %  (self.key_id, self.secret_key)
