@@ -140,4 +140,5 @@ class DeviceMonitor(object):
     def __str__(self, *args, **kwargs):
         return "device_monitor:{unresponsive_minutes_allowed:%s, watched_device_list:%s, " \
                "changed_device_list:%s }" % \
-               (self.__config.unresponsive_minutes_allowed, self.__watched_device_list, self.__changed_device_list)
+               (self.__config.unresponsive_minutes_allowed, self.__watched_device_list,
+                self.__changed_device_list)
