@@ -3,19 +3,21 @@ Created on 25 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+
 import os
 
 import boto3
-from scs_core.aws.manager.byline_manager import BylineManager
 
 from scs_core.aws.client.api_auth import APIAuth
+
+from scs_core.aws.manager.byline_manager import BylineManager
+
 from scs_core.aws.monitor.device_status_resource import S3DeviceStatusList
 from scs_core.aws.monitor.device_tester import DeviceTester
-
 from scs_core.aws.monitor.scs_device import SCSDevice
 
-from scs_core.data.path_dict import PathDict
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------
