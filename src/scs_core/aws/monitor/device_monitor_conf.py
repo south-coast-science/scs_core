@@ -123,6 +123,7 @@ class DeviceMonitorConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceManagerConf:{aws_region:%s, unresponsive_minutes_allowed:%s, bucket_name:%s, resource_name:%s}" %\
+        return "DeviceManagerConf:{aws_region:%s, unresponsive_minutes_allowed:%s, " \
+               "bucket_name:%s, resource_name:%s}" %\
                (DeviceMonitorConf.aws_region, DeviceMonitorConf.unresponsive_minutes_allowed,
                 DeviceMonitorConf.bucket_name, DeviceMonitorConf.resource_name)
