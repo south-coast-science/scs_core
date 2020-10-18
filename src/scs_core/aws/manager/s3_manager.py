@@ -12,7 +12,7 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
-# TODO: needs move or rename object
+# TODO: needs rename object, object exists
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -26,13 +26,13 @@ class S3Manager(object):
     @classmethod
     def create_clients(cls, access_key=None):
         if access_key:
-            aws_client = boto3.client(
+            client = boto3.client(
                 's3',
                 aws_access_key_id=access_key.key_id,
                 aws_secret_access_key=access_key.secret_key,
                 region_name='us-west-2'
             )
-            aws_resource_client = boto3.resource(
+            resource_client = boto3.resource(
                 's3',
                 aws_access_key_id=access_key.key_id,
                 aws_secret_access_key=access_key.secret_key,
@@ -40,10 +40,10 @@ class S3Manager(object):
             )
 
         else:
-            aws_client = boto3.client('s3', region_name='us-west-2')
-            aws_resource_client = boto3.resource('s3', region_name='us-west-2')
+            client = boto3.client('s3', region_name='us-west-2')
+            resource_client = boto3.resource('s3', region_name='us-west-2')
 
-        return aws_client, aws_resource_client
+        return client, resource_client
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,6 +91,12 @@ class S3Manager(object):
         )
 
         return [Object.construct(item) for item in response['Contents']]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "S3Manager:{client:%s, resource_client:%s}" % (self.__client, self.__resource_client)
 
 
 # --------------------------------------------------------------------------------------------------------------------

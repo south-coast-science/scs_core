@@ -212,6 +212,16 @@ class PersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def exists(cls, host):
+        try:
+            filename = os.path.join(*cls.persistence_location(host))
+        except NotImplementedError:
+            return False
+
+        return os.path.isfile(filename)
+
+
+    @classmethod
     def load(cls, host, encryption_key=None):
         try:
             filename = os.path.join(*cls.persistence_location(host))
@@ -259,6 +269,16 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def exists(cls, host, name):
+        try:
+            filename = os.path.join(*cls.persistence_location(host, name))
+        except NotImplementedError:
+            return False
+
+        return os.path.isfile(filename)
+
 
     @classmethod
     def load(cls, host, name, encryption_key=None):

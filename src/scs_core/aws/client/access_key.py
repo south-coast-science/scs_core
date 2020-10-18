@@ -40,18 +40,18 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
-        print("Enter AWS Access Key ID: ", file=sys.stderr)
+        print("Enter AWS Access Key ID:", file=sys.stderr)
         key_id = input()
 
-        print("Enter AWS Secret Access Key: ", file=sys.stderr)
-        secret_key = getpass()
+        print("Enter AWS Secret Access Key:", file=sys.stderr)
+        secret_key = input()
 
         return cls(key_id, secret_key)
 
 
     @staticmethod
     def password_from_user():
-        print("Enter password for key: ", file=sys.stderr)
+        print("Enter password for AWS Access Key:", file=sys.stderr)
         return getpass()
 
 
