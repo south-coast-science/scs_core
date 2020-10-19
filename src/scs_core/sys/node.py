@@ -107,7 +107,7 @@ class Node(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def time_is_synchronized(self):
+    def software_update_report(self):
         pass
 
 
@@ -119,17 +119,7 @@ class Node(ABC):
 
 
     @abstractmethod
-    def tmp_dir(self):
-        pass
-
-
-    @abstractmethod
     def scs_dir(self):
-        pass
-
-
-    @abstractmethod
-    def software_update_report(self):
         pass
 
 
@@ -170,6 +160,11 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def tmp_dir(self):
+        pass
+
 
     @abstractmethod
     def lock_dir(self):
