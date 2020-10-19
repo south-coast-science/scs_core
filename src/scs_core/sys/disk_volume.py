@@ -1,16 +1,17 @@
 """
-Created on 16 Apr 2018
+Created on 14 Oct 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"path": "/srv/removable_data_storage", "free": 15423610880, "used": 329793536, "total": 15753404416,
-"is-available": true}
+{"filesystem": "/dev/mmcblk0p1", "total": 15384184, "used": 319296, "free": 14892092,
+"mounted-on": "/srv/SCS_logging", "is-available": false}
 
-https://www.geeksforgeeks.org/python-os-statvfs-method/
+https://stackoverflow.com/questions/35469685/in-python-how-do-i-get-a-list-of-all-partitions-in-mac-os-x
 """
 
 import os
+import re
 
 from collections import OrderedDict
 
@@ -19,7 +20,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DiskUsage(JSONable):
+class DiskVolume(JSONable):
     """
     classdocs
     """
@@ -27,25 +28,50 @@ class DiskUsage(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_statvfs(cls, path, statvfs):
-        free = statvfs.f_bfree * statvfs.f_bsize
-        total = statvfs.f_blocks * statvfs.f_bsize
-        used = total - free
+    def construct_from_df_row(cls, row):
+        match = re.search(r'([^ ]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)%\s+([^ ]+)', row)
 
-        return cls(path, free, used, total)
+        if match is None:
+            return None
+
+        groups = match.groups()
+
+        filesystem = groups[0]
+        total = groups[1]
+        used = groups[2]
+        free = groups[3]
+        mounted_on = groups[5]
+
+        return cls(filesystem, free, used, total, mounted_on)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, free, used, total):
+    def __init__(self, filesystem, free, used, total, mounted_on):
         """
         Constructor
         """
-        self.__path = path                          # string
+        self.__filesystem = filesystem                      # string
+        self.__total = int(total)                           # int blocks
+        self.__used = int(used)                             # int blocks
+        self.__free = int(free)                             # int blocks
+        self.__mounted_on = mounted_on                      # string
 
-        self.__free = int(free)                     # int bytes
-        self.__used = int(used)                     # int bytes
-        self.__total = int(total)                   # int bytes
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['filesystem'] = self.filesystem
+        jdict['free'] = self.free
+        jdict['used'] = self.used
+        jdict['total'] = self.total
+        jdict['mounted-on'] = self.mounted_on
+
+        jdict['is-available'] = self.is_available
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,7 +88,7 @@ class DiskUsage(JSONable):
     @property
     def is_available(self):
         try:
-            os.listdir(self.path)
+            os.listdir(self.mounted_on)
             return True
 
         except OSError:
@@ -71,25 +97,9 @@ class DiskUsage(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['path'] = self.path
-
-        jdict['free'] = self.free
-        jdict['used'] = self.used
-        jdict['total'] = self.total
-
-        jdict['is-available'] = self.is_available
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @property
-    def path(self):
-        return self.__path
+    def filesystem(self):
+        return self.__filesystem
 
 
     @property
@@ -107,16 +117,21 @@ class DiskUsage(JSONable):
         return self.__total
 
 
+    @property
+    def mounted_on(self):
+        return self.__mounted_on
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DiskUsage:{path:%s, free:%s, used:%s, total:%s}" %  \
-               (self.path, self.free, self.used, self.total)
+        return "DiskVolume:{filesystem:%s, free:%s, used:%s, total:%s, mounted_on:%s}" %  \
+               (self.filesystem, self.free, self.used, self.total, self.mounted_on)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ReportedDiskUsage(DiskUsage):
+class ReportedDiskVolume(DiskVolume):
     """
     classdocs
     """
@@ -128,26 +143,26 @@ class ReportedDiskUsage(DiskUsage):
         if not jdict:
             return None
 
-        path = jdict.get('path')
-
+        filesystem = jdict.get('filesystem')
         free = jdict.get('free')
         used = jdict.get('used')
         total = jdict.get('total')
+        mounted_on = jdict.get('mounted-on')
 
         is_available = jdict.get('is-available')
 
-        return cls(path, free, used, total, is_available)
+        return cls(filesystem, free, used, total, mounted_on, is_available)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, free, used, total, is_available):
+    def __init__(self, filesystem, free, used, total, mounted_on, is_available):
         """
         Constructor
         """
-        super().__init__(path, free, used, total)
+        super().__init__(filesystem, free, used, total, mounted_on)
 
-        self.__is_available = is_available                      # bool
+        self.__is_available = is_available                  # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -160,5 +175,5 @@ class ReportedDiskUsage(DiskUsage):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ReportedDiskUsage:{path:%s, free:%s, used:%s, total:%s, is_available:%s}" %  \
-               (self.path, self.free, self.used, self.total, self.is_available)
+        return "ReportedDiskVolume:{filesystem:%s, free:%s, used:%s, total:%s, mounted_on:%s, is_available:%s}" %  \
+               (self.filesystem, self.free, self.used, self.total, self.mounted_on, self.is_available)
