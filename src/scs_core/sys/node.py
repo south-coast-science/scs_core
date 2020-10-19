@@ -113,13 +113,30 @@ class Node(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def conf_dir(cls):
+        return cls.__CONF_DIR
+
+
+    @classmethod
+    def aws_dir(cls):
+        return cls.__AWS_DIR
+
+
+    @classmethod
+    def osio_dir(cls):
+        return cls.__OSIO_DIR
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @abstractmethod
-    def home_dir(self):
+    def home_path(self):
         pass
 
 
     @abstractmethod
-    def scs_dir(self):
+    def scs_path(self):
         pass
 
 
@@ -162,17 +179,19 @@ class IoTNode(Node):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def tmp_dir(self):
-        pass
-
-
-    @abstractmethod
     def lock_dir(self):
         pass
 
 
     @abstractmethod
-    def command_dir(self):
+    def tmp_dir(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def command_path(self):
         pass
 
 
