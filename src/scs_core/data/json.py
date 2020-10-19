@@ -154,7 +154,7 @@ class AbstractPersistentJSONable(JSONable):
         with open(abs_filename, "r") as f:                          # may raise FileNotFoundError
             text = f.read()
 
-        jstr = Crypt.decrypt(encryption_key, text) if encryption_key else text
+        jstr = text if encryption_key is None else Crypt.decrypt(encryption_key, text)
 
         return jstr.strip()
 
@@ -168,7 +168,7 @@ class AbstractPersistentJSONable(JSONable):
         abs_filename = os.path.join(directory, rel_filename) if rel_filename else directory
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
-        text = Crypt.encrypt(encryption_key, jstr) if encryption_key else jstr + '\n'
+        text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
 
         with open(tmp_filename, "w") as f:
             f.write(text)
