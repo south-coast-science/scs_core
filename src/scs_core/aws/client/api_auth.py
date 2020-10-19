@@ -36,7 +36,7 @@ class APIAuth(PersistentJSONable):
         endpoint = jdict.get('endpoint')
         api_key = jdict.get('api-key')
 
-        return APIAuth(endpoint, api_key)
+        return cls(endpoint, api_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -57,11 +57,11 @@ class MPL115A2Calib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         if self.__calibrated_on is None:
             self.__calibrated_on = LocalizedDatetime.now().utc()
 
-        super().save(host)
+        super().save(host, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

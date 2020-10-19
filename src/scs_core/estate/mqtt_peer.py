@@ -29,13 +29,14 @@ class MQTTPeerSet(PersistentJSONable):
 
 
     @classmethod
-    def load(cls, host):
-        instance = super().load(host)
+    def load(cls, host, encryption_key=None):
+        instance = super().load(host, encryption_key=encryption_key)
 
         if instance is None:
             instance = cls(OrderedDict())
 
         return instance
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
