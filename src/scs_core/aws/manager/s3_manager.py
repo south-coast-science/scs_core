@@ -6,13 +6,13 @@ Created on 28 Sep 2020
 
 import boto3
 
+from botocore.exceptions import ClientError
+
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
-
-# TODO: needs rename object, object exists
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -61,11 +61,26 @@ class S3Manager(object):
     def list_buckets(self):
         response = self.__client.list_buckets()
 
+        if 'Buckets' not in response:
+            return []
+
         return [Bucket.construct(bucket) for bucket in response['Buckets']]
 
 
-    def retrieve_from_bucket(self, bucket_name, resource_name):
-        response = self.__client.get_object(Bucket=bucket_name, Key=resource_name)
+    def list_objects(self, bucket_name):
+        response = self.__client.list_objects_v2(
+            Bucket=bucket_name,
+            Delimiter=",",
+        )
+
+        if 'Contents' not in response:
+            return []
+
+        return [Object.construct(item) for item in response['Contents']]
+
+
+    def retrieve_from_bucket(self, bucket_name, key_name):
+        response = self.__client.get_object(Bucket=bucket_name, Key=key_name)
         content_body = response.get("Body")
         data = content_body.read()
 
@@ -75,22 +90,49 @@ class S3Manager(object):
     def upload_file_to_bucket(self, bucket_name, filepath, key_name):
         self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
 
+        return self.head(bucket_name, key_name)
+
 
     def upload_bytes_to_bucket(self, bucket_name, body, key_name):
         self.__client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
+
+        return self.head(bucket_name, key_name)
 
 
     def put_object(self, bucket_name, body, key_name):
         self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
 
+        return self.head(bucket_name, key_name)
 
-    def list_bucket_objects(self, bucket_name):
-        response = self.__client.list_objects_v2(
-            Bucket=bucket_name,
-            Delimiter=",",
-        )
 
-        return [Object.construct(item) for item in response['Contents']]
+    def move_object(self, bucket_name, key_name, new_key_name):
+        source = '/'.join((bucket_name, key_name))
+
+        self.__client.copy_object(Bucket=bucket_name, CopySource=source, Key=new_key_name)
+        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
+
+        return self.head(bucket_name, new_key_name)
+
+
+    def delete_object(self, bucket_name, key_name):
+        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
+
+
+    def exists(self, bucket_name, key_name):
+        try:
+            self.head(bucket_name, key_name)
+            return True
+
+        except ClientError as ex:
+            if ex.response['Error']['Code'] == "404":
+                return False
+
+            raise
+
+
+    def head(self, bucket_name, key_name):
+        response = self.__client.head_object(Bucket=bucket_name, Key=key_name)
+        return Head.construct(key_name, response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -157,6 +199,86 @@ class Bucket(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "Bucket:{name:%s, creation_date:%s}" %  (self.name, self.creation_date)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Head(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct(cls, key, response):
+        last_modified = LocalizedDatetime(response.get('LastModified'))
+        e_tag = response.get('ETag')
+        size = response.get('ContentLength')
+        content_type = response.get('ContentType')
+
+        return cls(key, last_modified, e_tag, size, content_type)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, key, last_modified, e_tag, size, content_type):
+        """
+        Constructor
+        """
+        self.__key = key                                    # string
+        self.__last_modified = last_modified                # LocalizedDatetime
+        self.__e_tag = e_tag                                # string
+        self.__size = int(size)                             # int
+        self.__content_type = content_type                  # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['key'] = self.key
+        jdict['last-modified'] = self.last_modified.as_iso8601()
+        jdict['e-tag'] = self.e_tag
+        jdict['size'] = self.size
+        jdict['storage-class'] = self.content_type
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def key(self):
+        return self.__key
+
+
+    @property
+    def last_modified(self):
+        return self.__last_modified
+
+
+    @property
+    def e_tag(self):
+        return self.__e_tag
+
+
+    @property
+    def size(self):
+        return self.__size
+
+
+    @property
+    def content_type(self):
+        return self.__content_type
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "Head:{key:%s, last_modified:%s, e_tag:%s, size:%s, content_type:%s}" % \
+               (self.key, self.last_modified, self.e_tag, self.size, self.content_type)
 
 
 # --------------------------------------------------------------------------------------------------------------------
