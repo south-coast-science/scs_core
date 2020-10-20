@@ -23,8 +23,8 @@ class CSVLoggerConf(PersistentJSONable):
     __FILENAME = "csv_logger_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

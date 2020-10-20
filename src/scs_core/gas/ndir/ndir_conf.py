@@ -22,7 +22,7 @@ class NDIRConf(PersistentJSONable, ABC):
     _FILENAME = "ndir_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
+    def persistence_location(cls):
         raise NotImplementedError()
 
 
