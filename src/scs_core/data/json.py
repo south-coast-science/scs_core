@@ -222,11 +222,15 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnusedLocal
+
     @classmethod
     @abstractmethod
     def construct_from_jdict(cls, jdict):
         return PersistentJSONable()
 
+
+    # noinspection PyUnusedLocal
 
     @classmethod
     @abstractmethod
@@ -289,11 +293,15 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnusedLocal
+
     @classmethod
     @abstractmethod
     def construct_from_jdict(cls, jdict, name=None):
         return PersistentJSONable()
 
+
+    # noinspection PyUnusedLocal
 
     @classmethod
     @abstractmethod
