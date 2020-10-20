@@ -29,8 +29,8 @@ class ClientAuth(PersistentJSONable):
     __FILENAME = "osio_client_auth.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.osio_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.osio_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

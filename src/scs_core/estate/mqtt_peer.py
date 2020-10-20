@@ -24,13 +24,13 @@ class MQTTPeerSet(PersistentJSONable):
     __FILENAME =    "mqtt_peers.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     @classmethod
-    def load(cls, host, encryption_key=None):
-        instance = super().load(host, encryption_key=encryption_key)
+    def load(cls, manager, encryption_key=None):
+        instance = super().load(manager, encryption_key=encryption_key)
 
         if instance is None:
             instance = cls(OrderedDict())
