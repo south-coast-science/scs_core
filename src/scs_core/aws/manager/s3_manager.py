@@ -10,8 +10,11 @@ from botocore.exceptions import ClientError
 
 from collections import OrderedDict
 
+from scs_core.data.crypt import Crypt
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+
+from scs_core.sys.persistence_manager import PersistenceManager
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -87,19 +90,19 @@ class S3Manager(object):
         return data.decode()
 
 
-    def upload_file_to_bucket(self, bucket_name, filepath, key_name):
+    def upload_file_to_bucket(self, filepath, bucket_name, key_name):
         self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
 
         return self.head(bucket_name, key_name)
 
 
-    def upload_bytes_to_bucket(self, bucket_name, body, key_name):
+    def upload_bytes_to_bucket(self, body, bucket_name, key_name):
         self.__client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
 
         return self.head(bucket_name, key_name)
 
 
-    def put_object(self, bucket_name, body, key_name):
+    def put_object(self, body, bucket_name, key_name):
         self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
 
         return self.head(bucket_name, key_name)
@@ -139,6 +142,68 @@ class S3Manager(object):
 
     def __str__(self, *args, **kwargs):
         return "S3Manager:{client:%s, resource_client:%s}" % (self.__client, self.__resource_client)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class S3PersistenceManager(PersistenceManager):
+    """
+    classdocs
+    """
+
+    __BUCKET = 'scs_persistence'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def __key_name(dirname, filename):
+        return '/'.join((dirname, filename))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, client, resource_client):
+        """
+        Constructor
+        """
+        self.__manager = S3Manager(client, resource_client)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def exists(self, dirname, filename):
+        key_name = self.__key_name(dirname, filename)
+
+        return self.__manager.exists(self.__BUCKET, key_name)
+
+
+    def load(self, dirname, filename, encryption_key=None):
+        key_name = self.__key_name(dirname, filename)
+
+        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key_name)
+        jstr = text if encryption_key is None else Crypt.decrypt(encryption_key, text)
+
+        return jstr
+
+
+    def save(self, jstr, dirname, filename, encryption_key=None):
+        key_name = self.__key_name(dirname, filename)
+
+        text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
+
+        self.__manager.upload_bytes_to_bucket(text, self.__BUCKET, key_name)
+
+
+    def remove(self, dirname, filename):
+        key_name = self.__key_name(dirname, filename)
+
+        self.__manager.delete_object(self.__BUCKET, key_name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "S3PersistenceManager:{manager:%s}" % self.__manager
 
 
 # --------------------------------------------------------------------------------------------------------------------

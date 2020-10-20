@@ -31,6 +31,39 @@ class Node(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # network identity...
+
+    @classmethod
+    @abstractmethod
+    def name(cls):
+        pass
+
+
+    @staticmethod
+    def ipv4_address():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        try:
+            s.connect(('192.168.0.1', 1))  # host does not need to be reachable
+            dot_decimal = s.getsockname()[0]
+
+        except OSError:
+            dot_decimal = '127.0.0.1'
+
+        finally:
+            s.close()
+
+        return IPv4Address.construct(dot_decimal)
+
+
+    @classmethod
+    @abstractmethod
+    def server_ipv4_address(cls):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # scanner...
 
     @classmethod
     def scan_accessible_subnets(cls, start=1, end=254, timeout=10.0):
@@ -74,37 +107,7 @@ class Node(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def name(cls):
-        pass
-
-
-    @staticmethod
-    def ipv4_address():
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-        try:
-            s.connect(('192.168.0.1', 1))               # host does not need to be reachable
-            dot_decimal = s.getsockname()[0]
-
-        except OSError:
-            dot_decimal = '127.0.0.1'
-
-        finally:
-            s.close()
-
-        return IPv4Address.construct(dot_decimal)
-
-
-    @classmethod
-    @abstractmethod
-    def server_ipv4_address(cls):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
+    # software update...
 
     @abstractmethod
     def software_update_report(self):
@@ -112,6 +115,7 @@ class Node(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # configuration directories...
 
     @classmethod
     def conf_dir(cls):
@@ -129,6 +133,7 @@ class Node(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # filesystem paths...
 
     @abstractmethod
     def home_path(self):
@@ -148,6 +153,7 @@ class IoTNode(Node):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+    # SPI...
 
     @abstractmethod
     def ndir_spi_bus(self):
@@ -170,6 +176,7 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # time...
 
     @abstractmethod
     def time_is_synchronized(self):
@@ -177,6 +184,7 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # tmp directories...
 
     @abstractmethod
     def lock_dir(self):
@@ -189,6 +197,7 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # filesystem paths...
 
     @abstractmethod
     def command_path(self):
