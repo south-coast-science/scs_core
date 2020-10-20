@@ -190,7 +190,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
     @classmethod
     def exists(cls, manager):
         try:
-            dirname, filename = cls.persistence_location(manager)
+            dirname, filename = cls.persistence_location()
         except NotImplementedError:
             return False
 
@@ -200,7 +200,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
     @classmethod
     def load(cls, manager, encryption_key=None):
         try:
-            dirname, filename = cls.persistence_location(manager)
+            dirname, filename = cls.persistence_location()
         except NotImplementedError:
             return None
 
@@ -215,7 +215,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
     @classmethod
     def delete(cls, manager):
         try:
-            dirname, filename = cls.persistence_location(manager)
+            dirname, filename = cls.persistence_location()
             manager.remove(dirname, filename)
 
         except NotImplementedError:
@@ -226,14 +226,14 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls, _host):
+    def persistence_location(cls):
         pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        dirname, filename = self.persistence_location(manager)
+        dirname, filename = self.persistence_location()
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
         manager.save(jstr, dirname, filename, encryption_key=encryption_key)
@@ -249,9 +249,9 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def exists(cls, manager, name):      # TODO: requires s3 mode
+    def exists(cls, manager, name):
         try:
-            dirname, filename = cls.persistence_location(manager, name)
+            dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
             return False
 
@@ -259,9 +259,9 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, name, encryption_key=None):      # TODO: requires s3 mode
+    def load(cls, manager, name, encryption_key=None):
         try:
-            dirname, filename = cls.persistence_location(manager, name)
+            dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
             return None
 
@@ -276,7 +276,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     @classmethod
     def delete(cls, manager, name):
         try:
-            dirname, filename = cls.persistence_location(manager, name)
+            dirname, filename = cls.persistence_location(name)
             manager.remove(dirname, filename)
 
         except NotImplementedError:
@@ -287,7 +287,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def persistence_location(cls, _host, _name):
+    def persistence_location(cls, _name):
         pass
 
 
@@ -300,7 +300,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        dirname, filename = self.persistence_location(manager, self.name)
+        dirname, filename = self.persistence_location(self.name)
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
         manager.save(jstr, dirname, filename, encryption_key=encryption_key)

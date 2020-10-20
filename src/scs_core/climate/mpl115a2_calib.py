@@ -28,8 +28,8 @@ class MPL115A2Calib(PersistentJSONable):
     __FILENAME = "mpl115a2_calib.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

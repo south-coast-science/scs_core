@@ -24,14 +24,10 @@ class ClientAuth(PersistentJSONable):
     """
 
     __FILENAME = "aws_client_auth.json"
-    __HOST = None
-
 
     @classmethod
-    def persistence_location(cls, host):
-        cls.__HOST = host
-
-        return host.aws_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.aws_dir(), cls.__FILENAME
 
 
     @classmethod

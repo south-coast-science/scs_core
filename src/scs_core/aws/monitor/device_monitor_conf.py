@@ -8,13 +8,14 @@ import ast
 
 from collections import OrderedDict
 
-from scs_core.aws.manager.s3_manager import S3Manager
 from scs_core.aws.monitor.device_monitor import DeviceMonitor
+
+from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceMonitorConf(object):
+class DeviceMonitorConf(PersistentJSONable):
     """
     classdocs
     """
@@ -23,8 +24,8 @@ class DeviceMonitorConf(object):
     __BUCKET_NAME = "scs-device-monitor"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,13 +67,16 @@ class DeviceMonitorConf(object):
     def aws_region(self):
         return self.__aws_region
 
+
     @property
     def unresponsive_minutes_allowed(self):
         return self.__unresponsive_minutes_allowed
 
+
     @property
     def bucket_name(self):
         return self.__bucket_name
+
 
     @property
     def resource_name(self):
@@ -85,13 +89,16 @@ class DeviceMonitorConf(object):
     def aws_region(self, value):
         self.__aws_region = value
 
+
     @unresponsive_minutes_allowed.setter
     def unresponsive_minutes_allowed(self, value):
         self.__unresponsive_minutes_allowed = value
 
+
     @bucket_name.setter
     def bucket_name(self, value):
         self.__bucket_name = value
+
 
     @resource_name.setter
     def resource_name(self, value):
@@ -109,28 +116,6 @@ class DeviceMonitorConf(object):
         jdict['resource-name'] = self.resource_name
 
         return jdict
-
-
-    def load_from_cloud(self, client, resource_client):
-        # This should be the only way to init - how check?
-        file_manager = S3Manager(client, resource_client)
-        res = file_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__FILENAME)
-        dev_list = ast.literal_eval(res)
-        jdict = OrderedDict(dev_list)
-        return self.construct_from_jdict(jdict)
-
-    def save_to_cloud(self, client):
-        to_save = str(self.as_json())
-        to_save = to_save.replace("OrderedDict", " ")
-        to_save = to_save.replace("[", " ")
-        to_save = to_save.replace("]", " ")
-        to_save = to_save.replace(" ", "")
-        to_save = to_save[1:]
-        to_save = to_save[0:-1]
-        to_save = to_save.replace("\'", "\"")
-        to_save_bytes = bytes(to_save, 'utf-8')
-        client.put_object(Body=to_save_bytes, Bucket=self.__BUCKET_NAME, Key=self.__FILENAME)
-        return to_save
 
 
     # ----------------------------------------------------------------------------------------------------------------

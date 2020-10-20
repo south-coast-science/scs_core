@@ -24,7 +24,7 @@ class MQTTPeerSet(PersistentJSONable):
     __FILENAME =    "mqtt_peers.json"
 
     @classmethod
-    def persistence_location(cls, host):
+    def persistence_location(cls):
         return cls.conf_dir(), cls.__FILENAME
 
 
