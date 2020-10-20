@@ -4,8 +4,6 @@ Created on 30 Sep 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-import ast
-
 from collections import OrderedDict
 
 from scs_core.aws.monitor.device_monitor import DeviceMonitor
@@ -21,7 +19,6 @@ class DeviceMonitorConf(PersistentJSONable):
     """
 
     __FILENAME = "device_monitor_conf.json"
-    __BUCKET_NAME = "scs-device-monitor"
 
     @classmethod
     def persistence_location(cls):
@@ -45,7 +42,7 @@ class DeviceMonitorConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, aws_region=None, unresponsive_minutes_allowed=None, bucket_name=None, resource_name=None):
+    def __init__(self, aws_region, unresponsive_minutes_allowed, bucket_name, resource_name):
         """
         Constructor
         """
@@ -57,7 +54,7 @@ class DeviceMonitorConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def init_device_manager(self, host, email_client):
+    def device_monitor(self, host, email_client):
         return DeviceMonitor(self, host, email_client)
 
 
