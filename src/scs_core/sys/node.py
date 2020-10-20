@@ -22,6 +22,16 @@ class Node(ABC):
     classdocs
     """
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # directories and files...
+
+    __CONF_DIR =            "conf"                              # hard-coded rel path
+    __AWS_DIR =             "aws"                               # hard-coded rel path
+    __OSIO_DIR =            "osio"                              # hard-coded rel path
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def scan_accessible_subnets(cls, start=1, end=254, timeout=10.0):
         for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, timeout=timeout):
@@ -97,6 +107,49 @@ class Node(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
+    def software_update_report(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def conf_dir(cls):
+        return cls.__CONF_DIR
+
+
+    @classmethod
+    def aws_dir(cls):
+        return cls.__AWS_DIR
+
+
+    @classmethod
+    def osio_dir(cls):
+        return cls.__OSIO_DIR
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def home_path(self):
+        pass
+
+
+    @abstractmethod
+    def scs_path(self):
+        pass
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class IoTNode(Node):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
     def ndir_spi_bus(self):
         pass
 
@@ -126,11 +179,6 @@ class Node(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def home_dir(self):
-        pass
-
-
-    @abstractmethod
     def lock_dir(self):
         pass
 
@@ -140,37 +188,13 @@ class Node(ABC):
         pass
 
 
-    @abstractmethod
-    def command_dir(self):
-        pass
-
+    # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def scs_dir(self):
-        pass
-
-
-    @abstractmethod
-    def conf_dir(self):
-        pass
-
-
-    @abstractmethod
-    def aws_dir(self):
-        pass
-
-
-    @abstractmethod
-    def osio_dir(self):
+    def command_path(self):
         pass
 
 
     @abstractmethod
     def eep_image(self):
         pass
-
-
-    @abstractmethod
-    def software_update_report(self):
-        pass
-
