@@ -30,7 +30,7 @@ class DeviceMonitorConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return None
+            return cls(None, None, None, None)
 
         aws_region = jdict.get('aws-region')
         unresponsive_minutes_allowed = jdict.get('unresponsive-minutes-allowed')

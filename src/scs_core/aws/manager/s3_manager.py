@@ -97,7 +97,7 @@ class S3Manager(object):
 
 
     def upload_bytes_to_bucket(self, body, bucket_name, key_name):
-        self.__client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
+        self.__resource_client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
 
         return self.head(bucket_name, key_name)
 
@@ -191,7 +191,7 @@ class S3PersistenceManager(PersistenceManager):
 
         text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
 
-        self.__manager.upload_bytes_to_bucket(text, self.__BUCKET, key_name)
+        self.__manager.put_object(text, self.__BUCKET, key_name)
 
 
     def remove(self, dirname, filename):
