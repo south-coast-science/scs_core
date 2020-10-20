@@ -143,47 +143,11 @@ class AbstractPersistentJSONable(JSONable):
     classdocs
     """
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # @staticmethod
-    # def _load_jstr_from_file(abs_filename, encryption_key=None):
-    #     with open(abs_filename, "r") as f:                          # may raise FileNotFoundError
-    #         text = f.read()
-    #
-    #     jstr = text if encryption_key is None else Crypt.decrypt(encryption_key, text)
-    #
-    #     return jstr.strip()
-    #
-    #
-    # @staticmethod
-    # def _save_jstr_to_file(jstr, directory, rel_filename, encryption_key=None):
-    #     file...
-    # if rel_filename:
-    #     Filesystem.mkdir(directory)
-    #
-    # abs_filename = os.path.join(directory, rel_filename) if rel_filename else directory
-    # tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
-    #
-    # text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
-    #
-    # with open(tmp_filename, "w") as f:
-    #     f.write(text)
-    #
-    # atomic operation...
-    # os.rename(tmp_filename, abs_filename)
-
+    __CONF_DIR =            "conf"                              # hard-coded rel path
+    __AWS_DIR =             "aws"                               # hard-coded rel path
+    __OSIO_DIR =            "osio"                              # hard-coded rel path
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    # @classmethod
-    # def load_from_file(cls, filename, encryption_key=None):     # TODO: remove?
-    # try:
-    #     jstr = cls._load_jstr_from_file(filename, encryption_key=encryption_key)
-    # except FileNotFoundError:
-    #     return cls.construct_from_jdict(None)
-    #
-    # return cls.construct_from_jdict(json.loads(jstr, object_hook=OrderedDict))  # TODO: doesn't need object_hook?
-
 
     @classmethod
     @abstractmethod
@@ -196,6 +160,22 @@ class AbstractPersistentJSONable(JSONable):
     @abstractmethod
     def save(self, manager):
         pass
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def conf_dir(cls):
+        return cls.__CONF_DIR
+
+
+    @classmethod
+    def aws_dir(cls):
+        return cls.__AWS_DIR
+
+
+    @classmethod
+    def osio_dir(cls):
+        return cls.__OSIO_DIR
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -257,12 +237,6 @@ class PersistentJSONable(AbstractPersistentJSONable):
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
         manager.save(jstr, dirname, filename, encryption_key=encryption_key)
-
-
-    # def save_to_file(self, directory, filename=None, encryption_key=None):              # TODO: remove
-    #     jstr = JSONify.dumps(self, indent=self._INDENT)
-    #
-    #     self._save_jstr_to_file(jstr, directory, filename, encryption_key=encryption_key)
 
 
 # --------------------------------------------------------------------------------------------------------------------

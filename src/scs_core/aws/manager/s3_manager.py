@@ -151,7 +151,7 @@ class S3PersistenceManager(PersistenceManager):
     classdocs
     """
 
-    __BUCKET = 'scs_persistence'
+    __BUCKET = 'scs-persistence'
 
     # ----------------------------------------------------------------------------------------------------------------
 

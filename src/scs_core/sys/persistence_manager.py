@@ -51,14 +51,16 @@ class FilesystemPersistenceManager(PersistenceManager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def exists(self, dirname, filename):
-        abs_filename = self.__abs_filename(dirname, filename)
+    @classmethod
+    def exists(cls, dirname, filename):
+        abs_filename = cls.__abs_filename(dirname, filename)
 
         return os.path.isfile(abs_filename)
 
 
-    def load(self, dirname, filename, encryption_key=None):
-        abs_filename = self.__abs_filename(dirname, filename)
+    @classmethod
+    def load(cls, dirname, filename, encryption_key=None):
+        abs_filename = cls.__abs_filename(dirname, filename)
 
         try:
             with open(abs_filename, "r") as f:
@@ -91,26 +93,31 @@ class FilesystemPersistenceManager(PersistenceManager):
         os.rename(tmp_filename, abs_filename)
 
 
-    def remove(self, dirname, filename):
-        abs_filename = self.__abs_filename(dirname, filename)
+    @classmethod
+    def remove(cls, dirname, filename):
+        abs_filename = cls.__abs_filename(dirname, filename)
 
         try:
             os.remove(abs_filename)
         except FileNotFoundError:
             pass
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __abs_filename(self, dirname, filename):
-        return os.path.join(self.scs_path(), dirname, filename)
-
-
-    def __abs_dirname(self, dirname):
-        return os.path.join(self.scs_path(), dirname)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def __abs_filename(cls, dirname, filename):
+        return os.path.join(cls.scs_path(), dirname, filename)
+
+
+    @classmethod
+    def __abs_dirname(cls, dirname):
+        return os.path.join(cls.scs_path(), dirname)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     @abstractmethod
-    def scs_path(self):
+    def scs_path(cls):
         pass

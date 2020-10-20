@@ -59,7 +59,7 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def persistence_location(cls, host):
-        return host.aws_dir(), cls.__FILENAME
+        return cls.aws_dir(), cls.__FILENAME
 
 
     @classmethod

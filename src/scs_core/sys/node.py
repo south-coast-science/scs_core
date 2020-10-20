@@ -23,14 +23,6 @@ class Node(ABC):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-    # directories and files...
-
-    __CONF_DIR =            "conf"                              # hard-coded rel path
-    __AWS_DIR =             "aws"                               # hard-coded rel path
-    __OSIO_DIR =            "osio"                              # hard-coded rel path
-
-
-    # ----------------------------------------------------------------------------------------------------------------
     # network identity...
 
     @classmethod
@@ -112,24 +104,6 @@ class Node(ABC):
     @abstractmethod
     def software_update_report(self):
         pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # configuration directories...
-
-    @classmethod
-    def conf_dir(cls):
-        return cls.__CONF_DIR
-
-
-    @classmethod
-    def aws_dir(cls):
-        return cls.__AWS_DIR
-
-
-    @classmethod
-    def osio_dir(cls):
-        return cls.__OSIO_DIR
 
 
     # ----------------------------------------------------------------------------------------------------------------
