@@ -143,8 +143,9 @@ class AbstractPersistentJSONable(JSONable):
     classdocs
     """
 
-    __CONF_DIR =            "conf"                              # hard-coded rel path
     __AWS_DIR =             "aws"                               # hard-coded rel path
+    __CONF_DIR =            "conf"                              # hard-coded rel path
+    __HUE_DIR =             "hue"                               # hard-coded rel path
     __OSIO_DIR =            "osio"                              # hard-coded rel path
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -164,13 +165,18 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def aws_dir(cls):
+        return cls.__AWS_DIR
+
+
+    @classmethod
     def conf_dir(cls):
         return cls.__CONF_DIR
 
 
     @classmethod
-    def aws_dir(cls):
-        return cls.__AWS_DIR
+    def hue_dir(cls):
+        return cls.__HUE_DIR
 
 
     @classmethod
