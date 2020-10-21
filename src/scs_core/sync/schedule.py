@@ -26,8 +26,8 @@ class Schedule(PersistentJSONable):
     __FILENAME =    "schedule.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,11 +95,11 @@ class Schedule(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         if not self.is_valid():
             raise ValueError("Schedule.save: schedule is not valid.")
 
-        super().save(host)
+        super().save(host, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -28,8 +28,8 @@ class Pt1000Calib(PersistentJSONable):
     __FILENAME = "pt1000_calib.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,11 +63,11 @@ class Pt1000Calib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         if self.__calibrated_on is None:
             self.__calibrated_on = LocalizedDatetime.now().utc()
 
-        super().save(host)
+        super().save(host, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------

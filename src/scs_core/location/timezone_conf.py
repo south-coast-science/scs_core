@@ -33,8 +33,8 @@ class TimezoneConf(PersistentJSONable):
     __FILENAME = "timezone_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -73,11 +73,11 @@ class TimezoneConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
+    def save(self, host, encryption_key=None):
         if self.__set_on is None:
             self.__set_on = LocalizedDatetime.now().utc()
 
-        super().save(host)
+        super().save(host, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
