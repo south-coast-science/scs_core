@@ -31,8 +31,11 @@ class ClientAuth(PersistentJSONable):
 
 
     @classmethod
-    def set_host(cls, host):
-        cls.__HOST = host
+    def load(cls, manager, encryption_key=None):
+        auth = super().load(manager, encryption_key=encryption_key)
+        auth.__manager = manager
+
+        return auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,6 +73,8 @@ class ClientAuth(PersistentJSONable):
         self.__client_id = client_id                # String
         self.__cert_id = cert_id                    # String
 
+        self.__manager = None                       # FilesystemPersistenceManager
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -105,22 +110,26 @@ class ClientAuth(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.__ROOT_CA)
+        return os.path.join(self.__cert_dir(), self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__CERT_SUFFIX)
+        return os.path.join(self.__cert_dir(), self.cert_id + self.__CERT_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PUBLIC_KEY_SUFFIX)
+        return os.path.join(self.__cert_dir(), self.cert_id + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return os.path.join(self.__HOST.aws_dir(), self.__CERT_DIR, self.cert_id + self.__PRIVATE_KEY_SUFFIX)
+        return os.path.join(self.__cert_dir(), self.cert_id + self.__PRIVATE_KEY_SUFFIX)
+
+
+    def __cert_dir(self):
+        return os.path.join(self.__manager.scs_path(), self.aws_dir(), self.__CERT_DIR)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -143,4 +152,5 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s}" % (self.endpoint, self.client_id, self.cert_id)
+        return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s, manager:%s}" % \
+               (self.endpoint, self.client_id, self.cert_id, self.__manager)
