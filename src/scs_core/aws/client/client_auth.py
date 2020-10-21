@@ -110,25 +110,27 @@ class ClientAuth(PersistentJSONable):
 
     @property
     def root_ca_file_path(self):
-        return os.path.join(self.__cert_dir(), self.__ROOT_CA)
+        return os.path.join(self.__cert_path(), self.__ROOT_CA)
 
 
     @property
     def certificate_path(self):
-        return os.path.join(self.__cert_dir(), self.cert_id + self.__CERT_SUFFIX)
+        return os.path.join(self.__cert_path(), self.cert_id + self.__CERT_SUFFIX)
 
 
     @property
     def public_key_path(self):
-        return os.path.join(self.__cert_dir(), self.cert_id + self.__PUBLIC_KEY_SUFFIX)
+        return os.path.join(self.__cert_path(), self.cert_id + self.__PUBLIC_KEY_SUFFIX)
 
 
     @property
     def private_key_path(self):
-        return os.path.join(self.__cert_dir(), self.cert_id + self.__PRIVATE_KEY_SUFFIX)
+        return os.path.join(self.__cert_path(), self.cert_id + self.__PRIVATE_KEY_SUFFIX)
 
 
-    def __cert_dir(self):
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __cert_path(self):
         return os.path.join(self.__manager.scs_path(), self.aws_dir(), self.__CERT_DIR)
 
 
