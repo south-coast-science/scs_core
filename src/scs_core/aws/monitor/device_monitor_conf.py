@@ -30,26 +30,24 @@ class DeviceMonitorConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return cls(None, None, None, None)
+            return cls(None, None, None)
 
-        aws_region = jdict.get('aws-region')
+        email_name = jdict.get('email-name')
         unresponsive_minutes_allowed = jdict.get('unresponsive-minutes-allowed')
-        bucket_name = jdict.get('bucket-name')
-        resource_name = jdict.get('resource-name')
+        email_password = jdict.get('email-password')
 
-        return cls(aws_region, unresponsive_minutes_allowed, bucket_name, resource_name)
+        return cls(email_name, unresponsive_minutes_allowed, email_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, aws_region, unresponsive_minutes_allowed, bucket_name, resource_name):
+    def __init__(self, email_name, unresponsive_minutes_allowed, email_password):
         """
         Constructor
         """
-        self.__aws_region = aws_region
+        self.__email_name = email_name
         self.__unresponsive_minutes_allowed = unresponsive_minutes_allowed
-        self.__bucket_name = bucket_name
-        self.__resource_name = resource_name
+        self.__email_password = email_password
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,12 +55,11 @@ class DeviceMonitorConf(PersistentJSONable):
     def device_monitor(self, host, email_client):
         return DeviceMonitor(self, host, email_client)
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def aws_region(self):
-        return self.__aws_region
+    def email_name(self):
+        return self.__email_name
 
 
     @property
@@ -71,20 +68,14 @@ class DeviceMonitorConf(PersistentJSONable):
 
 
     @property
-    def bucket_name(self):
-        return self.__bucket_name
-
-
-    @property
-    def resource_name(self):
-        return self.__resource_name
-
+    def email_password(self):
+        return self.__email_password
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @aws_region.setter
-    def aws_region(self, value):
-        self.__aws_region = value
+    @email_name.setter
+    def email_name(self, value):
+        self.__email_name = value
 
 
     @unresponsive_minutes_allowed.setter
@@ -92,33 +83,23 @@ class DeviceMonitorConf(PersistentJSONable):
         self.__unresponsive_minutes_allowed = value
 
 
-    @bucket_name.setter
-    def bucket_name(self, value):
-        self.__bucket_name = value
-
-
-    @resource_name.setter
-    def resource_name(self, value):
-        self.__resource_name = value
-
+    @email_password.setter
+    def email_password(self, value):
+        self.__email_password = value
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['aws-region'] = self.aws_region
+        jdict['email-password'] = self.email_password
         jdict['unresponsive-minutes-allowed'] = self.unresponsive_minutes_allowed
-        jdict['bucket-name'] = self.bucket_name
-        jdict['resource-name'] = self.resource_name
+        jdict['email-name'] = self.email_name
 
         return jdict
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceManagerConf:{aws_region:%s, unresponsive_minutes_allowed:%s, " \
-               "bucket_name:%s, resource_name:%s}" %\
-               (DeviceMonitorConf.aws_region, DeviceMonitorConf.unresponsive_minutes_allowed,
-                DeviceMonitorConf.bucket_name, DeviceMonitorConf.resource_name)
+        return "DeviceManagerConf:{email_name:%s, unresponsive_minutes_allowed:%s, email_password:%s}" %\
+               (DeviceMonitorConf.email_name, DeviceMonitorConf.unresponsive_minutes_allowed,
+                DeviceMonitorConf.email_password)
