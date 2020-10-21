@@ -74,9 +74,10 @@ class FilesystemPersistenceManager(PersistenceManager):
         return jstr
 
 
-    def save(self, jstr, dirname, filename, encryption_key=None):
-        abs_dirname = self.__abs_dirname(dirname)
-        abs_filename = self.__abs_filename(dirname, filename)
+    @classmethod
+    def save(cls, jstr, dirname, filename, encryption_key=None):
+        abs_dirname = cls.__abs_dirname(dirname)
+        abs_filename = cls.__abs_filename(dirname, filename)
 
         # file...
         if filename:

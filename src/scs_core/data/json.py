@@ -106,7 +106,7 @@ class JSONReport(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, _jdict):
+    def construct_from_jdict(cls, jdict):
         return JSONReport()
 
 
@@ -123,9 +123,8 @@ class JSONReport(JSONable):
         tmp_filename = '.'.join((filename, str(int(time.time()))))
 
         try:
-            f = open(tmp_filename, 'w')
-            f.write(jstr + '\n')
-            f.close()
+            with open(tmp_filename, 'w') as f:
+                f.write(jstr + '\n')
 
         except FileNotFoundError:           # the containing directory does not exist (yet)
             return False
@@ -147,14 +146,6 @@ class AbstractPersistentJSONable(JSONable):
     __CONF_DIR =            "conf"                              # hard-coded rel path
     __HUE_DIR =             "hue"                               # hard-coded rel path
     __OSIO_DIR =            "osio"                              # hard-coded rel path
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def construct_from_jdict(cls, _jdict):
-        return PersistentJSONable()
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -230,6 +221,16 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnusedLocal
+
+    @classmethod
+    @abstractmethod
+    def construct_from_jdict(cls, jdict):
+        return PersistentJSONable()
+
+
+    # noinspection PyUnusedLocal
+
     @classmethod
     @abstractmethod
     def persistence_location(cls):
@@ -255,7 +256,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def exists(cls, manager, name):
+    def exists(cls, manager, name=None):
         try:
             dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
@@ -265,22 +266,22 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, name, encryption_key=None):
+    def load(cls, manager, name=None, encryption_key=None):
         try:
             dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None)
+            return cls.construct_from_jdict(None, name=name)
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(json.loads(jstr))
+        return cls.construct_from_jdict(json.loads(jstr), name=name)
 
 
     @classmethod
-    def delete(cls, manager, name):
+    def delete(cls, manager, name=None):
         try:
             dirname, filename = cls.persistence_location(name)
             manager.remove(dirname, filename)
@@ -291,9 +292,19 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyUnusedLocal
+
     @classmethod
     @abstractmethod
-    def persistence_location(cls, _name):
+    def construct_from_jdict(cls, jdict, name=None):
+        return PersistentJSONable()
+
+
+    # noinspection PyUnusedLocal
+
+    @classmethod
+    @abstractmethod
+    def persistence_location(cls, name):
         pass
 
 
