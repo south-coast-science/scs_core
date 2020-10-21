@@ -115,9 +115,9 @@ class AWSGroupConfigurator(PersistentJSONable):
             data = f.read()
         # Edit JSON for device
         system_id = str(self.__aws_info.node("SystemID"))
-        temp = host.home_dir()
+        temp = host.home_path()
         group_owner_name = temp.split("/")[2]
-        scs_dir = host.scs_dir()
+        scs_path = host.scs_path()
         unix_group_number = str(self.__unix_group)
         r_data = json.loads(data)
         r_data["Name"] = ("Resources-" + system_id)  # Edit resources name
@@ -126,7 +126,7 @@ class AWSGroupConfigurator(PersistentJSONable):
         r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "GroupOwnerSetting"]["AutoAddGroupOwner"] = False
         r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
-            "SourcePath"] = scs_dir
+            "SourcePath"] = scs_path
         r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "GroupOwnerSetting"]["GroupOwner"] = group_owner_name
 
