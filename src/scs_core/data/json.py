@@ -123,9 +123,8 @@ class JSONReport(JSONable):
         tmp_filename = '.'.join((filename, str(int(time.time()))))
 
         try:
-            f = open(tmp_filename, 'w')
-            f.write(jstr + '\n')
-            f.close()
+            with open(tmp_filename, 'w') as f:
+                f.write(jstr + '\n')
 
         except FileNotFoundError:           # the containing directory does not exist (yet)
             return False
