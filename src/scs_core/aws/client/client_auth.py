@@ -33,7 +33,7 @@ class ClientAuth(PersistentJSONable):
     @classmethod
     def load(cls, manager, encryption_key=None):
         auth = super().load(manager, encryption_key=encryption_key)
-        auth.__manager = manager
+        auth.manager = manager
 
         return auth
 
@@ -65,7 +65,7 @@ class ClientAuth(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, endpoint, client_id, cert_id):
+    def __init__(self, endpoint, client_id, cert_id, manager=None):
         """
         Constructor
         """
@@ -73,7 +73,7 @@ class ClientAuth(PersistentJSONable):
         self.__client_id = client_id                # String
         self.__cert_id = cert_id                    # String
 
-        self.__manager = None                       # FilesystemPersistenceManager
+        self.__manager = manager                    # FilesystemPersistenceManager
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __cert_path(self):
-        return os.path.join(self.__manager.scs_path(), self.aws_dir(), self.__CERT_DIR)
+        return os.path.join(self.manager.scs_path(), self.aws_dir(), self.__CERT_DIR)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -151,8 +151,18 @@ class ClientAuth(PersistentJSONable):
         return self.__cert_id
 
 
+    @property
+    def manager(self):
+        return self.__manager
+
+
+    @manager.setter
+    def manager(self, manager):
+        self.__manager = manager
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "ClientAuth:{endpoint:%s, client_id:%s, cert_id:%s, manager:%s}" % \
-               (self.endpoint, self.client_id, self.cert_id, self.__manager)
+               (self.endpoint, self.client_id, self.cert_id, self.manager)
