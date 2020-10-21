@@ -77,7 +77,7 @@ class Command(JSONable):
 
     def is_valid(self, host):
         try:
-            host.command_dir()
+            host.command_path()
         except NotImplementedError:
             return False
 
@@ -87,7 +87,7 @@ class Command(JSONable):
         if self.cmd == Command.__LIST_CMD:
             return True
 
-        if self.cmd not in os.listdir(host.command_dir()):
+        if self.cmd not in os.listdir(host.command_path()):
             return False
 
         return True
@@ -120,7 +120,7 @@ class Command(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __execute(self, statement, host):
-        p = Popen(statement, cwd=host.command_dir(), stdout=PIPE, stderr=PIPE)
+        p = Popen(statement, cwd=host.command_path(), stdout=PIPE, stderr=PIPE)
 
         stdout_bytes, stderr_bytes = p.communicate(None, Command.__TIMEOUT)
 
