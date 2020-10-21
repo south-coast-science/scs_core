@@ -51,7 +51,7 @@ class Message(JSONable):
 
         payload = jdict.get('payload')
 
-        return Message(device, topic, upload, payload)
+        return cls(device, topic, upload, payload)
 
 
     # ----------------------------------------------------------------------------------------------------------------

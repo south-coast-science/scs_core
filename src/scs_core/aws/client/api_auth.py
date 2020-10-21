@@ -22,8 +22,8 @@ class APIAuth(PersistentJSONable):
     __FILENAME = "aws_api_auth.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.aws_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.aws_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ class APIAuth(PersistentJSONable):
         endpoint = jdict.get('endpoint')
         api_key = jdict.get('api-key')
 
-        return APIAuth(endpoint, api_key)
+        return cls(endpoint, api_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
