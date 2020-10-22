@@ -61,6 +61,7 @@ class RESTClient(object):
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
+
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
                 return None
@@ -69,7 +70,7 @@ class RESTClient(object):
                 raise exc
 
         try:
-            response = json.loads(response_jstr, object_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -84,7 +85,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.post(path, payload_jstr, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -99,7 +100,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.put(path, payload_jstr, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -110,7 +111,7 @@ class RESTClient(object):
         response_jstr = self.__http_client.delete(path, self.__headers)
 
         try:
-            response = json.loads(response_jstr, object_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 

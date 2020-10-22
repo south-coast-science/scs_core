@@ -35,12 +35,14 @@ class Byline(JSONable):
         pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))    # as provided by web API
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))      # as provided by web API
 
-        return cls(device, topic, pub, rec)
+        message = jdict.get('message')
+
+        return cls(device, topic, pub, rec, message)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, pub, rec):
+    def __init__(self, device, topic, pub, rec, message):
         """
         Constructor
         """
@@ -49,6 +51,8 @@ class Byline(JSONable):
 
         self.__pub = pub                            # LocalizedDatetime
         self.__rec = rec                            # LocalizedDatetime
+
+        self.__message = message                    # dict
 
 
     def __lt__(self, other):
@@ -90,6 +94,8 @@ class Byline(JSONable):
         jdict['lastSeenTime'] = None if self.pub is None else self.pub.as_iso8601()
         jdict['last_write'] = None if self.rec is None else self.rec.as_iso8601()
 
+        jdict['message'] = self.message
+
         return jdict
 
 
@@ -115,11 +121,16 @@ class Byline(JSONable):
         return self.__rec
 
 
+    @property
+    def message(self):
+        return self.__message
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Byline:{device:%s, topic:%s, pub:%s, rec:%s}" %  \
-               (self.device, self.topic, self.pub, self.rec)
+        return "Byline:{device:%s, topic:%s, pub:%s, rec:%s, message:%s}" %  \
+               (self.device, self.topic, self.pub, self.rec, self.message)
 
 
 # --------------------------------------------------------------------------------------------------------------------
