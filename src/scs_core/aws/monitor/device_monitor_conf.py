@@ -24,7 +24,6 @@ class DeviceMonitorConf(PersistentJSONable):
     def persistence_location(cls):
         return cls.conf_dir(), cls.__FILENAME
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -38,7 +37,6 @@ class DeviceMonitorConf(PersistentJSONable):
 
         return cls(email_name, unresponsive_minutes_allowed, email_password)
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, email_name, unresponsive_minutes_allowed, email_password):
@@ -49,11 +47,10 @@ class DeviceMonitorConf(PersistentJSONable):
         self.__unresponsive_minutes_allowed = unresponsive_minutes_allowed
         self.__email_password = email_password
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def device_monitor(self, host, email_client):
-        return DeviceMonitor(self, host, email_client)
+    def create_device_monitor(self, email_client, client, resource_client, host=None):
+        return DeviceMonitor(self, email_client, client, resource_client, host)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -61,11 +58,9 @@ class DeviceMonitorConf(PersistentJSONable):
     def email_name(self):
         return self.__email_name
 
-
     @property
     def unresponsive_minutes_allowed(self):
         return self.__unresponsive_minutes_allowed
-
 
     @property
     def email_password(self):
@@ -77,11 +72,9 @@ class DeviceMonitorConf(PersistentJSONable):
     def email_name(self, value):
         self.__email_name = value
 
-
     @unresponsive_minutes_allowed.setter
     def unresponsive_minutes_allowed(self, value):
         self.__unresponsive_minutes_allowed = value
-
 
     @email_password.setter
     def email_password(self, value):
@@ -97,9 +90,10 @@ class DeviceMonitorConf(PersistentJSONable):
         jdict['email-name'] = self.email_name
 
         return jdict
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceManagerConf:{email_name:%s, unresponsive_minutes_allowed:%s, email_password:%s}" %\
+        return "DeviceManagerConf:{email_name:%s, unresponsive_minutes_allowed:%s, email_password:%s}" % \
                (DeviceMonitorConf.email_name, DeviceMonitorConf.unresponsive_minutes_allowed,
                 DeviceMonitorConf.email_password)

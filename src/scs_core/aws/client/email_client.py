@@ -15,10 +15,15 @@ class EmailClient(object):
 
     __PORT = 465
     __SMTP_SERVER = "smtp.gmail.com"
-    __EMAIL_ADDRESS = "devicetest147147@gmail.com"
-    __EMAIL_PASSWORD = "Southern!"
 
-    # Change from private class vars to conf eventually ?
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def device_monitor_client(cls, device_monitor_conf):
+        email_address = device_monitor_conf.email_name
+        email_password = device_monitor_conf.email_password
+        return EmailClient(cls.__PORT, cls.__SMTP_SERVER, email_address, email_password)
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, port=0, smtp_server="", login_address="", password=""):
         """
@@ -46,8 +51,5 @@ class EmailClient(object):
         except smtplib.SMTPException as e:
             return 'SMTP error occurred: ' + str(e)
         return "Sent"
-
-    def default_client(self):
-        return EmailClient(self.__PORT, self.__SMTP_SERVER, self.__EMAIL_ADDRESS, self.__EMAIL_PASSWORD)
 
     # ----------------------------------------------------------------------------------------------------------------
