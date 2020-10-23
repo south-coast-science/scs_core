@@ -14,8 +14,6 @@ CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key 
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_core.client.http_client import HTTPClient
