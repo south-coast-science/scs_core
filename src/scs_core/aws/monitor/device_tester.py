@@ -3,12 +3,9 @@ Created on 08 Oct 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
-import ast
+import json
 
 from scs_core.data.timedelta import Timedelta
-
-from scs_core.aws.manager.lambda_message_manager import MessageManager
-
 from scs_core.data.datetime import LocalizedDatetime
 
 
@@ -47,7 +44,7 @@ class DeviceTester(object):
 
     def has_status_changed(self, s3_device_status_list):
         is_active = not self.is_inactive()
-        old_device_status_list = ast.literal_eval(s3_device_status_list)
+        old_device_status_list = json.loads(s3_device_status_list)
         was_active = old_device_status_list[self.__scs_device.device_tag]
         if bool(is_active) == bool(was_active):
             return False
@@ -61,34 +58,52 @@ class DeviceTester(object):
                 return True, byline
             return False, None
 
+    def check_values(self):
+        # TODO check necessary values for nulls
+        device_bylines = self.__scs_device.bylines
+        for byline in device_bylines:
+            if "climate" in byline.topic:
+                message = byline.message
+                if message is None:
+                    return False
+                json_message = json.loads(message)
+
+            if "gases" in byline.topic:
+                message = byline.message
+                if message is None:
+                    return False
+                json_message = json.loads(message)
+
+            if "particulates" in byline.topic:
+                message = byline.message
+                if message is None:
+                    return False
+                json_message = json.loads(message)
+
+
     def was_rebooted(self, s3_device_uptime_list):
-        message_manager = MessageManager(self.__host)
         device_bylines = self.__scs_device.bylines
 
-        old_device_uptime_list = ast.literal_eval(s3_device_uptime_list)
-        old_period = Timedelta.construct_from_jdict(old_device_uptime_list[self.__scs_device.device_tag])
-
+        old_device_uptime_list = json.loads(s3_device_uptime_list)
+        old_period = old_device_uptime_list[self.__scs_device.device_tag]
         for byline in device_bylines:
             if "status" in byline.topic:
-                res = message_manager.find_latest_for_topic(byline.topic, LocalizedDatetime.now())
-                if res is None:
-                    # It doesn't have this channel for some reason
+                message = byline.message
+                if message is None:
                     return False
-                else:
-                    json_response = res.as_json()
-                    period = Timedelta().construct_from_jdict(json_response['payload']["val"]["up"]["period"])
-                    if old_period is not None:
-                        if period < old_period:
-                            # device has been reset
-                            self.__scs_device.uptime = period
-                            return True
-                        else:
-                            # device has not been reset
-                            self.__scs_device.uptime = period
-                            return False
+                json_message = json.loads(message)
+                period = Timedelta().construct_from_jdict(json_message["val"]["up"]["period"])
+                if old_period is not None:
+                    delta_old_period = Timedelta().construct_from_jdict(old_period)
+                    if period < delta_old_period:
+                        # device has been reset
+                        self.__scs_device.uptime = period.as_json()
+                        return True
                     else:
-                        # device does not have a pre-existing uptime - it is probably new
-                        self.__scs_device.uptime = period
+                        # device has not been reset
+                        self.__scs_device.uptime = period.as_json()
                         return False
+                else:
+                    return False
 
     # ----------------------------------------------------------------------------------------------------------------

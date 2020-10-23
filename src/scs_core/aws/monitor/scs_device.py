@@ -111,7 +111,7 @@ class SCSDevice(JSONable):
         jdict = OrderedDict()
 
         jdict['dev-tag'] = self.__device_tag
-        jdict["dm-status"] = self.__dm_status
+        jdict["status-active"] = self.__is_active
 
         return jdict
     # ----------------------------------------------------------------------------------------------------------------

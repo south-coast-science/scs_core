@@ -52,8 +52,8 @@ class DeviceMonitor(object):
 
         # Do all tests
         iterating = 0
-        email_sent = False
         while iterating < len(device_list):
+            email_sent = False
             this_dev = device_list[iterating]
             self.get_latest_pubs(this_dev)
 
@@ -69,13 +69,18 @@ class DeviceMonitor(object):
                 email_sent = True
 
             # see if all topics are published on recently
-            inactive, byline = device_tester.is_publishing_on_all_channels()
-            if inactive:
-                topic = byline.topic
-                this_dev.dm_status = "byline"
-                if not email_sent:
+            if not email_sent:
+                inactive, byline = device_tester.is_publishing_on_all_channels()
+                if inactive:
+                    topic = byline.topic
+                    this_dev.dm_status = "byline"
                     self.generate_email(this_dev, topic)
                     email_sent = True
+
+            # check for weird (null) values
+            if not email_sent:
+                is_okay = device_tester.check_values()
+                # TODO test for null values for each topic
 
             # check if rebooted
             if device_tester.was_rebooted(device_uptimes):
@@ -84,9 +89,9 @@ class DeviceMonitor(object):
                     self.generate_email(this_dev)
                     email_sent = True
 
-            # TODO test for null values for each topic
+
             iterating += 1
-        # TODO save back to bucket
+        self.recreate_status_list(device_list)
         self.recreate_uptime_list(device_list)
 
 
@@ -149,8 +154,15 @@ class DeviceMonitor(object):
         res = now - td
         return res.as_json()
 
-    def recreate_status_list(self, status_list):
-        pass
+    def recreate_status_list(self, device_list):
+        s3_manager = S3Manager(self.__client, self.__resource_client)
+        json_data = OrderedDict()
+        for device in device_list:
+            data = device.as_status_json()
+            json_data[data["dev-tag"]] = data["status-active"]
+        data_string = json.dumps(json_data)
+        data_string.encode()
+        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
 
     def recreate_uptime_list(self, device_list):
         s3_manager = S3Manager(self.__client, self.__resource_client)
@@ -158,8 +170,9 @@ class DeviceMonitor(object):
         for device in device_list:
             data = (device.as_uptime_json())
             json_data[data["dev-tag"]] = data["uptime"]
-
-        s3_manager.upload_bytes_to_bucket(json_data, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
+        data_string = json.dumps(json_data)
+        data_string.encode()
+        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -178,9 +191,3 @@ class DeviceMonitor(object):
         scs_device.latest_pub = latest
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    # def __str__(self, *args, **kwargs):
-    #     return "device_monitor:{unresponsive_minutes_allowed:%s, " \
-    #            "changed_device_list:%s }" % \
-    #            (self.__config.unresponsive_minutes_allowed,
-    #             self.__changed_device_list)
