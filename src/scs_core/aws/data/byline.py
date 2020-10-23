@@ -4,9 +4,13 @@ Created on 25 Dec 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example:
-{"device": "scs-bgx-401", "topic": "south-coast-science-demo/brighton/loc/1/particulates",
-"pub": "2020-09-25T11:49:46Z", "rec": "2020-09-25T11:49:40Z"}
+{"device": "scs-bgx-401", "topic": "south-coast-science-demo/brighton/loc/1/climate",
+"lastSeenTime": "2020-10-23T08:52:20Z", "last_write": "2020-10-23T08:52:20Z",
+"message": "{\"val\": {\"hmd\": 68.4, \"tmp\": 19.8, \"bar\": null}, \"rec\": \"2020-10-23T08:52:20Z\",
+\"tag\": \"scs-bgx-401\"}"}
 """
+
+import json
 
 from collections import OrderedDict
 
@@ -32,10 +36,15 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
-        pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))    # as provided by web API
-        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))      # as provided by web API
+        pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))
+        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))
 
-        message = jdict.get('message')
+        try:
+            jdict.get('message').keys()
+            message = json.dumps(jdict.get('message'))      # web API - message is a dict
+
+        except AttributeError:
+            message = jdict.get('message')                  # this class - message is a string
 
         return cls(device, topic, pub, rec, message)
 
@@ -52,7 +61,7 @@ class Byline(JSONable):
         self.__pub = pub                            # LocalizedDatetime
         self.__rec = rec                            # LocalizedDatetime
 
-        self.__message = message                    # dict
+        self.__message = message                    # string
 
 
     def __lt__(self, other):
