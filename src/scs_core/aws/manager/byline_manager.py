@@ -92,8 +92,6 @@ class BylineManager(object):
         try:
             jdict = self.__rest_client.get(request_path, params)
 
-            print(jdict)
-
             # bylines...
             return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded)
 
