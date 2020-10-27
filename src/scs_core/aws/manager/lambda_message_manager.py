@@ -44,11 +44,9 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, latest_at):
-        end_date = latest_at
-
-        for back_off in (10, 30, 50):                                                   # total = 90 mins
-            start_date = end_date - Timedelta(minutes=back_off)
+    def find_latest_for_topic(self, topic, end_date):
+        for back_off in (1, 10, 30, 60):                            # total = 91 mins
+            start_date = end_date - Timedelta(seconds=back_off)
             documents = list(self.find_for_topic(topic, start_date, end_date, False))
 
             if documents:
