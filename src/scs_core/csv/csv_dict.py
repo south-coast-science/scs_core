@@ -87,6 +87,9 @@ class CSVHeader(object):
 
     @classmethod
     def construct_from_paths(cls, paths):
+        if len(paths) != len(set(paths)):
+            raise ValueError(paths)                 # duplicate column names
+
         cells = [CSVHeaderCell.construct_from_path(path) for path in paths]
 
         return CSVHeader(cells)
