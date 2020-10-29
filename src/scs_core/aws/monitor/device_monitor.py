@@ -7,20 +7,16 @@ import json
 import os
 from collections import OrderedDict
 
-from scs_core.aws.manager.s3_manager import S3Manager
-
-from scs_core.data.timedelta import Timedelta
-
 from scs_core.aws.client.api_auth import APIAuth
-
 from scs_core.aws.manager.byline_manager import BylineManager
-
+from scs_core.aws.manager.s3_manager import S3Manager
 from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
-
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.timedelta import Timedelta
 
 
+# TODO Byline_inactive will keep reporting forever - new conf to say which bylines were/are inactive ?
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
@@ -28,6 +24,7 @@ class DeviceMonitor(object):
     __BUCKET_NAME = "scs-device-monitor"
     __RESOURCE_NAME_STATUS = "device_status_list"
     __RESOURCE_NAME_UPTIME = "device_uptime_list"
+    __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, email_client, client, resource_client, host=None):
@@ -49,6 +46,9 @@ class DeviceMonitor(object):
         device_uptimes = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
 
         device_list = self.get_devices_by_byline()
+
+        # open email server
+        self.__email_client.open_server()
 
         # Do all tests
         iterating = 0
@@ -79,8 +79,8 @@ class DeviceMonitor(object):
 
             # check for weird (null) values
             if not email_sent:
-                is_okay = device_tester.check_values()
-                # TODO test for null values for each topic
+                is_okay, field, value = device_tester.check_values()
+                this_dev.dm_status = "values"
 
             # check if rebooted
             if device_tester.was_rebooted(device_uptimes):
@@ -89,21 +89,24 @@ class DeviceMonitor(object):
                     self.generate_email(this_dev)
                     email_sent = True
 
-
             iterating += 1
+
         self.recreate_status_list(device_list)
         self.recreate_uptime_list(device_list)
 
+        # cleanup
+        self.__email_client.close_server()
 
     def send_email_alert(self, this_dev, message):
-        recipients = this_dev.email_list
-        if recipients is None:
-            recipients = self.__config.email_name
+        if this_dev.email_list is None:
+            recipients = []
         else:
-            recipients = this_dev.email_list + self.__config.email_name
+            recipients = this_dev.email_list
+
+        recipients.append(self.__config.email_name)
         for recipient in recipients:
-            pass
-            # self.__email_client.send_email(recipient, message) commented out so I don't get spammed whilst developing
+           # pass
+            self.__email_client.send_mime_email(recipient, message, this_dev.device_tag)
 
     def get_devices_by_byline(self):
         # TODO change with direct call to lambda ARN
@@ -116,10 +119,11 @@ class DeviceMonitor(object):
             device_list.append(temp)
         return device_list
 
-    def generate_email(self, device, byline_topic=None):
+    def generate_email(self, device, byline_topic=None, field_name=None, field_type=None):
         message = ""
         template = None
         old_status = "active" if not device.is_active else "inactive"
+        now_status = "active" if device.is_active else "inactive"
 
         # Get templates
         if device.dm_status == "activity_change":
@@ -128,6 +132,8 @@ class DeviceMonitor(object):
             template = "byline_inactive.txt"
         elif device.dm_status == "reboot":
             template = "uptime.txt"
+        elif device.dm_status == "values":
+            template = "values.txt"
 
         # Load template
         if template:
@@ -141,11 +147,13 @@ class DeviceMonitor(object):
         message = (message.replace("DEVICE_NAME", device.device_tag))
         message = (message.replace("LAST_CHECK_TIME", self.get_last_run_time()))
         message = (message.replace("OLD_STATUS", old_status))
-        message = (message.replace("NEW_STATUS", device.dm_status))
+        message = (message.replace("NEW_STATUS", now_status))
         message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
         message = (message.replace("TOPIC_NAME", byline_topic if byline_topic else ""))
-        message = (message.replace("TIME_DELTA", str(self.__config.unresponsive_minutes_allowed)))
-        message = (message.replace("NOW_UPTIME", device.uptime.as_json() if device.uptime else ""))
+        message = (message.replace("TIME_ALLOWED", str(self.__config.unresponsive_minutes_allowed)))
+        message = (message.replace("NOW_UPTIME", device.uptime if device.uptime else ""))
+        message = (message.replace("FIELD_NAME", field_name if field_name else ""))
+        message = (message.replace("FIELD_TYPE", field_type if field_type else ""))
         self.send_email_alert(device, message)
 
     def get_last_run_time(self):
@@ -174,6 +182,16 @@ class DeviceMonitor(object):
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
 
+    # def recreate_pub_list(self, device_list):
+    #     s3_manager = S3Manager(self.__client, self.__resource_client)
+    #     json_data = OrderedDict()
+    #     for device in device_list:
+    #         data = (device.as_bylines_json())
+    #         bylines = data["bylines"]
+    #         json_data[data["dev-tag"]] = data["bylines"]
+    #     data_string = json.dumps(json_data)
+    #     data_string.encode()
+    #     s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
 
     # ----------------------------------------------------------------------------------------------------------------
 

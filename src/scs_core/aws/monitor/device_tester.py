@@ -5,8 +5,8 @@ Created on 08 Oct 2020
 """
 import json
 
-from scs_core.data.timedelta import Timedelta
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.timedelta import Timedelta
 
 
 class DeviceTester(object):
@@ -62,23 +62,51 @@ class DeviceTester(object):
         # TODO check necessary values for nulls
         device_bylines = self.__scs_device.bylines
         for byline in device_bylines:
-            if "climate" in byline.topic:
-                message = byline.message
-                if message is None:
-                    return False
-                json_message = json.loads(message)
-
             if "gases" in byline.topic:
                 message = byline.message
                 if message is None:
                     return False
+
                 json_message = json.loads(message)
+                values = json_message.get("val")
+
+                no2 = values.get("NO2")
+                for key, value in no2.items():
+                    if value is None:
+                        return False, key, "NO2"
+
+                ox = values.get("Ox")
+                for key, value in ox.items():
+                    if value is None:
+                        return False, key, "Ox"
+
+                co = values.get("CO")
+                for key, value in co.items():
+                    if value is None:
+                        return False, key, "CO"
+
+                sht = values.get("sht")
+                for key, value in sht.items():
+                    if value is None:
+                        return False, key, "sht"
+
+                so2 = values.get("SO2")
+                for key, value in so2.items():
+                    if value is None:
+                        return False, key, "SO2"
 
             if "particulates" in byline.topic:
                 message = byline.message
                 if message is None:
                     return False
+
                 json_message = json.loads(message)
+                values = json_message.get("val")
+                for key, value in values.items():
+                    if value is None:
+                        return False, key, "Particulates"
+
+            return True, None, None
 
 
     def was_rebooted(self, s3_device_uptime_list):

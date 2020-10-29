@@ -5,7 +5,6 @@ Created on 29 Sep 2020
 """
 from collections import OrderedDict
 
-
 # --------------------------------------------------------------------------------------------------------------------
 from scs_core.data.json import JSONable
 
@@ -68,6 +67,10 @@ class SCSDevice(JSONable):
     def latest_pub(self):
         return self.__latest_pub
 
+    @property
+    def bylines(self):
+        return self.__bylines
+
     @latest_pub.setter
     def latest_pub(self, latest_pub):
         self.__latest_pub = latest_pub
@@ -112,6 +115,14 @@ class SCSDevice(JSONable):
 
         jdict['dev-tag'] = self.__device_tag
         jdict["status-active"] = self.__is_active
+
+        return jdict
+
+    def as_bylines_json(self):
+        jdict = OrderedDict()
+
+        jdict['dev-tag'] = self.__device_tag
+        jdict["bylines"] = self.__bylines
 
         return jdict
     # ----------------------------------------------------------------------------------------------------------------
