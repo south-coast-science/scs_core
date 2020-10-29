@@ -150,7 +150,7 @@ class CSVReader(object):
         return "CSVReader:{iterable:%s, filename:%s, numeric_cast:%s, empty_string_as_null:%s, " \
                "start_row:%s, read_count:%s, header:%s}" % \
                (iterable, self.filename, self.__numeric_cast, self.__empty_string_as_null,
-                self.__start_row, self.read_count, Str.collection(self.header.paths()))
+                self.__start_row, self.read_count, Str.collection(list(self.header.paths())))
 
 
 # --------------------------------------------------------------------------------------------------------------------
