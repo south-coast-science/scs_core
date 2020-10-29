@@ -22,6 +22,8 @@ class CSVReader(object):
     classdocs
     """
 
+    __REPRESENTATIONS_OF_NULL = ('', 'NULL')
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
@@ -44,9 +46,9 @@ class CSVReader(object):
         return value
 
 
-    @staticmethod
-    def __nullify(value):
-        return None if value == "" else value
+    @classmethod
+    def __nullify(cls, value):
+        return None if value in cls.__REPRESENTATIONS_OF_NULL else value
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,10 +82,7 @@ class CSVReader(object):
 
         self.__read_count = 0                                                   # int
 
-        try:
-            self.__header = CSVHeader.construct_from_paths(paths)               # CSVHeader
-        except KeyError:
-            raise KeyError(', '.join(paths))
+        self.__header = CSVHeader.construct_from_paths(paths)                   # CSVHeader
 
 
     # ----------------------------------------------------------------------------------------------------------------
