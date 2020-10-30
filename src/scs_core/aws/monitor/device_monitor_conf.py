@@ -7,7 +7,6 @@ Created on 30 Sep 2020
 from collections import OrderedDict
 
 from scs_core.aws.monitor.device_monitor import DeviceMonitor
-
 from scs_core.data.json import PersistentJSONable
 
 
@@ -49,8 +48,8 @@ class DeviceMonitorConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def create_device_monitor(self, email_client, client, resource_client, host=None):
-        return DeviceMonitor(self, email_client, client, resource_client, host)
+    def create_device_monitor(self, client, resource_client, email_client, host=None):
+        return DeviceMonitor(self, client, resource_client, email_client, host)
 
     # ----------------------------------------------------------------------------------------------------------------
 

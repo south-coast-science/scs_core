@@ -26,15 +26,13 @@ class EmailQueue(JSONable):
 
         return EmailQueue(queue)
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, queue = None):
+    def __init__(self, queue=None):
         """
         Constructor
         """
         self.__queue = queue
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -45,18 +43,21 @@ class EmailQueue(JSONable):
 
         return jdict
 
-
     def pop_next(self):
         if self.__queue is None:
             return None, None
 
         json_list = self.as_json()
-        key = list(json_list)[0]
-        value = json_list.get(key)
+        queue = json_list.get("queue")
 
-        json_list.pop(key)
-        queue = json_list.get('queue')
-        self.__queue = queue
+        if len(queue) < 1:
+            return None, None
+        key = list(queue)[0]
+        value = queue.get(key)
+
+        queue.pop(key)
+        new_queue = json_list.get('queue')
+        self.__queue = new_queue
         return key, value
 
     def add_item(self, device_tag, message):
@@ -71,8 +72,6 @@ class EmailQueue(JSONable):
     @property
     def queue(self):
         return self.__queue
-
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

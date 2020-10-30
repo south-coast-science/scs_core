@@ -9,12 +9,15 @@ from collections import OrderedDict
 from multiprocessing import Manager
 
 from scs_core.aws.monitor.email_queue import EmailQueue
+from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
 class EmailQueueManager(SynchronisedProcess):
-    __WAIT_PERIOD = 1 # seconds
-    def __init__(self):
+    __WAIT_PERIOD = 10  # seconds
+    __MAX_NUM_RETRIES = 5
+
+    def __init__(self, email_client):
         """
         Constructor
         """
@@ -22,24 +25,46 @@ class EmailQueueManager(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
+        self.__proc = None
+
+        self.__email_client = email_client
+        self.__retries = 0
+
+    def start(self):
+        self.__email_client.open_server()
+        super().start()
+
+    def stop(self):
+        time.sleep(self.__WAIT_PERIOD * 2)
+        super().stop()
 
     def run(self):
-        while True:
-            k, v = None, None
 
-            try:
-                with self._lock:
-                    if not self._value is None:
+        try:
+            timer = IntervalTimer(10)
+
+            while timer.true():
+                k, v = None, None
+                if self._value is not None:
+                    with self._lock:
                         queue = EmailQueue.construct_from_jdict(OrderedDict(self._value))
-                        k, v = queue.pop_next()
-                        # self.set_queue(queue)
-                print(k, v)
+                        if queue is not None:
+                            k, v = queue.pop_next()
+                    if k is not None and v is not None:
+                        if self.__email_client.send_mime_email(v, k):
+                            self.set_queue(queue)
+                        # TODO: Else retry x times?
+
                 time.sleep(self.__WAIT_PERIOD)
-            except (ConnectionError, KeyboardInterrupt, SystemExit):
-                pass
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
+            pass
 
     def set_queue(self, queue):
         with self._lock:
             queue.as_list(self._value)
-            # print(self._value)
+        return True
 
+    def get_queue(self):
+        with self._lock:
+            queue = EmailQueue.construct_from_jdict(OrderedDict(self._value))
+        return queue

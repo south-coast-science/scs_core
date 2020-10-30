@@ -4,6 +4,7 @@ Created on 08 Oct 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 import json
+from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
@@ -31,19 +32,33 @@ class DeviceTester(object):
         now = LocalizedDatetime.now()
         delta = now - latest_pub
 
-        return delta.minutes > self.__config.unresponsive_minutes_allowed
+        elapsed_minutes = delta.total_seconds() / 60
 
-    def is_byline_inactive(self, byline):
+        return elapsed_minutes > self.__config.unresponsive_minutes_allowed
+
+    def get_byline_activity(self):
+        device_data = OrderedDict()
+        byline_list = self.__scs_device.bylines
+        for line in byline_list:
+            active = self.is_byline_active(line)
+            topic = line.topic
+            device_data[topic] = active
+        self.__scs_device.byline_status = device_data
+
+    def is_byline_active(self, byline):
         latest_pub = byline.pub
         if latest_pub is None:
-            return True
+            return False
         else:
             now = LocalizedDatetime.now()
             delta = now - latest_pub
-            return delta.minutes > self.__config.unresponsive_minutes_allowed
+            elapsed_minutes = delta.total_seconds() / 60
+
+            return elapsed_minutes > self.__config.unresponsive_minutes_allowed
+
 
     def has_status_changed(self, s3_device_status_list):
-        is_active = not self.is_inactive()
+        is_active = self.__scs_device.is_active
         old_device_status_list = json.loads(s3_device_status_list)
         was_active = old_device_status_list[self.__scs_device.device_tag]
         if bool(is_active) == bool(was_active):
@@ -51,15 +66,27 @@ class DeviceTester(object):
         else:
             return True
 
-    def is_publishing_on_all_channels(self):
+    def has_byline_status_changed(self, s3_byline_status_list):
         device_bylines = self.__scs_device.bylines
-        for byline in device_bylines:
-            if self.is_byline_inactive(byline):
-                return True, byline
-            return False, None
+        old_byline_status_list = json.loads(s3_byline_status_list)
+        device_tag = self.__scs_device.device_tag
+        if device_tag in old_byline_status_list:
+            old_byline_status_list = old_byline_status_list[device_tag]
+            if old_byline_status_list is None:
+                return False, False
+            for line in device_bylines:
+                active = self.is_byline_active(line)
+                if not active:
+                    topic = line.topic
+                    for key, value in old_byline_status_list.items():
+                        if key == topic:
+                            if value is not active:
+                                return True, topic
+
+        return False, None
 
     def check_values(self):
-        # TODO check necessary values for nulls
+
         device_bylines = self.__scs_device.bylines
         for byline in device_bylines:
             if "gases" in byline.topic:
