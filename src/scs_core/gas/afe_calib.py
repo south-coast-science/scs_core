@@ -16,12 +16,15 @@ import json
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.str import Str
+from scs_core.data.timedelta import Timedelta
 
 from scs_core.client.http_client import HTTPClient
 
+from scs_core.gas.calib_currency import CalibCurrency
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
 
 from scs_core.gas.sensor import Sensor
@@ -218,6 +221,21 @@ class AFECalib(PersistentJSONable):
                 return i
 
         return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def currency(self):
+        return self.currency_at(LocalizedDatetime.now())
+
+
+    def currency_at(self, now):
+        calibrated = LocalizedDatetime.construct_from_date(self.calibrated_on)
+        calibrated_noon = calibrated + Timedelta(hours=12)
+
+        delta = now - calibrated_noon
+
+        return CalibCurrency(now, int(delta.total_seconds()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
