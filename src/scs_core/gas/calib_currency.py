@@ -2,10 +2,14 @@
 Created on 31 Oct 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"rec": "2016-11-01T12:00:00Z", "calib-delta": 0}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
 
@@ -16,6 +20,8 @@ class CalibCurrency(JSONable):
     """
     classdocs
     """
+
+    __TIME_OFFSET = Timedelta(hours=12)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -28,6 +34,16 @@ class CalibCurrency(JSONable):
         delta = jdict.get('calib-delta')
 
         return cls(rec, delta)
+
+
+    @classmethod
+    def construct(cls, calibrated_on, rec):
+        calibrated = LocalizedDatetime.construct_from_date(calibrated_on)
+        calibrated_noon = calibrated + cls.__TIME_OFFSET
+
+        delta = rec - calibrated_noon
+
+        return cls(rec, delta.total_seconds())
 
 
     # ----------------------------------------------------------------------------------------------------------------
