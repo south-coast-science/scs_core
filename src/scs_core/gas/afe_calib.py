@@ -245,11 +245,11 @@ class AFECalib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def currency(self):
-        return self.currency_at(LocalizedDatetime.now())
+    def age(self):
+        return self.age_at(LocalizedDatetime.now())
 
 
-    def currency_at(self, rec):
+    def age_at(self, rec):
         return CalibCurrency.age(self.calibrated_on, rec)
 
 
