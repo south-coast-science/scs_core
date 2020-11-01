@@ -48,7 +48,7 @@ class CalibCurrency(object):
 
         age = rec - calibrated_noon
 
-        return age.total_seconds()
+        return int(age.total_seconds())
 
 
 # --------------------------------------------------------------------------------------------------------------------
