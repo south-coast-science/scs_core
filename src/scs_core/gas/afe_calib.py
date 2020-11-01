@@ -20,14 +20,35 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.str import Str
+from scs_core.data.timedelta import Timedelta
 
 from scs_core.client.http_client import HTTPClient
 
-from scs_core.gas.calib_currency import CalibCurrency
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
 
 from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CalibCurrency(object):
+    """
+    classdocs
+    """
+
+    __TIME_OFFSET = Timedelta(hours=12)
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def age(cls, calibrated_on, rec):
+        calibrated = LocalizedDatetime.construct_from_date(calibrated_on)
+        calibrated_noon = calibrated + cls.__TIME_OFFSET
+
+        age = rec - calibrated_noon
+
+        return age.total_seconds()
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -229,7 +250,7 @@ class AFECalib(PersistentJSONable):
 
 
     def currency_at(self, rec):
-        return CalibCurrency.construct(self.calibrated_on, rec)
+        return CalibCurrency.age(self.calibrated_on, rec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
