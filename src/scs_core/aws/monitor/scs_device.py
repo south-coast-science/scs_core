@@ -36,12 +36,18 @@ class SCSDevice(JSONable):
         self.__is_active = is_active
         self.__bylines = bylines
         self.__uptime = None
+        self.__byline_status = None
+        self.__email_sent = False
 
 
     # ----------------------------------------------------------------------------------------------------------------
     @property
     def device_tag(self):
         return self.__device_tag
+
+    @property
+    def email_sent(self):
+        return self.__email_sent
 
     @property
     def email_list(self):
@@ -68,8 +74,8 @@ class SCSDevice(JSONable):
         return self.__latest_pub
 
     @property
-    def bylines(self):
-        return self.__bylines
+    def byline_status(self):
+        return self.__byline_status
 
     @latest_pub.setter
     def latest_pub(self, latest_pub):
@@ -87,6 +93,14 @@ class SCSDevice(JSONable):
     def uptime(self, uptime):
         self.__uptime = uptime
 
+    @byline_status.setter
+    def byline_status(self, byline_status):
+        self.__byline_status = byline_status
+
+    @email_sent.setter
+    def email_sent(self, email_sent):
+        self.__email_sent = email_sent
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -99,6 +113,7 @@ class SCSDevice(JSONable):
         jdict["dm-status"] = self.__dm_status
         jdict["bylines"] = self.__bylines
         jdict["uptime"] = self.__uptime
+        jdict["byline_status"] = self.__byline_status
 
         return jdict
 

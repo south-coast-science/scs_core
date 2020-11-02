@@ -5,18 +5,20 @@ Created on 25 Sep 2020
 """
 import json
 import os
+import time
 from collections import OrderedDict
 
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.manager.byline_manager import BylineManager
 from scs_core.aws.manager.s3_manager import S3Manager
 from scs_core.aws.monitor.device_tester import DeviceTester
+from scs_core.aws.monitor.email_queue import EmailQueue
+from scs_core.aws.monitor.email_queue_manager import EmailQueueManager
 from scs_core.aws.monitor.scs_device import SCSDevice
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
 
 
-# TODO Byline_inactive will keep reporting forever - new conf to say which bylines were/are inactive ?
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
@@ -27,15 +29,18 @@ class DeviceMonitor(object):
     __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
-    def __init__(self, device_monitor_conf, email_client, client, resource_client, host=None):
+    def __init__(self, device_monitor_conf, client, resource_client, email_client, host=None):
         """
         Constructor
         """
         self.__config = device_monitor_conf
         self.__api_auth = APIAuth.load(host) if host else None
-        self.__email_client = email_client
         self.__client = client
         self.__resource_client = resource_client
+        self.__email_queue = EmailQueue()
+        self.__email_queue_manager = EmailQueueManager(email_client)
+        self.__email_client = email_client
+        self.__expected_queue_length = 0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -44,16 +49,16 @@ class DeviceMonitor(object):
         s3_manager = S3Manager(self.__client, self.__resource_client)
         device_statuses = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
         device_uptimes = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
+        device_byline_statuses = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
 
         device_list = self.get_devices_by_byline()
 
-        # open email server
-        self.__email_client.open_server()
+        # start eqm
+        self.__email_queue_manager.start()
 
         # Do all tests
         iterating = 0
         while iterating < len(device_list):
-            email_sent = False
             this_dev = device_list[iterating]
             self.get_latest_pubs(this_dev)
 
@@ -66,47 +71,67 @@ class DeviceMonitor(object):
             if device_tester.has_status_changed(device_statuses):
                 this_dev.dm_status = "activity_change"
                 self.generate_email(this_dev)
-                email_sent = True
+                this_dev.email_sent = True
 
             # see if all topics are published on recently
-            if not email_sent:
-                inactive, byline = device_tester.is_publishing_on_all_channels()
+            device_tester.get_byline_activity()
+            if not this_dev.email_sent:
+                inactive, topic = device_tester.has_byline_status_changed(device_byline_statuses)
                 if inactive:
-                    topic = byline.topic
                     this_dev.dm_status = "byline"
                     self.generate_email(this_dev, topic)
-                    email_sent = True
+                    this_dev.email_sent = True
 
             # check for weird (null) values
-            if not email_sent:
-                is_okay, field, value = device_tester.check_values()
+            if not this_dev.email_sent:
+                is_okay, field, field_type = device_tester.check_values()
                 this_dev.dm_status = "values"
+                if not is_okay:
+                    self.generate_email(this_dev, None, field, field_type)
+                    this_dev.email_sent = True
 
             # check if rebooted
             if device_tester.was_rebooted(device_uptimes):
                 this_dev.dm_status = "reboot"
-                if not email_sent:
+                if not this_dev.email_sent:
                     self.generate_email(this_dev)
-                    email_sent = True
+                    this_dev.email_sent = True
 
             iterating += 1
 
         self.recreate_status_list(device_list)
         self.recreate_uptime_list(device_list)
+        self.recreate_pub_list(device_list)
 
-        # cleanup
-        self.__email_client.close_server()
+        # let the email queue finish...
+        if self.__email_queue.queue:
+            while len(self.__email_queue.queue) > 0:
+                self.__email_queue = self.__email_queue_manager.get_queue()
+                keys_left = len(self.__email_queue.queue)
+                print("Keys left:%s" % keys_left)
+                time.sleep(10)
+
+    def cleanup(self):
+        self.__email_queue_manager.stop()
 
     def send_email_alert(self, this_dev, message):
+        self.__expected_queue_length = self.__expected_queue_length + 1
+        print("Expected queue length:%s" % self.__expected_queue_length)
         if this_dev.email_list is None:
             recipients = []
         else:
             recipients = this_dev.email_list
 
         recipients.append(self.__config.email_name)
-        for recipient in recipients:
-           # pass
-            self.__email_client.send_mime_email(recipient, message, this_dev.device_tag)
+        self.__email_queue = self.__email_queue_manager.get_queue()
+        if self.__email_queue is None:
+            self.__email_queue = EmailQueue.construct_from_jdict({this_dev.device_tag: message})
+
+        else:
+            self.__email_queue.add_item(this_dev.device_tag, message)
+            print("Current queue length:%s" % len(self.__email_queue.queue))
+        while not self.__email_queue_manager.set_queue(self.__email_queue):
+            continue
 
     def get_devices_by_byline(self):
         # TODO change with direct call to lambda ARN
@@ -120,9 +145,8 @@ class DeviceMonitor(object):
         return device_list
 
     def generate_email(self, device, byline_topic=None, field_name=None, field_type=None):
-        message = ""
         template = None
-        old_status = "active" if not device.is_active else "inactive"
+        old_status = "inactive" if device.is_active else "active"
         now_status = "active" if device.is_active else "inactive"
 
         # Get templates
@@ -166,8 +190,7 @@ class DeviceMonitor(object):
         s3_manager = S3Manager(self.__client, self.__resource_client)
         json_data = OrderedDict()
         for device in device_list:
-            data = device.as_status_json()
-            json_data[data["dev-tag"]] = data["status-active"]
+            json_data[device.device_tag] = device.is_active
         data_string = json.dumps(json_data)
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
@@ -182,16 +205,14 @@ class DeviceMonitor(object):
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
 
-    # def recreate_pub_list(self, device_list):
-    #     s3_manager = S3Manager(self.__client, self.__resource_client)
-    #     json_data = OrderedDict()
-    #     for device in device_list:
-    #         data = (device.as_bylines_json())
-    #         bylines = data["bylines"]
-    #         json_data[data["dev-tag"]] = data["bylines"]
-    #     data_string = json.dumps(json_data)
-    #     data_string.encode()
-    #     s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
+    def recreate_pub_list(self, device_list):
+        s3_manager = S3Manager(self.__client, self.__resource_client)
+        json_data = OrderedDict()
+        for device in device_list:
+            json_data[device.device_tag] = device.byline_status
+        data_string = json.dumps(json_data)
+        data_string.encode()
+        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
 
     # ----------------------------------------------------------------------------------------------------------------
 
