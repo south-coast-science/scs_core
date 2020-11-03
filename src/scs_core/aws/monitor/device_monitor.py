@@ -8,13 +8,14 @@ import os
 import time
 from collections import OrderedDict
 
-from scs_core.aws.client.api_auth import APIAuth
-from scs_core.aws.manager.byline_manager import BylineManager
+from scs_core.aws.data.byline import TopicBylineGroup
 from scs_core.aws.manager.s3_manager import S3Manager
 from scs_core.aws.monitor.device_tester import DeviceTester
-from scs_core.aws.monitor.email_queue import EmailQueue
-from scs_core.aws.monitor.email_queue_manager import EmailQueueManager
 from scs_core.aws.monitor.scs_device import SCSDevice
+
+from scs_core.email.email_queue import EmailQueue
+from scs_core.email.email_queue_manager import EmailQueueManager
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
 
@@ -29,18 +30,17 @@ class DeviceMonitor(object):
     __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
-    def __init__(self, device_monitor_conf, client, resource_client, email_client, host=None):
+    def __init__(self, device_monitor_conf, client, resource_client, email_client, lambda_client):
         """
         Constructor
         """
         self.__config = device_monitor_conf
-        self.__api_auth = APIAuth.load(host) if host else None
+        self.__lambda_client = lambda_client
         self.__client = client
         self.__resource_client = resource_client
         self.__email_queue = EmailQueue()
         self.__email_queue_manager = EmailQueueManager(email_client)
         self.__email_client = email_client
-        self.__expected_queue_length = 0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ class DeviceMonitor(object):
             this_dev = device_list[iterating]
             self.get_latest_pubs(this_dev)
 
-            device_tester = DeviceTester(this_dev, self.__config, self.__api_auth)
+            device_tester = DeviceTester(this_dev, self.__config)
             # Check if device has stopped/started reporting
             if device_tester.is_inactive():
                 this_dev.is_active = False
@@ -115,8 +115,6 @@ class DeviceMonitor(object):
         self.__email_queue_manager.stop()
 
     def send_email_alert(self, this_dev, message):
-        self.__expected_queue_length = self.__expected_queue_length + 1
-        print("Expected queue length:%s" % self.__expected_queue_length)
         if this_dev.email_list is None:
             recipients = []
         else:
@@ -129,15 +127,23 @@ class DeviceMonitor(object):
 
         else:
             self.__email_queue.add_item(this_dev.device_tag, message)
-            print("Current queue length:%s" % len(self.__email_queue.queue))
         while not self.__email_queue_manager.set_queue(self.__email_queue):
             continue
 
     def get_devices_by_byline(self):
-        # TODO change with direct call to lambda ARN
         device_list = []
-        manager = BylineManager(self.__api_auth)
-        group = manager.find_bylines_for_topic("", "/control")
+
+        response = self.__lambda_client.invoke(
+            FunctionName="arn:aws:lambda:us-west-2:696437392763:function:deviceTopics:DMDeviceTopics",
+            InvocationType='RequestResponse',
+        )
+
+        pl = response.get("Payload")
+        data = pl.read()
+        data.decode()
+        json_data = json.loads(data)
+        body = json_data.get("body")
+        group = TopicBylineGroup.construct_from_jdict(body, excluded="/control")
         for device in group.devices:
             device_bylines = group.bylines_for_device(device)
             temp = SCSDevice(device, None, False, device_bylines)
@@ -230,3 +236,6 @@ class DeviceMonitor(object):
         scs_device.latest_pub = latest
 
     # ----------------------------------------------------------------------------------------------------------------
+    def __str__(self, *args, **kwargs):
+        return "DeviceMonitor:{config:%s, email_queue:%s, email_client:%s}" % \
+               (self.__config, self.__email_queue, self.__email_client)

@@ -13,13 +13,12 @@ from scs_core.data.timedelta import Timedelta
 class DeviceTester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, scs_device, config, host):
+    def __init__(self, scs_device, config):
         """
         Constructor
         """
         self.__scs_device = scs_device
         self.__config = config
-        self.__host = host
 
     # ----------------------------------------------------------------------------------------------------------------
 
