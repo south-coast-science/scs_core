@@ -5,7 +5,6 @@ Created on 29 Sep 2020
 """
 from collections import OrderedDict
 
-
 # --------------------------------------------------------------------------------------------------------------------
 from scs_core.data.json import JSONable
 
@@ -36,6 +35,10 @@ class SCSDevice(JSONable):
         self.__email_list = email_list
         self.__is_active = is_active
         self.__bylines = bylines
+        self.__uptime = None
+        self.__byline_status = None
+        self.__email_sent = False
+        self.__old_uptime = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -44,12 +47,24 @@ class SCSDevice(JSONable):
         return self.__device_tag
 
     @property
+    def email_sent(self):
+        return self.__email_sent
+
+    @property
     def email_list(self):
         return self.__email_list
 
     @property
     def bylines(self):
         return self.__bylines
+
+    @property
+    def uptime(self):
+        return self.__uptime
+
+    @property
+    def old_uptime(self):
+        return self.__old_uptime
 
     @property
     def is_active(self):
@@ -63,6 +78,10 @@ class SCSDevice(JSONable):
     def latest_pub(self):
         return self.__latest_pub
 
+    @property
+    def byline_status(self):
+        return self.__byline_status
+
     @latest_pub.setter
     def latest_pub(self, latest_pub):
         self.__latest_pub = latest_pub
@@ -75,6 +94,22 @@ class SCSDevice(JSONable):
     def is_active(self, status_active):
         self.__is_active = status_active
 
+    @uptime.setter
+    def uptime(self, uptime):
+        self.__uptime = uptime
+
+    @old_uptime.setter
+    def old_uptime(self, old_uptime):
+        self.__old_uptime = old_uptime
+
+    @byline_status.setter
+    def byline_status(self, byline_status):
+        self.__byline_status = byline_status
+
+    @email_sent.setter
+    def email_sent(self, email_sent):
+        self.__email_sent = email_sent
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -83,9 +118,37 @@ class SCSDevice(JSONable):
         jdict['dev-tag'] = self.__device_tag
         jdict['email'] = self.__email_list
         jdict["status-active"] = self.__is_active
+        jdict["latest-pub"] = self.__latest_pub
+        jdict["dm-status"] = self.__dm_status
+        jdict["bylines"] = self.__bylines
+        jdict["uptime"] = self.__uptime
+        jdict["byline_status"] = self.__byline_status
 
         return jdict
 
+    def as_uptime_json(self):
+        jdict = OrderedDict()
+
+        jdict['dev-tag'] = self.__device_tag
+        jdict["uptime"] = self.__uptime
+
+        return jdict
+
+    def as_status_json(self):
+        jdict = OrderedDict()
+
+        jdict['dev-tag'] = self.__device_tag
+        jdict["status-active"] = self.__is_active
+
+        return jdict
+
+    def as_bylines_json(self):
+        jdict = OrderedDict()
+
+        jdict['dev-tag'] = self.__device_tag
+        jdict["bylines"] = self.__bylines
+
+        return jdict
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
