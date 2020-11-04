@@ -6,19 +6,26 @@ Created on 28 Sep 2020
 https://realpython.com/python-send-email/#option-1-setting-up-a-gmail-account-for-development
 """
 import smtplib
-import ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from socket import gaierror
 
 
+# TODO some sort of email auth thing so you don't have to turn down the security on the account
 # --------------------------------------------------------------------------------------------------------------------
 class EmailClient(object):
-
     __PORT = 465
     __SMTP_SERVER = "smtp.gmail.com"
-    __EMAIL_ADDRESS = "devicetest147147@gmail.com"
-    __EMAIL_PASSWORD = "Southern!"
 
-    # Change from private class vars to conf eventually ?
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def device_monitor_client(cls, device_monitor_conf):
+        email_address = device_monitor_conf.email_name
+        email_password = device_monitor_conf.email_password
+        return EmailClient(cls.__PORT, cls.__SMTP_SERVER, email_address, email_password)
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, port=0, smtp_server="", login_address="", password=""):
         """
@@ -28,26 +35,50 @@ class EmailClient(object):
         self.__smtp_server = smtp_server
         self.__sender_email = login_address
         self.__password = password
+        self.__server = None
 
     # ----------------------------------------------------------------------------------------------------------------
-    def send_email(self, receiver, message):
-        context = ssl.create_default_context()
-        message = 'Subject: {}\n\n{}'.format("SCS Device Message", message)
+
+    def open_server(self):
+        # Should this go in the constructor?
         if not self.__port or not self.__smtp_server or not self.__sender_email or not self.__password:
             return "Email Client Not Configured"
         try:
-            with smtplib.SMTP_SSL(self.__smtp_server, self.__port, context=context) as server:
-                server.login(self.__sender_email, self.__password)
-                server.sendmail(self.__sender_email, receiver, message)
+            self.__server = smtplib.SMTP_SSL('%s: %s' % (self.__smtp_server, self.__port))
+            self.__server.login(self.__sender_email, self.__password)
         except (gaierror, ConnectionRefusedError):
             return 'Failed to connect to SMTP Server (Refused) '
         except smtplib.SMTPServerDisconnected:
             return 'Failed to connect to SMTP Server (Disconnected) '
         except smtplib.SMTPException as e:
             return 'SMTP error occurred: ' + str(e)
-        return "Sent"
+        return "ok"
 
-    def default_client(self):
-        return EmailClient(self.__PORT, self.__SMTP_SERVER, self.__EMAIL_ADDRESS, self.__EMAIL_PASSWORD)
+    def close_server(self):
+        if not self.__server:
+            return "No server open"
+        self.__server.quit()
+
+    def send_mime_email(self, message, device):
+        if not self.__server:
+            return "No server open"
+
+        msg = MIMEMultipart()
+        msg['From'] = self.__sender_email
+        msg['To'] = self.__sender_email
+        # TODO: Add extra recipients somewhere for each device
+        msg['Subject'] = "SCS Device: %s" % device
+        msg.attach(MIMEText(message, 'plain'))
+
+        try:
+            self.__server.sendmail(msg['From'], msg['To'], msg.as_string())
+        except (gaierror, ConnectionRefusedError):
+            return 'Failed to connect to SMTP Server (Refused) '
+        except smtplib.SMTPServerDisconnected:
+            return 'Failed to connect to SMTP Server (Disconnected) '
+        except smtplib.SMTPException as e:
+            return 'SMTP error occurred: ' + str(e)
+
+        return True
 
     # ----------------------------------------------------------------------------------------------------------------

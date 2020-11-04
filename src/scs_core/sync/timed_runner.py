@@ -32,6 +32,8 @@ class TimedRunner(Runner):
 
 
     def samples(self, sampler):
+        self.reset()                                # reset to prevent uneven intervals
+
         if self.__sample_count is None:
             while self.__timer.true():
                 yield sampler.sample()
