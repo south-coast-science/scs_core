@@ -38,6 +38,7 @@ class SCSDevice(JSONable):
         self.__uptime = None
         self.__byline_status = None
         self.__email_sent = False
+        self.__old_uptime = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +61,10 @@ class SCSDevice(JSONable):
     @property
     def uptime(self):
         return self.__uptime
+
+    @property
+    def old_uptime(self):
+        return self.__old_uptime
 
     @property
     def is_active(self):
@@ -92,6 +97,10 @@ class SCSDevice(JSONable):
     @uptime.setter
     def uptime(self, uptime):
         self.__uptime = uptime
+
+    @old_uptime.setter
+    def old_uptime(self, old_uptime):
+        self.__old_uptime = old_uptime
 
     @byline_status.setter
     def byline_status(self, byline_status):

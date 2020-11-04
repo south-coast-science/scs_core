@@ -152,6 +152,7 @@ class DeviceTester(object):
                     if period < delta_old_period:
                         # device has been reset
                         self.__scs_device.uptime = period.as_json()
+                        self.__scs_device.old_uptime = delta_old_period.as_json()
                         return True
                     else:
                         # device has not been reset
