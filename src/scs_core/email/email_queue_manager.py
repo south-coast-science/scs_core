@@ -8,7 +8,7 @@ import time
 from collections import OrderedDict
 from multiprocessing import Manager
 
-from scs_core.aws.monitor.email_queue import EmailQueue
+from scs_core.email.email_queue import EmailQueue
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
@@ -25,10 +25,7 @@ class EmailQueueManager(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
-        self.__proc = None
-
         self.__email_client = email_client
-        self.__retries = 0
 
     def start(self):
         self.__email_client.open_server()
@@ -53,7 +50,6 @@ class EmailQueueManager(SynchronisedProcess):
                     if k is not None and v is not None:
                         if self.__email_client.send_mime_email(v, k):
                             self.set_queue(queue)
-                        # TODO: Else retry x times?
 
                 time.sleep(self.__WAIT_PERIOD)
         except (ConnectionError, KeyboardInterrupt, SystemExit):
@@ -68,3 +64,6 @@ class EmailQueueManager(SynchronisedProcess):
         with self._lock:
             queue = EmailQueue.construct_from_jdict(OrderedDict(self._value))
         return queue
+
+    def __str__(self, *args, **kwargs):
+        return "EmailQueueManager:{queue:%s}" % self.get_queue()

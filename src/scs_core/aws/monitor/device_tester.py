@@ -13,13 +13,12 @@ from scs_core.data.timedelta import Timedelta
 class DeviceTester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, scs_device, config, host):
+    def __init__(self, scs_device, config):
         """
         Constructor
         """
         self.__scs_device = scs_device
         self.__config = config
-        self.__host = host
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -153,6 +152,7 @@ class DeviceTester(object):
                     if period < delta_old_period:
                         # device has been reset
                         self.__scs_device.uptime = period.as_json()
+                        self.__scs_device.old_uptime = delta_old_period.as_json()
                         return True
                     else:
                         # device has not been reset
