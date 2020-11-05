@@ -143,22 +143,23 @@ class DeviceTester(object):
         for byline in device_bylines:
             if "status" in byline.topic:
                 message = byline.message
-                if message is None:
-                    return False
-                json_message = json.loads(message)
-                period = Timedelta().construct_from_jdict(json_message["val"]["up"]["period"])
-                if old_period is not None:
-                    delta_old_period = Timedelta().construct_from_jdict(old_period)
-                    if period < delta_old_period:
-                        # device has been reset
-                        self.__scs_device.uptime = period.as_json()
-                        self.__scs_device.old_uptime = delta_old_period.as_json()
-                        return True
+                if message is not None:
+                    json_message = json.loads(message)
+                    period = Timedelta().construct_from_jdict(json_message["val"]["up"]["period"])
+                    if old_period is not None:
+                        delta_old_period = Timedelta().construct_from_jdict(old_period)
+                        if period < delta_old_period:
+                            # device has been reset
+                            self.__scs_device.uptime = period.as_json()
+                            self.__scs_device.old_uptime = delta_old_period.as_json()
+                            return True
+                        else:
+                            # device has not been reset
+                            self.__scs_device.uptime = period.as_json()
+                            return False
                     else:
-                        # device has not been reset
                         self.__scs_device.uptime = period.as_json()
                         return False
-                else:
-                    return False
+        return False
 
     # ----------------------------------------------------------------------------------------------------------------

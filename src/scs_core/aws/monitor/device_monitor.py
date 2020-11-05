@@ -57,7 +57,7 @@ class DeviceMonitor(object):
         iterating = 0
         while iterating < len(device_list):
             this_dev = device_list[iterating]
-            logging.info('Testing Device %s of %s: %s' % (iterating, len(device_list), this_dev.device_tag))
+            logging.debug('Testing Device %s of %s: %s' % (iterating, len(device_list), this_dev.device_tag))
 
             self.get_latest_pubs(this_dev)
 
@@ -65,10 +65,10 @@ class DeviceMonitor(object):
             # Check if device has stopped/started reporting
             if device_tester.is_inactive():
                 this_dev.is_active = False
-                logging.info('Device %s is inactive' % this_dev.device_tag)
+                logging.debug('Device %s is inactive' % this_dev.device_tag)
             else:
                 this_dev.is_active = True
-                logging.info('Device %s is active' % this_dev.device_tag)
+                logging.debug('Device %s is active' % this_dev.device_tag)
             if device_tester.has_status_changed(device_statuses):
                 logging.info('Device %s has changed status' % this_dev.device_tag)
                 this_dev.dm_status = "activity_change"
@@ -141,13 +141,13 @@ class DeviceMonitor(object):
     def get_devices_by_byline(self):
         device_list = []
 
-        logging.info('Getting device topics response...')
+        logging.debug('Getting device topics response...')
         response = self.__lambda_client.invoke(
             FunctionName="arn:aws:lambda:us-west-2:696437392763:function:deviceTopics",
             InvocationType='RequestResponse',
         )
 
-        logging.info('Received device topics response...')
+        logging.debug('Received device topics response...')
         pl = response.get("Payload")
         data = pl.read()
         data.decode()
@@ -211,7 +211,7 @@ class DeviceMonitor(object):
         data_string = json.dumps(json_data)
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
-        logging.info('Uploaded new status list to s3')
+        logging.debug('Uploaded new status list to s3')
 
     def recreate_uptime_list(self, device_list):
         s3_manager = S3Manager(self.__client, self.__resource_client)
@@ -222,7 +222,7 @@ class DeviceMonitor(object):
         data_string = json.dumps(json_data)
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
-        logging.info('Uploaded new uptime list to s3')
+        logging.debug('Uploaded new uptime list to s3')
 
     def recreate_pub_list(self, device_list):
         s3_manager = S3Manager(self.__client, self.__resource_client)
@@ -232,7 +232,7 @@ class DeviceMonitor(object):
         data_string = json.dumps(json_data)
         data_string.encode()
         s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
-        logging.info('Uploaded new pub list to s3')
+        logging.debug('Uploaded new pub list to s3')
 
     # ----------------------------------------------------------------------------------------------------------------
 
