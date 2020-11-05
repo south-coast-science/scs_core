@@ -53,7 +53,7 @@ class DeviceTester(object):
             delta = now - latest_pub
             elapsed_minutes = delta.total_seconds() / 60
 
-            return elapsed_minutes > self.__config.unresponsive_minutes_allowed
+            return elapsed_minutes < self.__config.unresponsive_minutes_allowed
 
 
     def has_status_changed(self, s3_device_status_list):
