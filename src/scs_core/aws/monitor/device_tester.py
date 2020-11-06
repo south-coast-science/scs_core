@@ -58,8 +58,7 @@ class DeviceTester(object):
 
     def has_status_changed(self, s3_device_status_list):
         is_active = self.__scs_device.is_active
-        old_device_status_list = json.loads(s3_device_status_list)
-        was_active = old_device_status_list[self.__scs_device.device_tag]
+        was_active = s3_device_status_list[self.__scs_device.device_tag]
         if bool(is_active) == bool(was_active):
             return False
         else:
@@ -67,10 +66,9 @@ class DeviceTester(object):
 
     def has_byline_status_changed(self, s3_byline_status_list):
         device_bylines = self.__scs_device.bylines
-        old_byline_status_list = json.loads(s3_byline_status_list)
         device_tag = self.__scs_device.device_tag
-        if device_tag in old_byline_status_list:
-            old_byline_status_list = old_byline_status_list[device_tag]
+        if device_tag in s3_byline_status_list:
+            old_byline_status_list = s3_byline_status_list[device_tag]
             if old_byline_status_list is None:
                 return False, False
             for line in device_bylines:
@@ -138,8 +136,7 @@ class DeviceTester(object):
     def was_rebooted(self, s3_device_uptime_list):
         device_bylines = self.__scs_device.bylines
 
-        old_device_uptime_list = json.loads(s3_device_uptime_list)
-        old_period = old_device_uptime_list[self.__scs_device.device_tag]
+        old_period = s3_device_uptime_list[self.__scs_device.device_tag]
         for byline in device_bylines:
             if "status" in byline.topic:
                 message = byline.message
