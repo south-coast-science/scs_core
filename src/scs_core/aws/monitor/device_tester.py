@@ -53,13 +53,12 @@ class DeviceTester(object):
             delta = now - latest_pub
             elapsed_minutes = delta.total_seconds() / 60
 
-            return elapsed_minutes > self.__config.unresponsive_minutes_allowed
+            return elapsed_minutes < self.__config.unresponsive_minutes_allowed
 
 
     def has_status_changed(self, s3_device_status_list):
         is_active = self.__scs_device.is_active
-        old_device_status_list = json.loads(s3_device_status_list)
-        was_active = old_device_status_list[self.__scs_device.device_tag]
+        was_active = s3_device_status_list[self.__scs_device.device_tag]
         if bool(is_active) == bool(was_active):
             return False
         else:
@@ -67,10 +66,9 @@ class DeviceTester(object):
 
     def has_byline_status_changed(self, s3_byline_status_list):
         device_bylines = self.__scs_device.bylines
-        old_byline_status_list = json.loads(s3_byline_status_list)
         device_tag = self.__scs_device.device_tag
-        if device_tag in old_byline_status_list:
-            old_byline_status_list = old_byline_status_list[device_tag]
+        if device_tag in s3_byline_status_list:
+            old_byline_status_list = s3_byline_status_list[device_tag]
             if old_byline_status_list is None:
                 return False, False
             for line in device_bylines:
@@ -138,27 +136,27 @@ class DeviceTester(object):
     def was_rebooted(self, s3_device_uptime_list):
         device_bylines = self.__scs_device.bylines
 
-        old_device_uptime_list = json.loads(s3_device_uptime_list)
-        old_period = old_device_uptime_list[self.__scs_device.device_tag]
+        old_period = s3_device_uptime_list[self.__scs_device.device_tag]
         for byline in device_bylines:
             if "status" in byline.topic:
                 message = byline.message
-                if message is None:
-                    return False
-                json_message = json.loads(message)
-                period = Timedelta().construct_from_jdict(json_message["val"]["up"]["period"])
-                if old_period is not None:
-                    delta_old_period = Timedelta().construct_from_jdict(old_period)
-                    if period < delta_old_period:
-                        # device has been reset
-                        self.__scs_device.uptime = period.as_json()
-                        self.__scs_device.old_uptime = delta_old_period.as_json()
-                        return True
+                if message is not None:
+                    json_message = json.loads(message)
+                    period = Timedelta().construct_from_jdict(json_message["val"]["up"]["period"])
+                    if old_period is not None:
+                        delta_old_period = Timedelta().construct_from_jdict(old_period)
+                        if period < delta_old_period:
+                            # device has been reset
+                            self.__scs_device.uptime = period.as_json()
+                            self.__scs_device.old_uptime = delta_old_period.as_json()
+                            return True
+                        else:
+                            # device has not been reset
+                            self.__scs_device.uptime = period.as_json()
+                            return False
                     else:
-                        # device has not been reset
                         self.__scs_device.uptime = period.as_json()
                         return False
-                else:
-                    return False
+        return False
 
     # ----------------------------------------------------------------------------------------------------------------
