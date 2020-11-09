@@ -30,12 +30,12 @@ class PID(Sensor):
     @classmethod
     def init(cls):
         # ppb sensitivity...
-        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDNH', 'VOC',  4, 50.0, 0.000040)
-        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDNH', 'VOC',  4, 50.0, 0.000040)
-        cls.SENSORS[cls.CODE_VOC_PPB_T3] = PID(cls.CODE_VOC_PPB_T2,  'PIDNH', 'VOC',  4, 50.0, 0.000040)
+        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T3] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
 
         # ppm sensitivity
-        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  'PIDN1', 4, 50.0, 0.040)
+        cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  'PID12', 4, 50.0, 0.040)     # was PIDN1
 
 
     # ----------------------------------------------------------------------------------------------------------------

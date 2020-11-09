@@ -5,19 +5,23 @@ Created on 25 Sep 2020
 """
 import json
 import os
-import time
-from collections import OrderedDict
 import logging
+
+from collections import OrderedDict
 
 from botocore.exceptions import ClientError
 
 from scs_core.aws.data.byline import TopicBylineGroup
-from scs_core.aws.manager.s3_manager import S3Manager
+
 from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
+
+from scs_core.aws.data.uptime_list import UptimeList
+from scs_core.aws.data.byline_list import BylineList
+from scs_core.aws.data.activity_list import StatusList
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,14 +34,13 @@ class DeviceMonitor(object):
     __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
-    def __init__(self, device_monitor_conf, client, resource_client, email_client, lambda_client):
+    def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
         """
         Constructor
         """
         self.__config = device_monitor_conf
         self.__lambda_client = lambda_client
-        self.__client = client
-        self.__resource_client = resource_client
+        self.__persistence_manager = persistence_manager
         self.__email_client = email_client
 
         logging.getLogger().setLevel(logging.INFO)
@@ -46,10 +49,14 @@ class DeviceMonitor(object):
 
     def run(self):
         # Get resources
-        s3_manager = S3Manager(self.__client, self.__resource_client)
-        device_statuses = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
-        device_uptimes = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
-        device_byline_statuses = s3_manager.retrieve_from_bucket(self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
+
+        status_list = StatusList.load(self.__persistence_manager)
+        uptime_list = UptimeList.load(self.__persistence_manager)
+        byline_list = BylineList.load(self.__persistence_manager)
+
+        device_status_list = status_list.as_json().get("status_list")
+        device_uptime_list = uptime_list.as_json().get("uptime_list")
+        device_byline_list = byline_list.as_json().get("byline_list")
 
         device_list = self.get_devices_by_byline()
 
@@ -57,7 +64,7 @@ class DeviceMonitor(object):
         iterating = 0
         while iterating < len(device_list):
             this_dev = device_list[iterating]
-            logging.info('Testing Device %s of %s: %s' % (iterating, len(device_list), this_dev.device_tag))
+            logging.debug('Testing Device %s of %s: %s' % (iterating, len(device_list), this_dev.device_tag))
 
             self.get_latest_pubs(this_dev)
 
@@ -65,11 +72,11 @@ class DeviceMonitor(object):
             # Check if device has stopped/started reporting
             if device_tester.is_inactive():
                 this_dev.is_active = False
-                logging.info('Device %s is inactive' % this_dev.device_tag)
+                logging.debug('Device %s is inactive' % this_dev.device_tag)
             else:
                 this_dev.is_active = True
-                logging.info('Device %s is active' % this_dev.device_tag)
-            if device_tester.has_status_changed(device_statuses):
+                logging.debug('Device %s is active' % this_dev.device_tag)
+            if device_tester.has_status_changed(device_status_list):
                 logging.info('Device %s has changed status' % this_dev.device_tag)
                 this_dev.dm_status = "activity_change"
                 self.generate_email(this_dev)
@@ -77,8 +84,8 @@ class DeviceMonitor(object):
 
             # see if all topics are published on recently
             device_tester.get_byline_activity()
-            if not this_dev.email_sent:
-                inactive, topic = device_tester.has_byline_status_changed(device_byline_statuses)
+            if not this_dev.email_sent and this_dev.is_active:
+                inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
                 if inactive:
                     logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
                     this_dev.dm_status = "byline"
@@ -86,7 +93,7 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check for weird (null) values
-            if not this_dev.email_sent:
+            if not this_dev.email_sent and this_dev.is_active:
                 is_okay, field, field_type = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
@@ -95,12 +102,13 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check if rebooted
-            if device_tester.was_rebooted(device_uptimes):
-                this_dev.dm_status = "reboot"
-                if not this_dev.email_sent:
-                    logging.info('Device %s: May have been rebooted. ' % this_dev.device_tag)
-                    self.generate_email(this_dev)
-                    this_dev.email_sent = True
+            if this_dev.is_active:
+                if device_tester.was_rebooted(device_uptime_list):
+                    this_dev.dm_status = "reboot"
+                    if not this_dev.email_sent:
+                        logging.info('Device %s: May have been rebooted. ' % this_dev.device_tag)
+                        self.generate_email(this_dev)
+                        this_dev.email_sent = True
 
             iterating += 1
 
@@ -115,7 +123,7 @@ class DeviceMonitor(object):
                 Source=self.__config.email_name,
                 Destination={
                     'ToAddresses': [
-                        self.__config.email_name
+                        self.__config.email_name,
                     ]
                 },
                 Message={
@@ -136,18 +144,18 @@ class DeviceMonitor(object):
             else:
                 raise
         logging.info("Email sent about device %s", this_dev.device_tag)
-        time.sleep(1)  # AWS limit is 1 email/sec
+        # time.sleep(1)  # AWS limit is 1 email/sec
 
     def get_devices_by_byline(self):
         device_list = []
 
-        logging.info('Getting device topics response...')
+        logging.debug('Getting device topics response...')
         response = self.__lambda_client.invoke(
             FunctionName="arn:aws:lambda:us-west-2:696437392763:function:deviceTopics",
             InvocationType='RequestResponse',
         )
 
-        logging.info('Received device topics response...')
+        logging.debug('Received device topics response...')
         pl = response.get("Payload")
         data = pl.read()
         data.decode()
@@ -204,35 +212,40 @@ class DeviceMonitor(object):
         return res.as_json()
 
     def recreate_status_list(self, device_list):
-        s3_manager = S3Manager(self.__client, self.__resource_client)
-        json_data = OrderedDict()
+        device_data = OrderedDict()
         for device in device_list:
-            json_data[device.device_tag] = device.is_active
-        data_string = json.dumps(json_data)
-        data_string.encode()
-        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_STATUS)
-        logging.info('Uploaded new status list to s3')
+            device_data[device.device_tag] = device.is_active
+
+        json_data = OrderedDict()
+        json_data["status_list"] = device_data
+
+        status_list = StatusList.construct_from_jdict(json_data)
+        status_list.save(self.__persistence_manager)
+
+        logging.debug('Uploaded new status list to s3')
 
     def recreate_uptime_list(self, device_list):
-        s3_manager = S3Manager(self.__client, self.__resource_client)
-        json_data = OrderedDict()
+        device_data = OrderedDict()
         for device in device_list:
             data = (device.as_uptime_json())
-            json_data[data["dev-tag"]] = data["uptime"]
-        data_string = json.dumps(json_data)
-        data_string.encode()
-        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_UPTIME)
-        logging.info('Uploaded new uptime list to s3')
+            device_data[data["dev-tag"]] = data["uptime"]
+        json_data = OrderedDict()
+        json_data["uptime_list"] = device_data
+
+        uptime_list = UptimeList.construct_from_jdict(json_data)
+        uptime_list.save(self.__persistence_manager)
+        logging.debug('Uploaded new uptime list to s3')
 
     def recreate_pub_list(self, device_list):
-        s3_manager = S3Manager(self.__client, self.__resource_client)
-        json_data = OrderedDict()
+        device_data = OrderedDict()
         for device in device_list:
-            json_data[device.device_tag] = device.byline_status
-        data_string = json.dumps(json_data)
-        data_string.encode()
-        s3_manager.upload_bytes_to_bucket(data_string, self.__BUCKET_NAME, self.__RESOURCE_NAME_BYLINES)
-        logging.info('Uploaded new pub list to s3')
+            device_data[device.device_tag] = device.byline_status
+        json_data = OrderedDict()
+        json_data["byline_list"] = device_data
+
+        byline_list = BylineList.construct_from_jdict(json_data)
+        byline_list.save(self.__persistence_manager)
+        logging.debug('Uploaded new pub list to s3')
 
     # ----------------------------------------------------------------------------------------------------------------
 
