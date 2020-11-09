@@ -17,8 +17,8 @@ from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.timedelta import Timedelta
 
+from scs_core.aws.data.runtime_record import RuntimeRecord
 from scs_core.aws.data.uptime_list import UptimeList
 from scs_core.aws.data.byline_list import BylineList
 from scs_core.aws.data.activity_list import StatusList
@@ -28,10 +28,6 @@ from scs_core.aws.data.activity_list import StatusList
 
 class DeviceMonitor(object):
     __RUN_FREQUENCY_MINUTES = 60
-    __BUCKET_NAME = "scs-device-monitor"
-    __RESOURCE_NAME_STATUS = "device_status_list"
-    __RESOURCE_NAME_UPTIME = "device_uptime_list"
-    __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
@@ -42,6 +38,7 @@ class DeviceMonitor(object):
         self.__lambda_client = lambda_client
         self.__persistence_manager = persistence_manager
         self.__email_client = email_client
+        self.__runtime_record = None
 
         logging.getLogger().setLevel(logging.INFO)
 
@@ -53,6 +50,7 @@ class DeviceMonitor(object):
         status_list = StatusList.load(self.__persistence_manager)
         uptime_list = UptimeList.load(self.__persistence_manager)
         byline_list = BylineList.load(self.__persistence_manager)
+        self.__runtime_record = RuntimeRecord.load(self.__persistence_manager)
 
         device_status_list = status_list.as_json().get("status_list")
         device_uptime_list = uptime_list.as_json().get("uptime_list")
@@ -94,11 +92,11 @@ class DeviceMonitor(object):
 
             # check for weird (null) values
             if not this_dev.email_sent and this_dev.is_active:
-                is_okay, field, field_type = device_tester.check_values()
+                is_okay, topic, byline = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
-                    logging.info('Device %s: Field %s: has error values. ' % (this_dev.device_tag, field))
-                    self.generate_email(this_dev, None, field, field_type)
+                    logging.info('Device %s: Byline %s: has error values. ' % (this_dev.device_tag, topic))
+                    self.generate_email(this_dev, topic, byline)
                     this_dev.email_sent = True
 
             # check if rebooted
@@ -115,6 +113,7 @@ class DeviceMonitor(object):
         self.recreate_status_list(device_list)
         self.recreate_uptime_list(device_list)
         self.recreate_pub_list(device_list)
+        self.save_runtime_record()
 
     def send_email_alert(self, this_dev, message):
         # TODO allow for extra recipients
@@ -168,7 +167,7 @@ class DeviceMonitor(object):
             device_list.append(temp)
         return device_list
 
-    def generate_email(self, device, byline_topic=None, field_name=None, field_type=None):
+    def generate_email(self, device, byline_topic=None, document=None):
         template = None
         old_status = "inactive" if device.is_active else "active"
         now_status = "active" if device.is_active else "inactive"
@@ -189,27 +188,21 @@ class DeviceMonitor(object):
             f = open(filepath, "r")
             message = f.read()
         else:
+            logging.error("Template missing %s" % template)
             return
-
         # Replace for specific device
+        last_runtime = self.__runtime_record.as_json() if self.__runtime_record else "Unknown"
         message = (message.replace("DEVICE_NAME", device.device_tag))
-        message = (message.replace("LAST_CHECK_TIME", self.get_last_run_time()))
+        message = (message.replace("LAST_CHECK_TIME", last_runtime.get("last_runtime")))
         message = (message.replace("OLD_STATUS", old_status))
         message = (message.replace("NEW_STATUS", now_status))
-        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
+        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().as_iso8601())))
         message = (message.replace("TOPIC_NAME", byline_topic if byline_topic else ""))
         message = (message.replace("TIME_ALLOWED", str(self.__config.unresponsive_minutes_allowed)))
         message = (message.replace("NOW_UPTIME", device.uptime if device.uptime else ""))
         message = (message.replace("OLD_UPTIME", device.old_uptime if device.old_uptime else ""))
-        message = (message.replace("FIELD_NAME", field_name if field_name else ""))
-        message = (message.replace("FIELD_TYPE", field_type if field_type else ""))
+        message = (message.replace("DOCUMENT", document.as_json if document else ""))
         self.send_email_alert(device, message)
-
-    def get_last_run_time(self):
-        now = LocalizedDatetime.now()
-        td = Timedelta(minutes=self.__RUN_FREQUENCY_MINUTES)
-        res = now - td
-        return res.as_json()
 
     def recreate_status_list(self, device_list):
         device_data = OrderedDict()
@@ -227,7 +220,7 @@ class DeviceMonitor(object):
     def recreate_uptime_list(self, device_list):
         device_data = OrderedDict()
         for device in device_list:
-            data = (device.as_uptime_json())
+            data = (device.as_json())
             device_data[data["dev-tag"]] = data["uptime"]
         json_data = OrderedDict()
         json_data["uptime_list"] = device_data
@@ -246,6 +239,14 @@ class DeviceMonitor(object):
         byline_list = BylineList.construct_from_jdict(json_data)
         byline_list.save(self.__persistence_manager)
         logging.debug('Uploaded new pub list to s3')
+
+    def save_runtime_record(self):
+        now = LocalizedDatetime.now().as_json()
+        jdict = OrderedDict()
+
+        jdict['last_runtime'] = now
+        new_runtime_record = RuntimeRecord.construct_from_jdict(jdict)
+        new_runtime_record.save(self.__persistence_manager)
 
     # ----------------------------------------------------------------------------------------------------------------
 

@@ -89,7 +89,7 @@ class DeviceTester(object):
             if "gases" in byline.topic:
                 message = byline.message
                 if message is None:
-                    return False
+                    return True, None, None
 
                 json_message = json.loads(message)
                 values = json_message.get("val")
@@ -97,27 +97,27 @@ class DeviceTester(object):
                 no2 = values.get("NO2")
                 for key, value in no2.items():
                     if value is None:
-                        return False, key, "NO2"
+                        return False, "gases", byline
 
                 ox = values.get("Ox")
                 for key, value in ox.items():
                     if value is None:
-                        return False, key, "Ox"
+                        return False, "gases", byline
 
                 co = values.get("CO")
                 for key, value in co.items():
                     if value is None:
-                        return False, key, "CO"
+                        return False, "gases", byline
 
                 sht = values.get("sht")
                 for key, value in sht.items():
                     if value is None:
-                        return False, key, "sht"
+                        return False, "gases", byline
 
                 so2 = values.get("SO2")
                 for key, value in so2.items():
                     if value is None:
-                        return False, key, "SO2"
+                        return False, "gases", byline
 
             if "particulates" in byline.topic:
                 message = byline.message
@@ -128,7 +128,7 @@ class DeviceTester(object):
                 values = json_message.get("val")
                 for key, value in values.items():
                     if value is None:
-                        return False, key, "Particulates"
+                        return False, "particulates", byline
 
             return True, None, None
 
