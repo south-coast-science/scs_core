@@ -48,8 +48,8 @@ class DeviceMonitorConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def create_device_monitor(self, client, resource_client, email_client, host=None):
-        return DeviceMonitor(self, client, resource_client, email_client, host)
+    def create_device_monitor(self, persistence_manager, email_client, lambda_client):
+        return DeviceMonitor(self, persistence_manager, email_client, lambda_client)
 
     # ----------------------------------------------------------------------------------------------------------------
 
