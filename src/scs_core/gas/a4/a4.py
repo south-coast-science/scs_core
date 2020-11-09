@@ -26,8 +26,8 @@ class A4(Sensor):
         cls.SENSORS[cls.CODE_CO] =      A4(cls.CODE_CO,     'CO A4',    'CO',   3)
         cls.SENSORS[cls.CODE_H2S] =     A4(cls.CODE_H2S,    'H2SA4',    'H2S',  3)
         cls.SENSORS[cls.CODE_NO] =      A4(cls.CODE_NO,     'NO A4',    'NO',   3)
-        cls.SENSORS[cls.CODE_NO2] =     A4(cls.CODE_NO2,    'NOGA4',    'NO2',  3)
-        cls.SENSORS[cls.CODE_OX] =      A4(cls.CODE_OX,     'OXGA4',    'Ox',   3)
+        cls.SENSORS[cls.CODE_NO2] =     A4(cls.CODE_NO2,    'NO2A43F',  'NO2',  3)      # was NOGA4
+        cls.SENSORS[cls.CODE_OX] =      A4(cls.CODE_OX,     'OXA431',   'Ox',   3)      # was OXGA4
         cls.SENSORS[cls.CODE_SO2] =     A4(cls.CODE_SO2,    'SO2A4',    'SO2',  3)
 
         cls.SENSORS[cls.CODE_TEST_1] =  A4(cls.CODE_TEST_1, 'TEST',     'SN1',  3)

@@ -31,10 +31,10 @@ class SensorCalib(ABC):
 
         sensor_type = jdict.get('sensor_type', 'NOGA4')
 
-        if sensor_type[-2:] == 'A4' or sensor_type[:2] == 'SN':
+        if 'A4' in sensor_type or sensor_type.startswith('SN'):
             return A4Calib.construct_from_jdict(jdict)
 
-        elif sensor_type[:3] == 'PID':
+        elif sensor_type.startswith('PID'):
             return PIDCalib.construct_from_jdict(jdict)
 
         raise ValueError(sensor_type)
