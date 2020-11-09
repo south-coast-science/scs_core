@@ -1,2 +1,0 @@
-DEVICE_NAME may have rebooted since LAST_CHECK_TIME
-Its uptime is NOW_UPTIME as of THIS_CHECK_TIME (it was previously OLD_UPTIME)

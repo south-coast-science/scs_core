@@ -1,2 +1,0 @@
-DEVICE_NAME has reported a none value on FIELD_NAME in FIELD_TYPE at THIS_CHECK_TIME
-This may be indicative of a system issue.

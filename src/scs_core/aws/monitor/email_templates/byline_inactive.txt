@@ -8,5 +8,7 @@ for at least TIME_ALLOWED minutes.
 
 This may be indicative of a system issue.
 
+If this change of status was intentional, please email South Coast Science support to de-escalate this case.
+
 --
 support@southcoastscience.com

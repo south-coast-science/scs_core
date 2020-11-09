@@ -1,4 +1,4 @@
-SCS device monitor: DEVICE_NAME has reported an illegal at THIS_CHECK_TIME
+SCS device monitor: DEVICE_NAME has reported an illegal value at THIS_CHECK_TIME
 Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
 
@@ -7,6 +7,8 @@ Topic: TOPIC_NAME
 Document: DOCUMENT
 
 This may be indicative of a system issue.
+
+If this change of status was intentional, please email South Coast Science support to de-escalate this case.
 
 --
 support@southcoastscience.com

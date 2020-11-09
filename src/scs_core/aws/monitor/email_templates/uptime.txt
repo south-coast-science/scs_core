@@ -4,5 +4,9 @@ This check: THIS_CHECK_TIME
 
 Reboot: the device uptime is NOW_UPTIME. It was previously OLD_UPTIME.
 
+This may be indicative of a system issue.
+
+If this change of status was intentional, please email South Coast Science support to de-escalate this case.
+
 --
 support@southcoastscience.com
