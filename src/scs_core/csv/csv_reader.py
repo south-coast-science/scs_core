@@ -22,7 +22,7 @@ class CSVReader(object):
     classdocs
     """
 
-    __REPRESENTATIONS_OF_NULL = ('', 'NULL')
+    __REPRESENTATIONS_OF_NULL = ('', 'null', 'NULL')
 
     # ----------------------------------------------------------------------------------------------------------------
 
