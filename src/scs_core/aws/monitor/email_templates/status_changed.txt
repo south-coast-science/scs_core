@@ -1,2 +1,10 @@
-DEVICE_NAME has changed status since it was last checked on LAST_CHECK_TIME
-Device was OLD_STATUS and is now NEW_STATUS as of THIS_CHECK_TIME
+SCS device monitor: DEVICE_NAME has changed status since LAST_CHECK_TIME
+Previous check: LAST_CHECK_TIME
+This check: THIS_CHECK_TIME
+
+Changed status: the device DEVICE_NAME was "OLD_STATUS" and is now "NEW_STATUS".
+
+This may be indicative of a system, communications, or power supply issue.
+
+--
+support@southcoastscience.com

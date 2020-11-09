@@ -1,0 +1,2 @@
+DEVICE_NAME has changed status since it was last checked on LAST_CHECK_TIME
+Topic with name "TOPIC_NAME" has not reported for atleast TIME_ALLOWED minutes as of THIS_CHECK_TIME

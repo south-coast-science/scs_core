@@ -1,2 +1,8 @@
-DEVICE_NAME may have rebooted since LAST_CHECK_TIME
-Its uptime is NOW_UPTIME as of THIS_CHECK_TIME (it was previously OLD_UPTIME)
+SCS device monitor: DEVICE_NAME may have rebooted since LAST_CHECK_TIME
+Previous check: LAST_CHECK_TIME
+This check: THIS_CHECK_TIME
+
+Reboot: the device uptime is NOW_UPTIME. It was previously OLD_UPTIME.
+
+--
+support@southcoastscience.com
