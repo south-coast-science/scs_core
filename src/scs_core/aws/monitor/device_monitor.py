@@ -5,14 +5,14 @@ Created on 25 Sep 2020
 """
 import json
 import os
-import time
-from collections import OrderedDict
 import logging
+
+from collections import OrderedDict
 
 from botocore.exceptions import ClientError
 
 from scs_core.aws.data.byline import TopicBylineGroup
-from scs_core.aws.manager.s3_manager import S3Manager
+
 from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
 
@@ -34,13 +34,13 @@ class DeviceMonitor(object):
     __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
-    def __init__(self, device_monitor_conf, persistance_manager, email_client, lambda_client):
+    def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
         """
         Constructor
         """
         self.__config = device_monitor_conf
         self.__lambda_client = lambda_client
-        self.__persistence_manager = persistance_manager
+        self.__persistence_manager = persistence_manager
         self.__email_client = email_client
 
         logging.getLogger().setLevel(logging.INFO)
@@ -84,7 +84,7 @@ class DeviceMonitor(object):
 
             # see if all topics are published on recently
             device_tester.get_byline_activity()
-            if not this_dev.email_sent:
+            if not this_dev.email_sent and this_dev.is_active:
                 inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
                 if inactive:
                     logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
@@ -93,7 +93,7 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check for weird (null) values
-            if not this_dev.email_sent:
+            if not this_dev.email_sent and this_dev.is_active:
                 is_okay, field, field_type = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
@@ -102,12 +102,13 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check if rebooted
-            if device_tester.was_rebooted(device_uptime_list):
-                this_dev.dm_status = "reboot"
-                if not this_dev.email_sent:
-                    logging.info('Device %s: May have been rebooted. ' % this_dev.device_tag)
-                    self.generate_email(this_dev)
-                    this_dev.email_sent = True
+            if this_dev.is_active:
+                if device_tester.was_rebooted(device_uptime_list):
+                    this_dev.dm_status = "reboot"
+                    if not this_dev.email_sent:
+                        logging.info('Device %s: May have been rebooted. ' % this_dev.device_tag)
+                        self.generate_email(this_dev)
+                        this_dev.email_sent = True
 
             iterating += 1
 
