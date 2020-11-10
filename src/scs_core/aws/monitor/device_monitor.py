@@ -12,6 +12,7 @@ from collections import OrderedDict
 from botocore.exceptions import ClientError
 
 from scs_core.aws.data.byline import TopicBylineGroup
+from scs_core.aws.data.email_list import EmailList
 
 from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
@@ -39,6 +40,7 @@ class DeviceMonitor(object):
         self.__persistence_manager = persistence_manager
         self.__email_client = email_client
         self.__runtime_record = None
+        self.__email_list = EmailList.load(persistence_manager).as_json()
 
         logging.getLogger().setLevel(logging.INFO)
 
@@ -116,14 +118,24 @@ class DeviceMonitor(object):
         self.save_runtime_record()
 
     def send_email_alert(self, this_dev, message):
-        # TODO allow for extra recipients
+        jdict = self.__email_list.get("email_list")
+        v_list = []
+        for key, value in jdict.items():
+            if key == this_dev.device_tag:
+                if value is not None:
+                    if type(value).__name__ == "list":
+                        for item in value:
+                            v_list.append(item)
+                    else:
+                        v_list.append(value)
+                    break
+
+        v_list.append(self.__config.email_name)
         try:
             self.__email_client.send_email(
                 Source=self.__config.email_name,
                 Destination={
-                    'ToAddresses': [
-                        self.__config.email_name,
-                    ]
+                    'ToAddresses': v_list
                 },
                 Message={
                     'Subject': {
