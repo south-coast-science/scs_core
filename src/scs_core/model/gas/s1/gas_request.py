@@ -3,15 +3,6 @@ Created on 11 Nov 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-['ref.NO2 Processed Measurement (ppb)',
-'praxis.meteo.val.tmp.cur', 'praxis.meteo.val.tmp.slope', 'praxis.meteo.val.hmd.cur', 'praxis.meteo.val.hmd.slope',
-'praxis.gases.val.NO2.weV', 'praxis.gases.val.NO2.aeV',
-'praxis.calib.sn1.we_electronic_zero_mv', 'praxis.calib.sn1.we_sensor_zero_mv', 'praxis.calib.sn1.we_total_zero_mv',
-'praxis.calib.sn1.ae_electronic_zero_mv', 'praxis.calib.sn1.ae_sensor_zero_mv', 'praxis.calib.sn1.ae_total_zero_mv',
-'praxis.calib.sn1.we_sensitivity_na_ppb', 'praxis.calib.sn1.we_cross_sensitivity_no2_na_ppb',
-'praxis.calib.sn1.pcb_gain', 'praxis.calib.sn1.we_sensitivity_mv_ppb',
-'praxis.calib-age']
-
 example document:
 """
 
