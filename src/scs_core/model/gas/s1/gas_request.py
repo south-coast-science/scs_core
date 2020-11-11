@@ -10,7 +10,8 @@ example document:
 "SO2": {"weV": 0.26657, "aeV": 0.26494, "weC": -0.00267, "cnc": 20.5},
 "H2S": {"weV": 0.18319, "aeV": 0.26013, "weC": -0.04456, "cnc": 36.7},
 "sht": {"hmd": 66.1, "tmp": 22.2}}}, "t-slope": 0.0, "rh-slope": 0.1,
-"calibs": {"NO2": {"serial_number": "212060308", "sensor_type": "NO2A43F",
+"calibs": {
+"NO2": {"serial_number": "212060308", "sensor_type": "NO2A43F",
 "we_electronic_zero_mv": 309, "we_sensor_zero_mv": 3, "we_total_zero_mv": 312,
 "ae_electronic_zero_mv": 308, "ae_sensor_zero_mv": 1, "ae_total_zero_mv": 309,
 "we_sensitivity_na_ppb": -0.264, "we_cross_sensitivity_no2_na_ppb": -0.264, "pcb_gain": -0.73,
