@@ -31,7 +31,7 @@ class PMxRequest(object):
         """
         Constructor
         """
-        self.__sample = sample                              # Sample
+        self.__sample = sample                              # Sample (particulates)
         self.__sht_datum = sht_datum                        # SHTDatum
 
 
