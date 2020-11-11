@@ -8,17 +8,20 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.data.json import JSONable
+from scs_core.data.str import Str
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasRequest(object):
+class GasRequest(JSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sample, t_slope, rh_slope, calibs, calib_age):
+    def __init__(self, sample, t_slope, rh_slope, sensor_calibs, calib_age):
         """
         Constructor
         """
@@ -26,7 +29,7 @@ class GasRequest(object):
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
-        self.__calibs = calibs                              # dict of gas: calibration
+        self.__sensor_calibs = sensor_calibs                # dict of gas_name: SensorCalib
         self.__calib_age = int(calib_age)                   # int
 
 
@@ -39,7 +42,7 @@ class GasRequest(object):
 
         jdict['t-slope'] = self.t_slope
         jdict['rh-slope'] = self.rh_slope
-        jdict['calibs'] = self.calibs.as_json()
+        jdict['calibs'] = self.sensor_calibs
         jdict['calib-age'] = self.calib_age
 
         return jdict
@@ -63,8 +66,8 @@ class GasRequest(object):
 
 
     @property
-    def calibs(self):
-        return self.__calibs
+    def sensor_calibs(self):
+        return self.__sensor_calibs
 
 
     @property
@@ -75,5 +78,7 @@ class GasRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasRequest:{sample:%s, t_slope:%s, rh_slope:%s, calibs:%s, calib_age:%s}" %  \
-               (self.sample, self.t_slope, self.rh_slope, self.calibs, self.calib_age)
+        sensor_calibs = Str.collection(self.sensor_calibs)
+
+        return "GasRequest:{sample:%s, t_slope:%s, rh_slope:%s, sensor_calibs:%s, calib_age:%s}" %  \
+               (self.sample, self.t_slope, self.rh_slope, sensor_calibs, self.calib_age)

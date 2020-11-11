@@ -6,12 +6,13 @@ Created on 30 Sep 2016
 
 from abc import ABC
 
+from scs_core.data.json import JSONable
 from scs_core.gas.sensor import Sensor
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SensorCalib(ABC):
+class SensorCalib(ABC, JSONable):
     """
     classdocs
     """

@@ -17,10 +17,12 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.data.json import JSONable
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PMxRequest(object):
+class PMxRequest(JSONable):
     """
     classdocs
     """
