@@ -10,7 +10,6 @@ from botocore.exceptions import ClientError
 
 from collections import OrderedDict
 
-from scs_core.data.crypt import Crypt
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
@@ -181,7 +180,12 @@ class S3PersistenceManager(PersistenceManager):
         key_name = self.__key_name(dirname, filename)
 
         text = self.__manager.retrieve_from_bucket(self.__BUCKET, key_name)
-        jstr = text if encryption_key is None else Crypt.decrypt(encryption_key, text)
+
+        if encryption_key:
+            from scs_core.data.crypt import Crypt               # late import
+            jstr = Crypt.decrypt(encryption_key, text)
+        else:
+            jstr = text
 
         return jstr
 
@@ -189,7 +193,11 @@ class S3PersistenceManager(PersistenceManager):
     def save(self, jstr, dirname, filename, encryption_key=None):
         key_name = self.__key_name(dirname, filename)
 
-        text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
+        if encryption_key:
+            from scs_core.data.crypt import Crypt               # late import
+            text = Crypt.encrypt(encryption_key, jstr)
+        else:
+            text = jstr + '\n'
 
         self.__manager.put_object(text, self.__BUCKET, key_name)
 

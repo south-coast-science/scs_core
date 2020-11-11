@@ -126,29 +126,6 @@ class SCSDevice(JSONable):
 
         return jdict
 
-    def as_uptime_json(self):
-        jdict = OrderedDict()
-
-        jdict['dev-tag'] = self.__device_tag
-        jdict["uptime"] = self.__uptime
-
-        return jdict
-
-    def as_status_json(self):
-        jdict = OrderedDict()
-
-        jdict['dev-tag'] = self.__device_tag
-        jdict["status-active"] = self.__is_active
-
-        return jdict
-
-    def as_bylines_json(self):
-        jdict = OrderedDict()
-
-        jdict['dev-tag'] = self.__device_tag
-        jdict["bylines"] = self.__bylines
-
-        return jdict
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

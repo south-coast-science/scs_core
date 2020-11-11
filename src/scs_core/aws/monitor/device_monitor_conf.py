@@ -93,6 +93,6 @@ class DeviceMonitorConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceManagerConf:{email_name:%s, unresponsive_minutes_allowed:%s, email_password:%s}" % \
+        return "DeviceMonitorConf:{email_name:%s, unresponsive_minutes_allowed:%s, email_password:%s}" % \
                (DeviceMonitorConf.email_name, DeviceMonitorConf.unresponsive_minutes_allowed,
                 DeviceMonitorConf.email_password)
