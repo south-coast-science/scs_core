@@ -66,7 +66,7 @@ class FilesystemPersistenceManager(PersistenceManager):
                 text = f.read()
 
             if encryption_key:
-                from scs_core.data.crypt import Crypt
+                from scs_core.data.crypt import Crypt               # late import
                 jstr = Crypt.decrypt(encryption_key, text)
             else:
                 jstr = text
@@ -89,7 +89,7 @@ class FilesystemPersistenceManager(PersistenceManager):
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
         if encryption_key:
-            from scs_core.data.crypt import Crypt
+            from scs_core.data.crypt import Crypt                   # late import
             text = Crypt.encrypt(encryption_key, jstr)
         else:
             text = jstr + '\n'

@@ -182,7 +182,7 @@ class S3PersistenceManager(PersistenceManager):
         text = self.__manager.retrieve_from_bucket(self.__BUCKET, key_name)
 
         if encryption_key:
-            from scs_core.data.crypt import Crypt
+            from scs_core.data.crypt import Crypt               # late import
             jstr = Crypt.decrypt(encryption_key, text)
         else:
             jstr = text
@@ -194,7 +194,7 @@ class S3PersistenceManager(PersistenceManager):
         key_name = self.__key_name(dirname, filename)
 
         if encryption_key:
-            from scs_core.data.crypt import Crypt
+            from scs_core.data.crypt import Crypt               # late import
             text = Crypt.encrypt(encryption_key, jstr)
         else:
             text = jstr + '\n'
