@@ -26,13 +26,23 @@ class GasRequest(JSONable):
     classdocs
     """
 
+    __SLOPE_PERIOD = 300                # 5 minutes in seconds
+
+    @classmethod
+    def slope_tally(cls, schedule_duration):
+        periods = int(round(cls.__SLOPE_PERIOD / schedule_duration))
+        tally = 2 if periods < 2 else periods
+
+        return tally
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, sample, t_slope, rh_slope, calib_age):
         """
         Constructor
         """
-        self.__sample = sample                              # Sample (gases, must contain EXT SHT)
+        self.__sample = sample                              # Sample (gases, must contain EXT SHTDatum)
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
