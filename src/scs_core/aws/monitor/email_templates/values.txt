@@ -1,4 +1,5 @@
 SCS device monitor: DEVICE_NAME has reported an illegal value at THIS_CHECK_TIME
+~
 Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
 
