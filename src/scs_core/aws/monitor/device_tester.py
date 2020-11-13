@@ -45,6 +45,7 @@ class DeviceTester(object):
         self.__scs_device.byline_status = device_data
 
     def is_byline_active(self, byline):
+        byline_minutes_allowed = self.__config.unresponsive_minutes_allowed * 1.5
         latest_pub = byline.pub
         if latest_pub is None:
             return False
@@ -53,7 +54,7 @@ class DeviceTester(object):
             delta = now - latest_pub
             elapsed_minutes = delta.total_seconds() / 60
 
-            return elapsed_minutes < self.__config.unresponsive_minutes_allowed
+            return elapsed_minutes < byline_minutes_allowed
 
 
     def has_status_changed(self, s3_device_status_list):
