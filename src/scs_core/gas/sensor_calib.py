@@ -6,12 +6,13 @@ Created on 30 Sep 2016
 
 from abc import ABC
 
+from scs_core.data.json import JSONable
 from scs_core.gas.sensor import Sensor
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SensorCalib(ABC):
+class SensorCalib(ABC, JSONable):
     """
     classdocs
     """
@@ -25,9 +26,8 @@ class SensorCalib(ABC):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        # late import...
-        from scs_core.gas.a4.a4_calib import A4Calib
-        from scs_core.gas.pid.pid_calib import PIDCalib
+        from scs_core.gas.a4.a4_calib import A4Calib            # late import
+        from scs_core.gas.pid.pid_calib import PIDCalib         # late import
 
         sensor_type = jdict.get('sensor_type', 'NOGA4')
 
@@ -43,7 +43,7 @@ class SensorCalib(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def reports_no2_cross_sensitivity(cls):             # the default - override as necessary
+    def reports_no2_cross_sensitivity(cls):                     # the default - override as necessary
         return False
 
 
@@ -53,8 +53,8 @@ class SensorCalib(ABC):
         """
         Constructor
         """
-        self.__serial_number = serial_number            # int
-        self.__sensor_type = sensor_type                # string
+        self.__serial_number = serial_number                    # int
+        self.__sensor_type = sensor_type                        # string
 
 
     # ----------------------------------------------------------------------------------------------------------------

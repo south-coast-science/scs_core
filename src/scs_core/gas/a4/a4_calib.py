@@ -7,14 +7,12 @@ Created on 24 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
-
 from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class A4Calib(SensorCalib, JSONable):
+class A4Calib(SensorCalib):
     """
     classdocs
     """
@@ -58,8 +56,8 @@ class A4Calib(SensorCalib, JSONable):
         we_no2_x_sens_mv = jdict.get('we_cross_sensitivity_no2_mv_ppb')
 
 
-        return A4Calib(serial_number, sensor_type, we_elc_mv, we_cal_mv, we_tot_mv, ae_elc_mv, ae_cal_mv, ae_tot_mv,
-                       we_sens_na, we_x_sens_na, pcb_gain, we_sens_mv, we_no2_x_sens_mv)
+        return cls(serial_number, sensor_type, we_elc_mv, we_cal_mv, we_tot_mv, ae_elc_mv, ae_cal_mv, ae_tot_mv,
+                   we_sens_na, we_x_sens_na, pcb_gain, we_sens_mv, we_no2_x_sens_mv)
 
 
     # ----------------------------------------------------------------------------------------------------------------
