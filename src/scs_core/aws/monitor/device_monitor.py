@@ -190,7 +190,10 @@ class DeviceMonitor(object):
 
         # Get templates
         if device.dm_status == "activity_change":
-            template = "status_changed.txt"
+            if now_status == "offline":
+                template = "status_offline.txt"
+            else:
+                template = "status_online.txt"
         elif device.dm_status == "byline":
             template = "byline_inactive.txt"
         elif device.dm_status == "reboot":
