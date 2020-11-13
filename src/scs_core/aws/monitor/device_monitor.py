@@ -117,7 +117,7 @@ class DeviceMonitor(object):
         self.recreate_pub_list(device_list)
         self.save_runtime_record()
 
-    def send_email_alert(self, this_dev, message):
+    def send_email_alert(self, this_dev, text):
         jdict = self.__email_list.get("email_list")
         v_list = []
         for key, value in jdict.items():
@@ -131,6 +131,10 @@ class DeviceMonitor(object):
                     break
 
         v_list.append(self.__config.email_name)
+        v_list.append("bbeloff@me.com")
+        message = text.split("~")
+        subject = message[0]
+        body = message[1]
         try:
             self.__email_client.send_email(
                 Source=self.__config.email_name,
@@ -139,11 +143,11 @@ class DeviceMonitor(object):
                 },
                 Message={
                     'Subject': {
-                        'Data': this_dev.device_tag
+                        'Data': subject
                     },
                     'Body': {
                         'Text': {
-                            'Data': message
+                            'Data': body
                         }
                     }
                 }
@@ -181,8 +185,8 @@ class DeviceMonitor(object):
 
     def generate_email(self, device, byline_topic=None, document=None):
         template = None
-        old_status = "inactive" if device.is_active else "active"
-        now_status = "active" if device.is_active else "inactive"
+        old_status = "offline" if device.is_active else "online"
+        now_status = "online" if device.is_active else "offline"
 
         # Get templates
         if device.dm_status == "activity_change":
