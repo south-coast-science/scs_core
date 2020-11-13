@@ -28,7 +28,7 @@ from scs_core.aws.data.activity_list import StatusList
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
-    __RUN_FREQUENCY_MINUTES = 60
+
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
