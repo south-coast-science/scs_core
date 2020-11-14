@@ -7,4 +7,5 @@ Changed status: the device DEVICE_NAME has resumed publishing on the topic:
 TOPIC_NAME
 
 --
+South Coast Science Technical Support Team
 support@southcoastscience.com
