@@ -91,8 +91,8 @@ class MPL115A2Datum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_sample(self, tag, rec):
-        return Sample(tag, None, rec, self.as_json())
+    def as_sample(self, tag, rec):                          # TODO: remove as_sample(..)
+        return Sample(tag, rec, values=self.as_json())
 
 
     def as_json(self):
