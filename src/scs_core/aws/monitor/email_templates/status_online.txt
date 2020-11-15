@@ -6,5 +6,5 @@ This check: THIS_CHECK_TIME
 Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
 
 --
-South Coast Science Technical Support Team
+The South Coast Science Technical Support Team
 support@southcoastscience.com
