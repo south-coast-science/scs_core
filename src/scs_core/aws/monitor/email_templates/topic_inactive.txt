@@ -1,13 +1,13 @@
 SCS device monitor: DEVICE_NAME on TOPIC_NAME
 ~
-Previous check: LAST_CHECK_TIME
-This check: THIS_CHECK_TIME
-
 Changed status: the device DEVICE_NAME has not published on the topic: TOPIC_NAME for at least TIME_ALLOWED minutes.
 
 This may be indicative of a system issue.
 
 If this change of status was intentional, please email South Coast Science support to de-escalate this case.
+
+Previous check: LAST_CHECK_TIME
+This check: THIS_CHECK_TIME
 
 --
 The South Coast Science Technical Support Team
