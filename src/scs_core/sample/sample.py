@@ -25,7 +25,6 @@ class Sample(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        print("*** Sample")
         if not jdict:
             return None
 
@@ -47,7 +46,7 @@ class Sample(JSONable):
         self.__tag = tag                        # string
         self.__rec = rec                        # LocalizedDatetime
 
-        self.__src = src                  # string
+        self.__src = src                        # string
         self.__values = values                  # OrderedDict
         self.__exegeses = exegeses              # OrderedDict
 
