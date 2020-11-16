@@ -25,6 +25,7 @@ class Sample(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("*** Sample")
         if not jdict:
             return None
 
