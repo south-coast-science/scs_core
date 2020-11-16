@@ -1,6 +1,6 @@
 SCS device monitor: DEVICE_NAME has changed its status
 ~
-Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS. "NEW_STATUS" is defined as having published no messages in the previous TIME_ALLOWED minutes.
+Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS. ("NEW_STATUS" is defined as having published no messages in the previous TIME_ALLOWED minutes.)
 
 This may be indicative of a system, communications, or power supply issue.
 

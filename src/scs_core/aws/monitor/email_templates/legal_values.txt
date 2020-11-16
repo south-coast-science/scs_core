@@ -1,8 +1,8 @@
 SCS device monitor: DEVICE_NAME has reported an illegal value
 ~
-Changed status: the device DEVICE_NAME is no longer publishing documents containing illegal value(s) on topic TOPIC_NAME
+Changed status: the device DEVICE_NAME is no longer publishing documents containing illegal value(s) on topic TOPIC_NAME.
 
-Document: DOCUMENT
+No further action is required on this issue.
 
 This check: THIS_CHECK_TIME
 Previous check: LAST_CHECK_TIME
