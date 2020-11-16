@@ -1,4 +1,4 @@
-SCS device monitor: DEVICE_NAME may have rebooted since LAST_CHECK_TIME
+SCS device monitor: DEVICE_NAME may have performed an uncommanded reboot
 ~
 Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
@@ -10,4 +10,5 @@ This may be indicative of a system issue.
 If this change of status was intentional, please email South Coast Science support to de-escalate this case.
 
 --
+The South Coast Science Technical Support Team
 support@southcoastscience.com

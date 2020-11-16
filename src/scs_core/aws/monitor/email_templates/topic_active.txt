@@ -1,9 +1,9 @@
-SCS device monitor: DEVICE_NAME has changed its status
+SCS device monitor: DEVICE_NAME on TOPIC_NAME
 ~
 Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
 
-Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
+Changed status: the device DEVICE_NAME has resumed publishing on the topic: TOPIC_NAME
 
 --
 The South Coast Science Technical Support Team

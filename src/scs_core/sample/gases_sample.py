@@ -17,6 +17,15 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.climate.sht_datum import SHTDatum
+
+from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.str import Str
+
+from scs_core.gas.afe.afe_datum import AFEDatum
+from scs_core.gas.afe.pt1000_datum import Pt1000Datum
+from scs_core.gas.scd30.scd30_datum import SCD30Datum
+
 from scs_core.sample.sample import Sample
 
 
@@ -29,28 +38,104 @@ class GasesSample(Sample):
     classdocs
     """
 
+    __NON_GAS_FIELDS = ['pt1', 'sht']
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        # Sample...
+        tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        val = jdict.get('val')
+        exegeses = jdict.get('exg')
+
+        # GasesSample...
+        node = val.get('CO2')
+        scd30_datum = None if node is None else SCD30Datum(node.get('cnc'), None, None)
+
+        node = val.get('pt1')
+        pt1000_datum = None if node is None else Pt1000Datum(node.get('v'), temp=node.get('tmp'))
+
+        # TODO: gas fields
+        electrochem_datum = AFEDatum(pt1000_datum, *[])
+
+        node = val.get('sht')
+        sht_datum = SHTDatum(node.get('hmd'), node.get('tmp'))
+
+        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, exegeses=exegeses)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum):
+    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, exegeses=None):
         """
         Constructor
         """
+        super().__init__(tag, rec, exegeses=exegeses)
+
+        self.__scd30_datum = scd30_datum                            # SCD30Datum
+        self.__electrochem_datum = electrochem_datum                # AFEDatum or ISIDatum
+        self.__sht_datum = sht_datum                                # SHT31Datum
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def has_invalid_value(cls):
+        # TODO: implement has_invalid_value
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def values(self):
         jdict = OrderedDict()
 
-        if scd30_datum is not None:
-            jdict['CO2'] = {'cnc': scd30_datum.co2}
+        if self.scd30_datum is not None:
+            jdict['CO2'] = {'cnc': self.scd30_datum.co2}
 
-        if electrochem_datum is not None:
-            for key, value in electrochem_datum.sns.items():
+        if self.electrochem_datum is not None:
+            for key, value in self.electrochem_datum.sns.items():
                 jdict[key] = value
 
             try:
-                if electrochem_datum.pt1000 is not None:
-                    jdict['pt1'] = electrochem_datum.pt1000
+                if self.electrochem_datum.pt1000 is not None:
+                    jdict['pt1'] = self.electrochem_datum.pt1000
             except AttributeError:
                 pass
 
-        if sht_datum is not None:
-            jdict['sht'] = sht_datum
+        if self.sht_datum is not None:
+            jdict['sht'] = self.sht_datum
 
-        super().__init__(tag, None, rec, jdict)
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def scd30_datum(self):
+        return self.__scd30_datum
+
+
+    @property
+    def electrochem_datum(self):
+        return self.__electrochem_datum
+
+
+    @property
+    def sht_datum(self):
+        return self.__sht_datum
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        exegeses = Str.collection(self.exegeses)
+
+        return "GasesSample:{tag:%s, rec:%s, src:%s, exegeses:%s, scd30_datum:%s, electrochem_datum:%s, " \
+               "sht_datum:%s}" % \
+            (self.tag, self.rec, self.src, exegeses, self.scd30_datum, self.electrochem_datum,
+             self.sht_datum)

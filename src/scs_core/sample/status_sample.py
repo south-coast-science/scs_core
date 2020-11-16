@@ -15,8 +15,11 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.sample.sample import Sample
 
+
+# TODO: put uptime in a sensible place!!
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -25,28 +28,113 @@ class StatusSample(Sample):
     classdocs
     """
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        # Sample...
+        tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+
+        # StatusSample...
+        # TODO: check fields, build components
+
+        # return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report)
+        return cls(tag, rec, None, None, None, None, None, None, None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, airnow, rec, timezone, position, temperature, schedule, uptime, psu_report):
+    def __init__(self, tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report):
         """
         Constructor
         """
+        super().__init__(tag, rec)
+
+        self.__airnow = airnow                                      # AirNowSiteConf
+        self.__timezone = timezone                                  # Timezone
+        self.__position = position                                  # GPSDatum
+        self.__temperature = temperature                            # MCUDatum
+        self.__schedule = schedule                                  # Schedule
+        self.__uptime = uptime                                      # UptimeDatum
+        self.__psu_report = psu_report                              # PSUReport
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def has_invalid_value(cls):
+        # TODO: implement has_invalid_value
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def values(self):
         jdict = OrderedDict()
 
-        if airnow is not None:
-            jdict['airnow'] = airnow
+        if self.airnow is not None:
+            jdict['airnow'] = self.airnow
 
-        if timezone is not None:
-            jdict['tz'] = timezone
+        if self.timezone is not None:
+            jdict['tz'] = self.timezone
 
-        if position is not None:
-            jdict['gps'] = position
+        if self.position is not None:
+            jdict['gps'] = self.position
 
-        jdict['sch'] = schedule
-        jdict['tmp'] = temperature
-        jdict['up'] = uptime
+        jdict['sch'] = self.schedule
+        jdict['tmp'] = self.temperature
+        jdict['up'] = self.uptime
 
-        if psu_report is not None:
-            jdict['psu'] = psu_report
+        if self.psu_report is not None:
+            jdict['psu'] = self.psu_report
 
-        super().__init__(tag, None, rec, jdict)
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def airnow(self):
+        return self.__airnow
+
+
+    @property
+    def timezone(self):
+        return self.__timezone
+
+
+    @property
+    def position(self):
+        return self.__position
+
+
+    @property
+    def temperature(self):
+        return self.__temperature
+
+
+    @property
+    def schedule(self):
+        return self.__schedule
+
+
+    @property
+    def uptime(self):
+        return self.__uptime
+
+
+    @property
+    def psu_report(self):
+        return self.__psu_report
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "StatusSample:{tag:%s, rec:%s, src:%s, airnow:%s, timezone:%s, position:%s, " \
+               "temperature:%s, schedule:%s, uptime:%s, psu_report:%s}" % \
+            (self.tag, self.rec, self.src, self.airnow, self.timezone, self.position,
+             self.temperature, self.schedule, self.uptime, self.psu_report)

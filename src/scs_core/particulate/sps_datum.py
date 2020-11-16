@@ -64,7 +64,7 @@ class SPSDatum(PMxDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_sample(self, tag):
+    def as_sample(self, tag):                           # TODO: remove as_sample(..)
         jdict = OrderedDict()
 
         jdict['pm1'] = self.pm1
@@ -75,7 +75,7 @@ class SPSDatum(PMxDatum):
         jdict['counts'] = self.counts
         jdict['tps'] = self.tps
 
-        return Sample(tag, self.source, self.rec, jdict)
+        return Sample(tag, self.rec, src=self.source, values=jdict)
 
 
     def as_json(self):
