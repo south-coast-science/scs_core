@@ -2,8 +2,8 @@ SCS device monitor: DEVICE_NAME on TOPIC_NAME
 ~
 Changed status: the device DEVICE_NAME has resumed publishing on the topic: TOPIC_NAME
 
-Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
+Previous check: LAST_CHECK_TIME
 
 --
 The South Coast Science Technical Support Team
