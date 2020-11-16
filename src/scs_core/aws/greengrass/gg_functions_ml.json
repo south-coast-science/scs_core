@@ -14,7 +14,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 262144,
+                "MemorySize": 32000,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -33,7 +33,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 262144,
+                "MemorySize": 32000,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -64,11 +64,29 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 262144,
+                "MemorySize": 32000,
                 "Pinned": true,
                 "Timeout": 180
             },
             "Id": "DEV_ID-PMxInference"
+        }, {
+            "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGGasInferenceServer:GasInference",
+            "FunctionConfiguration": {
+                "Environment": {
+                    "AccessSysfs": true,
+                    "ResourceAccessPolicies": [
+                        {
+                            "Permission": "rw",
+                            "ResourceId": "DATA_VOLUME_NAME"
+                        }
+                    ]
+                },
+                "Executable": "lambda_function.lambda_handler",
+                "MemorySize": 32000,
+                "Pinned": true,
+                "Timeout": 180
+            },
+            "Id": "DEV_ID-GasInference"
         }
         ]
     }
