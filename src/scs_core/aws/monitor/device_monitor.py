@@ -84,13 +84,21 @@ class DeviceMonitor(object):
 
             # see if all topics are published on recently
             device_tester.get_byline_activity()
-            if not this_dev.email_sent and this_dev.is_active:
-                inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
-                if inactive:
-                    logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
-                    this_dev.dm_status = "byline"
-                    self.generate_email(this_dev, topic)
-                    this_dev.email_sent = True
+            if this_dev.is_active:
+                changed, inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
+                if changed:
+                    if inactive:
+                        logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
+                        this_dev.dm_status = "byline_inactive"
+                        if not this_dev.email_sent:
+                            self.generate_email(this_dev, topic)
+                            this_dev.email_sent = True
+                    else:
+                        logging.info('Device %s: ByLine %s: has become active. ' % (this_dev.device_tag, topic))
+                        this_dev.dm_status = "byline_active"
+                        if not this_dev.email_sent:
+                            self.generate_email(this_dev, topic)
+                            this_dev.email_sent = True
 
             # check for weird (null) values
             if not this_dev.email_sent and this_dev.is_active:
@@ -194,8 +202,10 @@ class DeviceMonitor(object):
                 template = "status_offline.txt"
             else:
                 template = "status_online.txt"
-        elif device.dm_status == "byline":
-            template = "byline_inactive.txt"
+        elif device.dm_status == "byline_inactive":
+            template = "topic_inactive.txt"
+        elif device.dm_status == "byline_active":
+            template = "topic_active.txt"
         elif device.dm_status == "reboot":
             template = "uptime.txt"
         elif device.dm_status == "values":
