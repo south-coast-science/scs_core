@@ -195,7 +195,7 @@ class DeviceMonitor(object):
             else:
                 template = "status_online.txt"
         elif device.dm_status == "byline":
-            template = "byline_inactive.txt"
+            template = "topic_inactive.txt"
         elif device.dm_status == "reboot":
             template = "uptime.txt"
         elif device.dm_status == "values":
