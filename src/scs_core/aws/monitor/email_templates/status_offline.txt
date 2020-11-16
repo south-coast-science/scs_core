@@ -1,13 +1,13 @@
 SCS device monitor: DEVICE_NAME has changed its status
 ~
-Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS. "NEW_STATUS" is defined as having published no messages in the previous TIME_ALLOWED minutes.
+Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS. ("NEW_STATUS" is defined as having published no messages in the previous TIME_ALLOWED minutes.)
 
 This may be indicative of a system, communications, or power supply issue.
 
 If this change of status was intentional, please email South Coast Science support to de-escalate this case.
 
-Previous check: LAST_CHECK_TIME
 This check: THIS_CHECK_TIME
+Previous check: LAST_CHECK_TIME
 
 --
 The South Coast Science Technical Support Team

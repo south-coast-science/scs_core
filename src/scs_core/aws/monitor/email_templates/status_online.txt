@@ -2,8 +2,10 @@ SCS device monitor: DEVICE_NAME has changed its status
 ~
 Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
 
-Previous check: LAST_CHECK_TIME
+No further action is required on this issue.
+
 This check: THIS_CHECK_TIME
+Previous check: LAST_CHECK_TIME
 
 --
 The South Coast Science Technical Support Team
