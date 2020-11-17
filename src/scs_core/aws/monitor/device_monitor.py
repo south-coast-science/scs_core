@@ -6,6 +6,7 @@ Created on 25 Sep 2020
 import json
 import os
 import logging
+import time
 
 from collections import OrderedDict
 
@@ -28,7 +29,6 @@ from scs_core.aws.data.activity_list import StatusList
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
-
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
@@ -76,18 +76,24 @@ class DeviceMonitor(object):
             else:
                 this_dev.is_active = True
                 logging.debug('Device %s is active' % this_dev.device_tag)
-            if device_tester.has_status_changed(device_status_list):
+
+            changed, was_active = device_tester.has_status_changed(device_status_list)
+            if changed:
+                this_dev.is_active = (this_dev.is_active, LocalizedDatetime.now().as_iso8601())
                 logging.info('Device %s has changed status' % this_dev.device_tag)
                 this_dev.dm_status = "activity_change"
                 self.generate_email(this_dev)
                 this_dev.email_sent = True
 
+            this_dev.was_active = was_active
+
             # see if all topics are published on recently
             device_tester.get_byline_activity()
             if this_dev.is_active:
-                changed, inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
+                changed, active, topic, last_time = device_tester.has_byline_status_changed(device_byline_list)
+                this_dev.old_byline_time = last_time
                 if changed:
-                    if inactive:
+                    if not active:
                         logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
                         this_dev.dm_status = "byline_inactive"
                         if not this_dev.email_sent:
@@ -99,6 +105,15 @@ class DeviceMonitor(object):
                         if not this_dev.email_sent:
                             self.generate_email(this_dev, topic)
                             this_dev.email_sent = True
+
+                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
+                    t_value = dev_byline_statuses.get(topic)
+                    if type(t_value) is not bool:
+                        t_value = t_value[0]
+                    new_val = (t_value, LocalizedDatetime.now().as_iso8601())
+                    dev_byline_statuses[topic] = new_val
+                    this_dev.byline_status = dev_byline_statuses
+
 
             # check for weird (null) values
             if not this_dev.email_sent and this_dev.is_active:
@@ -139,7 +154,7 @@ class DeviceMonitor(object):
                     break
 
         v_list.append(self.__config.email_name)
-        v_list.append("bbeloff@me.com")
+        v_list.append("bruno.beloff@southcoastscience.com")
         message = text.split("~")
         subject = message[0]
         body = message[1]
@@ -167,7 +182,7 @@ class DeviceMonitor(object):
             else:
                 raise
         logging.info("Email sent about device %s", this_dev.device_tag)
-        # time.sleep(1)  # AWS limit is 1 email/sec
+        time.sleep(0.1)  # AWS limit is 14 email/sec
 
     def get_devices_by_byline(self):
         device_list = []
@@ -231,6 +246,10 @@ class DeviceMonitor(object):
         message = (message.replace("NOW_UPTIME", device.uptime if device.uptime else ""))
         message = (message.replace("OLD_UPTIME", device.old_uptime if device.old_uptime else ""))
         message = (message.replace("DOCUMENT", document.as_json if document else ""))
+        message = (message.replace("PREVIOUS_BYLINE_CHANGE_TIME", device.old_byline_time if device.old_byline_time
+                   else "-"))
+        message = (message.replace("PREVIOUS_STATUS_CHANGE_TIME", device.was_active[1] if type(device.was_active) is
+                   tuple else "-"))
         self.send_email_alert(device, message)
 
     def recreate_status_list(self, device_list):

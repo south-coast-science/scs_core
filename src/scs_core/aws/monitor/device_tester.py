@@ -60,10 +60,14 @@ class DeviceTester(object):
     def has_status_changed(self, s3_device_status_list):
         is_active = self.__scs_device.is_active
         was_active = s3_device_status_list[self.__scs_device.device_tag]
-        if bool(is_active) == bool(was_active):
-            return False
+        if type(was_active) is not bool:
+            b_was_active = was_active[0]
         else:
-            return True
+            b_was_active = was_active
+        if bool(is_active) == bool(b_was_active):
+            return False, was_active
+        else:
+            return True, was_active
 
     def has_byline_status_changed(self, s3_byline_status_list):
         device_bylines = self.__scs_device.bylines
@@ -73,17 +77,21 @@ class DeviceTester(object):
             if old_byline_status_list is None:
                 return False, False, ""
             for line in device_bylines:
-                active = self.is_byline_active(line)
+                now_active = self.is_byline_active(line)
                 topic = line.topic
                 for key, value in old_byline_status_list.items():
+                    if type(value) is not bool:
+                        was_active = value[0]
+                    else:
+                        was_active = value
                     if key == topic:
-                        if value is not active:
-                            if value is True:
-                                return False, True, topic
-                            if value is False:
-                                return True, True, topic
+                        if was_active is not now_active:
+                            if now_active is True:
+                                return True, True, topic, value[1] if type(value) is not bool else "unknown"
+                            if now_active is False:
+                                return True, False, topic, value[1] if type(value) is not bool else "unknown"
 
-        return False, False, None
+        return False, False, None, ""
 
     def check_values(self):
 
