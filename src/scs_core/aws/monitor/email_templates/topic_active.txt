@@ -5,7 +5,7 @@ Changed status: the device DEVICE_NAME has resumed publishing on the topic: TOPI
 No further action is required on this issue.
 
 This check: THIS_CHECK_TIME
-Previous status change: PREVIOUS_STATUS_CHANGE_TIME
+Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
 
 --
 The South Coast Science Technical Support Team

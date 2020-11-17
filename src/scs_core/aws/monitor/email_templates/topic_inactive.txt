@@ -7,7 +7,7 @@ This may be indicative of a system issue.
 If this change of status was intentional, please email South Coast Science support to de-escalate this case.
 
 This check: THIS_CHECK_TIME
-Previous status change: PREVIOUS_STATUS_CHANGE_TIME
+Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
 
 --
 The South Coast Science Technical Support Team
