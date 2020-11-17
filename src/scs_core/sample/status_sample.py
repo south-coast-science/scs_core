@@ -89,17 +89,17 @@ class StatusSample(Sample):
         jdict = OrderedDict()
 
         if self.airnow is not None:
-            jdict['airnow'] = self.airnow
+            jdict['airnow'] = self.airnow.as_json()
 
         if self.timezone is not None:
-            jdict['tz'] = self.timezone
+            jdict['tz'] = self.timezone.as_json()
 
         if self.position is not None:
-            jdict['gps'] = self.position
+            jdict['gps'] = self.position.as_json()
 
-        jdict['sch'] = self.schedule
-        jdict['tmp'] = self.temperature
-        jdict['up'] = self.uptime
+        jdict['sch'] = self.schedule.as_json()
+        jdict['tmp'] = self.temperature.as_json()
+        jdict['up'] = self.uptime.as_json()
 
         if self.psu_report is not None:
             jdict['psu'] = self.psu_report

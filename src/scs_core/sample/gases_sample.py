@@ -110,16 +110,16 @@ class GasesSample(Sample):
 
         if self.electrochem_datum is not None:
             for key, value in self.electrochem_datum.sns.items():
-                jdict[key] = value
+                jdict[key] = value.as_json()
 
             try:
                 if self.electrochem_datum.pt1000 is not None:
-                    jdict['pt1'] = self.electrochem_datum.pt1000
+                    jdict['pt1'] = self.electrochem_datum.pt1000.as_json()
             except AttributeError:
                 pass
 
         if self.sht_datum is not None:
-            jdict['sht'] = self.sht_datum
+            jdict['sht'] = self.sht_datum.as_json()
 
         return jdict
 
