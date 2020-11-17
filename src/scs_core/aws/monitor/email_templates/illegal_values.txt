@@ -9,7 +9,7 @@ This may be indicative of a system issue.
 If this report was intentional, please email South Coast Science support to de-escalate this case.
 
 This check: THIS_CHECK_TIME
-Previous check: LAST_CHECK_TIME
+Previous status change: PREVIOUS_STATUS_CHANGE_TIME
 
 --
 The South Coast Science Technical Support Team
