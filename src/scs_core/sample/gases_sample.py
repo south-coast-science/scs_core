@@ -25,6 +25,7 @@ from scs_core.data.str import Str
 from scs_core.gas.a4.a4_datum import A4Datum
 from scs_core.gas.afe.afe_datum import AFEDatum
 from scs_core.gas.afe.pt1000_datum import Pt1000Datum
+from scs_core.gas.pid.pid import PIDDatum
 from scs_core.gas.scd30.scd30_datum import SCD30Datum
 
 from scs_core.sample.sample import Sample
@@ -39,7 +40,8 @@ class GasesSample(Sample):
     classdocs
     """
 
-    __NON_GAS_FIELDS = ['pt1', 'sht']
+    __NON_A4_FIELDS = ['pt1', 'sht', 'VOC']
+    __VOC_FIELDS = ['VOC']
 
     @classmethod
     def construct_from_jdict(cls, jdict):
@@ -62,8 +64,11 @@ class GasesSample(Sample):
         sns = OrderedDict()
 
         for field, node in val.items():
-            if field not in cls.__NON_GAS_FIELDS:
+            if field not in cls.__NON_A4_FIELDS:
                 sns[field] = A4Datum.construct_from_jdict(node)
+
+            if field in cls.__VOC_FIELDS:
+                sns[field] = PIDDatum.construct_from_jdict(node)
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 
@@ -141,7 +146,5 @@ class GasesSample(Sample):
     def __str__(self, *args, **kwargs):
         exegeses = Str.collection(self.exegeses)
 
-        return "GasesSample:{tag:%s, rec:%s, src:%s, exegeses:%s, scd30_datum:%s, electrochem_datum:%s, " \
-               "sht_datum:%s}" % \
-            (self.tag, self.rec, self.src, exegeses, self.scd30_datum, self.electrochem_datum,
-             self.sht_datum)
+        return "GasesSample:{tag:%s, rec:%s, exegeses:%s, scd30_datum:%s, electrochem_datum:%s, sht_datum:%s}" % \
+            (self.tag, self.rec, exegeses, self.scd30_datum, self.electrochem_datum, self.sht_datum)
