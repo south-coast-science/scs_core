@@ -96,5 +96,5 @@ class ClimateSample(Sample):
     def __str__(self, *args, **kwargs):
         exegeses = Str.collection(self.exegeses)
 
-        return "ClimateSample:{tag:%s, rec:%s, src:%s, exegeses:%s, sht_datum:%s, barometer_datum:%s}" % \
-            (self.tag, self.rec, self.src, exegeses, self.sht_datum, self.barometer_datum)
+        return "ClimateSample:{tag:%s, rec:%s, exegeses:%s, sht_datum:%s, barometer_datum:%s}" % \
+            (self.tag, self.rec, exegeses, self.sht_datum, self.barometer_datum)

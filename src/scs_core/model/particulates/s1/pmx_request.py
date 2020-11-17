@@ -33,7 +33,7 @@ class PMxRequest(JSONable):
         """
         Constructor
         """
-        self.__sample = sample                              # Sample (particulates)
+        self.__sample = sample                              # ParticulatesSample
         self.__sht_datum = sht_datum                        # SHTDatum
 
 

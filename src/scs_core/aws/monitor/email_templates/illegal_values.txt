@@ -1,4 +1,4 @@
-SCS device monitor: DEVICE_NAME has reported an illegal value
+SCS device monitor: DEVICE_NAME report value issue
 ~
 Changed status: the device DEVICE_NAME published a document containing illegal value(s) on topic TOPIC_NAME.
 

@@ -88,7 +88,7 @@ class ParticulatesSample(Sample):
             jdict['sfr'] = self.opc_datum.sfr
 
         if self.opc_datum.sht is not None:
-            jdict['sht'] = self.opc_datum.sht
+            jdict['sht'] = self.opc_datum.sht.as_json()
 
         return jdict
 

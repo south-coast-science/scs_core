@@ -15,8 +15,14 @@ example document:
 
 from collections import OrderedDict
 
+from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.location.timezone import Timezone
+from scs_core.position.gps_datum import GPSDatum
 from scs_core.sample.sample import Sample
+from scs_core.sync.schedule import Schedule
+from scs_core.sys.system_temp import SystemTemp
+from scs_core.sys.uptime_datum import UptimeDatum
 
 
 # TODO: put uptime in a sensible place!!
@@ -36,12 +42,19 @@ class StatusSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        val = jdict.get('val')
 
         # StatusSample...
-        # TODO: check fields, build components
+        airnow = AirNowSiteConf.construct_from_jdict(val.get('airnow'))
+        timezone = Timezone.construct_from_jdict(val.get('tz'))
+        position = GPSDatum.construct_from_jdict(val.get('gps'))
+        temperature = SystemTemp.construct_from_jdict(val.get('tmp'))
+        schedule = Schedule.construct_from_jdict(val.get('sch'))
+        uptime = UptimeDatum.construct_from_jdict(val.get('up'))
 
-        # return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report)
-        return cls(tag, rec, None, None, None, None, None, None, None)
+        # PSUReport classes are not available to the scs_core package
+
+        return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, val.get('psu'))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -76,17 +89,17 @@ class StatusSample(Sample):
         jdict = OrderedDict()
 
         if self.airnow is not None:
-            jdict['airnow'] = self.airnow
+            jdict['airnow'] = self.airnow.as_json()
 
         if self.timezone is not None:
-            jdict['tz'] = self.timezone
+            jdict['tz'] = self.timezone.as_json()
 
         if self.position is not None:
-            jdict['gps'] = self.position
+            jdict['gps'] = self.position.as_json()
 
-        jdict['sch'] = self.schedule
-        jdict['tmp'] = self.temperature
-        jdict['up'] = self.uptime
+        jdict['sch'] = self.schedule.as_json()
+        jdict['tmp'] = self.temperature.as_json()
+        jdict['up'] = self.uptime.as_json()
 
         if self.psu_report is not None:
             jdict['psu'] = self.psu_report
@@ -134,7 +147,7 @@ class StatusSample(Sample):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSample:{tag:%s, rec:%s, src:%s, airnow:%s, timezone:%s, position:%s, " \
+        return "StatusSample:{tag:%s, rec:%s, airnow:%s, timezone:%s, position:%s, " \
                "temperature:%s, schedule:%s, uptime:%s, psu_report:%s}" % \
-            (self.tag, self.rec, self.src, self.airnow, self.timezone, self.position,
+            (self.tag, self.rec, self.airnow, self.timezone, self.position,
              self.temperature, self.schedule, self.uptime, self.psu_report)
