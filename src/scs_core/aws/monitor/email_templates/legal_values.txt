@@ -1,6 +1,6 @@
-SCS device monitor: DEVICE_NAME has changed its status
+SCS device monitor: DEVICE_NAME has reported an illegal value
 ~
-Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
+Changed status: the device DEVICE_NAME is no longer publishing documents containing illegal value(s) on topic TOPIC_NAME.
 
 No further action is required on this issue.
 

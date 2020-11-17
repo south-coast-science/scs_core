@@ -5,7 +5,7 @@ Created on 20 Oct 2016
 
 example document:
 {"tag": "scs-be2-2",
- "rec": "2017-09-24T07:51:21.510+00:00",
+ "rec": "2017-09-24T07:51:21Z",
  "val": {
   "NO2": {"weV": 0.312317, "aeV": 0.31038, "weC": -0.001, "cnc": 14.8},
   "CO": {"weV": 0.325005, "aeV": 0.254254, "weC": 0.077239, "cnc": 323.2},
@@ -22,6 +22,7 @@ from scs_core.climate.sht_datum import SHTDatum
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.str import Str
 
+from scs_core.gas.a4.a4_datum import A4Datum
 from scs_core.gas.afe.afe_datum import AFEDatum
 from scs_core.gas.afe.pt1000_datum import Pt1000Datum
 from scs_core.gas.scd30.scd30_datum import SCD30Datum
@@ -58,8 +59,13 @@ class GasesSample(Sample):
         node = val.get('pt1')
         pt1000_datum = None if node is None else Pt1000Datum(node.get('v'), temp=node.get('tmp'))
 
-        # TODO: gas fields
-        electrochem_datum = AFEDatum(pt1000_datum, *[])
+        sns = OrderedDict()
+
+        for field, node in val.items():
+            if field not in cls.__NON_GAS_FIELDS:
+                sns[field] = A4Datum.construct_from_jdict(node)
+
+        electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 
         node = val.get('sht')
         sht_datum = SHTDatum(node.get('hmd'), node.get('tmp'))

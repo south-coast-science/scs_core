@@ -25,6 +25,20 @@ class A4Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        we_v = jdict.get('weV')
+        ae_v = jdict.get('aeV')
+
+        we_c = jdict.get('weC')
+        cnc = jdict.get('cnc')
+
+        return cls(we_v, ae_v, we_c, cnc)
+
+
+    @classmethod
     def construct(cls, calib, baseline, tc, temp, we_v, ae_v, no2_cnc=None):
         if calib is None or tc is None:
             return A4Datum(we_v, ae_v)
@@ -46,7 +60,7 @@ class A4Datum(JSONable):
 
         baselined_cnc = cnc + baseline.offset
 
-        return A4Datum(we_v, ae_v, we_c, baselined_cnc)
+        return cls(we_v, ae_v, we_c, baselined_cnc)
 
 
     # ----------------------------------------------------------------------------------------------------------------
