@@ -4,11 +4,13 @@ Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS. ("N
 
 This may be indicative of a system, communications, or power supply issue.
 
-If this change of status was intentional, please email South Coast Science support to de-escalate this case.
+If this change of status was intentional, please email South Coast Science support (support@southcoastscience.com) to de-escalate this case.
 
 This check: THIS_CHECK_TIME
 Previous status change: PREVIOUS_STATUS_CHANGE_TIME
 
 --
+Replies to this email are forwarded to:
+
 The South Coast Science Technical Support Team
 support@southcoastscience.com

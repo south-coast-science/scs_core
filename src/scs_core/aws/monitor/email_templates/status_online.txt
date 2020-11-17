@@ -8,5 +8,7 @@ This check: THIS_CHECK_TIME
 Previous status change: PREVIOUS_STATUS_CHANGE_TIME
 
 --
+Replies to this email are forwarded to:
+
 The South Coast Science Technical Support Team
 support@southcoastscience.com
