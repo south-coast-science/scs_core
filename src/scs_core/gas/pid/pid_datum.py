@@ -20,6 +20,19 @@ class PIDDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        we_v = jdict.get('weV')
+
+        we_c = jdict.get('weC')
+        cnc = jdict.get('cnc')
+
+        return cls(we_v, we_c, cnc)
+
+
+    @classmethod
     def construct(cls, calib, baseline, tc, temp, we_v):
         if calib is None or tc is None:
             return PIDDatum(we_v)
@@ -35,7 +48,7 @@ class PIDDatum(JSONable):
 
         baselined_cnc = cnc + baseline.offset
 
-        return PIDDatum(we_v, we_c, baselined_cnc)
+        return cls(we_v, we_c, baselined_cnc)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -6,19 +6,21 @@ Created on 25 Sep 2020
 import json
 import os
 import logging
+import time
 
 from collections import OrderedDict
 
 from botocore.exceptions import ClientError
 
 from scs_core.aws.data.byline import TopicBylineGroup
+from scs_core.aws.data.email_list import EmailList
 
 from scs_core.aws.monitor.device_tester import DeviceTester
 from scs_core.aws.monitor.scs_device import SCSDevice
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.timedelta import Timedelta
 
+from scs_core.aws.data.runtime_record import RuntimeRecord
 from scs_core.aws.data.uptime_list import UptimeList
 from scs_core.aws.data.byline_list import BylineList
 from scs_core.aws.data.activity_list import StatusList
@@ -27,11 +29,6 @@ from scs_core.aws.data.activity_list import StatusList
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
-    __RUN_FREQUENCY_MINUTES = 60
-    __BUCKET_NAME = "scs-device-monitor"
-    __RESOURCE_NAME_STATUS = "device_status_list"
-    __RESOURCE_NAME_UPTIME = "device_uptime_list"
-    __RESOURCE_NAME_BYLINES = "device_bylines_list"
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
@@ -42,6 +39,8 @@ class DeviceMonitor(object):
         self.__lambda_client = lambda_client
         self.__persistence_manager = persistence_manager
         self.__email_client = email_client
+        self.__runtime_record = None
+        self.__email_list = EmailList.load(persistence_manager).as_json()
 
         logging.getLogger().setLevel(logging.INFO)
 
@@ -53,6 +52,7 @@ class DeviceMonitor(object):
         status_list = StatusList.load(self.__persistence_manager)
         uptime_list = UptimeList.load(self.__persistence_manager)
         byline_list = BylineList.load(self.__persistence_manager)
+        self.__runtime_record = RuntimeRecord.load(self.__persistence_manager)
 
         device_status_list = status_list.as_json().get("status_list")
         device_uptime_list = uptime_list.as_json().get("uptime_list")
@@ -76,29 +76,52 @@ class DeviceMonitor(object):
             else:
                 this_dev.is_active = True
                 logging.debug('Device %s is active' % this_dev.device_tag)
-            if device_tester.has_status_changed(device_status_list):
+
+            changed, was_active = device_tester.has_status_changed(device_status_list)
+            if changed:
+                this_dev.is_active = (this_dev.is_active, LocalizedDatetime.now().as_iso8601())
                 logging.info('Device %s has changed status' % this_dev.device_tag)
                 this_dev.dm_status = "activity_change"
                 self.generate_email(this_dev)
                 this_dev.email_sent = True
 
+            this_dev.was_active = was_active
+
             # see if all topics are published on recently
             device_tester.get_byline_activity()
-            if not this_dev.email_sent and this_dev.is_active:
-                inactive, topic = device_tester.has_byline_status_changed(device_byline_list)
-                if inactive:
-                    logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
-                    this_dev.dm_status = "byline"
-                    self.generate_email(this_dev, topic)
-                    this_dev.email_sent = True
+            if this_dev.is_active:
+                changed, active, topic, last_time = device_tester.has_byline_status_changed(device_byline_list)
+                this_dev.old_byline_time = last_time
+                if changed:
+                    if not active:
+                        logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
+                        this_dev.dm_status = "byline_inactive"
+                        if not this_dev.email_sent:
+                            self.generate_email(this_dev, topic)
+                            this_dev.email_sent = True
+                    else:
+                        logging.info('Device %s: ByLine %s: has become active. ' % (this_dev.device_tag, topic))
+                        this_dev.dm_status = "byline_active"
+                        if not this_dev.email_sent:
+                            self.generate_email(this_dev, topic)
+                            this_dev.email_sent = True
+
+                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
+                    t_value = dev_byline_statuses.get(topic)
+                    if type(t_value) is not bool:
+                        t_value = t_value[0]
+                    new_val = (t_value, LocalizedDatetime.now().as_iso8601())
+                    dev_byline_statuses[topic] = new_val
+                    this_dev.byline_status = dev_byline_statuses
+
 
             # check for weird (null) values
             if not this_dev.email_sent and this_dev.is_active:
-                is_okay, field, field_type = device_tester.check_values()
+                is_okay, topic, byline = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
-                    logging.info('Device %s: Field %s: has error values. ' % (this_dev.device_tag, field))
-                    self.generate_email(this_dev, None, field, field_type)
+                    logging.info('Device %s: Byline %s: has error values. ' % (this_dev.device_tag, topic))
+                    self.generate_email(this_dev, topic, byline)
                     this_dev.email_sent = True
 
             # check if rebooted
@@ -115,24 +138,39 @@ class DeviceMonitor(object):
         self.recreate_status_list(device_list)
         self.recreate_uptime_list(device_list)
         self.recreate_pub_list(device_list)
+        self.save_runtime_record()
 
-    def send_email_alert(self, this_dev, message):
-        # TODO allow for extra recipients
+    def send_email_alert(self, this_dev, text):
+        jdict = self.__email_list.get("email_list")
+        v_list = []
+        for key, value in jdict.items():
+            if key == this_dev.device_tag:
+                if value is not None:
+                    if type(value).__name__ == "list":
+                        for item in value:
+                            v_list.append(item)
+                    else:
+                        v_list.append(value)
+                    break
+
+        v_list.append(self.__config.email_name)
+        v_list.append("bruno.beloff@southcoastscience.com")
+        message = text.split("~")
+        subject = message[0]
+        body = message[1]
         try:
             self.__email_client.send_email(
                 Source=self.__config.email_name,
                 Destination={
-                    'ToAddresses': [
-                        self.__config.email_name,
-                    ]
+                    'ToAddresses': v_list
                 },
                 Message={
                     'Subject': {
-                        'Data': this_dev.device_tag
+                        'Data': subject
                     },
                     'Body': {
                         'Text': {
-                            'Data': message
+                            'Data': body
                         }
                     }
                 }
@@ -144,7 +182,7 @@ class DeviceMonitor(object):
             else:
                 raise
         logging.info("Email sent about device %s", this_dev.device_tag)
-        # time.sleep(1)  # AWS limit is 1 email/sec
+        time.sleep(0.1)  # AWS limit is 14 email/sec
 
     def get_devices_by_byline(self):
         device_list = []
@@ -168,16 +206,21 @@ class DeviceMonitor(object):
             device_list.append(temp)
         return device_list
 
-    def generate_email(self, device, byline_topic=None, field_name=None, field_type=None):
+    def generate_email(self, device, byline_topic=None, document=None):
         template = None
-        old_status = "inactive" if device.is_active else "active"
-        now_status = "active" if device.is_active else "inactive"
+        old_status = "offline" if device.is_active else "online"
+        now_status = "online" if device.is_active else "offline"
 
         # Get templates
         if device.dm_status == "activity_change":
-            template = "status_changed.txt"
-        elif device.dm_status == "byline":
-            template = "byline_inactive.txt"
+            if now_status == "offline":
+                template = "status_offline.txt"
+            else:
+                template = "status_online.txt"
+        elif device.dm_status == "byline_inactive":
+            template = "topic_inactive.txt"
+        elif device.dm_status == "byline_active":
+            template = "topic_active.txt"
         elif device.dm_status == "reboot":
             template = "uptime.txt"
         elif device.dm_status == "values":
@@ -189,27 +232,25 @@ class DeviceMonitor(object):
             f = open(filepath, "r")
             message = f.read()
         else:
+            logging.error("Template missing %s" % template)
             return
-
         # Replace for specific device
+        last_runtime = self.__runtime_record.as_json() if self.__runtime_record else "Unknown"
         message = (message.replace("DEVICE_NAME", device.device_tag))
-        message = (message.replace("LAST_CHECK_TIME", self.get_last_run_time()))
+        message = (message.replace("LAST_CHECK_TIME", last_runtime.get("last_runtime")))
         message = (message.replace("OLD_STATUS", old_status))
         message = (message.replace("NEW_STATUS", now_status))
-        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().datetime)))
+        message = (message.replace("THIS_CHECK_TIME", str(LocalizedDatetime.now().as_iso8601())))
         message = (message.replace("TOPIC_NAME", byline_topic if byline_topic else ""))
         message = (message.replace("TIME_ALLOWED", str(self.__config.unresponsive_minutes_allowed)))
         message = (message.replace("NOW_UPTIME", device.uptime if device.uptime else ""))
         message = (message.replace("OLD_UPTIME", device.old_uptime if device.old_uptime else ""))
-        message = (message.replace("FIELD_NAME", field_name if field_name else ""))
-        message = (message.replace("FIELD_TYPE", field_type if field_type else ""))
+        message = (message.replace("DOCUMENT", document.as_json if document else ""))
+        message = (message.replace("PREVIOUS_BYLINE_CHANGE_TIME", device.old_byline_time if device.old_byline_time
+                   else "-"))
+        message = (message.replace("PREVIOUS_STATUS_CHANGE_TIME", device.was_active[1] if type(device.was_active) is
+                   tuple else "-"))
         self.send_email_alert(device, message)
-
-    def get_last_run_time(self):
-        now = LocalizedDatetime.now()
-        td = Timedelta(minutes=self.__RUN_FREQUENCY_MINUTES)
-        res = now - td
-        return res.as_json()
 
     def recreate_status_list(self, device_list):
         device_data = OrderedDict()
@@ -227,7 +268,7 @@ class DeviceMonitor(object):
     def recreate_uptime_list(self, device_list):
         device_data = OrderedDict()
         for device in device_list:
-            data = (device.as_uptime_json())
+            data = (device.as_json())
             device_data[data["dev-tag"]] = data["uptime"]
         json_data = OrderedDict()
         json_data["uptime_list"] = device_data
@@ -246,6 +287,14 @@ class DeviceMonitor(object):
         byline_list = BylineList.construct_from_jdict(json_data)
         byline_list.save(self.__persistence_manager)
         logging.debug('Uploaded new pub list to s3')
+
+    def save_runtime_record(self):
+        now = LocalizedDatetime.now().as_json()
+        jdict = OrderedDict()
+
+        jdict['last_runtime'] = now
+        new_runtime_record = RuntimeRecord.construct_from_jdict(jdict)
+        new_runtime_record.save(self.__persistence_manager)
 
     # ----------------------------------------------------------------------------------------------------------------
 

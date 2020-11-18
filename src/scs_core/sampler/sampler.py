@@ -6,8 +6,6 @@ Created on 30 Jun 2017
 
 from abc import ABC, abstractmethod
 
-from scs_core.sync.runner import Runner
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,7 +16,7 @@ class Sampler(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner: Runner):
+    def __init__(self, runner):
         """
         Constructor
         """

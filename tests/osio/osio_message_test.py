@@ -35,7 +35,9 @@ value = "hello"
 print(value)
 print("-")
 
-datum = Sample(tag, None, now, ("greeting", "hello"))
+#     def __init__(self, tag, rec, src=None, values=None, exegeses=None):
+
+datum = Sample(tag, now, values={"greeting": "hello"})
 print(datum)
 print("-")
 

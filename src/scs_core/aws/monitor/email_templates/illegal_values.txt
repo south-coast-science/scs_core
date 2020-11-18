@@ -1,0 +1,18 @@
+SCS device monitor: DEVICE_NAME report value issue
+~
+Changed status: the device DEVICE_NAME published a document containing one or more illegal value(s) on topic TOPIC_NAME.
+
+Document: DOCUMENT
+
+This may be indicative of a system issue.
+
+If this report was intentional, please reply to this email to de-escalate the case.
+
+This check: THIS_CHECK_TIME
+Previous status change: PREVIOUS_STATUS_CHANGE_TIME
+
+--
+Replies to this email are forwarded to:
+
+The South Coast Science Technical Support Team
+support@southcoastscience.com

@@ -157,6 +157,11 @@ class IoTNode(Node):
         pass
 
 
+    @abstractmethod
+    def uptime(self, now=None):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # tmp directories...
 

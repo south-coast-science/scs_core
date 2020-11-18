@@ -182,6 +182,10 @@ class AWSGroupConfigurator(PersistentJSONable):
             f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 3]["ResourceId"] = (system_id + "-ml-pm10")
 
+            f_data["InitialVersion"]["Functions"][3]["Id"] = (system_id + "-GasInference")
+            f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+                0]["ResourceId"] = data_volume_name
+
         # Create request
         response = self.__client.create_function_definition(InitialVersion=f_data["InitialVersion"])
         self.__aws_info.append("NewFunctionARN", response["LatestVersionArn"])

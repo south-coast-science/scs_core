@@ -19,11 +19,22 @@ class SystemTemp(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        board = jdict.get('brd')
+        host = jdict.get('hst')
+
+        return cls(board, host)
+
+
+    @classmethod
     def construct(cls, board_datum, host_datum):
         board = None if board_datum is None else board_datum.temp
         host = None if host_datum is None else host_datum.temp
 
-        return SystemTemp(board, host)
+        return cls(board, host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
