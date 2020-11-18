@@ -14,7 +14,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 32000,
+                "MemorySize": 24576,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -33,7 +33,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 32000,
+                "MemorySize": 24576,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -64,7 +64,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 32000,
+                "MemorySize": 196608,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -78,11 +78,15 @@
                         {
                             "Permission": "rw",
                             "ResourceId": "DATA_VOLUME_NAME"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-no2"
                         }
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 32000,
+                "MemorySize": 131072,
                 "Pinned": true,
                 "Timeout": 180
             },
