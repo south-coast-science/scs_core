@@ -37,6 +37,12 @@ class PSUReport(JSONReport, ABC):
 
     @property
     @abstractmethod
+    def source(self):
+        return None
+
+
+    @property
+    @abstractmethod
     def standby(self):
         return None
 

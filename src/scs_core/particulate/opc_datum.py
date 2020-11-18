@@ -8,11 +8,13 @@ import sys
 
 from collections import OrderedDict
 
+from scs_core.climate.sht_datum import SHTDatum
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 
-from scs_core.climate.sht_datum import SHTDatum
 from scs_core.particulate.pmx_datum import PMxDatum
+
 from scs_core.sample.sample import Sample
 
 
@@ -92,31 +94,6 @@ class OPCDatum(PMxDatum):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def as_sample(self, tag):
-        jdict = OrderedDict()
-
-        jdict['per'] = self.period
-
-        jdict['pm1'] = self.pm1
-        jdict['pm2p5'] = self.pm2p5
-        jdict['pm10'] = self.pm10
-
-        jdict['bin'] = self.bins
-
-        jdict['mtf1'] = self.bin_1_mtof
-        jdict['mtf3'] = self.bin_3_mtof
-        jdict['mtf5'] = self.bin_5_mtof
-        jdict['mtf7'] = self.bin_7_mtof
-
-        if self.sfr is not None:
-            jdict['sfr'] = self.sfr
-
-        if self.sht is not None:
-            jdict['sht'] = self.sht
-
-        return Sample(tag, self.source, self.rec, jdict)
-
 
     def as_json(self):
         jdict = OrderedDict()

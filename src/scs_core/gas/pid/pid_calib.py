@@ -7,14 +7,12 @@ Created on 24 Sep 2016
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
-
 from scs_core.gas.sensor_calib import SensorCalib
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PIDCalib(SensorCalib, JSONable):
+class PIDCalib(SensorCalib):
     """
     classdocs
     """
@@ -30,7 +28,7 @@ class PIDCalib(SensorCalib, JSONable):
         pid_elc_mv = jdict.get('pid_zero_mv')
         pid_sens_mv = jdict.get('pid_sensitivity_mv_ppm')
 
-        return PIDCalib(serial_number, sensor_type, pid_elc_mv, pid_sens_mv)
+        return cls(serial_number, sensor_type, pid_elc_mv, pid_sens_mv)
 
 
     # ----------------------------------------------------------------------------------------------------------------

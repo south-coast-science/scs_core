@@ -1,0 +1,14 @@
+SCS device monitor: DEVICE_NAME has changed its status
+~
+Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
+
+No further action is required on this issue.
+
+This check: THIS_CHECK_TIME
+Previous status change: PREVIOUS_STATUS_CHANGE_TIME
+
+--
+Replies to this email are forwarded to:
+
+The South Coast Science Technical Support Team
+support@southcoastscience.com

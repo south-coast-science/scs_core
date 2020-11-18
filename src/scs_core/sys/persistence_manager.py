@@ -9,7 +9,6 @@ import time
 
 from abc import ABC, abstractmethod
 
-from scs_core.data.crypt import Crypt
 from scs_core.sys.filesystem import Filesystem
 
 
@@ -66,7 +65,11 @@ class FilesystemPersistenceManager(PersistenceManager):
             with open(abs_filename, "r") as f:
                 text = f.read()
 
-            jstr = text if encryption_key is None else Crypt.decrypt(encryption_key, text)
+            if encryption_key:
+                from scs_core.data.crypt import Crypt               # late import
+                jstr = Crypt.decrypt(encryption_key, text)
+            else:
+                jstr = text
 
         except FileNotFoundError:
             return None
@@ -85,7 +88,11 @@ class FilesystemPersistenceManager(PersistenceManager):
 
         tmp_filename = '.'.join((abs_filename, str(int(time.time()))))
 
-        text = jstr + '\n' if encryption_key is None else Crypt.encrypt(encryption_key, jstr)
+        if encryption_key:
+            from scs_core.data.crypt import Crypt                   # late import
+            text = Crypt.encrypt(encryption_key, jstr)
+        else:
+            text = jstr + '\n'
 
         with open(tmp_filename, "w") as f:
             f.write(text)

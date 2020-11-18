@@ -196,6 +196,24 @@ class AFECalib(PersistentJSONable):
         return sensors
 
 
+    def sensor_calibs(self):           # returns dict of gas_name: SensorCalib
+        calibs = {}
+
+        for sensor_calib in self.__sensor_calibs:
+            if not sensor_calib:
+                continue
+
+            sensor = Sensor.find(sensor_calib.serial_number)
+            name = sensor.gas_name
+
+            if name in calibs:
+                raise ValueError("duplicate gas name: %s" % name)
+
+            calibs[sensor.gas_name] = sensor_calib
+
+        return calibs
+
+
     def gas_names(self):
         names = []
         for sensor_calib in self.__sensor_calibs:

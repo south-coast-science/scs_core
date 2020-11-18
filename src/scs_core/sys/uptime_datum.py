@@ -59,7 +59,7 @@ class UptimeDatum(JSONable):
             return None
 
         time = LocalizedDatetime.construct_from_iso8601(jdict.get('time'))
-        period = Timedelta.construct_from_jdict(jdict.get('up'))
+        period = Timedelta.construct_from_jdict(jdict.get('period'))
         users = int(jdict.get('users'))
         load = UptimeLoad.construct_from_jdict(jdict.get('load'))
 

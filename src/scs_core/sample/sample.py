@@ -34,20 +34,19 @@ class Sample(JSONable):
         values = jdict.get('val')
         exegeses = jdict.get('exg')
 
-        return cls(tag, src, rec, values, exegeses)
+        return cls(tag, rec, src=src, values=values, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, src, rec, values, exegeses=None):
+    def __init__(self, tag, rec, src=None, values=None, exegeses=None):
         """
         Constructor
         """
         self.__tag = tag                        # string
-        self.__src = src                        # string
-
         self.__rec = rec                        # LocalizedDatetime
 
+        self.__src = src                        # string
         self.__values = values                  # OrderedDict
         self.__exegeses = exegeses              # OrderedDict
 
@@ -80,13 +79,13 @@ class Sample(JSONable):
 
 
     @property
-    def src(self):
-        return self.__src
+    def rec(self):
+        return self.__rec
 
 
     @property
-    def rec(self):
-        return self.__rec
+    def src(self):
+        return self.__src
 
 
     @property
@@ -110,5 +109,5 @@ class Sample(JSONable):
         values = Str.collection(self.values)
         exegeses = Str.collection(self.exegeses)
 
-        return self.__class__.__name__ + ":{tag:%s, src:%s, rec:%s, values:%s, exegeses:%s}" % \
-            (self.tag, self.src, self.rec, values, exegeses)
+        return self.__class__.__name__ + ":{tag:%s, rec:%s, src:%s, values:%s, exegeses:%s}" % \
+            (self.tag, self.rec, self.src, values, exegeses)
