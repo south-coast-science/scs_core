@@ -200,6 +200,9 @@ class AFECalib(PersistentJSONable):
         calibs = {}
 
         for sensor_calib in self.__sensor_calibs:
+            if not sensor_calib:
+                continue
+
             sensor = Sensor.find(sensor_calib.serial_number)
             name = sensor.gas_name
 
