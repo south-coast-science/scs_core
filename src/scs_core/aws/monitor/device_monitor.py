@@ -82,10 +82,12 @@ class DeviceMonitor(object):
                 this_dev.is_active = (this_dev.is_active, LocalizedDatetime.now().as_iso8601())
                 logging.info('Device %s has changed status' % this_dev.device_tag)
                 this_dev.dm_status = "activity_change"
+                this_dev.was_active = was_active
                 self.generate_email(this_dev)
                 this_dev.email_sent = True
+            else:
+                this_dev.is_active = was_active
 
-            this_dev.was_active = was_active
 
             # see if all topics are published on recently
             device_tester.get_byline_activity()
@@ -109,6 +111,10 @@ class DeviceMonitor(object):
                     dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
                     new_val = (active, LocalizedDatetime.now().as_iso8601())
                     dev_byline_statuses[topic] = new_val
+                    this_dev.byline_status = dev_byline_statuses
+
+                else:
+                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
                     this_dev.byline_status = dev_byline_statuses
 
 
@@ -205,8 +211,21 @@ class DeviceMonitor(object):
 
     def generate_email(self, device, byline_topic=None, document=None):
         template = None
-        old_status = "offline" if device.is_active else "online"
-        now_status = "online" if device.is_active else "offline"
+
+        if type(device.is_active) is bool:
+            device_is_active = device.is_active
+        else:
+            device_is_active = device.is_active[0]
+
+        if device.was_active:
+            if type(device.was_active) is not bool:
+                last_active_time = device.was_active[1]
+        else:
+            last_active_time = "-"
+
+
+        old_status = "offline" if device_is_active else "online"
+        now_status = "online" if device_is_active else "offline"
 
         # Get templates
         if device.dm_status == "activity_change":
@@ -245,8 +264,7 @@ class DeviceMonitor(object):
         message = (message.replace("DOCUMENT", document.as_json if document else ""))
         message = (message.replace("PREVIOUS_BYLINE_CHANGE_TIME", device.old_byline_time if device.old_byline_time
                    else "-"))
-        message = (message.replace("PREVIOUS_STATUS_CHANGE_TIME", device.was_active[1] if type(device.was_active) is
-                   tuple else "-"))
+        message = (message.replace("PREVIOUS_STATUS_CHANGE_TIME", last_active_time))
         self.send_email_alert(device, message)
 
     def recreate_status_list(self, device_list):

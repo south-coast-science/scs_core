@@ -87,9 +87,9 @@ class DeviceTester(object):
                     if key == topic:
                         if was_active is not now_active:
                             if now_active is True:
-                                return True, True, topic, value[1] if type(value) is not bool else "unknown"
+                                return True, True, topic, value[1] if type(value) is not bool else "-"
                             if now_active is False:
-                                return True, False, topic, value[1] if type(value) is not bool else "unknown"
+                                return True, False, topic, value[1] if type(value) is not bool else "-"
 
         return False, False, None, ""
 
