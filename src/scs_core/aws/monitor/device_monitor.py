@@ -107,10 +107,7 @@ class DeviceMonitor(object):
                             this_dev.email_sent = True
 
                     dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
-                    t_value = dev_byline_statuses.get(topic)
-                    if type(t_value) is not bool:
-                        t_value = t_value[0]
-                    new_val = (t_value, LocalizedDatetime.now().as_iso8601())
+                    new_val = (active, LocalizedDatetime.now().as_iso8601())
                     dev_byline_statuses[topic] = new_val
                     this_dev.byline_status = dev_byline_statuses
 
