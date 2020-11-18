@@ -4,11 +4,13 @@ Changed status: the device DEVICE_NAME has not published on the topic: TOPIC_NAM
 
 This may be indicative of a system issue.
 
-If this change of status was intentional, please email South Coast Science support to de-escalate this case.
+If this change of status was intentional, please reply to this email to de-escalate the case.
 
 This check: THIS_CHECK_TIME
 Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
 
 --
+Replies to this email are forwarded to:
+
 The South Coast Science Technical Support Team
 support@southcoastscience.com
