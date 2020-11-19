@@ -1,6 +1,8 @@
 SCS device monitor: DEVICE_NAME on TOPIC_NAME
 ~
-Changed status: the device DEVICE_NAME has not published on the topic: TOPIC_NAME for at least TIME_ALLOWED minutes.
+Changed status: the device DEVICE_NAME has not published on the topic: TOPIC_NAME for at least TIME_ALLOWED minutes. If you have permission to access data on this topic, the timeline can be viewed at:
+
+https://live.southcoastscience.com/topics/TOPIC_NAME
 
 This may be indicative of a system issue.
 
