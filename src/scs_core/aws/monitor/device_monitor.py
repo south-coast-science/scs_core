@@ -29,6 +29,7 @@ from scs_core.aws.data.activity_list import StatusList
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceMonitor(object):
+    __DEFAULT_RECIPIENT = "support@southcoastscience.com"
 
     # ----------------------------------------------------------------------------------------------------------------
     def __init__(self, device_monitor_conf, persistence_manager, email_client, lambda_client):
@@ -113,9 +114,9 @@ class DeviceMonitor(object):
                     dev_byline_statuses[topic] = new_val
                     this_dev.byline_status = dev_byline_statuses
 
-                else:
-                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
-                    this_dev.byline_status = dev_byline_statuses
+            else:
+                dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
+                this_dev.byline_status = dev_byline_statuses
 
 
             # check for weird (null) values
@@ -165,7 +166,10 @@ class DeviceMonitor(object):
             self.__email_client.send_email(
                 Source=self.__config.email_name,
                 Destination={
-                    'ToAddresses': v_list
+                    'ToAddresses': [
+                        self.__DEFAULT_RECIPIENT,
+                    ],
+                    'BccAddresses': v_list
                 },
                 Message={
                     'Subject': {
