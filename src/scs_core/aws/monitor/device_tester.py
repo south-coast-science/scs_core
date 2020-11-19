@@ -75,7 +75,7 @@ class DeviceTester(object):
         if device_tag in s3_byline_status_list:
             old_byline_status_list = s3_byline_status_list[device_tag]
             if old_byline_status_list is None:
-                return False, False, ""
+                return False, False, "", ""
             for line in device_bylines:
                 now_active = self.is_byline_active(line)
                 topic = line.topic
