@@ -6,8 +6,7 @@ https://live.southcoastscience.com/topics/TOPIC_NAME
 
 No further action is required on this issue.
 
-This check: THIS_CHECK_TIME
-Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
+This check: THIS_CHECK_TIME  Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
 
 --
 Replies to this email are forwarded to:
