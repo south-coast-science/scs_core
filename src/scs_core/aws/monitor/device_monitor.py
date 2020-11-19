@@ -89,10 +89,15 @@ class DeviceMonitor(object):
             else:
                 this_dev.is_active = was_active
 
+            if type(this_dev.is_active) is not bool:
+                active = this_dev.is_active[0]
+            else:
+                active = this_dev.is_active
 
             # see if all topics are published on recently
-            device_tester.get_byline_activity()
-            if this_dev.is_active:
+
+            if active:
+                device_tester.get_byline_activity()
                 changed, active, topic, last_time = device_tester.has_byline_status_changed(device_byline_list)
                 this_dev.old_byline_time = last_time
                 if changed:
@@ -114,13 +119,13 @@ class DeviceMonitor(object):
                     dev_byline_statuses[topic] = new_val
                     this_dev.byline_status = dev_byline_statuses
 
-            else:
-                dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
-                this_dev.byline_status = dev_byline_statuses
+                else:
+                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
+                    this_dev.byline_status = dev_byline_statuses
 
 
             # check for weird (null) values
-            if not this_dev.email_sent and this_dev.is_active:
+            if not this_dev.email_sent and active:
                 is_okay, topic, byline = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
@@ -129,7 +134,7 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check if rebooted
-            if this_dev.is_active:
+            if active:
                 if device_tester.was_rebooted(device_uptime_list):
                     this_dev.dm_status = "reboot"
                     if not this_dev.email_sent:
