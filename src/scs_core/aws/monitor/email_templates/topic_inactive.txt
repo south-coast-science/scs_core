@@ -6,10 +6,9 @@ https://live.southcoastscience.com/topics/TOPIC_NAME
 
 This may be indicative of a system issue.
 
-If this change of status was intentional, please reply to this email to de-escalate the case.
+If this change of status was intentional, please reply to this email so that we can de-escalate the case.
 
-This check: THIS_CHECK_TIME
-Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
+This check: THIS_CHECK_TIME  Previous status change: PREVIOUS_BYLINE_CHANGE_TIME
 
 --
 Replies to this email are forwarded to:
