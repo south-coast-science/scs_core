@@ -22,24 +22,16 @@
                 "ResourceDataContainer": {
                     "SageMakerMachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/pm1-s1-2020h1",
-                        "OwnerSetting": {
-                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
-                            "GroupPermission": "ro"
-                        },
                         "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm1-h1-xgboost-regression-2020-08-13-13-33-05"
                     }
                 }
             },
             {
                 "Id": "SYSTEM_ID-ml-pm2p5",
-                "Name": "PM2P5",
+                "Name": "ML-PM2P5",
                 "ResourceDataContainer": {
                     "SageMakerMachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/pm2p5-s1-2020h1",
-                        "OwnerSetting": {
-                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
-                            "GroupPermission": "ro"
-                        },
                         "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm2p5-h1-xgboost-regression-2020-08-13-12-51-13"
                     }
                 }
@@ -50,11 +42,17 @@
                 "ResourceDataContainer": {
                     "SageMakerMachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/pm10-s1-2020h1",
-                        "OwnerSetting": {
-                            "GroupOwner": "UNIX_GROUP_OWNER_NUMBER",
-                            "GroupPermission": "ro"
-                        },
                         "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/pm10-h1-xgboost-regression-2020-08-17-16-59-46"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-no2",
+                "Name": "ML-NO2",
+                "ResourceDataContainer": {
+                    "SageMakerMachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/no2-s1-2020q13",
+                        "SageMakerJobArn": "arn:aws:sagemaker:us-west-2:696437392763:training-job/xgboost-no2-q13-xgboost-regression-2020-11-18-10-38-23"
                     }
                 }
             }
