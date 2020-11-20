@@ -30,7 +30,8 @@ class PathDict(JSONable):
         union = PathDict()
 
         for name, value in pairs:
-            union.append(name, value)
+            if value is not None:
+                union.append(name, value)
 
         return union
 
