@@ -4,9 +4,7 @@ Changed status: the device DEVICE_NAME published a document containing one or mo
 
 Document: DOCUMENT
 
-This may be indicative of a system issue.
-
-If this report was intentional, please reply to this email so that we can de-escalate the case.
+This may be indicative of a system issue. If this report was intentional, please reply to this email so that we can de-escalate the case.
 
 This check: THIS_CHECK_TIME  Previous status change: PREVIOUS_STATUS_CHANGE_TIME
 
