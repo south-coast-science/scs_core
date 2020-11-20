@@ -134,8 +134,9 @@ class DeviceMonitor(object):
                     this_dev.email_sent = True
 
             # check if rebooted
+            was_rebooted = device_tester.was_rebooted(device_uptime_list)
             if active:
-                if device_tester.was_rebooted(device_uptime_list):
+                if was_rebooted:
                     this_dev.dm_status = "reboot"
                     if not this_dev.email_sent:
                         logging.info('Device %s: May have been rebooted. ' % this_dev.device_tag)
