@@ -137,15 +137,8 @@ class AWSGroupConfigurator(PersistentJSONable):
                 (system_id + "-ml-pm2p5"))  # Edit resource name
             r_data["InitialVersion"]["Resources"][3]["Id"] = (
                 (system_id + "-ml-pm10"))  # Edit resource name
-            r_data["InitialVersion"]["Resources"][1]["ResourceDataContainer"][
-                "SageMakerMachineLearningModelResourceData"]["OwnerSetting"]["GroupOwner"] = (
-                unix_group_number)
-            r_data["InitialVersion"]["Resources"][2]["ResourceDataContainer"][
-                "SageMakerMachineLearningModelResourceData"]["OwnerSetting"]["GroupOwner"] = (
-                unix_group_number)
-            r_data["InitialVersion"]["Resources"][3]["ResourceDataContainer"][
-                "SageMakerMachineLearningModelResourceData"]["OwnerSetting"]["GroupOwner"] = (
-                unix_group_number)
+            r_data["InitialVersion"]["Resources"][4]["Id"] = (
+                (system_id + "-ml-no2"))  # Edit resource name
         # Send request
         response = self.__client.create_resource_definition(InitialVersion=r_data["InitialVersion"])
         self.__aws_info.append("NewResourceARN", response["LatestVersionArn"])
@@ -185,6 +178,8 @@ class AWSGroupConfigurator(PersistentJSONable):
             f_data["InitialVersion"]["Functions"][3]["Id"] = (system_id + "-GasInference")
             f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 0]["ResourceId"] = data_volume_name
+            f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+                1]["ResourceId"] = (system_id + "-ml-no2")
 
         # Create request
         response = self.__client.create_function_definition(InitialVersion=f_data["InitialVersion"])

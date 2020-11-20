@@ -24,12 +24,12 @@ class CSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None, append=False, exclude_header=False):
+    def __init__(self, filename=None, append=False, exclude_header=False, header_scan=False):
         """
         Constructor
         """
         self.__filename = filename
-        self.__paths = None
+        self.__paths = []
 
         if self.__filename is None:
             self.__append = append
@@ -39,13 +39,16 @@ class CSVWriter(object):
         else:
             self.__append = append and os.path.exists(self.__filename)
 
-            if self.__append:
+            if self.__append and not header_scan:
                 self.__paths = self.__append_paths()
 
             self.__file = open(self.__filename, "a" if self.__append else "w", newline='')
             self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
 
         self.__exclude_header = exclude_header
+        self.__header_scan = header_scan
+
+        self.__data = []
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,23 +75,38 @@ class CSVWriter(object):
         if datum is None:
             return False
 
-        if self.__paths is None:
+        if self.__header_scan:
+            self.__data.append(datum)
+
+            for path in datum.paths():
+                if path not in self.__paths:
+                    self.__paths.append(path)
+
+            return True
+
+        if not self.__paths:
             self.__paths = datum.paths()
 
-            # header...
+            # write header...
             if not self.__append and not self.__exclude_header:
                 self.__writer.writerow(self.__paths)
 
-        # row...
+        # write row...
         self.__writer.writerow(datum.row(self.__paths))
-
-        # if self.filename is None:
         self.__file.flush()
 
         return True
 
 
     def close(self):
+        if self.__header_scan:
+            # write header...
+            self.__writer.writerow(self.__paths)
+
+            # write rows...
+            for datum in self.__data:
+                self.__writer.writerow(datum.row(self.__paths))
+
         if self.filename is None:
             return
 
@@ -105,5 +123,5 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVWriter:{filename:%s, append:%s, exclude_header:%s, paths:%s}" % \
-               (self.filename, self.__append, self.__exclude_header, self.__paths)
+        return "CSVWriter:{filename:%s, append:%s, exclude_header:%s, header_scan:%s, paths:%s}" % \
+               (self.filename, self.__append, self.__exclude_header, self.__header_scan, self.__paths)
