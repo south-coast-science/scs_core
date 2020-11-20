@@ -119,6 +119,10 @@ class DeviceMonitor(object):
                     dev_byline_statuses[topic] = new_val
                     this_dev.byline_status = dev_byline_statuses
 
+                else:
+                    dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
+                    this_dev.byline_status = dev_byline_statuses
+
             else:
                 dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
                 this_dev.byline_status = dev_byline_statuses
