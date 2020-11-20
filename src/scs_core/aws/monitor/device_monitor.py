@@ -66,7 +66,6 @@ class DeviceMonitor(object):
         while iterating < len(device_list):
             this_dev = device_list[iterating]
             logging.debug('Testing Device %s of %s: %s' % (iterating, len(device_list), this_dev.device_tag))
-
             self.get_latest_pubs(this_dev)
 
             device_tester = DeviceTester(this_dev, self.__config)
@@ -90,18 +89,18 @@ class DeviceMonitor(object):
                 this_dev.is_active = was_active
 
             if type(this_dev.is_active) is not bool:
-                active = this_dev.is_active[0]
+                this_dev.continue_tests = this_dev.is_active[0]
             else:
-                active = this_dev.is_active
+                this_dev.continue_tests = this_dev.is_active
 
             # see if all topics are published on recently
 
-            if active:
+            if this_dev.continue_tests:
                 device_tester.get_byline_activity()
-                changed, active, topic, last_time = device_tester.has_byline_status_changed(device_byline_list)
+                changed, device_active, topic, last_time = device_tester.has_byline_status_changed(device_byline_list)
                 this_dev.old_byline_time = last_time
                 if changed:
-                    if not active:
+                    if not device_active:
                         logging.info('Device %s: ByLine %s: has become inactive. ' % (this_dev.device_tag, topic))
                         this_dev.dm_status = "byline_inactive"
                         if not this_dev.email_sent:
@@ -115,7 +114,7 @@ class DeviceMonitor(object):
                             this_dev.email_sent = True
 
                     dev_byline_statuses = device_byline_list.get(this_dev.device_tag)
-                    new_val = (active, LocalizedDatetime.now().as_iso8601())
+                    new_val = (device_active, LocalizedDatetime.now().as_iso8601())
                     dev_byline_statuses[topic] = new_val
                     this_dev.byline_status = dev_byline_statuses
 
@@ -129,7 +128,7 @@ class DeviceMonitor(object):
 
 
             # check for weird (null) values
-            if not this_dev.email_sent and active:
+            if not this_dev.email_sent and this_dev.continue_tests:
                 is_okay, topic, byline = device_tester.check_values()
                 this_dev.dm_status = "values"
                 if not is_okay:
@@ -139,7 +138,7 @@ class DeviceMonitor(object):
 
             # check if rebooted
             was_rebooted = device_tester.was_rebooted(device_uptime_list)
-            if active:
+            if this_dev.continue_tests:
                 if was_rebooted:
                     this_dev.dm_status = "reboot"
                     if not this_dev.email_sent:
