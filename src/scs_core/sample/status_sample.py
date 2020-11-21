@@ -102,7 +102,7 @@ class StatusSample(Sample):
         jdict['up'] = self.uptime.as_json()
 
         if self.psu_report is not None:
-            jdict['psu'] = self.psu_report
+            jdict['psu'] = self.psu_report.as_json()
 
         return jdict
 
