@@ -40,7 +40,7 @@ class GasesSample(Sample):
     classdocs
     """
 
-    __NON_A4_FIELDS = ['pt1', 'sht', 'VOC']
+    __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC']
     __VOC_FIELDS = ['VOC']
 
     @classmethod
@@ -64,7 +64,7 @@ class GasesSample(Sample):
         sns = OrderedDict()
 
         for field, node in val.items():
-            if field not in cls.__NON_A4_FIELDS:
+            if field not in cls.__NON_ELECTROCHEM_FIELDS:
                 sns[field] = A4Datum.construct_from_jdict(node)
 
             if field in cls.__VOC_FIELDS:
