@@ -14,6 +14,7 @@ https://github.com/aws/aws-iot-device-sdk-python-V2
 """
 
 import logging
+import sys
 
 from AWSIoTPythonSDK.exception.AWSIoTExceptions import connectError, connectTimeoutException
 from AWSIoTPythonSDK.exception.AWSIoTExceptions import disconnectError, disconnectTimeoutException
@@ -128,6 +129,9 @@ class MQTTClient(object):
             raise IOError("publish: no client")
 
         payload = JSONify.dumps(publication.payload)
+
+        print("*** publish - publication: %s" % publication, file=sys.stderr)
+        print("*** publish - payload: %s" % payload, file=sys.stderr)
 
         return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
