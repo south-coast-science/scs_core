@@ -132,6 +132,7 @@ class MQTTClient(object):
 
         print("*** publish - publication: %s" % publication, file=sys.stderr)
         print("*** publish - payload: %s" % payload, file=sys.stderr)
+        sys.stderr.flush()
 
         return self.__client.publish(publication.topic, payload, self.__PUB_QOS)
 
