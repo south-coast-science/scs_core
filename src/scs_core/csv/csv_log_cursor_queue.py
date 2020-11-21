@@ -175,7 +175,7 @@ class CSVLogCursor(JSONable):
         row_number = 0
 
         try:
-            reader = CSVReader.construct_for_file(log_file.path(), numeric_cast=False)
+            reader = CSVReader.construct_for_file(log_file.path(), cast=False)
 
             for row in reader.rows():
                 try:
