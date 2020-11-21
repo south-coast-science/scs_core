@@ -43,10 +43,10 @@ class CSVReader(object):
         except ValueError:
             pass
 
-        if value == 'True':
+        if value.lower() == 'true':
             return True
 
-        if value == 'False':
+        if value.lower() == 'false':
             return False
 
         return value
@@ -60,22 +60,22 @@ class CSVReader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_file(cls, filename, numeric_cast=True, empty_string_as_null=False, start_row=0):
+    def construct_for_file(cls, filename, cast=True, empty_string_as_null=False, start_row=0):
         iterable = sys.stdin if filename is None else open(filename, "r")
 
-        return cls(iterable, filename=filename, numeric_cast=numeric_cast, empty_string_as_null=empty_string_as_null,
+        return cls(iterable, filename=filename, cast=cast, empty_string_as_null=empty_string_as_null,
                    start_row=start_row)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, iterable, filename=None, numeric_cast=True, empty_string_as_null=False, start_row=0):
+    def __init__(self, iterable, filename=None, cast=True, empty_string_as_null=False, start_row=0):
         """
         Constructor
         """
         self.__iterable = iterable                                              # iterable
         self.__filename = filename                                              # string
-        self.__numeric_cast = bool(numeric_cast)                                # bool
+        self.__cast = bool(cast)                                                # bool
         self.__empty_string_as_null = bool(empty_string_as_null)                # bool
         self.__start_row = int(start_row)                                       # int
 
@@ -115,7 +115,7 @@ class CSVReader(object):
                 if row_number < self.__start_row:
                     continue
 
-                if self.__numeric_cast:
+                if self.__cast:
                     row = [self.__recast(cell) for cell in row]
 
                 if self.__empty_string_as_null:
@@ -153,9 +153,9 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         iterable = self.__iterable.__class__.__name__
 
-        return "CSVReader:{iterable:%s, filename:%s, numeric_cast:%s, empty_string_as_null:%s, " \
+        return "CSVReader:{iterable:%s, filename:%s, cast:%s, empty_string_as_null:%s, " \
                "start_row:%s, read_count:%s, header:%s}" % \
-               (iterable, self.filename, self.__numeric_cast, self.__empty_string_as_null,
+               (iterable, self.filename, self.__cast, self.__empty_string_as_null,
                 self.__start_row, self.read_count, Str.collection(list(self.header.paths())))
 
 
