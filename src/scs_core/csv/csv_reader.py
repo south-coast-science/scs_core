@@ -22,7 +22,7 @@ class CSVReader(object):
     classdocs
     """
 
-    __REPRESENTATIONS_OF_NULL = ('', 'null', 'NULL')
+    __REPRESENTATIONS_OF_NULL = ('', 'NULL')
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -33,6 +33,9 @@ class CSVReader(object):
 
     @staticmethod
     def __recast(value):
+        if value is None:
+            return None
+
         try:
             return int(value)
         except ValueError:
@@ -43,10 +46,10 @@ class CSVReader(object):
         except ValueError:
             pass
 
-        if value.lower() == 'true':
+        if value.upper() == 'TRUE':
             return True
 
-        if value.lower() == 'false':
+        if value.upper() == 'FALSE':
             return False
 
         return value
@@ -54,7 +57,7 @@ class CSVReader(object):
 
     @classmethod
     def __nullify(cls, value):
-        return None if value in cls.__REPRESENTATIONS_OF_NULL else value
+        return None if value.upper() in cls.__REPRESENTATIONS_OF_NULL else value
 
 
     # ----------------------------------------------------------------------------------------------------------------
