@@ -43,6 +43,12 @@ class CSVReader(object):
         except ValueError:
             pass
 
+        if value == 'True':
+            return True
+
+        if value == 'False':
+            return False
+
         return value
 
 
