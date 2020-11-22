@@ -136,8 +136,7 @@ class CSVLogReader(SynchronisedProcess):
         tail = Tail.construct(cursor.file_path)
         tail.open()
 
-        reader = CSVReader(tail,
-                           empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+        reader = CSVReader(tail, empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
         try:
             self.__read_rows(reader)
 
