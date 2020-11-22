@@ -1,6 +1,6 @@
-SCS device monitor: DEVICE_NAME has changed its reporting status
+SCS device monitor: DEVICE_NAME has changed its DC input power status
 ~
-Changed status: the device DEVICE_NAME was OLD_STATUS and is now NEW_STATUS.
+Changed status: the device DEVICE_NAME has regained its DC input power.
 
 No further action is required on this issue.
 
