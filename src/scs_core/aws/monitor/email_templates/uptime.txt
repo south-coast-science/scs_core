@@ -1,6 +1,6 @@
 SCS device monitor: DEVICE_NAME may have performed an uncommanded reboot
 ~
-Reboot: the device uptime is NOW_UPTIME. It was previously OLD_UPTIME. The most recent reboot therefore happened at approximately REBOOT_DATETIME.
+Reboot: the device uptime is NOW_UPTIME. It was previously OLD_UPTIME. The most recent reboot happened at approximately REBOOT_DATETIME.
 
 This may be indicative of a system issue.
 
