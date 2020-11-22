@@ -44,7 +44,6 @@ class CSVLogReader(SynchronisedProcess):
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, queue_builder, empty_string_as_null=False, reporter=None):
@@ -137,8 +136,7 @@ class CSVLogReader(SynchronisedProcess):
         tail = Tail.construct(cursor.file_path)
         tail.open()
 
-        reader = CSVReader(tail,
-                           empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+        reader = CSVReader(tail, empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
         try:
             self.__read_rows(reader)
 
