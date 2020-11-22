@@ -57,7 +57,10 @@ class CSVReader(object):
 
     @classmethod
     def __nullify(cls, value):
-        return None if value.upper() in cls.__REPRESENTATIONS_OF_NULL else value
+        try:
+            return None if value.upper() in cls.__REPRESENTATIONS_OF_NULL else value
+        except AttributeError:
+            return value
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -118,11 +121,11 @@ class CSVReader(object):
                 if row_number < self.__start_row:
                     continue
 
-                if self.__cast:
-                    row = [self.__recast(cell) for cell in row]
-
                 if self.__empty_string_as_null:
                     row = [self.__nullify(cell) for cell in row]
+
+                if self.__cast:
+                    row = [self.__recast(cell) for cell in row]
 
                 datum = self.__header.as_dict([cell for cell in row])
 
