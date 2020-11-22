@@ -23,7 +23,6 @@ class NDIRConf(PersistentJSONable, ABC):
 
     @classmethod
     def persistence_location(cls):
-        print("*** core / persistence_location")
         raise NotImplementedError
 
 
