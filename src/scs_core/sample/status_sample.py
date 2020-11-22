@@ -13,6 +13,8 @@ example document:
 "up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
 """
 
+import sys
+
 from collections import OrderedDict
 
 from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
@@ -24,8 +26,6 @@ from scs_core.sync.schedule import Schedule
 from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
 
-
-# TODO: put uptime in a sensible place!!
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ class StatusSample(Sample):
         jdict['up'] = self.uptime.as_json()
 
         if self.psu_report is not None:
-            jdict['psu'] = self.psu_report
+            jdict['psu'] = self.psu_report.as_json()
 
         return jdict
 
