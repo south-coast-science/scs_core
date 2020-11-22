@@ -44,7 +44,6 @@ class CSVLogReader(SynchronisedProcess):
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, queue_builder, empty_string_as_null=False, reporter=None):
