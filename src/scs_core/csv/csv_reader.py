@@ -56,7 +56,7 @@ class CSVReader(object):
 
 
     @classmethod
-    def __nullify(cls, value):
+    def __renullify(cls, value):
         try:
             return None if value.upper() in cls.__REPRESENTATIONS_OF_NULL else value
         except AttributeError:
@@ -66,35 +66,35 @@ class CSVReader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_file(cls, filename, cast=True, empty_string_as_null=False, start_row=0):
+    def construct_for_file(cls, filename, cast=True, nullify=False, start_row=0):
         iterable = sys.stdin if filename is None else open(filename, "r")
 
-        return cls(iterable, filename=filename, cast=cast, empty_string_as_null=empty_string_as_null,
+        return cls(iterable, filename=filename, cast=cast, nullify=nullify,
                    start_row=start_row)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, iterable, filename=None, cast=True, empty_string_as_null=False, start_row=0):
+    def __init__(self, iterable, filename=None, cast=True, nullify=False, start_row=0):
         """
         Constructor
         """
-        self.__iterable = iterable                                              # iterable
-        self.__filename = filename                                              # string
-        self.__cast = bool(cast)                                                # bool
-        self.__empty_string_as_null = bool(empty_string_as_null)                # bool
-        self.__start_row = int(start_row)                                       # int
+        self.__iterable = iterable                                  # iterable
+        self.__filename = filename                                  # string
+        self.__cast = bool(cast)                                    # bool
+        self.__nullify = bool(nullify)                              # bool
+        self.__start_row = int(start_row)                           # int
 
         self.__reader = csv.reader(iterable, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
         try:
             paths = next(self.__reader)
-        except StopIteration:                                                   # no input
+        except StopIteration:                                       # no input
             paths = []
 
-        self.__read_count = 0                                                   # int
+        self.__read_count = 0                                       # int
 
-        self.__header = CSVHeader.construct_from_paths(paths)                   # CSVHeader
+        self.__header = CSVHeader.construct_from_paths(paths)       # CSVHeader
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -121,8 +121,8 @@ class CSVReader(object):
                 if row_number < self.__start_row:
                     continue
 
-                if self.__empty_string_as_null:
-                    row = [self.__nullify(cell) for cell in row]
+                if self.__nullify:
+                    row = [self.__renullify(cell) for cell in row]
 
                 if self.__cast:
                     row = [self.__recast(cell) for cell in row]
@@ -159,9 +159,9 @@ class CSVReader(object):
     def __str__(self, *args, **kwargs):
         iterable = self.__iterable.__class__.__name__
 
-        return "CSVReader:{iterable:%s, filename:%s, cast:%s, empty_string_as_null:%s, " \
+        return "CSVReader:{iterable:%s, filename:%s, cast:%s, nullify:%s, " \
                "start_row:%s, read_count:%s, header:%s}" % \
-               (iterable, self.filename, self.__cast, self.__empty_string_as_null,
+               (iterable, self.filename, self.__cast, self.__nullify,
                 self.__start_row, self.read_count, Str.collection(list(self.header.paths())))
 
 
