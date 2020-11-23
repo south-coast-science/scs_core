@@ -121,8 +121,7 @@ class CSVLogReader(SynchronisedProcess):
     # run methods...
 
     def __read(self, cursor: CSVLogCursor):
-        reader = CSVReader.construct_for_file(cursor.file_path,
-                                              nullify=self.__nullify, start_row=cursor.row)
+        reader = CSVReader.construct_for_file(cursor.file_path, nullify=self.__nullify, start_row=cursor.row)
         try:
             self.__read_rows(reader)
 
