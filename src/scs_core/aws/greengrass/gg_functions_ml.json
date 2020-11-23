@@ -14,7 +14,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 24576,
+                "MemorySize": 16384,
                 "Pinned": true,
                 "Timeout": 180
             },
@@ -33,7 +33,7 @@
                     ]
                 },
                 "Executable": "lambda_function.lambda_handler",
-                "MemorySize": 24576,
+                "MemorySize": 16384,
                 "Pinned": true,
                 "Timeout": 180
             },
