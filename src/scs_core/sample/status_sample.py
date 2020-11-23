@@ -25,8 +25,6 @@ from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
 
 
-# TODO: put uptime in a sensible place!!
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSample(Sample):
@@ -102,7 +100,7 @@ class StatusSample(Sample):
         jdict['up'] = self.uptime.as_json()
 
         if self.psu_report is not None:
-            jdict['psu'] = self.psu_report
+            jdict['psu'] = self.psu_report.as_json()
 
         return jdict
 

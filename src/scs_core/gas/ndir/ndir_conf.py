@@ -23,7 +23,7 @@ class NDIRConf(PersistentJSONable, ABC):
 
     @classmethod
     def persistence_location(cls):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -32,8 +32,6 @@ class NDIRConf(PersistentJSONable, ABC):
         """
         Constructor
         """
-        PersistentJSONable.__init__(self)
-
         self.__model = model
         self.__tally = tally
         self.__raw = raw

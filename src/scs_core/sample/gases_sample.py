@@ -40,7 +40,7 @@ class GasesSample(Sample):
     classdocs
     """
 
-    __NON_A4_FIELDS = ['pt1', 'sht', 'VOC']
+    __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC']
     __VOC_FIELDS = ['VOC']
 
     @classmethod
@@ -55,25 +55,25 @@ class GasesSample(Sample):
         exegeses = jdict.get('exg')
 
         # GasesSample...
-        node = val.get('CO2')
-        scd30_datum = None if node is None else SCD30Datum(node.get('cnc'), None, None)
-
         node = val.get('pt1')
         pt1000_datum = None if node is None else Pt1000Datum(node.get('v'), temp=node.get('tmp'))
+
+        node = val.get('sht')
+        sht_datum = SHTDatum(node.get('hmd'), node.get('tmp'))
+
+        node = val.get('CO2')
+        scd30_datum = None if node is None else SCD30Datum(node.get('cnc'), None, None)
 
         sns = OrderedDict()
 
         for field, node in val.items():
-            if field not in cls.__NON_A4_FIELDS:
+            if field not in cls.__NON_ELECTROCHEM_FIELDS:
                 sns[field] = A4Datum.construct_from_jdict(node)
 
             if field in cls.__VOC_FIELDS:
                 sns[field] = PIDDatum.construct_from_jdict(node)
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
-
-        node = val.get('sht')
-        sht_datum = SHTDatum(node.get('hmd'), node.get('tmp'))
 
         return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, exegeses=exegeses)
 
