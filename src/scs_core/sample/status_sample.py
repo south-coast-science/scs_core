@@ -13,8 +13,6 @@ example document:
 "up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
 """
 
-import sys
-
 from collections import OrderedDict
 
 from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
