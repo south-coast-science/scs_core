@@ -33,6 +33,10 @@ class ClientAuth(PersistentJSONable):
     @classmethod
     def load(cls, manager, encryption_key=None):
         auth = super().load(manager, encryption_key=encryption_key)
+
+        if auth is None:
+            return None
+
         auth.manager = manager
 
         return auth

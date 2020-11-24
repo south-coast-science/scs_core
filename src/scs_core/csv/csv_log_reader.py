@@ -46,7 +46,7 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, queue_builder, empty_string_as_null=False, reporter=None):
+    def __init__(self, queue_builder, nullify=False, reporter=None):
         """
         Constructor
         """
@@ -60,7 +60,7 @@ class CSVLogReader(SynchronisedProcess):
             queue.as_list(self._value)
 
         self.__queue_builder = queue_builder                                    # CSVLogQueueBuilder
-        self.__empty_string_as_null = bool(empty_string_as_null)                # bool
+        self.__nullify = bool(nullify)                                          # bool
         self.__reporter = reporter                                              # CSVLogReporter
 
 
@@ -121,8 +121,7 @@ class CSVLogReader(SynchronisedProcess):
     # run methods...
 
     def __read(self, cursor: CSVLogCursor):
-        reader = CSVReader.construct_for_file(cursor.file_path,
-                                              empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+        reader = CSVReader.construct_for_file(cursor.file_path, nullify=self.__nullify, start_row=cursor.row)
         try:
             self.__read_rows(reader)
 
@@ -136,7 +135,7 @@ class CSVLogReader(SynchronisedProcess):
         tail = Tail.construct(cursor.file_path)
         tail.open()
 
-        reader = CSVReader(tail, empty_string_as_null=self.__empty_string_as_null, start_row=cursor.row)
+        reader = CSVReader(tail, nullify=self.__nullify, start_row=cursor.row)
         try:
             self.__read_rows(reader)
 
@@ -175,8 +174,8 @@ class CSVLogReader(SynchronisedProcess):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
 
-        return "CSVLogReader:{queue_builder:%s, queue:%s, empty_string_as_null:%s, reporter:%s}" % \
-               (self.__queue_builder, queue, self.__empty_string_as_null, self.__reporter)
+        return "CSVLogReader:{queue_builder:%s, queue:%s, nullify:%s, reporter:%s}" % \
+               (self.__queue_builder, queue, self.__nullify, self.__reporter)
 
 
 # --------------------------------------------------------------------------------------------------------------------
