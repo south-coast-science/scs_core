@@ -70,7 +70,7 @@ class AWSGroupConfigurator(PersistentJSONable):
             group_info = grp.getgrnam('ggc_user')
         except KeyError:
             print("Group GGC_USER not found. This may indicate an invalid system setup.", file=sys.stderr)
-            exit()
+            exit(2)
 
         self.__client = client
         self.__init_time = LocalizedDatetime.now().utc()
