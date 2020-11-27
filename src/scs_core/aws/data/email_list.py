@@ -98,6 +98,13 @@ class EmailList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def emails(self, device_tag):
+        try:
+            return self.__email_list[device_tag]
+        except KeyError:
+            return None
+
+
     @property
     def email_list(self):
         return self.__email_list

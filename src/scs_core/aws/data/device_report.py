@@ -3,10 +3,13 @@ Created on 26 Nov 2020
 
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
+
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class DeviceReport(JSONable):
 
