@@ -21,8 +21,9 @@ class DeviceReport(JSONable):
         power = jdict.get('power')
         status = jdict.get('status')
         uptime = jdict.get('uptime')
+        emails = jdict.get('emails')
 
-        return cls(device_tag, bylines, power, status, uptime)
+        return cls(device_tag, bylines, power, status, uptime, emails)
 
     @classmethod
     def construct_from_monitor(cls, device_tag, byline_list, power_list, status_list, uptime_list, email_list):
