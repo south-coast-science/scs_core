@@ -26,7 +26,7 @@ class GasRequest(JSONable):
     classdocs
     """
 
-    __SLOPE_PERIOD = 300                # 5 minutes in seconds
+    __SLOPE_PERIOD = 900                # 15 minutes in seconds (was 300)
 
     @classmethod
     def slope_tally(cls, schedule_duration):
