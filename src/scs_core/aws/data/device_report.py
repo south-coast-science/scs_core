@@ -72,6 +72,8 @@ class DeviceReport(JSONable):
         return cls(device_tag, bylines, power, status, uptime, emails)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, device_tag, bylines, power, status, uptime, emails):
         """
         Constructor
