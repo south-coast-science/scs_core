@@ -26,7 +26,6 @@ class BylineList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:

@@ -3,10 +3,13 @@ Created on 26 Nov 2020
 
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
+
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class DeviceReport(JSONable):
 
@@ -21,8 +24,9 @@ class DeviceReport(JSONable):
         power = jdict.get('power')
         status = jdict.get('status')
         uptime = jdict.get('uptime')
+        emails = jdict.get('emails')
 
-        return cls(device_tag, bylines, power, status, uptime)
+        return cls(device_tag, bylines, power, status, uptime, emails)
 
     @classmethod
     def construct_from_monitor(cls, device_tag, byline_list, power_list, status_list, uptime_list, email_list):
@@ -67,6 +71,8 @@ class DeviceReport(JSONable):
 
         return cls(device_tag, bylines, power, status, uptime, emails)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, device_tag, bylines, power, status, uptime, emails):
         """

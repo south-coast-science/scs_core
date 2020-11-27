@@ -5,8 +5,6 @@ Created on 09 Nov 2020
 
 """
 
-from collections import OrderedDict
-
 from scs_core.data.json import PersistentJSONable
 
 
@@ -45,24 +43,80 @@ class EmailList(PersistentJSONable):
         """
         self.__email_list = email_list
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
+    def append(self, device_tag, email_address):
+        if device_tag not in self.__email_list:
+            return False
+
+        if self.__email_list[device_tag] is None:
+            self.__email_list[device_tag] = email_address
+            return True
+
+        try:
+            self.__email_list[device_tag].append(email_address)
+            self.__email_list[device_tag].sort()
+
+        except AttributeError:
+            self.__email_list[device_tag] = sorted([email_address, self.__email_list[device_tag]])
+
+        return True
+
+
+    def remove(self, device_tag, email_address):
+        # all devices...
+        if device_tag is None:
+            for listed_tag in self.__email_list:
+                self.__remove_for_device(listed_tag, email_address)
+
+            return True
+
+        # specific device...
+        if device_tag not in self.__email_list:
+            return False
+
+        self.__remove_for_device(device_tag, email_address)
+
+        return True
+
+
+    def __remove_for_device(self, device_tag, email_address):
+        if self.__email_list[device_tag] is None:
+            return
+
+        try:
+            try:
+                self.__email_list[device_tag].remove(email_address)
+            except ValueError:
+                pass
+
+        except AttributeError:
+            if self.__email_list[device_tag] == email_address:
+                self.__email_list[device_tag] = None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def emails(self, device_tag):
+        try:
+            return self.__email_list[device_tag]
+        except KeyError:
+            return None
+
 
     @property
     def email_list(self):
         return self.__email_list
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['email_list'] = self.__email_list
-
-        return jdict
+        return {'email_list': self.__email_list}
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "EmailList:{email_list:%s}" %  \
-               self.__email_list
+        return "EmailList:{email_list:%s}" %  self.__email_list
