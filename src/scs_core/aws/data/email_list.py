@@ -60,6 +60,9 @@ class EmailList(PersistentJSONable):
             self.__email_list[device_tag] = email_address
             return True
 
+        if device_tag in self.__email_list:
+            return True
+
         try:
             self.__email_list[device_tag].append(email_address)
             self.__email_list[device_tag].sort()
