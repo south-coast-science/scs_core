@@ -2,7 +2,6 @@
 Created on 09 Nov 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
-
 """
 
 from scs_core.data.json import PersistentJSONable
@@ -24,7 +23,6 @@ class EmailList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
@@ -32,7 +30,15 @@ class EmailList(PersistentJSONable):
 
         email_list = jdict.get('email_list')
 
-        return EmailList(email_list)
+        return cls(email_list)
+
+
+    @staticmethod
+    def __item_contains_address(addresses, email_address):
+        if addresses is None:
+            return False
+
+        return email_address in addresses
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -97,6 +103,13 @@ class EmailList(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def subset(self, email_address):
+        email_list = {item: addresses for item, addresses in self.__email_list.items()
+                      if self.__item_contains_address(addresses, email_address)}
+
+        return EmailList(email_list)
+
 
     def emails(self, device_tag):
         try:
