@@ -137,6 +137,9 @@ class Aggregate(object):
         print(JSONify.dumps(self.report(localised_datetime)))
         sys.stdout.flush()
 
+    def pass_back(self, localised_datetime):
+        return JSONify.dumps(self.report(localised_datetime))
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
