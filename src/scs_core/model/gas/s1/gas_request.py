@@ -88,5 +88,5 @@ class GasRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasRequest:{sample:%s, t_slope:%s, rh_slope:%s, calib_age:%s}" %  \
+        return "GasRequest(s1):{sample:%s, t_slope:%s, rh_slope:%s, calib_age:%s}" %  \
                (self.sample, self.t_slope, self.rh_slope, self.calib_age)
