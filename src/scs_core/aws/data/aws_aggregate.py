@@ -25,10 +25,9 @@ from scs_core.data.checkpoint_generator import CheckpointGenerator
 
 class AWSAggregator(object):
     __REQUEST_PATH = "/topicMessages"
-    __MAX_LINES = 167
     __END_POINT = "aws.southcoastscience.com"
 
-    def __init__(self, api_auth, topic, start, end, checkpoint):
+    def __init__(self, api_auth, topic, start, end, checkpoint, max_lines):
         """
         Constructor
         """
@@ -43,6 +42,7 @@ class AWSAggregator(object):
         self.__reporter = None
         self.__byline_manager = None
         self.__message_manager = None
+        self.__max_lines = max_lines
 
         logging.getLogger().setLevel(logging.DEBUG)
 
@@ -70,6 +70,7 @@ class AWSAggregator(object):
         logging.debug(("aws_aggregate: start: %s" % self.__start))
         logging.debug(("aws_aggregate: end: %s" % self.__end))
         logging.debug(("aws_aggregate: topic: %s" % self.__topic))
+        logging.debug(("aws_aggregate: max_lines: %s" % self.__max_lines))
 
         checkpoint = None
         prev_rec = None
@@ -101,8 +102,8 @@ class AWSAggregator(object):
 
                 # report and reset...
                 if rec > checkpoint:
-                    self.__aggregate.print(checkpoint)
                     result = self.__aggregate.pass_back(checkpoint)
+                    logging.debug(result)
                     res.append(result)
                     output_count += 1
                     logging.debug(("aws_aggregate: output_count: %s" % output_count))
@@ -123,7 +124,7 @@ class AWSAggregator(object):
                 prev_rec = rec
                 processed_count += 1
 
-                if output_count >= self.__MAX_LINES:
+                if output_count >= self.__max_lines:
                     return res, self.next_url(checkpoint)
 
         except HTTPException as ex:

@@ -10,7 +10,7 @@ from scs_host.sys.host import Host
 
 
 def run_aggregate_test():
-
+    __MAX_LINES = 150
     api_auth = APIAuth.load(Host)
     topic = "south-coast-science-test/aws/loc/1/climate"
     start = "2020-01-11T12:15:36Z"
@@ -20,7 +20,7 @@ def run_aggregate_test():
     # end = LocalizedDatetime.now()
     checkpoint = "**:/15:00"
 
-    aggy = AWSAggregator(api_auth, topic, start, end, checkpoint)
+    aggy = AWSAggregator(api_auth, topic, start, end, checkpoint, __MAX_LINES)
     aggy.setup()
     res, next_url = aggy.run()
     print(next_url)
