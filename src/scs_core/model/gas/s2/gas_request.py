@@ -11,7 +11,7 @@ example document:
 "H2S": {"weV": 0.18319, "aeV": 0.26013, "weC": -0.04456, "cnc": 36.7},
 "sht": {"hmd": 66.1, "tmp": 22.2}}},
 "t-slope": 0.0, "rh-slope": 0.1,
-"calib-age": 127109794}
+"brd-tmp": 30.3}
 """
 
 from collections import OrderedDict
