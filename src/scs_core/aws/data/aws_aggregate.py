@@ -10,8 +10,6 @@ from urllib.parse import urlencode
 
 from scs_core.aws.manager.lambda_message_manager import MessageManager
 
-from scs_analysis.handler.aws_topic_history_reporter import AWSTopicHistoryReporter
-
 from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.data.path_dict import PathDict
@@ -27,7 +25,7 @@ class AWSAggregator(object):
     __REQUEST_PATH = "/topicMessages"
     __END_POINT = "aws.southcoastscience.com"
 
-    def __init__(self, api_auth, topic, start, end, checkpoint, max_lines):
+    def __init__(self, api_auth, topic, start, end, checkpoint, max_lines, min_max):
         """
         Constructor
         """
@@ -43,16 +41,16 @@ class AWSAggregator(object):
         self.__byline_manager = None
         self.__message_manager = None
         self.__max_lines = max_lines
+        self.__min_max = min_max
 
         logging.getLogger().setLevel(logging.DEBUG)
 
     def setup(self):
         self.__generator = CheckpointGenerator.construct(self.__checkpoint)
-        self.__aggregate = Aggregate(False, "rec", None)
+        self.__aggregate = Aggregate(self.__min_max, "rec", None)
         self.__rest_client = RESTClient(self.__api_auth)
-        self.__reporter = AWSTopicHistoryReporter(False)
         self.__byline_manager = BylineManager(self.__api_auth)
-        self.__message_manager = MessageManager(self.__api_auth, self.__reporter)
+        self.__message_manager = MessageManager(self.__api_auth)
 
     def next_url(self, checkpoint):
         next_params = {
@@ -71,62 +69,61 @@ class AWSAggregator(object):
         logging.debug(("aws_aggregate: end: %s" % self.__end))
         logging.debug(("aws_aggregate: topic: %s" % self.__topic))
         logging.debug(("aws_aggregate: max_lines: %s" % self.__max_lines))
+        logging.debug(("aws_aggregate: min_max: %s" % self.__min_max))
 
         checkpoint = None
         prev_rec = None
         res = []
 
-        try:
-            document_count = 0
-            output_count = 0
-            processed_count = 0
-            for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end, False):
-                logging.debug("Got message")
-                jstr = json.dumps(message.payload)
-                datum = PathDict.construct_from_jstr(jstr)
+        document_count = 0
+        output_count = 0
+        processed_count = 0
+        for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end, False):
+            logging.debug("Got message")
+            jstr = json.dumps(message.payload)
+            datum = PathDict.construct_from_jstr(jstr)
 
-                try:
-                    rec_node = datum.node("rec")
-                except KeyError:
-                    continue
+            try:
+                rec_node = datum.node("rec")
+            except KeyError:
+                continue
 
-                document_count += 1
-                logging.debug(("aws_aggregate: document_count: %s" % document_count))
-                logging.debug(("aws_aggregate: document: %s" % datum))
+            document_count += 1
+            logging.debug(("aws_aggregate: document_count: %s" % document_count))
+            logging.debug(("aws_aggregate: document: %s" % datum))
 
-                rec = LocalizedDatetime.construct_from_iso8601(rec_node)
+            rec = LocalizedDatetime.construct_from_iso8601(rec_node)
 
-                # set checkpoint...
-                if checkpoint is None:
-                    checkpoint = self.__generator.next_localised_datetime(rec)
+            # set checkpoint...
+            if checkpoint is None:
+                checkpoint = self.__generator.next_localised_datetime(rec)
 
-                # report and reset...
-                if rec > checkpoint:
-                    result = self.__aggregate.pass_back(checkpoint)
-                    logging.debug(result)
-                    res.append(result)
-                    output_count += 1
-                    logging.debug(("aws_aggregate: output_count: %s" % output_count))
+            # report and reset...
+            if rec > checkpoint:
+                result = self.__aggregate.pass_back(checkpoint)
+                logging.debug(result)
+                res.append(result)
+                output_count += 1
+                logging.debug(("aws_aggregate: output_count: %s" % output_count))
 
-                    self.__aggregate.reset()
-                    logging.debug("aws_aggregate: aggregate reset")
+                self.__aggregate.reset()
+                logging.debug("aws_aggregate: aggregate reset")
 
-                    checkpoint = self.__generator.enclosing_localised_datetime(rec)
+                checkpoint = self.__generator.enclosing_localised_datetime(rec)
 
-                # duplicate recs?...
-                if rec == prev_rec:
-                    logging.debug(("sample_aggregate: discarding duplicate: %s" % message.strip()))
-                    continue
+            # duplicate recs?...
+            if rec == prev_rec:
+                logging.debug(("sample_aggregate: discarding duplicate: %s" % message.strip()))
+                continue
 
-                # append sample...
-                self.__aggregate.append(rec, datum)
+            # append sample...
+            self.__aggregate.append(rec, datum)
 
-                prev_rec = rec
-                processed_count += 1
+            prev_rec = rec
+            processed_count += 1
 
-                if output_count >= self.__max_lines:
-                    return res, self.next_url(checkpoint)
+            if output_count >= self.__max_lines:
+                return res, self.next_url(checkpoint)
 
-        except HTTPException as ex:
-            logging.error(("aws_topic_history: %s" % ex))
-            exit(1)
+        return None, None
+
