@@ -60,7 +60,7 @@ class EmailList(PersistentJSONable):
             self.__email_list[device_tag] = email_address
             return True
 
-        if device_tag in self.__email_list:
+        if device_tag in self.__email_list[device_tag]:
             return True
 
         try:
