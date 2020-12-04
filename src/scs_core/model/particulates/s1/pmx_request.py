@@ -69,4 +69,4 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxRequest:{sample:%s, sht_datum:%s}" %  (self.sample, self.sht_datum)
+        return "PMxRequest(s1):{sample:%s, sht_datum:%s}" %  (self.sample, self.sht_datum)

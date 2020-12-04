@@ -1,5 +1,5 @@
 """
-Created on 11 Nov 2020
+Created on 2 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -11,7 +11,7 @@ example document:
 "H2S": {"weV": 0.18319, "aeV": 0.26013, "weC": -0.04456, "cnc": 36.7},
 "sht": {"hmd": 66.1, "tmp": 22.2}}},
 "t-slope": 0.0, "rh-slope": 0.1,
-"calib-age": 127109794}
+"brd-tmp": 30.3}
 """
 
 from collections import OrderedDict
@@ -38,7 +38,7 @@ class GasRequest(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sample, t_slope, rh_slope, calib_age):
+    def __init__(self, sample, t_slope, rh_slope, board_temp):
         """
         Constructor
         """
@@ -46,7 +46,7 @@ class GasRequest(JSONable):
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
-        self.__calib_age = int(calib_age)                   # int
+        self.__board_temp = float(board_temp)               # float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ class GasRequest(JSONable):
 
         jdict['t-slope'] = self.t_slope
         jdict['rh-slope'] = self.rh_slope
-        jdict['calib-age'] = self.calib_age
+        jdict['brd-tmp'] = self.board_temp
 
         return jdict
 
@@ -81,12 +81,12 @@ class GasRequest(JSONable):
 
 
     @property
-    def calib_age(self):
-        return self.__calib_age
+    def board_temp(self):
+        return self.__board_temp
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasRequest(s1):{sample:%s, t_slope:%s, rh_slope:%s, calib_age:%s}" %  \
-               (self.sample, self.t_slope, self.rh_slope, self.calib_age)
+        return "GasRequest(s2):{sample:%s, t_slope:%s, rh_slope:%s, board_temp:%s}" %  \
+               (self.sample, self.t_slope, self.rh_slope, self.board_temp)
