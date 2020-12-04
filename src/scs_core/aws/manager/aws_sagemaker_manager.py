@@ -9,7 +9,7 @@ https://stackoverflow.com/questions/13578916/case-insensitive-string-startswith-
 import boto3
 
 
-class SagemakerManager(object):
+class AWSSagemakerManager(object):
     """
     classdocs
     """
