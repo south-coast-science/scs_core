@@ -48,7 +48,7 @@ class SagemakerManager(object):
         deletion_list = self.list_model_names_prefix(prefix)
         deleted = 0
         for item in deletion_list:
-            response = self.__client.delete_model(
+            self.__client.delete_model(
                 ModelName=item
             )
             deleted += 1
@@ -63,15 +63,14 @@ class SagemakerManager(object):
 
         return result
 
-
-    def list_model_names_filter(self, filter):
+    def list_model_names_filter(self, string_filter):
         names = []
         response = []
         next_token = None
         should_continue = True
 
         while should_continue:
-            res, next_token = self.retrieve_filtered_models(filter, next_token)
+            res, next_token = self.retrieve_filtered_models(string_filter, next_token)
             response.append(res)
             models = res.get("Models")
             for item in models:
@@ -130,7 +129,7 @@ class SagemakerManager(object):
                 SortBy='Name',
                 SortOrder='Descending',
                 MaxResults=100,
-                NameContains = filter_string,
+                NameContains=filter_string,
                 NextToken=next_token
             )
         else:
@@ -145,4 +144,3 @@ class SagemakerManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
-
