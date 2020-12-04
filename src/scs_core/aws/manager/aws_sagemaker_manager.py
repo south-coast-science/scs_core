@@ -6,8 +6,11 @@ Created on 04 Dec 2020
 Case insensitive starts with solution:
 https://stackoverflow.com/questions/13578916/case-insensitive-string-startswith-in-python
 """
+
 import boto3
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class AWSSagemakerManager(object):
     """
