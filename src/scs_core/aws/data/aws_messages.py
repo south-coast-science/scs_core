@@ -6,8 +6,9 @@ Created on 03 Dec 2020
 import logging
 from urllib.parse import urlencode
 
-from scs_core.aws.manager.lambda_message_manager import MessageManager
+from scs_core.data.json import JSONify
 
+from scs_core.aws.manager.lambda_message_manager import MessageManager
 from scs_core.data.datetime import LocalizedDatetime
 
 
@@ -25,8 +26,6 @@ class AWSMessages(object):
         self.__message_manager = None
         self.__max_lines = max_lines
         self.__message_manager = MessageManager(self.__api_auth)
-
-        logging.getLogger().setLevel(logging.DEBUG)
 
     def next_url(self, time):
         next_params = {
@@ -55,8 +54,9 @@ class AWSMessages(object):
             else:
                 next_time = message.payload.get("rec")
                 next_url = self.next_url(next_time)
-                return res, next_url
+                jstr = JSONify.dumps(res)
+                return jstr, next_url
 
-            return None, None
+        return None, None
 
 

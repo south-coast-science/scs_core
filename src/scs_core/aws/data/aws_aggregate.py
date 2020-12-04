@@ -43,7 +43,7 @@ class AWSAggregator(object):
         self.__max_lines = max_lines
         self.__min_max = min_max
 
-        logging.getLogger().setLevel(logging.DEBUG)
+
 
     def setup(self):
         self.__generator = CheckpointGenerator.construct(self.__checkpoint)
