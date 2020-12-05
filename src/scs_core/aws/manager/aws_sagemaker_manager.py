@@ -47,8 +47,21 @@ class AWSSagemakerManager(object):
         source_prefix = a_source[:len(a_prefix)]
         return source_prefix.casefold() == a_prefix.casefold()
 
+
+
+    def get_models(self, prefix):
+        model_list = self.list_model_names_prefix(prefix, None)
+        models = []
+        for item in model_list:
+            res = self.__client.describe_model(
+                ModelName=item
+            )
+            models.append(res)
+        return models
+
+
     def delete_models_with_prefix(self, prefix):
-        deletion_list = self.list_model_names_prefix(prefix)
+        deletion_list = self.list_model_names_prefix(prefix, None)
         deleted = 0
         for item in deletion_list:
             self.__client.delete_model(
@@ -57,23 +70,23 @@ class AWSSagemakerManager(object):
             deleted += 1
         return deleted
 
-    def list_model_names_prefix(self, prefix):
+    def list_model_names_prefix(self, prefix, time_order):
         result = []
-        names = self.list_model_names_filter(prefix)
+        names = self.list_model_names_filter(prefix, time_order)
         for item in names:
             if self.starts_with(item, prefix):
                 result.append(item)
 
         return result
 
-    def list_model_names_filter(self, string_filter):
+    def list_model_names_filter(self, string_filter, time_order):
         names = []
         response = []
         next_token = None
         should_continue = True
 
         while should_continue:
-            res, next_token = self.retrieve_filtered_models(string_filter, next_token)
+            res, next_token = self.retrieve_filtered_models(string_filter, time_order, next_token)
             response.append(res)
             models = res.get("Models")
             for item in models:
@@ -84,14 +97,14 @@ class AWSSagemakerManager(object):
 
         return names
 
-    def list_model_names(self):
+    def list_model_names(self, time_order):
         names = []
         response = []
         next_token = None
         should_continue = True
 
         while should_continue:
-            res, next_token = self.retrieve_models(next_token)
+            res, next_token = self.retrieve_models(time_order, next_token)
             response.append(res)
             models = res.get("Models")
             for item in models:
@@ -102,20 +115,20 @@ class AWSSagemakerManager(object):
 
         return names
 
-    def retrieve_models(self, next_token=None):
+    def retrieve_models(self, time_order, next_token=None):
         next_token2 = None
 
         if next_token:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NextToken=next_token
             )
         else:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100
             )
 
@@ -124,21 +137,21 @@ class AWSSagemakerManager(object):
 
         return response, next_token2
 
-    def retrieve_filtered_models(self, filter_string, next_token=None):
+    def retrieve_filtered_models(self, filter_string, time_order, next_token=None):
         next_token2 = None
 
         if next_token:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NameContains=filter_string,
                 NextToken=next_token
             )
         else:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NameContains=filter_string
             )
