@@ -12,7 +12,7 @@ import boto3
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSSagemakerManager(object):
+class SagemakerModelManager(object):
     """
     classdocs
     """
@@ -20,7 +20,7 @@ class AWSSagemakerManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create_clients(cls, access_key=None):
+    def create_client(cls, access_key=None):
         if access_key:
             client = boto3.client(
                 'sagemaker',
@@ -34,6 +34,7 @@ class AWSSagemakerManager(object):
 
         return client
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, client):
@@ -42,78 +43,75 @@ class AWSSagemakerManager(object):
         """
         self.__client = client
 
-    @staticmethod
-    def starts_with(a_source: str, a_prefix: str) -> bool:
-        source_prefix = a_source[:len(a_prefix)]
-        return source_prefix.casefold() == a_prefix.casefold()
 
-
+    # ----------------------------------------------------------------------------------------------------------------
 
     def get_models(self, prefix):
         model_list = self.list_model_names_prefix(prefix, None)
         models = []
+
         for item in model_list:
             res = self.__client.describe_model(
                 ModelName=item
             )
             models.append(res)
+
         return models
 
 
     def delete_models_with_prefix(self, prefix):
         deletion_list = self.list_model_names_prefix(prefix, None)
-        deleted = 0
+
         for item in deletion_list:
             self.__client.delete_model(
                 ModelName=item
             )
-            deleted += 1
-        return deleted
+
+        return len(deletion_list)
+
 
     def list_model_names_prefix(self, prefix, time_order):
         result = []
         names = self.list_model_names_filter(prefix, time_order)
-        for item in names:
-            if self.starts_with(item, prefix):
-                result.append(item)
+
+        for name in names:
+            if name.startswith(prefix):
+                result.append(name)
 
         return result
 
+
     def list_model_names_filter(self, string_filter, time_order):
         names = []
-        response = []
         next_token = None
-        should_continue = True
 
-        while should_continue:
+        while True:
             res, next_token = self.retrieve_filtered_models(string_filter, time_order, next_token)
-            response.append(res)
             models = res.get("Models")
+
             for item in models:
                 name = item.get("ModelName")
                 names.append(name)
-            if not next_token:
-                should_continue = False
 
-        return names
+            if not next_token:
+                return names
+
 
     def list_model_names(self, time_order):
         names = []
-        response = []
         next_token = None
-        should_continue = True
 
-        while should_continue:
+        while True:
             res, next_token = self.retrieve_models(time_order, next_token)
-            response.append(res)
             models = res.get("Models")
+
             for item in models:
                 name = item.get("ModelName")
                 names.append(name)
-            if not next_token:
-                should_continue = False
 
-        return names
+            if not next_token:
+                return names
+
 
     def retrieve_models(self, time_order, next_token=None):
         next_token2 = None
@@ -136,6 +134,7 @@ class AWSSagemakerManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
+
 
     def retrieve_filtered_models(self, filter_string, time_order, next_token=None):
         next_token2 = None
@@ -160,3 +159,10 @@ class AWSSagemakerManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "SagemakerModelManager:{client:%s}" % self.__client
+
