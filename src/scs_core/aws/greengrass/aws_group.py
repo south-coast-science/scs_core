@@ -8,6 +8,7 @@ api
 """
 
 import json
+import sys
 
 from collections import OrderedDict
 
@@ -36,7 +37,6 @@ class AWSGroup(JSONable):
         jdict['v-info'] = self.__verbose_group_info
 
         return jdict
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -83,7 +83,6 @@ class AWSGroup(JSONable):
             self.__group_info.append("SubscriptionDefinitionVersionArn",
                                      sub_v_group["SubscriptionDefinitionVersionArn"])
 
-
     # ----------------------------------------------------------------------------------------------------------------
     def output_current_info(self):
         if self.__group_info.has_path("CoreDefinitionVersionArn"):
@@ -116,8 +115,10 @@ class AWSGroup(JSONable):
     def get_function_definition(self):
 
         if not self.__group_info.has_path("FunctionDefinitionVersionArn"):
+            print("Group missing function definition version", file=sys.stderr)
             return
         if not self.__group_info.node("FunctionDefinitionVersionArn"):
+            print("Group missing function definition version", file=sys.stderr)
             return
 
         arn = self.__split_id_from_version_id("function", self.__group_info.node("FunctionDefinitionVersionArn"))
@@ -206,4 +207,3 @@ class AWSGroup(JSONable):
             split1 = combined.split("/subscriptions/")
             res = split1[1].split("/versions/")
         return res
-
