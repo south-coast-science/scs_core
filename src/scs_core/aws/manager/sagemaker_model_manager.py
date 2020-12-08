@@ -6,10 +6,13 @@ Created on 04 Dec 2020
 Case insensitive starts with solution:
 https://stackoverflow.com/questions/13578916/case-insensitive-string-startswith-in-python
 """
+
 import boto3
 
 
-class AWSSagemakerManager(object):
+# --------------------------------------------------------------------------------------------------------------------
+
+class SagemakerModelManager(object):
     """
     classdocs
     """
@@ -17,7 +20,7 @@ class AWSSagemakerManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create_clients(cls, access_key=None):
+    def create_client(cls, access_key=None):
         if access_key:
             client = boto3.client(
                 'sagemaker',
@@ -31,6 +34,7 @@ class AWSSagemakerManager(object):
 
         return client
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, client):
@@ -39,80 +43,90 @@ class AWSSagemakerManager(object):
         """
         self.__client = client
 
-    @staticmethod
-    def starts_with(a_source: str, a_prefix: str) -> bool:
-        source_prefix = a_source[:len(a_prefix)]
-        return source_prefix.casefold() == a_prefix.casefold()
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def get_models(self, prefix):
+        model_list = self.list_model_names_prefix(prefix, None)
+        models = []
+
+        for item in model_list:
+            res = self.__client.describe_model(
+                ModelName=item
+            )
+            models.append(res)
+
+        return models
+
 
     def delete_models_with_prefix(self, prefix):
-        deletion_list = self.list_model_names_prefix(prefix)
-        deleted = 0
+        deletion_list = self.list_model_names_prefix(prefix, None)
+
         for item in deletion_list:
             self.__client.delete_model(
                 ModelName=item
             )
-            deleted += 1
-        return deleted
 
-    def list_model_names_prefix(self, prefix):
+        return len(deletion_list)
+
+
+    def list_model_names_prefix(self, prefix, time_order):
         result = []
-        names = self.list_model_names_filter(prefix)
-        for item in names:
-            if self.starts_with(item, prefix):
-                result.append(item)
+        names = self.list_model_names_filter(prefix, time_order)
+
+        for name in names:
+            if name.startswith(prefix):
+                result.append(name)
 
         return result
 
-    def list_model_names_filter(self, string_filter):
-        names = []
-        response = []
-        next_token = None
-        should_continue = True
 
-        while should_continue:
-            res, next_token = self.retrieve_filtered_models(string_filter, next_token)
-            response.append(res)
+    def list_model_names_filter(self, string_filter, time_order):
+        names = []
+        next_token = None
+
+        while True:
+            res, next_token = self.retrieve_filtered_models(string_filter, time_order, next_token)
             models = res.get("Models")
+
             for item in models:
                 name = item.get("ModelName")
                 names.append(name)
+
             if not next_token:
-                should_continue = False
+                return names
 
-        return names
 
-    def list_model_names(self):
+    def list_model_names(self, time_order):
         names = []
-        response = []
         next_token = None
-        should_continue = True
 
-        while should_continue:
-            res, next_token = self.retrieve_models(next_token)
-            response.append(res)
+        while True:
+            res, next_token = self.retrieve_models(time_order, next_token)
             models = res.get("Models")
+
             for item in models:
                 name = item.get("ModelName")
                 names.append(name)
+
             if not next_token:
-                should_continue = False
+                return names
 
-        return names
 
-    def retrieve_models(self, next_token=None):
+    def retrieve_models(self, time_order, next_token=None):
         next_token2 = None
 
         if next_token:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NextToken=next_token
             )
         else:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100
             )
 
@@ -121,21 +135,22 @@ class AWSSagemakerManager(object):
 
         return response, next_token2
 
-    def retrieve_filtered_models(self, filter_string, next_token=None):
+
+    def retrieve_filtered_models(self, filter_string, time_order, next_token=None):
         next_token2 = None
 
         if next_token:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NameContains=filter_string,
                 NextToken=next_token
             )
         else:
             response = self.__client.list_models(
-                SortBy='Name',
-                SortOrder='Descending',
+                SortBy='CreationTime' if time_order else 'Name',
+                SortOrder='Descending' if time_order else 'Ascending',
                 MaxResults=100,
                 NameContains=filter_string
             )
@@ -144,3 +159,10 @@ class AWSSagemakerManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "SagemakerModelManager:{client:%s}" % self.__client
+
