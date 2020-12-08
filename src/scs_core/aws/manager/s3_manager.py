@@ -12,6 +12,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+from scs_core.data.tokens import Tokens
 
 from scs_core.sys.persistence_manager import PersistenceManager
 
@@ -69,17 +70,101 @@ class S3Manager(object):
         return [Bucket.construct(bucket) for bucket in response['Buckets']]
 
 
-    def list_objects(self, bucket_name):
-        response = self.__client.list_objects_v2(
-            Bucket=bucket_name,
-            Delimiter=",",
-        )
+    def list_objects(self, bucket_name, full_details):
+        should_continue = True
+        next_token = None
+        response = None
+        responses = []
+        item_list = []
 
-        if 'Contents' not in response:
-            return []
+        while should_continue:
+            response = self.retrieve_objects(bucket_name, next_token)
+            if not response:
+                return []
+            if 'Contents' not in response:
+                should_continue = False
+                continue
+            responses.append(response)
+            if 'NextContinuationToken' in response:
+                next_token = response.get("NextContinuationToken")
+            else:
+                should_continue = False
 
-        return [Object.construct(item) for item in response['Contents']]
+        for response in responses:
+            for item in response['Contents']:
+                item_list.append(Object.construct(item))
 
+        if full_details:
+            return item_list
+        else:
+            key_list = []
+            for item in item_list:
+                key_list.append(item.key)
+            return key_list
+
+    def list_objects_prefixed(self, bucket_name, full_details, prefix):
+        should_continue = True
+        next_token = None
+        responses = []
+        item_list = []
+        prefix_tokens = Tokens.construct(prefix, '/')
+
+        while should_continue:
+            response = self.retrieve_objects_prefixed(bucket_name, prefix, next_token)
+            if not response:
+                return []
+            if 'Contents' not in response:
+                should_continue = False
+                continue
+            responses.append(response)
+            if 'NextContinuationToken' in response:
+                next_token = response.get("NextContinuationToken")
+            else:
+                should_continue = False
+
+        for response in responses:
+            for item in response['Contents']:
+                key = Object.construct(item).key
+                if Tokens.construct(key, '/').startswith(prefix_tokens):
+                    item_list.append(Object.construct(item))
+
+        if full_details:
+            return item_list
+        else:
+            key_list = []
+            for item in item_list:
+                key_list.append(item.key)
+            return key_list
+
+    def retrieve_objects(self, bucket_name, next_token):
+        if next_token:
+            response = self.__client.list_objects_v2(
+                Bucket=bucket_name,
+                ContinuationToken = next_token,
+                Delimiter=",",
+            )
+        else:
+            response = self.__client.list_objects_v2(
+                Bucket=bucket_name,
+                Delimiter=",",
+            )
+        return response
+
+    def retrieve_objects_prefixed(self, bucket_name, prefix, next_token):
+        if next_token:
+            response = self.__client.list_objects_v2(
+                Bucket=bucket_name,
+                Prefix=prefix,
+                ContinuationToken = next_token,
+                Delimiter=",",
+            )
+        else:
+            response = self.__client.list_objects_v2(
+                Bucket=bucket_name,
+                Prefix=prefix,
+                Delimiter=",",
+            )
+        return response
 
     def retrieve_from_bucket(self, bucket_name, key_name):
         response = self.__client.get_object(Bucket=bucket_name, Key=key_name)
