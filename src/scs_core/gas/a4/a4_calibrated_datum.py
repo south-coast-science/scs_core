@@ -2,6 +2,8 @@
 Created on 9 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+The A4CalibratedDatum provides a training data set that encapsulates the calibration of the electrochemical sensor.
 """
 
 from collections import OrderedDict
@@ -81,8 +83,8 @@ class A4CalibratedDatum(A4Datum):
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__cal_v = Datum.float(cal_v, 5)                    # calibrated voltage
-        self.__cal_x_v = Datum.float(cal_x_v, 9)                # calibrated cross-sensitivity voltage
+        self.__cal_v = Datum.float(cal_v, 5)                # calibrated voltage
+        self.__cal_x_v = Datum.float(cal_x_v, 9)            # calibrated cross-sensitivity voltage
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -93,8 +95,8 @@ class A4CalibratedDatum(A4Datum):
         jdict['weV'] = self.we_v
         jdict['aeV'] = self.ae_v
 
-        jdict['weC'] = self.we_c                    # may be None
-        jdict['cnc'] = self.cnc                     # may be None
+        jdict['weC'] = self.we_c                            # may be None
+        jdict['cnc'] = self.cnc                             # may be None
 
         jdict['calV'] = self.cal_v
 
