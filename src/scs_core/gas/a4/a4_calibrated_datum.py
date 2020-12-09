@@ -3,7 +3,9 @@ Created on 9 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-The A4CalibratedDatum provides a training data set that encapsulates the calibration of the electrochemical sensor.
+The A4CalibratedDatum is designed to provide a model training data set that encapsulates the calibration of the
+electrochemical sensor - the fields cal_v and cal_x_v have no meaning beyond this. cal_x_v is only relevant to sensors
+with NO2 cross-sensitivity.
 """
 
 from collections import OrderedDict
