@@ -7,8 +7,6 @@ Alphasense Application Note AAN 803-02
 AAN 803-02 070916_DRAFT03.doc
 """
 
-# import sys
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -159,9 +157,5 @@ class A4Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        we_v = None if self.we_v is None else round(float(self.we_v), 5)
-        ae_v = None if self.ae_v is None else round(float(self.ae_v), 5)
-        we_c = None if self.we_c is None else round(float(self.we_c), 5)
-        cnc = None if self.cnc is None else round(float(self.cnc), 5)
-
-        return "A4Datum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s}" % (we_v, ae_v, we_c, cnc)
+        return "A4Datum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s}" % \
+               (self.we_v, self.ae_v, self.we_c, self.cnc)
