@@ -44,5 +44,6 @@ def run_messages_test():
     print(next_url)
     print(res)
 
+
 logging.getLogger().setLevel(logging.DEBUG)
 run_aggregate_test()
