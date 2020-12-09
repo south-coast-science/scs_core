@@ -3,6 +3,7 @@ Created on 28 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+import sys
 
 import boto3
 
@@ -162,6 +163,30 @@ class S3Manager(object):
             )
         return response
 
+    def delete_objects_prefixed(self, bucket_name, prefix, excluded=None):
+        filtered_list = []
+        ignored = 0
+        deletion_list = self.list_objects_prefixed(bucket_name, False, prefix)
+        if excluded:
+            for item in deletion_list:
+                if Tokens.construct(item, '/').startswith(Tokens.construct(excluded, '/')):
+                    print("Ignored:%s" % item, file=sys.stderr)
+                    ignored += 1
+                else:
+                    filtered_list.append(item)
+
+            for item in filtered_list:
+                pass
+                # print("Deleted:%s" % item, file=sys.stderr)
+
+        else:
+            for item in deletion_list:
+                pass
+                # print("Deleted:%s" % item, file=sys.stderr)
+
+        print("Ignored:%s" % ignored, file=sys.stderr)
+        return filtered_list if filtered_list else deletion_list
+
     def retrieve_from_bucket(self, bucket_name, key_name):
         response = self.__client.get_object(Bucket=bucket_name, Key=key_name)
         content_body = response.get("Body")
@@ -193,7 +218,8 @@ class S3Manager(object):
         return self.head(bucket_name, new_key_name)
 
     def delete_object(self, bucket_name, key_name):
-        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
+        pass
+        # self.__client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def exists(self, bucket_name, key_name):
         try:
