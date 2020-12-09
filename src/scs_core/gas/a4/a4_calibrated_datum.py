@@ -81,8 +81,8 @@ class A4CalibratedDatum(A4Datum):
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__cal_v = Datum.float(cal_v, 5)
-        self.__cal_x_v = Datum.float(cal_x_v, 9)
+        self.__cal_v = Datum.float(cal_v, 5)                    # calibrated voltage
+        self.__cal_x_v = Datum.float(cal_x_v, 9)                # calibrated cross-sensitivity voltage
 
 
     # ----------------------------------------------------------------------------------------------------------------
