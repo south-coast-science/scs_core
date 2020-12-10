@@ -4,12 +4,12 @@ Created on 03 Dec 2020
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
 import logging
+
 from urllib.parse import urlencode
 
 from scs_core.data.json import JSONify
-
-from scs_core.aws.manager.lambda_message_manager import MessageManager
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.aws.manager.lambda_message_manager import MessageManager
 
 
 class AWSMessages(object):
@@ -41,7 +41,6 @@ class AWSMessages(object):
 
     def run(self):
         res = []
-        next_url = None
         output_count = 0
         logging.debug(("aws_messages: start: %s" % self.__start))
         logging.debug(("aws_messages: end: %s" % self.__end))

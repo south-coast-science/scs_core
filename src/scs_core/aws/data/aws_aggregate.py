@@ -5,18 +5,15 @@ Created on 01 Dec 2020
 """
 import json
 import logging
-from http.client import HTTPException
+
 from urllib.parse import urlencode
 
 from scs_core.aws.manager.lambda_message_manager import MessageManager
+from scs_core.aws.manager.byline_manager import BylineManager
+from scs_core.aws.client.rest_client import RESTClient
 
 from scs_core.data.datetime import LocalizedDatetime
-
 from scs_core.data.path_dict import PathDict
-
-from scs_core.aws.client.rest_client import RESTClient
-from scs_core.aws.manager.byline_manager import BylineManager
-
 from scs_core.data.aggregate import Aggregate
 from scs_core.data.checkpoint_generator import CheckpointGenerator
 

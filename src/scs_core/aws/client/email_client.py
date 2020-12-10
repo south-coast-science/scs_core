@@ -6,12 +6,16 @@ Created on 28 Sep 2020
 https://realpython.com/python-send-email/#option-1-setting-up-a-gmail-account-for-development
 """
 import smtplib
+
 from email.mime.multipart import MIMEMultipart
+
 from email.mime.text import MIMEText
+
 from socket import gaierror
 
 
-# TODO some sort of email auth thing so you don't have to turn down the security on the account
+# Unused (replaced by AWS SES)
+
 # --------------------------------------------------------------------------------------------------------------------
 class EmailClient(object):
     __PORT = 465

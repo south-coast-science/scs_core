@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import sys
+
 from collections import OrderedDict
 from urllib.request import urlopen
 
@@ -197,8 +198,6 @@ class AWSSetup(PersistentJSONable):
         f.write(keys["PublicKey"])
         f.close()
         print("Public key saved", file=sys.stderr)
-
-    # "CmdAWSSetup:{group-name:%s, core-name:%s, verbose:%s}" % (self.group_name, self.core_name, self.verbose)
 
     def update_config_file(self):
         res = self.__iot_client.describe_endpoint(
