@@ -11,6 +11,8 @@ with NO2 cross-sensitivity.
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+
+from scs_core.gas.a4.a4_calib import A4Calib
 from scs_core.gas.a4.a4_datum import A4Datum
 
 
@@ -23,7 +25,7 @@ class A4Calibrator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, calib):
+    def __init__(self, calib: A4Calib):
         """
         Constructor
         """
@@ -33,7 +35,8 @@ class A4Calibrator(object):
         self.__ae_elc_v = calib.ae_elc_mv / 1000.0
 
         self.__we_sens_v = calib.we_sens_mv / 1000.0
-        self.__we_no2_x_sens_v = calib.we_no2_x_sens_mv / 1000.0
+
+        self.__we_no2_x_sens_v = None if calib.we_no2_x_sens_mv is None else calib.we_no2_x_sens_mv / 1000.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,17 +46,8 @@ class A4Calibrator(object):
         we_v_zero_cal = datum.we_v - self.__we_elc_v
         ae_v_zero_cal = datum.ae_v - self.__ae_elc_v
 
-        # print("         ae_v: %s" % datum.ae_v)
-        # print("ae_v_zero_cal: %s" % ae_v_zero_cal)
-        # print("         we_v: %s" % datum.we_v)
-        # print("we_v_zero_cal: %s" % we_v_zero_cal)
-        # print("-")
-
         # noise rejection...
         v = we_v_zero_cal - ae_v_zero_cal
-
-        # print("           v1: %s" % v)
-        # print("-")
 
         # gain...
         cal_v = v / self.__we_sens_v
@@ -85,7 +79,7 @@ class A4CalibratedDatum(A4Datum):
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__cal_v = Datum.float(cal_v, 5)                # calibrated voltage
+        self.__cal_v = Datum.float(cal_v, 6)                # calibrated voltage
         self.__cal_x_v = Datum.float(cal_x_v, 9)            # calibrated cross-sensitivity voltage
 
 
