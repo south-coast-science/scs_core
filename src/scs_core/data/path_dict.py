@@ -2,9 +2,6 @@
 Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-
-
 """
 
 import re
@@ -117,6 +114,18 @@ class PathDict(JSONable):
             raise KeyError(sub_path)
 
 
+    # Appends or replaces value at sub_path...
+
+    def append(self, sub_path, value):
+        nodes = re.findall('([^.:]+)([.:]*)', sub_path)
+
+        try:
+            self.__append(self.__dictionary, nodes, value)
+
+        except KeyError:
+            raise KeyError(sub_path)
+
+
     # Sets an internal node to the given value...
 
     def set_node(self, sub_path, value):
@@ -141,18 +150,6 @@ class PathDict(JSONable):
 
         try:
             self.__append(self.__dictionary, nodes, other.node(sub_path))
-
-        except KeyError:
-            raise KeyError(sub_path)
-
-
-    # Appends value at sub_path...
-
-    def append(self, sub_path, value):
-        nodes = re.findall('([^.:]+)([.:]*)', sub_path)
-
-        try:
-            self.__append(self.__dictionary, nodes, value)
 
         except KeyError:
             raise KeyError(sub_path)
