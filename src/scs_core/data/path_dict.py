@@ -89,7 +89,7 @@ class PathDict(JSONable):
             self.node(sub_path)
             return True
 
-        except KeyError:
+        except (KeyError, TypeError):
             return False
 
 
