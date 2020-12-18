@@ -66,6 +66,7 @@ class AWSGroupConfigurator(PersistentJSONable):
         """
         Constructor
         """
+        group_info = None
         try:
             group_info = grp.getgrnam('ggc_user')
         except KeyError:
@@ -122,7 +123,6 @@ class AWSGroupConfigurator(PersistentJSONable):
         temp = host.home_path()
         group_owner_name = temp.split("/")[2]
         scs_path = host.scs_path()
-        unix_group_number = str(self.__unix_group)
         r_data = json.loads(data)
         r_data["Name"] = ("Resources-" + system_id)  # Edit resources name
         r_data["InitialVersion"]["Resources"][0]["Id"] = (
