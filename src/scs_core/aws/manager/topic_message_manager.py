@@ -2,7 +2,7 @@
 Created on 10 Dec 2020
 Author: Jade Page (jade.page@southcoastscience.com)
 
-Like lambda_message_manager, but speaks directly to the lambda :)
+Like lambda_message_manager, but speaks directly to the lambda
 """
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -115,5 +115,5 @@ class AWSAggregator(object):
             if output_count >= self.__max_lines:
                 return res, self.next_url(checkpoint)
 
-        return None, None
+        return res, self.next_url(checkpoint)
 
