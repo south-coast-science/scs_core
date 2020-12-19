@@ -17,23 +17,24 @@ class Tokens(object):
     @classmethod
     def construct(cls, text, separator):
         if not text:
-            return cls([])
+            return cls([], separator)
 
         stripped_text = text.strip(separator)
 
         if not stripped_text:
-            return cls([])
+            return cls([], separator)
 
-        return cls(stripped_text.split(separator))
+        return cls(stripped_text.split(separator), separator)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, separator):
         """
         Constructor
         """
-        self.__tokens = tokens                                # array of string
+        self.__tokens = tokens                              # array of string
+        self.__separator = separator                        # string
 
 
     def __len__(self):
@@ -57,6 +58,12 @@ class Tokens(object):
         return True
 
 
+    def path(self, depth=None):
+        tokens = self.__tokens if depth is None else self.__tokens[:depth]
+
+        return self.__separator.join(tokens)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def token(self, index):
@@ -71,4 +78,4 @@ class Tokens(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Tokens:{%s}" %  self.tokens
+        return "Tokens:{tokens:%s, separator:%s}" %  (self.tokens, self.__separator)
