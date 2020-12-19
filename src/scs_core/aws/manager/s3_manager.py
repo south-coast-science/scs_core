@@ -70,13 +70,13 @@ class S3Manager(object):
             yield Bucket.construct(bucket) if full_details else bucket['Name']
 
 
-    def list_objects(self, bucket_name, depth, full_details, prefix=None):
+    def list_objects(self, bucket, depth, full_details, prefix=None):
         prefix_tokens = None if prefix is None else Tokens.construct(prefix, '/')
         next_token = None
-        summary = Summary.empty()
+        summary = Summary.none()
 
         while True:
-            response = self.__retrieve_objects(bucket_name, prefix, next_token)
+            response = self.__retrieve_objects(bucket, prefix, next_token)
 
             if not response or 'Contents' not in response:
                 return
@@ -117,59 +117,59 @@ class S3Manager(object):
             yield summary
 
 
-    def retrieve_from_bucket(self, bucket_name, key_name):
-        response = self.__client.get_object(Bucket=bucket_name, Key=key_name)
+    def retrieve_from_bucket(self, bucket, key):
+        response = self.__client.get_object(Bucket=bucket, Key=key)
         content_body = response.get("Body")
         data = content_body.read()
 
         return data.decode()
 
 
-    def upload_file_to_bucket(self, filepath, bucket_name, key_name):
-        self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
+    def upload_file_to_bucket(self, filepath, bucket, key):
+        self.__resource_client.Bucket(bucket).upload_file(filepath, key)
 
-        return self.head(bucket_name, key_name)
-
-
-    def upload_bytes_to_bucket(self, body, bucket_name, key_name):
-        self.__resource_client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
-
-        return self.head(bucket_name, key_name)
+        return self.head(bucket, key)
 
 
-    def put_object(self, body, bucket_name, key_name):
-        self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
+    def upload_bytes_to_bucket(self, body, bucket, key):
+        self.__resource_client.Bucket(bucket).put_object(Body=body, Key=key)
 
-        return self.head(bucket_name, key_name)
-
-
-    def move_object(self, bucket_name, key_name, new_key_name):
-        source = '/'.join((bucket_name, key_name))
-
-        self.__client.copy_object(Bucket=bucket_name, CopySource=source, Key=new_key_name)
-        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
-
-        return self.head(bucket_name, new_key_name)
+        return self.head(bucket, key)
 
 
-    def delete_objects(self, bucket_name, prefix, excluded=None):
+    def put_object(self, body, bucket, key):
+        self.__client.put_object(Body=body, Bucket=bucket, Key=key)
+
+        return self.head(bucket, key)
+
+
+    def move_object(self, bucket, key, new_key):
+        source = '/'.join((bucket, key))
+
+        self.__client.copy_object(Bucket=bucket, CopySource=source, Key=new_key)
+        self.__client.delete_object(Bucket=bucket, Key=key)
+
+        return self.head(bucket, new_key)
+
+
+    def delete_objects(self, bucket, prefix, excluded=None):
         excluded_tokens = Tokens.construct(excluded, '/')
 
-        for key in self.list_objects(bucket_name, None, False, prefix=prefix):
+        for key in self.list_objects(bucket, None, False, prefix=prefix):
             if excluded and Tokens.construct(key, '/').startswith(excluded_tokens):
                 continue
 
-            self.delete_object(bucket_name, key)
+            self.delete_object(bucket, key)
             yield key
 
 
-    def delete_object(self, bucket_name, key_name):
-        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
+    def delete_object(self, bucket, key):
+        self.__client.delete_object(Bucket=bucket, Key=key)
 
 
-    def exists(self, bucket_name, key_name):
+    def exists(self, bucket, key):
         try:
-            self.head(bucket_name, key_name)
+            self.head(bucket, key)
             return True
 
         except ClientError as ex:
@@ -179,25 +179,25 @@ class S3Manager(object):
             raise
 
 
-    def head(self, bucket_name, key_name):
-        response = self.__client.head_object(Bucket=bucket_name, Key=key_name)
-        return Head.construct(key_name, response)
+    def head(self, bucket, key):
+        response = self.__client.head_object(Bucket=bucket, Key=key)
+        return Head.construct(key, response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __retrieve_objects(self, bucket_name, prefix, next_token):
+    def __retrieve_objects(self, bucket, prefix, next_token):
         if prefix:
             if next_token:
                 response = self.__client.list_objects_v2(
-                    Bucket=bucket_name,
+                    Bucket=bucket,
                     Prefix=prefix,
                     ContinuationToken=next_token,
                     Delimiter=",",
                 )
             else:
                 response = self.__client.list_objects_v2(
-                    Bucket=bucket_name,
+                    Bucket=bucket,
                     Prefix=prefix,
                     Delimiter=",",
                 )
@@ -205,13 +205,13 @@ class S3Manager(object):
         else:
             if next_token:
                 response = self.__client.list_objects_v2(
-                    Bucket=bucket_name,
+                    Bucket=bucket,
                     ContinuationToken=next_token,
                     Delimiter=",",
                 )
             else:
                 response = self.__client.list_objects_v2(
-                    Bucket=bucket_name,
+                    Bucket=bucket,
                     Delimiter=",",
                 )
 
@@ -236,7 +236,7 @@ class S3PersistenceManager(PersistenceManager):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def __key_name(dirname, filename):
+    def __key(dirname, filename):
         return '/'.join((dirname, filename))
 
 
@@ -252,15 +252,15 @@ class S3PersistenceManager(PersistenceManager):
     # ----------------------------------------------------------------------------------------------------------------
 
     def exists(self, dirname, filename):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        return self.__manager.exists(self.__BUCKET, key_name)
+        return self.__manager.exists(self.__BUCKET, key)
 
 
     def load(self, dirname, filename, encryption_key=None):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key_name)
+        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key)
 
         if encryption_key:
             from scs_core.data.crypt import Crypt               # late import
@@ -272,7 +272,7 @@ class S3PersistenceManager(PersistenceManager):
 
 
     def save(self, jstr, dirname, filename, encryption_key=None):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
         if encryption_key:
             from scs_core.data.crypt import Crypt               # late import
@@ -280,13 +280,13 @@ class S3PersistenceManager(PersistenceManager):
         else:
             text = jstr + '\n'
 
-        self.__manager.put_object(text, self.__BUCKET, key_name)
+        self.__manager.put_object(text, self.__BUCKET, key)
 
 
     def remove(self, dirname, filename):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        self.__manager.delete_object(self.__BUCKET, key_name)
+        self.__manager.delete_object(self.__BUCKET, key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -533,7 +533,7 @@ class Summary(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def empty(cls):
+    def none(cls):
         return cls(None, 0, 0)
 
 
