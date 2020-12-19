@@ -6,7 +6,6 @@ Created on 04 Dec 2020
 """
 
 import sys
-
 import boto3
 
 
