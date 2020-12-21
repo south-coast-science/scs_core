@@ -3,12 +3,10 @@ Created on 28 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
-import sys
 
 import boto3
 
 from botocore.exceptions import ClientError
-
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -49,6 +47,7 @@ class S3Manager(object):
 
         return client, resource_client
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, client, resource_client):
@@ -58,172 +57,119 @@ class S3Manager(object):
         self.__client = client
         self.__resource_client = resource_client
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def list_buckets(self):
+    def list_buckets(self, full_details):
         response = self.__client.list_buckets()
 
         if 'Buckets' not in response:
-            return []
+            return
 
-        return [Bucket.construct(bucket) for bucket in response['Buckets']]
+        for bucket in response['Buckets']:
+            yield Bucket.construct(bucket) if full_details else bucket['Name']
 
-    def list_objects(self, bucket_name, full_details):
-        should_continue = True
+
+    def list_objects(self, bucket, depth, full_details, prefix=None):
+        prefix_tokens = None if prefix is None else Tokens.construct(prefix, '/')
         next_token = None
-        responses = []
-        item_list = []
+        summary = Summary.none()
 
-        while should_continue:
-            response = self.retrieve_objects(bucket_name, next_token)
-            if not response:
-                return []
-            if 'Contents' not in response:
-                should_continue = False
-                continue
-            responses.append(response)
-            if 'NextContinuationToken' in response:
-                next_token = response.get("NextContinuationToken")
-            else:
-                should_continue = False
+        while True:
+            response = self.__retrieve_objects(bucket, prefix, next_token)
 
-        for response in responses:
+            if not response or 'Contents' not in response:
+                return
+
             for item in response['Contents']:
-                item_list.append(Object.construct(item))
+                key_tokens = Tokens.construct(item['Key'], '/')
 
-        if full_details:
-            return item_list
-        else:
-            key_list = []
-            for item in item_list:
-                key_list.append(item.key)
-            return key_list
+                if prefix is None or key_tokens.startswith(prefix_tokens):
+                    # full...
+                    if full_details:
+                        yield Object.construct(item)
+                        continue
 
-    def list_objects_prefixed(self, bucket_name, full_details, prefix):
-        should_continue = True
-        next_token = None
-        responses = []
-        item_list = []
-        prefix_tokens = Tokens.construct(prefix, '/')
+                    # minimal...
+                    if depth is None:
+                        yield item['Key']
+                        continue
 
-        while should_continue:
-            response = self.retrieve_objects_prefixed(bucket_name, prefix, next_token)
-            if not response:
-                return []
-            if 'Contents' not in response:
-                should_continue = False
-                continue
-            responses.append(response)
-            if 'NextContinuationToken' in response:
-                next_token = response.get("NextContinuationToken")
-            else:
-                should_continue = False
+                    # summary...
+                    path = key_tokens.path(depth=depth)
+                    obj = Object.construct(item)
 
-        for response in responses:
-            for item in response['Contents']:
-                key = Object.construct(item).key
-                if Tokens.construct(key, '/').startswith(prefix_tokens):
-                    item_list.append(Object.construct(item))
+                    if path == summary.path:
+                        summary.add(obj)
+                        continue
 
-        if full_details:
-            return item_list
-        else:
-            key_list = []
-            for item in item_list:
-                key_list.append(item.key)
-            return key_list
+                    if not summary.is_empty():
+                        yield summary
 
-    def retrieve_objects(self, bucket_name, next_token):
-        if next_token:
-            response = self.__client.list_objects_v2(
-                Bucket=bucket_name,
-                ContinuationToken=next_token,
-                Delimiter=",",
-            )
-        else:
-            response = self.__client.list_objects_v2(
-                Bucket=bucket_name,
-                Delimiter=",",
-            )
-        return response
+                    summary = Summary.new(path, obj)
 
-    def retrieve_objects_prefixed(self, bucket_name, prefix, next_token):
-        if next_token:
-            response = self.__client.list_objects_v2(
-                Bucket=bucket_name,
-                Prefix=prefix,
-                ContinuationToken=next_token,
-                Delimiter=",",
-            )
-        else:
-            response = self.__client.list_objects_v2(
-                Bucket=bucket_name,
-                Prefix=prefix,
-                Delimiter=",",
-            )
-        return response
+            if 'NextContinuationToken' not in response:
+                break
 
-    def delete_objects_prefixed(self, bucket_name, prefix, excluded=None):
-        filtered_list = []
-        ignored = 0
-        deletion_list = self.list_objects_prefixed(bucket_name, False, prefix)
-        if excluded:
-            for item in deletion_list:
-                if Tokens.construct(item, '/').startswith(Tokens.construct(excluded, '/')):
-                    print("Ignored:%s" % item, file=sys.stderr)
-                    ignored += 1
-                else:
-                    filtered_list.append(item)
+            next_token = response.get('NextContinuationToken')
 
-            for item in filtered_list:
-                pass
-                # print("Deleted:%s" % item, file=sys.stderr)
+        if summary.path is not None:
+            yield summary
 
-        else:
-            for item in deletion_list:
-                pass
-                # print("Deleted:%s" % item, file=sys.stderr)
 
-        print("Ignored:%s" % ignored, file=sys.stderr)
-        return filtered_list if filtered_list else deletion_list
-
-    def retrieve_from_bucket(self, bucket_name, key_name):
-        response = self.__client.get_object(Bucket=bucket_name, Key=key_name)
+    def retrieve_from_bucket(self, bucket, key):
+        response = self.__client.get_object(Bucket=bucket, Key=key)
         content_body = response.get("Body")
         data = content_body.read()
 
         return data.decode()
 
-    def upload_file_to_bucket(self, filepath, bucket_name, key_name):
-        self.__resource_client.Bucket(bucket_name).upload_file(filepath, key_name)
 
-        return self.head(bucket_name, key_name)
+    def upload_file_to_bucket(self, filepath, bucket, key):
+        self.__resource_client.Bucket(bucket).upload_file(filepath, key)
 
-    def upload_bytes_to_bucket(self, body, bucket_name, key_name):
-        self.__resource_client.Bucket(bucket_name).put_object(Body=body, Key=key_name)
+        return self.head(bucket, key)
 
-        return self.head(bucket_name, key_name)
 
-    def put_object(self, body, bucket_name, key_name):
-        self.__client.put_object(Body=body, Bucket=bucket_name, Key=key_name)
+    def upload_bytes_to_bucket(self, body, bucket, key):
+        self.__resource_client.Bucket(bucket).put_object(Body=body, Key=key)
 
-        return self.head(bucket_name, key_name)
+        return self.head(bucket, key)
 
-    def move_object(self, bucket_name, key_name, new_key_name):
-        source = '/'.join((bucket_name, key_name))
 
-        self.__client.copy_object(Bucket=bucket_name, CopySource=source, Key=new_key_name)
-        self.__client.delete_object(Bucket=bucket_name, Key=key_name)
+    def put_object(self, body, bucket, key):
+        self.__client.put_object(Body=body, Bucket=bucket, Key=key)
 
-        return self.head(bucket_name, new_key_name)
+        return self.head(bucket, key)
 
-    def delete_object(self, bucket_name, key_name):
-        pass
-        # self.__client.delete_object(Bucket=bucket_name, Key=key_name)
 
-    def exists(self, bucket_name, key_name):
+    def move_object(self, bucket, key, new_key):
+        source = '/'.join((bucket, key))
+
+        self.__client.copy_object(Bucket=bucket, CopySource=source, Key=new_key)
+        self.__client.delete_object(Bucket=bucket, Key=key)
+
+        return self.head(bucket, new_key)
+
+
+    def delete_objects(self, bucket, prefix, excluded=None):
+        excluded_tokens = Tokens.construct(excluded, '/')
+
+        for key in self.list_objects(bucket, None, False, prefix=prefix):
+            if excluded and Tokens.construct(key, '/').startswith(excluded_tokens):
+                continue
+
+            self.delete_object(bucket, key)
+            yield key
+
+
+    def delete_object(self, bucket, key):
+        self.__client.delete_object(Bucket=bucket, Key=key)
+
+
+    def exists(self, bucket, key):
         try:
-            self.head(bucket_name, key_name)
+            self.head(bucket, key)
             return True
 
         except ClientError as ex:
@@ -232,9 +178,45 @@ class S3Manager(object):
 
             raise
 
-    def head(self, bucket_name, key_name):
-        response = self.__client.head_object(Bucket=bucket_name, Key=key_name)
-        return Head.construct(key_name, response)
+
+    def head(self, bucket, key):
+        response = self.__client.head_object(Bucket=bucket, Key=key)
+        return Head.construct(key, response)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __retrieve_objects(self, bucket, prefix, next_token):
+        if prefix:
+            if next_token:
+                response = self.__client.list_objects_v2(
+                    Bucket=bucket,
+                    Prefix=prefix,
+                    ContinuationToken=next_token,
+                    Delimiter=",",
+                )
+            else:
+                response = self.__client.list_objects_v2(
+                    Bucket=bucket,
+                    Prefix=prefix,
+                    Delimiter=",",
+                )
+
+        else:
+            if next_token:
+                response = self.__client.list_objects_v2(
+                    Bucket=bucket,
+                    ContinuationToken=next_token,
+                    Delimiter=",",
+                )
+            else:
+                response = self.__client.list_objects_v2(
+                    Bucket=bucket,
+                    Delimiter=",",
+                )
+
+        return response
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -254,8 +236,9 @@ class S3PersistenceManager(PersistenceManager):
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
-    def __key_name(dirname, filename):
+    def __key(dirname, filename):
         return '/'.join((dirname, filename))
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -265,41 +248,46 @@ class S3PersistenceManager(PersistenceManager):
         """
         self.__manager = S3Manager(client, resource_client)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def exists(self, dirname, filename):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        return self.__manager.exists(self.__BUCKET, key_name)
+        return self.__manager.exists(self.__BUCKET, key)
+
 
     def load(self, dirname, filename, encryption_key=None):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key_name)
+        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key)
 
         if encryption_key:
-            from scs_core.data.crypt import Crypt  # late import
+            from scs_core.data.crypt import Crypt               # late import
             jstr = Crypt.decrypt(encryption_key, text)
         else:
             jstr = text
 
         return jstr
 
+
     def save(self, jstr, dirname, filename, encryption_key=None):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
         if encryption_key:
-            from scs_core.data.crypt import Crypt  # late import
+            from scs_core.data.crypt import Crypt               # late import
             text = Crypt.encrypt(encryption_key, jstr)
         else:
             text = jstr + '\n'
 
-        self.__manager.put_object(text, self.__BUCKET, key_name)
+        self.__manager.put_object(text, self.__BUCKET, key)
+
 
     def remove(self, dirname, filename):
-        key_name = self.__key_name(dirname, filename)
+        key = self.__key(dirname, filename)
 
-        self.__manager.delete_object(self.__BUCKET, key_name)
+        self.__manager.delete_object(self.__BUCKET, key)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -323,17 +311,20 @@ class Bucket(JSONable):
 
         return cls(name, creation_date)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, name, creation_date):
         """
         Constructor
         """
-        self.__name = name  # string
-        self.__creation_date = creation_date  # LocalizedDatetime
+        self.__name = name                                  # string
+        self.__creation_date = creation_date                # LocalizedDatetime
+
 
     def __lt__(self, other):
         return self.name < other.name
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -345,15 +336,18 @@ class Bucket(JSONable):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def name(self):
         return self.__name
 
+
     @property
     def creation_date(self):
         return self.__creation_date
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -379,17 +373,19 @@ class Head(JSONable):
 
         return cls(key, last_modified, e_tag, size, content_type)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, key, last_modified, e_tag, size, content_type):
         """
         Constructor
         """
-        self.__key = key  # string
-        self.__last_modified = last_modified  # LocalizedDatetime
-        self.__e_tag = e_tag  # string
-        self.__size = int(size)  # int
-        self.__content_type = content_type  # string
+        self.__key = key                                    # string
+        self.__last_modified = last_modified                # LocalizedDatetime
+        self.__e_tag = e_tag                                # string
+        self.__size = int(size)                             # int
+        self.__content_type = content_type                  # string
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -404,27 +400,33 @@ class Head(JSONable):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def key(self):
         return self.__key
 
+
     @property
     def last_modified(self):
         return self.__last_modified
+
 
     @property
     def e_tag(self):
         return self.__e_tag
 
+
     @property
     def size(self):
         return self.__size
 
+
     @property
     def content_type(self):
         return self.__content_type
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -452,23 +454,26 @@ class Object(JSONable):
 
         return cls(key, last_modified, e_tag, size, storage_class)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, key, last_modified, e_tag, size, storage_class):
         """
         Constructor
         """
-        self.__key = key  # string
-        self.__last_modified = last_modified  # LocalizedDatetime
-        self.__e_tag = e_tag  # string
-        self.__size = int(size)  # int
-        self.__storage_class = storage_class  # string
+        self.__key = key                                    # string
+        self.__last_modified = last_modified                # LocalizedDatetime
+        self.__e_tag = e_tag                                # string
+        self.__size = int(size)                             # int
+        self.__storage_class = storage_class                # string
+
 
     def __lt__(self, other):
         if self.key < other.key:
             return True
 
         return self.e_tag < other.e_tag
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -483,30 +488,116 @@ class Object(JSONable):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def key(self):
         return self.__key
 
+
     @property
     def last_modified(self):
         return self.__last_modified
+
 
     @property
     def e_tag(self):
         return self.__e_tag
 
+
     @property
     def size(self):
         return self.__size
 
+
     @property
     def storage_class(self):
         return self.__storage_class
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "Object:{key:%s, last_modified:%s, e_tag:%s, size:%s, storage_class:%s}" % \
                (self.key, self.last_modified, self.e_tag, self.size, self.storage_class)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Summary(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def none(cls):
+        return cls(None, 0, 0)
+
+
+    @classmethod
+    def new(cls, path, obj: Object):
+        return cls(path, 1, obj.size)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, path, objects, size):
+        """
+        Constructor
+        """
+        self.__path = path                                  # string
+        self.__objects = int(objects)                       # int
+        self.__size = int(size)                             # int
+
+
+    def __lt__(self, other):
+        return self.path < other.path
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_empty(self):
+        return self.path is None
+
+
+    def add(self, obj: Object):
+        self.__objects += 1
+        self.__size += obj.size
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['path'] = self.path
+        jdict['objects'] = self.objects
+        jdict['size'] = self.size
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def path(self):
+        return self.__path
+
+
+    @property
+    def objects(self):
+        return self.__objects
+
+
+    @property
+    def size(self):
+        return self.__size
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "Summary:{path:%s, objects:%s, size:%s}" %  (self.path, self.objects, self.size)

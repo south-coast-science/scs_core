@@ -4,8 +4,8 @@ Created on 04 Dec 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 
 """
-import sys
 
+import sys
 import boto3
 
 
@@ -33,6 +33,7 @@ class SagemakerTrialManager(object):
 
         return client
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, client):
@@ -41,10 +42,13 @@ class SagemakerTrialManager(object):
         """
         self.__client = client
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def list_experiments(self, time_order):
         names = []
         next_token = None
+
         try:
             while True:
                 res, next_token = self.retrieve_experiments(time_order, next_token)
@@ -56,8 +60,10 @@ class SagemakerTrialManager(object):
 
                 if not next_token:
                     return names
+
         except self.__client.exceptions.ResourceNotFound:
             print("Resource not found - ensure your auth is for the correct account", file=sys.stderr)
+
 
     def retrieve_experiments(self, time_order, next_token):
         next_token2 = None
@@ -80,9 +86,11 @@ class SagemakerTrialManager(object):
 
         return response, next_token2
 
+
     def list_components(self, experiment_string, trial_string, time_order):
         components = []
         next_token = None
+
         try:
             if trial_string:
                 while True:
@@ -102,6 +110,7 @@ class SagemakerTrialManager(object):
 
         except self.__client.exceptions.ResourceNotFound:
             print("Resource not found - please check the filter string", file=sys.stderr)
+
 
     def retrieve_trial_components(self, trial_string, time_order, next_token):
         next_token2 = None
@@ -127,6 +136,7 @@ class SagemakerTrialManager(object):
 
         return response, next_token2
 
+
     def retrieve_experiment_components(self, experiment_string, time_order, next_token):
         next_token2 = None
 
@@ -151,6 +161,7 @@ class SagemakerTrialManager(object):
 
         return response, next_token2
 
+
     def list_trial_names_filter(self, experiment_string, time_order):
         names = []
         next_token = None
@@ -170,6 +181,7 @@ class SagemakerTrialManager(object):
         except self.__client.exceptions.ResourceNotFound:
             print("Resource not found - please check the filter string", file=sys.stderr)
 
+
     def list_trial_names(self, time_order):
         names = []
         next_token = None
@@ -188,6 +200,7 @@ class SagemakerTrialManager(object):
 
         except self.__client.exceptions.ResourceNotFound:
             print("Resource not found - ensure your auth is for the correct account", file=sys.stderr)
+
 
     def retrieve_trials(self, time_order, next_token=None):
         next_token2 = None
@@ -210,6 +223,7 @@ class SagemakerTrialManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
+
 
     def retrieve_filtered_trials(self, experiment_string, time_order, next_token=None):
         next_token2 = None
@@ -234,6 +248,7 @@ class SagemakerTrialManager(object):
             next_token2 = response.get("NextToken")
 
         return response, next_token2
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
