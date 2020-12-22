@@ -103,7 +103,7 @@ class S3Manager(object):
                         summary.add(obj)
                         continue
 
-                    if not summary.is_empty():
+                    if not summary.is_none():
                         yield summary
 
                     summary = Summary.new(path, obj)
@@ -534,22 +534,23 @@ class Summary(JSONable):
 
     @classmethod
     def none(cls):
-        return cls(None, 0, 0)
+        return cls(None, 0, None, 0)
 
 
     @classmethod
     def new(cls, path, obj: Object):
-        return cls(path, 1, obj.size)
+        return cls(path, 1, obj.last_modified, obj.size)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, objects, size):
+    def __init__(self, path, objects, last_modified, size):
         """
         Constructor
         """
         self.__path = path                                  # string
         self.__objects = int(objects)                       # int
+        self.__last_modified = last_modified                # LocalizedDatetime
         self.__size = int(size)                             # int
 
 
@@ -559,12 +560,16 @@ class Summary(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_empty(self):
+    def is_none(self):
         return self.path is None
 
 
     def add(self, obj: Object):
         self.__objects += 1
+
+        if self.last_modified is None or obj.last_modified > self.last_modified:
+            self.__last_modified = obj.last_modified
+
         self.__size += obj.size
 
 
@@ -575,6 +580,7 @@ class Summary(JSONable):
 
         jdict['path'] = self.path
         jdict['objects'] = self.objects
+        jdict['last-modified'] = self.last_modified.as_iso8601()
         jdict['size'] = self.size
 
         return jdict
@@ -593,6 +599,11 @@ class Summary(JSONable):
 
 
     @property
+    def last_modified(self):
+        return self.__last_modified
+
+
+    @property
     def size(self):
         return self.__size
 
@@ -600,4 +611,5 @@ class Summary(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Summary:{path:%s, objects:%s, size:%s}" %  (self.path, self.objects, self.size)
+        return "Summary:{path:%s, objects:%s, last_modified:%s, size:%s}" %  \
+               (self.path, self.objects, self.last_modified, self.size)
