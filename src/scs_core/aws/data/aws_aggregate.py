@@ -5,18 +5,12 @@ Created on 01 Dec 2020
 """
 import json
 import logging
-from http.client import HTTPException
+
 from urllib.parse import urlencode
 
-from scs_core.aws.manager.lambda_message_manager import MessageManager
-
+from scs_core.aws.manager.topic_message_manager import MessageManager
 from scs_core.data.datetime import LocalizedDatetime
-
 from scs_core.data.path_dict import PathDict
-
-from scs_core.aws.client.rest_client import RESTClient
-from scs_core.aws.manager.byline_manager import BylineManager
-
 from scs_core.data.aggregate import Aggregate
 from scs_core.data.checkpoint_generator import CheckpointGenerator
 
@@ -25,32 +19,28 @@ class AWSAggregator(object):
     __REQUEST_PATH = "/topicMessages"
     __END_POINT = "aws.southcoastscience.com"
 
-    def __init__(self, api_auth, topic, start, end, checkpoint, max_lines, min_max):
+    def __init__(self, lambda_client, topic, start, end, checkpoint, max_lines, min_max):
         """
         Constructor
         """
-        self.__api_auth = api_auth
+        self.__lambda_client = lambda_client
         self.__start = start
         self.__end = end
         self.__topic = topic
         self.__checkpoint = checkpoint
         self.__generator = None
         self.__aggregate = None
-        self.__rest_client = None
         self.__reporter = None
-        self.__byline_manager = None
-        self.__message_manager = None
         self.__max_lines = max_lines
         self.__min_max = min_max
+        self.__message_manager = None
 
-        logging.getLogger().setLevel(logging.DEBUG)
+
 
     def setup(self):
         self.__generator = CheckpointGenerator.construct(self.__checkpoint)
         self.__aggregate = Aggregate(self.__min_max, "rec", None)
-        self.__rest_client = RESTClient(self.__api_auth)
-        self.__byline_manager = BylineManager(self.__api_auth)
-        self.__message_manager = MessageManager(self.__api_auth)
+        self.__message_manager = MessageManager(self.__lambda_client)
 
     def next_url(self, checkpoint):
         next_params = {
@@ -78,7 +68,7 @@ class AWSAggregator(object):
         document_count = 0
         output_count = 0
         processed_count = 0
-        for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end, False):
+        for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end):
             logging.debug("Got message")
             jstr = json.dumps(message.payload)
             datum = PathDict.construct_from_jstr(jstr)
@@ -125,5 +115,5 @@ class AWSAggregator(object):
             if output_count >= self.__max_lines:
                 return res, self.next_url(checkpoint)
 
-        return None, None
+        return res, self.next_url(checkpoint)
 

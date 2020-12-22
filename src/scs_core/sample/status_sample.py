@@ -66,7 +66,7 @@ class StatusSample(Sample):
         self.__airnow = airnow                                      # AirNowSiteConf
         self.__timezone = timezone                                  # Timezone
         self.__position = position                                  # GPSDatum
-        self.__temperature = temperature                            # MCUDatum
+        self.__temperature = temperature                            # HostStatus
         self.__schedule = schedule                                  # Schedule
         self.__uptime = uptime                                      # UptimeDatum
         self.__psu_report = psu_report                              # PSUReport
