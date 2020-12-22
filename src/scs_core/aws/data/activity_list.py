@@ -5,7 +5,7 @@ Created on 06 Nov 2020
 
 """
 
-# TODO fix pycharm turning this into a non-python file when saving this as status_list?!
+# Called activity_list because when it's renamed to status_list pycharm doesn't recognise it as a .py..
 
 from collections import OrderedDict
 
