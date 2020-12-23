@@ -1,13 +1,11 @@
 """
-Created on 22 Dec 2020
+Created on 23 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-an ML model group configuration for gases inference
+an ML model group configuration for particulates inference
 
 example JSON:
-{"uds-path": "pipes/lambda-model-gas-s1.uds", "model-interface": "s1",
-"model-filenames": {"NO2": "/trained-models/no2-s1-2020q13/xgboost-model"}}
 """
 
 from scs_core.model.model_conf import ModelConf
@@ -15,19 +13,19 @@ from scs_core.model.model_conf import ModelConf
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasModelConf(ModelConf):
+class PMxModelConf(ModelConf):
     """
     classdocs
     """
 
-    __FILENAME = "gas_model_conf.json"
+    __FILENAME = "pmx_model_conf.json"
 
     @classmethod
     def persistence_location(cls):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 's2']
+    __INTERFACES = ['s1']
 
     @classmethod
     def interfaces(cls):
@@ -45,13 +43,9 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self, host, gas_schedule_item, afe_calib):
+    def client(self, host):
         if self.model_interface == 's1':
-            from scs_core.model.gas.s1.s1_gas_inference_client import S1GasInferenceClient
-            return S1GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item, afe_calib)
-
-        if self.model_interface == 's2':
-            from scs_core.model.gas.s2.s2_gas_inference_client import S2GasInferenceClient
-            return S2GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
+            from scs_core.model.particulates.s1.s1_pmx_inference_client import S1PMxInferenceClient
+            return S1PMxInferenceClient.construct(self.abs_uds_path(host))
 
         raise ValueError(self.model_interface)

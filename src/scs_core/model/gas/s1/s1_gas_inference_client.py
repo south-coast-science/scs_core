@@ -84,6 +84,7 @@ class S1GasInferenceClient(GasInferenceClient):
         # request...
         gas_request = GasRequest(gas_sample, t_slope, rh_slope, calib_age)
         self._uds_client.request(JSONify.dumps(gas_request.as_json()))
+
         response = self._uds_client.wait_for_response()
 
         return json.loads(response)
