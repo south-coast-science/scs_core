@@ -64,7 +64,8 @@ class MessageManager(object):
         params = {self.__TOPIC:     topic,
                   self.__START:     start_date.utc().as_iso8601(True),
                   self.__END:       end_date.utc().as_iso8601(True),
-                  self.__REC_ONLY:  str(rec_only).lower()}
+                  'checkpoint':     '**:/15:00'}
+                  # self.__REC_ONLY:  str(rec_only).lower()}
 
         # request...
         self.__rest_client.connect()
