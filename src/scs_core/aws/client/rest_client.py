@@ -55,7 +55,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, path, params=None):
-        # print("RESTClient.get: path: %s params: %s" % (path, params))
+        print("RESTClient.get: path: %s params: %s headers:%s" % (path, params, self.__headers))
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
