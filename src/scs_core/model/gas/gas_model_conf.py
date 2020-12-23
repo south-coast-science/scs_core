@@ -55,24 +55,3 @@ class GasModelConf(ModelConf):
             return GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
 
         raise ValueError(self.model_interface)
-
-
-    # TODO: the following methods should go on a subclass in scs_greengrass...
-
-    # noinspection PyUnresolvedReferences
-    def greengrass_interface(self, afe_calib):
-        sensor_calibs = afe_calib.sensor_calibs()
-
-        if self.model_interface == 's1':
-            from scs_greengrass.interface.gas.s1.gas_model_interface import GasModelInterface
-            return GasModelInterface.construct(sensor_calibs, self.model_filenames)
-
-        if self.model_interface == 's2':
-            from scs_greengrass.interface.gas.s2.gas_model_interface import GasModelInterface
-            return GasModelInterface.construct(sensor_calibs, self.model_filenames)
-
-        raise ValueError(self.model_interface)
-
-
-    def greengrass_request_class(self):
-        return self.model_interface
