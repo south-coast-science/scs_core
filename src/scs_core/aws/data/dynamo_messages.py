@@ -63,6 +63,7 @@ class DynamoMessages(object):
                 jstr = JSONify.dumps(res)
                 return jstr, next_url
 
-        return None, None
+        jstr = JSONify.dumps(res)
+        return jstr, None
 
 
