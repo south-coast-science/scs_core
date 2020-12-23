@@ -65,23 +65,6 @@ class ModelConf(ABC, PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
-    def client(self):
-        pass
-
-
-    @abstractmethod
-    def greengrass_interface(self):
-        pass
-
-
-    @abstractmethod
-    def greengrass_request(self):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
         jdict = OrderedDict()
 
@@ -94,13 +77,13 @@ class ModelConf(ABC, PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set_filename(self, phenomenon, filename):
-        self.__model_filenames[phenomenon] = filename
+    def set_filename(self, species, filename):
+        self.__model_filenames[species] = filename
 
 
-    def delete_filename(self, phenomenon):
+    def delete_filename(self, species):
         try:
-            del self.__model_filenames[phenomenon]
+            del self.__model_filenames[species]
         except KeyError:
             pass
 
