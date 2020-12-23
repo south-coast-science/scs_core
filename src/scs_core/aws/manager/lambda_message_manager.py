@@ -58,7 +58,8 @@ class MessageManager(object):
 
 
     def find_for_topic(self, topic, start_date, end_date, rec_only):
-        request_path = '/topicMessages'
+        request_path = '/default/AWSAggregate/'
+        # request_path = '/topicMessages'
 
         params = {self.__TOPIC:     topic,
                   self.__START:     start_date.utc().as_iso8601(True),
