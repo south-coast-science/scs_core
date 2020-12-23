@@ -23,12 +23,13 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
 
+from scs_core.model.gas.gas_inference_client import GasInferenceClient
 from scs_core.model.gas.s2.gas_request import GasRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasInferenceClient(object):
+class S2GasInferenceClient(GasInferenceClient):
     """
     classdocs
     """
@@ -57,20 +58,13 @@ class GasInferenceClient(object):
         """
         Constructor
         """
-        self.__uds_client = uds_client                      # UDSClient
+        super().__init__(uds_client)
+
         self.__t_regression = t_regression                  # LinearRegression
         self.__rh_regression = rh_regression                # LinearRegression
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def connect(self):
-        self.__uds_client.connect()
-
-
-    def disconnect(self):
-        self.__uds_client.disconnect()
-
 
     def infer(self, gas_sample, board_temp):
         # T / rH slope...
@@ -85,8 +79,8 @@ class GasInferenceClient(object):
 
         # request...
         gas_request = GasRequest(gas_sample, t_slope, rh_slope, board_temp)
-        self.__uds_client.request(JSONify.dumps(gas_request.as_json()))
-        response = self.__uds_client.wait_for_response()
+        self._uds_client.request(JSONify.dumps(gas_request.as_json()))
+        response = self._uds_client.wait_for_response()
 
         return json.loads(response)
 
@@ -94,5 +88,5 @@ class GasInferenceClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasInferenceClient(s2):{uds_client:%s, t_regression:%s, rh_regression:%s}" %  \
-               (self.__uds_client, self.__t_regression, self.__rh_regression)
+        return "S2GasInferenceClient:{uds_client:%s, t_regression:%s, rh_regression:%s}" %  \
+               (self._uds_client, self.__t_regression, self.__rh_regression)
