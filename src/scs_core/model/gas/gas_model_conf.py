@@ -6,8 +6,8 @@ Created on 22 Dec 2020
 an ML model group configuration for gases inference
 
 example JSON:
-{"uds_path": "N3", "sample-period": 10, "restart-on-zeroes": true, "power-saving": false,
-"inf": "/home/scs/SCS/pipes/lambda-uds_path-pmx-s1.uds", "exg": []}
+{"uds-path": "pipes/lambda-model-gas-s1.uds", "model-interface": "s1",
+"model-filenames": {"NO2": "/trained-models/no2-s1-2020q13/xgboost-model"}}
 """
 
 from scs_core.model.model_conf import ModelConf
@@ -45,13 +45,13 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self):
-        return self.model_interface
+    def client(self, host, gas_schedule_item, afe_calib):
+        if self.model_interface == 's1':
+            from scs_core.model.gas.s1.gas_inference_client import GasInferenceClient
+            return GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item, afe_calib)
 
+        if self.model_interface == 's2':
+            from scs_core.model.gas.s2.gas_inference_client import GasInferenceClient
+            return GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
 
-    def greengrass_interface(self):
-        return self.model_interface
-
-
-    def greengrass_request(self):
-        return self.model_interface
+        raise ValueError(self.model_interface)
