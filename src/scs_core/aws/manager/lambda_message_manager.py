@@ -27,8 +27,8 @@ class MessageManager(object):
     """
 
     __TOPIC =       'topic'
-    __START =       'start'         # startTime
-    __END =         'end'           # endTime
+    __START =       'startTime'
+    __END =         'endTime'
     __REC_ONLY =    'rec_only'
 
 
