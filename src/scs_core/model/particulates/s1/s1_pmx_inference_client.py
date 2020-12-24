@@ -59,9 +59,9 @@ class S1PMxInferenceClient(PMxInferenceClient):
 
     def infer(self, opc_sample, ext_sht_sample):
         pmx_request = PMxRequest(opc_sample, ext_sht_sample)
-        self.__uds_client.request(JSONify.dumps(pmx_request.as_json()))
+        self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
 
-        response = self.__uds_client.wait_for_response()
+        response = self._uds_client.wait_for_response()
 
         return json.loads(response)
 
@@ -69,4 +69,4 @@ class S1PMxInferenceClient(PMxInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "S1PMxInferenceClient:{uds_client:%s}" %  self.__uds_client
+        return "S1PMxInferenceClient:{uds_client:%s}" %  self._uds_client

@@ -20,17 +20,17 @@ class PMxInferenceClient(object):
         """
         Constructor
         """
-        self.__uds_client = uds_client                      # UDSClient
+        self._uds_client = uds_client                       # UDSClient
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__uds_client.connect()
+        self._uds_client.connect()
 
 
     def disconnect(self):
-        self.__uds_client.disconnect()
+        self._uds_client.disconnect()
 
 
     @abstractmethod

@@ -6,6 +6,10 @@ Created on 23 Dec 2020
 an ML model group configuration for particulates inference
 
 example JSON:
+{"uds-path": "pipes/lambda-model-pmx-s1.uds", "model-interface": "s1",
+"resource-names": {"pm1": "/trained-models/pm1-s1-2020h1/xgboost-model",
+"pm2p5": "/trained-models/pm2p5-s1-2020h1/xgboost-model",
+"pm10": "/trained-models/pm10-s1-2020h1/xgboost-model"}}
 """
 
 from scs_core.model.model_conf import ModelConf
