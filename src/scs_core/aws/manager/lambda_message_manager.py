@@ -10,11 +10,14 @@ curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
+from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
 from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
+from scs_core.data.datum import Datum
+from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -57,14 +60,17 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start_date, end_date, _rec_only):
-        request_path = '/default/AWSAggregate/'
-        # request_path = '/topicMessages'
+    def find_for_topic(self, topic, start_date, end_date, rec_only):
+        # request_path = '/default/AWSAggregate/'
+        request_path = '/topicMessages'
 
         params = {self.__TOPIC:     topic,
                   self.__START:     start_date.utc().as_iso8601(True),
                   self.__END:       end_date.utc().as_iso8601(True),
-                  'checkpoint':     '**:/15:00'}                            # self.__REC_ONLY:  str(rec_only).lower()}
+                  self.__REC_ONLY:  str(rec_only).lower()}
+
+        # 'checkpoint':     '**:/15:00'}
+        # self.__REC_ONLY:  str(rec_only).lower()}
 
 
         # request...
@@ -105,7 +111,7 @@ class MessageManager(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageResponse(object):
+class MessageResponse(JSONable):
     """
     classdocs
     """
@@ -117,19 +123,25 @@ class MessageResponse(object):
         if not jdict:
             return None
 
+        code = jdict.get('statusCode')
+        status = jdict.get('status')
+
         items = [Message.construct_from_jdict(msg_jdict) for msg_jdict in jdict.get('Items')]
         next_url = jdict.get('next')
 
-        return MessageResponse(items, next_url)
+        return MessageResponse(code, status, items, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, items, next_url):
+    def __init__(self, code, status, items, next_url):
         """
         Constructor
         """
-        self.__items = items                        # list of Message
+        self.__code = Datum.int(code)               # int
+        self.__status = status                      # string
+
+        self.__items = items                        # list of Message or
         self.__next_url = next_url                  # URL string
 
 
@@ -138,6 +150,33 @@ class MessageResponse(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        if self.code is not None:
+            jdict['code'] = self.code
+
+        if self.status is not None:
+            jdict['status'] = self.status
+
+        jdict['Items'] = self.items
+        jdict['next'] = self.next_url
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def code(self):
+        return self.__code
+
+
+    @property
+    def status(self):
+        return self.__status
+
 
     @property
     def items(self):
@@ -152,4 +191,5 @@ class MessageResponse(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{items:%s, next_url:%s}" % (Str.collection(self.items), self.next_url)
+        return "MessageResponse:{code:%s, status:%s, items:%s, next_url:%s}" % \
+               (self.code, self.status, Str.collection(self.items), self.next_url)
