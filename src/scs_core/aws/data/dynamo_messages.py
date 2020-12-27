@@ -69,7 +69,7 @@ class DynamoMessages(object):
                 payload = message.get("payload")
                 next_time = payload.get("rec")
                 next_url = self.next_url(next_time)
-                jstr = JSONify.dumps(res)
+                jstr = JSONify.dumps(res)               # TODO: aaaggh!
                 return jstr, next_url
 
         return res, None

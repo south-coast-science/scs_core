@@ -105,7 +105,6 @@ class AWSAggregator(object):
             # report and reset...
             if rec > checkpoint:
                 result = self.__aggregate.report(checkpoint)
-                logging.info(result)
                 res.append(result)
                 output_count += 1
                 logging.debug(("aws_aggregate: output_count: %s" % output_count))

@@ -17,7 +17,7 @@ from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, JSONify
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -122,6 +122,8 @@ class MessageResponse(JSONable):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
+
+        print("jdict: %s" % jdict)
 
         code = jdict.get('statusCode')
         status = jdict.get('status')
