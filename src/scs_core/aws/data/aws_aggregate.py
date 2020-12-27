@@ -9,15 +9,24 @@ import logging
 from urllib.parse import urlencode
 
 from scs_core.aws.manager.dynamo_message_manager import MessageManager
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.path_dict import PathDict
 from scs_core.data.aggregate import Aggregate
 from scs_core.data.checkpoint_generator import CheckpointGenerator
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
 class AWSAggregator(object):
+    """
+    classdocs
+    """
+
     __REQUEST_PATH = "/topicMessages"
     __END_POINT = "aws.southcoastscience.com"
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic, start, end, checkpoint, max_lines, min_max, access_key, secret_access_key, session_token):
         """
@@ -37,11 +46,13 @@ class AWSAggregator(object):
         self.__session_token = session_token
 
 
+    # ----------------------------------------------------------------------------------------------------------------
 
     def setup(self):
         self.__generator = CheckpointGenerator.construct(self.__checkpoint)
         self.__aggregate = Aggregate(self.__min_max, "rec", None)
         self.__message_manager = MessageManager(self.__access_key, self.__secret_access_key, self.__session_token)
+
 
     def next_url(self, checkpoint):
         next_params = {
@@ -54,6 +65,7 @@ class AWSAggregator(object):
         url = 'https://{}{}?{}'.format(self.__END_POINT, self.__REQUEST_PATH, query)
 
         return url
+
 
     def run(self):
         logging.debug(("aws_aggregate: start: %s" % self.__start))
@@ -92,8 +104,8 @@ class AWSAggregator(object):
 
             # report and reset...
             if rec > checkpoint:
-                result = self.__aggregate.pass_back(checkpoint)
-                logging.debug(result)
+                result = self.__aggregate.report(checkpoint)
+                logging.info(result)
                 res.append(result)
                 output_count += 1
                 logging.debug(("aws_aggregate: output_count: %s" % output_count))
@@ -118,4 +130,3 @@ class AWSAggregator(object):
                 return res, self.next_url(checkpoint)
 
         return res, None
-
