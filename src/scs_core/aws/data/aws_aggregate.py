@@ -33,18 +33,19 @@ class AWSAggregator(object):
         """
         Constructor
         """
+        self.__topic = topic
         self.__start = start
         self.__end = end
-        self.__topic = topic
         self.__checkpoint = checkpoint
-        self.__generator = None
-        self.__aggregate = None
         self.__max_lines = max_lines
         self.__min_max = min_max
-        self.__message_manager = None
         self.__access_key = access_key
         self.__secret_access_key = secret_access_key
         self.__session_token = session_token
+
+        self.__generator = None
+        self.__aggregate = None
+        self.__message_manager = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ class AWSAggregator(object):
     def next_url(self, checkpoint):
         next_params = {
             'topic': self.__topic,
-            'startTime': checkpoint.as_iso8601(False),
+            'startTime': checkpoint.as_iso8601(),
             'endTime': self.__end,
         }
         query = urlencode(next_params)

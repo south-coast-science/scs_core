@@ -9,7 +9,6 @@ import logging
 from urllib.parse import urlencode
 
 from scs_core.aws.manager.dynamo_message_manager import MessageManager
-from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,20 +27,20 @@ class DynamoMessages(object):
         """
         Constructor
         """
+        self.__topic = topic
         self.__start = start
         self.__end = end
-        self.__topic = topic
-        self.__message_manager = None
         self.__max_lines = max_lines
+
         self.__message_manager = MessageManager(access_key, secret_access_key, session_token)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def next_url(self, time):
+    def next_url(self, start):
         next_params = {
             'topic': self.__topic,
-            'startTime': LocalizedDatetime,
+            'startTime': start,
             'endTime': self.__end
         }
         query = urlencode(next_params)
