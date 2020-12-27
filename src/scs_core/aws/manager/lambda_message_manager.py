@@ -155,13 +155,16 @@ class MessageResponse(JSONable):
         jdict = OrderedDict()
 
         if self.code is not None:
-            jdict['code'] = self.code
+            jdict['statusCode'] = self.code
 
         if self.status is not None:
             jdict['status'] = self.status
 
-        jdict['Items'] = self.items
-        jdict['next'] = self.next_url
+        if self.items is not None:
+            jdict['Items'] = self.items
+
+        if self.next_url is not None:
+            jdict['next'] = self.next_url
 
         return jdict
 
