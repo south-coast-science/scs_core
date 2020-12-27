@@ -3,6 +3,7 @@ Created on 01 Dec 2020
 
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
+
 import json
 import logging
 
@@ -10,10 +11,10 @@ from urllib.parse import urlencode
 
 from scs_core.aws.manager.dynamo_message_manager import MessageManager
 
-from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.path_dict import PathDict
 from scs_core.data.aggregate import Aggregate
 from scs_core.data.checkpoint_generator import CheckpointGenerator
+from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------

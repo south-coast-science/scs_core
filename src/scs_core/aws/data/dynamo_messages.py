@@ -9,8 +9,6 @@ import logging
 from urllib.parse import urlencode
 
 from scs_core.aws.manager.dynamo_message_manager import MessageManager
-
-from scs_core.data.json import JSONify
 from scs_core.data.datetime import LocalizedDatetime
 
 
@@ -69,7 +67,7 @@ class DynamoMessages(object):
                 payload = message.get("payload")
                 next_time = payload.get("rec")
                 next_url = self.next_url(next_time)
-                jstr = JSONify.dumps(res)               # TODO: aaaggh!
-                return jstr, next_url
+
+                return res, next_url
 
         return res, None
