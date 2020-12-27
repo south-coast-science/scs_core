@@ -17,7 +17,7 @@ from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable, JSONify
+from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -164,9 +164,12 @@ class MessageResponse(JSONable):
 
         if self.items is not None:
             jdict['Items'] = self.items
+            jdict['itemCount'] = len(self.items)
 
         if self.next_url is not None:
             jdict['next'] = self.next_url
+
+        # TODO: fetched_last_written_data
 
         return jdict
 
