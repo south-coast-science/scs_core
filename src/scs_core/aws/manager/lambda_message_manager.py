@@ -156,8 +156,8 @@ class MessageRequest(object):
     def params(self):
         params = {
             'topic': self.topic,
-            'startTime': self.start.utc().as_iso8601(True),
-            'endTime': self.end.utc().as_iso8601(True),
+            'startTime': self.start.utc().as_iso8601(include_millis=True),
+            'endTime': self.end.utc().as_iso8601(include_millis=True),
             'includeWrapper': str(self.include_wrapper).lower(),
             'minMax': str(self.min_max).lower()
         }
