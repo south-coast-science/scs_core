@@ -193,9 +193,10 @@ def deserialize(value: Dict[str, Any], numeric_type: Callable[[str], Any]) -> An
     raise TypeError(f"Dynamodb type {tag} is not supported")
 
 
-event = {
+test_event = {
     "start": "2020-01-01T12:15:36Z",
     "end": "2020-07-11T12:15:36Z",
     "topic": "south-coast-science-demo/brighton/loc/1/climate"
 }
-lambda_handler(event, None)
+
+lambda_handler(test_event, None)

@@ -7,7 +7,6 @@ DESCRIPTION The aws_group is a class used by aws_group_setup to collect informat
 api
 """
 
-import json
 import sys
 
 from collections import OrderedDict
