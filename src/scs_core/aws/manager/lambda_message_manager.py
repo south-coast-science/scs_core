@@ -115,7 +115,7 @@ class MessageRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_params(cls, qsp):
+    def construct_from_qsp(cls, qsp):
         if not qsp:
             return None
 
