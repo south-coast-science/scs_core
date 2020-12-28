@@ -29,10 +29,12 @@ class MessageManager(object):
     classdocs
     """
 
-    __TOPIC =       'topic'
-    __START =       'startTime'
-    __END =         'endTime'
-    __REC_ONLY =    'rec_only'
+    __TOPIC =               'topic'
+    __START =               'startTime'
+    __END =                 'endTime'
+    __CHECKPOINT =          'checkpoint'
+    __INCLUDE_WRAPPER =     'includeWrapper'
+    __REC_ONLY =            'recOnly'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -47,10 +49,10 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, end_date):
+    def find_latest_for_topic(self, topic, end_date, include_wrapper):
         for back_off in (1, 10, 30, 60):                            # total = 91 mins
             start_date = end_date - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start_date, end_date, False))
+            documents = list(self.find_for_topic(topic, start_date, end_date, None, include_wrapper, False))
 
             if documents:
                 return documents[-1]
@@ -60,18 +62,18 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start_date, end_date, rec_only):
-        # request_path = '/default/AWSAggregate/'
-        request_path = '/topicMessages'
+    def find_for_topic(self, topic, start_date, end_date, checkpoint, include_wrapper, rec_only):
+        request_path = '/default/AWSAggregate/'
+        # request_path = '/topicMessages'
 
-        params = {self.__TOPIC:     topic,
-                  self.__START:     start_date.utc().as_iso8601(True),
-                  self.__END:       end_date.utc().as_iso8601(True),
-                  self.__REC_ONLY:  str(rec_only).lower()}
+        params = {self.__TOPIC:             topic,
+                  self.__START:             start_date.utc().as_iso8601(True),
+                  self.__END:               end_date.utc().as_iso8601(True),
+                  self.__INCLUDE_WRAPPER:   str(include_wrapper).lower(),
+                  self.__REC_ONLY:          str(rec_only).lower()}
 
-        # 'checkpoint':     '**:/15:00'}
-        # self.__REC_ONLY:  str(rec_only).lower()}
-
+        if checkpoint:
+            params[self.__CHECKPOINT] = checkpoint
 
         # request...
         self.__rest_client.connect()
@@ -123,12 +125,14 @@ class MessageResponse(JSONable):
         if not jdict:
             return None
 
-        print("jdict: %s" % jdict)
-
         code = jdict.get('statusCode')
         status = jdict.get('status')
 
-        items = [Message.construct_from_jdict(msg_jdict) for msg_jdict in jdict.get('Items')]
+        items = []
+        for msg_jdict in jdict.get('Items'):
+            item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
+            items.append(item)
+
         next_url = jdict.get('next')
 
         return MessageResponse(code, status, items, next_url)
