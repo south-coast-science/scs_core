@@ -86,8 +86,7 @@ class AWSAggregator(object):
 
         for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end):
             logging.debug("Got message")
-            jstr = json.dumps(message["payload"])
-            datum = PathDict.construct_from_jstr(jstr)
+            datum = PathDict(message['payload'])
 
             try:
                 rec_node = datum.node("rec")

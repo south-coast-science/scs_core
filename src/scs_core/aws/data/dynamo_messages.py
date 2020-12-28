@@ -23,13 +23,14 @@ class DynamoMessages(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, max_lines, access_key, secret_access_key, session_token):
+    def __init__(self, topic, start, end, include_wrapper, max_lines, access_key, secret_access_key, session_token):
         """
         Constructor
         """
         self.__topic = topic
         self.__start = start
         self.__end = end
+        self.__include_wrapper = include_wrapper
         self.__max_lines = max_lines
 
         self.__message_manager = MessageManager(access_key, secret_access_key, session_token)
@@ -60,8 +61,10 @@ class DynamoMessages(object):
 
         for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end):
             if output_count < self.__max_lines:
-                res.append(message)
+                item = message if self.__include_wrapper else message['payload']
+                res.append(item)
                 output_count += 1
+
             else:
                 payload = message.get("payload")
                 next_time = payload.get("rec")
