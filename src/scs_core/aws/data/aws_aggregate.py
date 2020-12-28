@@ -4,8 +4,8 @@ Created on 01 Dec 2020
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
 
-import json
 import logging
+import time
 
 from urllib.parse import urlencode
 
@@ -26,6 +26,8 @@ class AWSAggregator(object):
 
     __REQUEST_PATH = "/topicMessages"
     __END_POINT = "aws.southcoastscience.com"
+
+    __TIMEOUT = 25.0        # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -82,7 +84,8 @@ class AWSAggregator(object):
 
         document_count = 0
         output_count = 0
-        processed_count = 0
+
+        end_time = time.time() + self.__TIMEOUT
 
         for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end):
             logging.debug("Got message")
@@ -124,9 +127,8 @@ class AWSAggregator(object):
             self.__aggregate.append(rec, datum)
 
             prev_rec = rec
-            processed_count += 1
 
-            if output_count >= self.__max_lines:
+            if output_count >= self.__max_lines or time.time() >= end_time:
                 return res, self.next_url(checkpoint)
 
         return res, None
