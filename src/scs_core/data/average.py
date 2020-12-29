@@ -46,7 +46,7 @@ class Average(object):
         return count >= self.__tally
 
 
-    def append(self, _unused, value):
+    def append(self, value):
         count = len(self.__data)
 
         # remove oldest?

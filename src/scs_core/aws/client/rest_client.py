@@ -59,9 +59,8 @@ class RESTClient(object):
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
-
-            print("response_jstr: %s" % response_jstr)
-            print("-")
+            # print("response_jstr: %s" % response_jstr)
+            # print("-")
 
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
