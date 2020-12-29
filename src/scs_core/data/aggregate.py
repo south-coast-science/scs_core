@@ -119,15 +119,13 @@ class Aggregate(object):
             regression = self.__regressions[path]
 
             if self.__regressions[path].has_midpoint():
-                _, midpoint = regression.midpoint(precision.digits)
-
                 if self.__min_max:
                     report.append(path + '.min', regression.min(precision.digits))
-                    report.append(path + '.mid', midpoint)
+                    report.append(path + '.mid', regression.mid(precision.digits))
                     report.append(path + '.max', regression.max(precision.digits))
 
                 else:
-                    report.append(path, midpoint)
+                    report.append(path, regression.mid(precision.digits))
 
         return report
 

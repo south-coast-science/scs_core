@@ -110,7 +110,7 @@ class PathDict(JSONable):
         try:
             return self.__node(self.__dictionary, re.split(r"[.:]", sub_path))
 
-        except KeyError:
+        except (KeyError, TypeError):
             raise KeyError(sub_path)
 
 
@@ -122,7 +122,7 @@ class PathDict(JSONable):
         try:
             self.__append(self.__dictionary, nodes, value)
 
-        except KeyError:
+        except (KeyError, TypeError):
             raise KeyError(sub_path)
 
 
@@ -132,7 +132,7 @@ class PathDict(JSONable):
         try:
             return self.__set_node(self.__dictionary, re.split(r"[.:]", sub_path), value)
 
-        except KeyError:
+        except (KeyError, TypeError):
             raise KeyError(sub_path)
 
 
@@ -212,7 +212,7 @@ class PathDict(JSONable):
             key = nodes[0]
 
         # value...
-        value = container[key]
+        value = container[key]                      # raises TypeError if container is None
 
         # leaf...
         if len(nodes) == 1:
