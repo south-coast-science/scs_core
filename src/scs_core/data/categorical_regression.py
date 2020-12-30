@@ -49,7 +49,7 @@ class CategoricalRegression(Regression):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def midpoint(self, _=None):
+    def midpoint(self, _ndigits=None):
         if len(self) != 1:
             return None, None
 
@@ -65,6 +65,13 @@ class CategoricalRegression(Regression):
         ordered = sorted(self.__categories)
 
         return ordered[0]
+
+
+    def mid(self, _ndigits=None):
+        if len(self) != 1:
+            return None
+
+        return next(iter(self.__categories))
 
 
     def max(self, _=None):

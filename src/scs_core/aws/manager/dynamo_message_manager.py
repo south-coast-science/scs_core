@@ -1,92 +1,111 @@
 """
-Created on 18 Dec 2020
+Created on 21 Dec 2020
+Author: Jade Page (jade.page@southcoastscience.com)
 
-@author: Jade Page (Jade.Page@southcoastscience.com)
-
-Based on
-https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
-https://gist.github.com/dbyr/8c9c04c63ac78da7eef57a7a3fc4ccc0
-
-Uses the event to pull chunks of data from DynamoDB, without using the BOTO3 lib. So it's faster.
-For this non-lambda'd version you must provide the key of a USER, not a ROLE.
-They must have read permission for dynamo. Note that this code is just an example of pulling data out, beyond
-counting how many lines it gets the data is not used.
+Like lambda_message_manager, but speaks directly to dynamo
 """
+
+# --------------------------------------------------------------------------------------------------------------------
 import datetime
 import hashlib
 import hmac
 import json
-import sys
+import logging
 import requests
 
 from typing import *
 
-from timeit import default_timer as timer
+from scs_core.aws.manager.manager_error import InvalidKeyError
 
 
-def lambda_handler(event, _context):
-    topic = event.get("topic")
-    time_start = event.get("start")
-    time_end = event.get("end")
+class MessageManager(object):
+    """
+    classdocs
+    """
+    __TOPIC = 'topic'
+    __START = 'startTime'
+    __END = 'endTime'
+    __REC_ONLY = 'rec_only'
 
-    do_query(topic, time_start, time_end)
+    def __init__(self, access_key, secret_access_key, session_token):
+        """
+        Constructor
+        """
+        self.__access_key = access_key
+        self.__secret_access_key = secret_access_key
+        self.__session_token = session_token
 
+    def find_for_topic(self, topic, start, end):
+        logging.debug('Begin requests...')
+        endpoint = "https://dynamodb.us-west-2.amazonaws.com/"
+        lek = None
+        session = requests.session()
 
-def do_query(topic, start, end):
-    t_start = timer()
-    endpoint = "https://dynamodb.us-west-2.amazonaws.com/"
-    lek = None
-    lines = 0
-    should_continue = True
-    session = requests.session()
+        aws_access_key = self.__access_key
+        aws_secret_key = self.__secret_access_key
+        session_token = self.__session_token
 
-    aws_access_key = ""
-    aws_secret_key = ""
+        while True:
+            params = create_body(topic, start, end, lek)
+            response = session.post(
+                endpoint,
+                data=params,
+                headers=create_headers(
+                    access_key=aws_access_key,
+                    secret_key=aws_secret_key,
+                    request_parameters=params,
+                    session_token=session_token,
+                )
+            )
+            logging.debug('Ok:')
+            logging.debug(response.ok)
+            logging.debug('Reason:')
+            logging.debug(response.reason)
+            data = response.json()
 
-    params = create_body(topic, start, end, lek)
-    response = session.post(
-        endpoint,
-        data=params,
-        headers=create_headers(
-            access_key=aws_access_key,
-            secret_key=aws_secret_key,
-            request_parameters=params
-        )
-    )
+            for item in data["Items"]:
+                logging.debug('Yield item')
+                yield {key: deserialize(value, float) for key, value in item.items()}
 
-    data = response.json()
-    try:
-        lek = data["LastEvaluatedKey"]
-    except KeyError:
-        should_continue = False
+            try:
+                lek = data["LastEvaluatedKey"]
+            except KeyError:
+                break
 
-    lines = lines + len(data["Items"])
+    def check_auth(self, api_key):
+        logging.debug('Check auth...')
+        endpoint = "https://dynamodb.us-west-2.amazonaws.com/"
+        session = requests.session()
 
-    while should_continue:
-        params = create_body(topic, start, end, lek)
+        params_dict = {
+            "TableName": "accounts",
+            "KeyConditionExpression": "apiKey = :hkey",
+            "ExpressionAttributeValues": {
+                ":hkey": {"S": "%s" % api_key},
+            }
+        }
+
+        params = json.dumps(params_dict)
+
         response = session.post(
             endpoint,
             data=params,
             headers=create_headers(
-                access_key=aws_access_key,
-                secret_key=aws_secret_key,
-                request_parameters=params
+                access_key=self.__access_key,
+                secret_key=self.__secret_access_key,
+                request_parameters=params,
+                session_token=self.__session_token,
             )
         )
 
+        logging.debug('Ok:')
+        logging.debug(response.ok)
+        logging.debug('Reason:')
+        logging.debug(response.reason)
         data = response.json()
-        try:
-            lek = data["LastEvaluatedKey"]
-        except KeyError:
-            should_continue = False
 
-        lines = lines + len(data["Items"])
-
-    t_end = timer()
-    print("Time:")
-    print(t_end - t_start)
-    print("Lines:")
-    print(lines)
+        if len(data["Items"]) < 1:
+            return False
 
 
 def create_body(topic, start, end, lek=None):
@@ -107,11 +126,11 @@ def create_body(topic, start, end, lek=None):
     return request_parameters
 
 
-def create_headers(access_key, secret_key, request_parameters):
+def create_headers(access_key, secret_key, request_parameters, session_token):
     region = "us-west-2"
     if access_key is None or secret_key is None:
         print("No access key is available.")
-        sys.exit()
+        raise InvalidKeyError()
 
     service = "dynamodb"
     host = f"dynamodb.{region}.amazonaws.com"
@@ -138,7 +157,7 @@ def create_headers(access_key, secret_key, request_parameters):
     request_digest = hashlib.sha256(canonical_request.encode("utf-8")).hexdigest()
     string_to_sign = f"{algorithm}\n{amz_date}\n{credential_scope}\n{request_digest}"
 
-    signing_key = get_singature_key(secret_key, date_stamp, region, service)
+    signing_key = get_signature_key(secret_key, date_stamp, region, service)
     signature = hmac.new(
         signing_key, string_to_sign.encode("utf-8"), hashlib.sha256
     ).hexdigest()
@@ -150,11 +169,13 @@ def create_headers(access_key, secret_key, request_parameters):
         "X-Amz-Date": amz_date,
         "X-Amz-Target": amz_target,
         "Authorization": authorization_header,
+        "X-Amz-Security-Token": session_token,
     }
+    print(headers)
     return headers
 
 
-def get_singature_key(key, date_stamp, region_name, service_name):
+def get_signature_key(key, date_stamp, region_name, service_name):
     k_date = sign(("AWS4" + key).encode("utf-8"), date_stamp)
     k_region = sign(k_date, region_name)
     k_service = sign(k_region, service_name)
@@ -173,7 +194,7 @@ def deserialize(value: Dict[str, Any], numeric_type: Callable[[str], Any]) -> An
 
     if not value:
         raise TypeError(
-            "Value error."
+            "Dynamo Value error."
         )
     tag, val = next(iter(value.items()))
     if tag in simple_types:
@@ -190,13 +211,13 @@ def deserialize(value: Dict[str, Any], numeric_type: Callable[[str], Any]) -> An
         return [deserialize(v, numeric_type) for v in val]
     if tag == "M":
         return {k: deserialize(v, numeric_type) for k, v in val.items()}
-    raise TypeError(f"Dynamodb type {tag} is not supported")
+    raise TypeError(
+        "Dynamo Value error."
+    )
 
 
-test_event = {
-    "start": "2020-01-01T12:15:36Z",
-    "end": "2020-07-11T12:15:36Z",
-    "topic": "south-coast-science-demo/brighton/loc/1/climate"
-}
+def get_auth_key(self):
+    pass
 
-lambda_handler(test_event, None)
+
+

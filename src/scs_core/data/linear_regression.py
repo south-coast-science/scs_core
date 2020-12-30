@@ -4,7 +4,6 @@ Created on 14 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from decimal import Decimal
 from statistics import mean
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -61,7 +60,7 @@ class LinearRegression(Regression):
             del self.__data[0]
 
         # append...
-        self.__data.append((Decimal(timestamp), Decimal(value)))
+        self.__data.append((timestamp, value))
 
         self.__tzinfo = rec.tzinfo
 
@@ -82,11 +81,11 @@ class LinearRegression(Regression):
         n = len(self)
 
         # init...
-        sum_x = Decimal(0.0)
-        sum_y = Decimal(0.0)
+        sum_x = 0.0
+        sum_y = 0.0
 
-        sum_x2 = Decimal(0.0)
-        sum_xy = Decimal(0.0)
+        sum_x2 = 0.0
+        sum_xy = 0.0
 
         # sum....
         for x, y in self.__data:
@@ -103,11 +102,11 @@ class LinearRegression(Regression):
         d_x = (sum_x2 * n) - (sum_x * sum_x)
         d_y = (sum_xy * n) - (sum_x * sum_y)
 
-        slope = d_y / d_x                                   # raises decimal.InvalidOperation if d_x is zero
+        slope = d_y / d_x
 
         intercept = avg_y - (slope * avg_x)
 
-        return float(slope), float(intercept)
+        return slope, intercept
 
 
     def midpoint(self, ndigits=None):
@@ -134,7 +133,7 @@ class LinearRegression(Regression):
         rec = LocalizedDatetime.construct_from_timestamp(mid_x, self.__tzinfo)
 
         # y val...
-        value = slope * float(mid_x) + intercept
+        value = slope * mid_x + intercept
 
         return rec, value if ndigits is None else round(value, ndigits)
 
@@ -143,6 +142,33 @@ class LinearRegression(Regression):
 
     def min(self, ndigits=None):
         value = float(min([y for _, y in self.__data]))
+
+        return value if ndigits is None else round(value, ndigits)
+
+
+    def mid(self, ndigits=None):
+        # validate...
+        if not self.has_midpoint():
+            return None
+
+        # single value...
+        if len(self) == 1:
+            for timestamp, value in self.__data:
+                return value
+
+        # multiple values...
+        slope, intercept = self.line()
+
+        # x domain...
+        x_data = [x for x, _ in self.__data]
+
+        min_x = min(x_data)
+        max_x = max(x_data)
+
+        mid_x = mean((min_x, max_x))
+
+        # y val...
+        value = slope * mid_x + intercept
 
         return value if ndigits is None else round(value, ndigits)
 

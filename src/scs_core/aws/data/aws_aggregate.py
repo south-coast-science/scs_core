@@ -3,56 +3,73 @@ Created on 01 Dec 2020
 
 @author: Jade Page (Jade.Page@southcoastscience.com)
 """
-import json
+
 import logging
+import time
 
 from urllib.parse import urlencode
 
-from scs_core.aws.manager.topic_message_manager import MessageManager
-from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.path_dict import PathDict
+from scs_core.aws.manager.dynamo_message_manager import MessageManager
+
 from scs_core.data.aggregate import Aggregate
 from scs_core.data.checkpoint_generator import CheckpointGenerator
+from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.path_dict import PathDict
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class AWSAggregator(object):
+    """
+    classdocs
+    """
+
     __REQUEST_PATH = "/topicMessages"
     __END_POINT = "aws.southcoastscience.com"
 
-    def __init__(self, lambda_client, topic, start, end, checkpoint, max_lines, min_max):
+    __TIMEOUT = 25.0        # seconds
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, topic, start, end, checkpoint, max_lines, min_max, access_key, secret_access_key, session_token):
         """
         Constructor
         """
-        self.__lambda_client = lambda_client
+        self.__topic = topic
         self.__start = start
         self.__end = end
-        self.__topic = topic
         self.__checkpoint = checkpoint
-        self.__generator = None
-        self.__aggregate = None
-        self.__reporter = None
         self.__max_lines = max_lines
         self.__min_max = min_max
+        self.__access_key = access_key
+        self.__secret_access_key = secret_access_key
+        self.__session_token = session_token
+
+        self.__generator = None
+        self.__aggregate = None
         self.__message_manager = None
 
 
+    # ----------------------------------------------------------------------------------------------------------------
 
     def setup(self):
         self.__generator = CheckpointGenerator.construct(self.__checkpoint)
         self.__aggregate = Aggregate(self.__min_max, "rec", None)
-        self.__message_manager = MessageManager(self.__lambda_client)
+        self.__message_manager = MessageManager(self.__access_key, self.__secret_access_key, self.__session_token)
+
 
     def next_url(self, checkpoint):
         next_params = {
             'topic': self.__topic,
-            'startTime': checkpoint.as_iso8601(False),
-            'endTime': self.__end.as_iso8601(False),
+            'startTime': checkpoint.as_iso8601(),
+            'endTime': self.__end,
         }
         query = urlencode(next_params)
 
         url = 'https://{}{}?{}'.format(self.__END_POINT, self.__REQUEST_PATH, query)
 
         return url
+
 
     def run(self):
         logging.debug(("aws_aggregate: start: %s" % self.__start))
@@ -67,11 +84,12 @@ class AWSAggregator(object):
 
         document_count = 0
         output_count = 0
-        processed_count = 0
+
+        end_time = time.time() + self.__TIMEOUT
+
         for message in self.__message_manager.find_for_topic(self.__topic, self.__start, self.__end):
             logging.debug("Got message")
-            jstr = json.dumps(message.payload)
-            datum = PathDict.construct_from_jstr(jstr)
+            datum = PathDict(message['payload'])
 
             try:
                 rec_node = datum.node("rec")
@@ -90,8 +108,7 @@ class AWSAggregator(object):
 
             # report and reset...
             if rec > checkpoint:
-                result = self.__aggregate.pass_back(checkpoint)
-                logging.debug(result)
+                result = self.__aggregate.report(checkpoint)
                 res.append(result)
                 output_count += 1
                 logging.debug(("aws_aggregate: output_count: %s" % output_count))
@@ -110,10 +127,8 @@ class AWSAggregator(object):
             self.__aggregate.append(rec, datum)
 
             prev_rec = rec
-            processed_count += 1
 
-            if output_count >= self.__max_lines:
+            if output_count >= self.__max_lines or time.time() >= end_time:
                 return res, self.next_url(checkpoint)
 
-        return res, self.next_url(checkpoint)
-
+        return res, None
