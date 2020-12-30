@@ -53,5 +53,10 @@ class Regression(ABC):
 
 
     @abstractmethod
+    def mid(self, ndigits=None):
+        pass
+
+
+    @abstractmethod
     def max(self, ndigits=None):
         pass
