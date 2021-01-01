@@ -75,6 +75,8 @@ class GPSDatum(JSONReport):
     # Support for averaging...
 
     def __add__(self, other):
+        print("__add__ self: %s other: %s" % (self, other))
+
         if not isinstance(other, self.__class__):
             raise TypeError(other)
 
