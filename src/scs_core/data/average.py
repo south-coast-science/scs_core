@@ -71,11 +71,11 @@ class Average(object):
         if count < Average.MIN_DATA_POINTS:
             return None
 
-        print("mid - data: %s" % Str.collection(self.__data))
-        print("mid - sum: %s" % sum(self.__data))
-        print("mid - len: %s" % len(self.__data))
+        total = None
+        for value in self.__data:
+            total = value if total is None else total + value
 
-        average = sum(self.__data) / len(self.__data)
+        average = total / count
 
         return average if ndigits is None else round(average, ndigits)
 
