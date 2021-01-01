@@ -7,6 +7,8 @@ If tally is None: computes the average of all the appended data.
 If tally is a positive integer N: computes the average of the last N appended data.
 """
 
+from scs_core.data.str import Str
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -68,6 +70,8 @@ class Average(object):
 
         if count < Average.MIN_DATA_POINTS:
             return None
+
+        print("mid - data: %s" % Str.collection(self.__data))
 
         average = sum(self.__data) / len(self.__data)
 
