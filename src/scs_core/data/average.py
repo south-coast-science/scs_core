@@ -72,6 +72,8 @@ class Average(object):
             return None
 
         print("mid - data: %s" % Str.collection(self.__data))
+        print("mid - sum: %s" % sum(self.__data))
+        print("mid - len: %s" % len(self.__data))
 
         average = sum(self.__data) / len(self.__data)
 
