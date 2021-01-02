@@ -7,8 +7,6 @@ If tally is None: computes the average of all the appended data.
 If tally is a positive integer N: computes the average of the last N appended data.
 """
 
-from scs_core.data.str import Str
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
