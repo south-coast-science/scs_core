@@ -2,6 +2,9 @@
 Created on 14 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+WARNING: if used with time_relative=False and the data time intervals are small, a division by zero error may result
+because of the precision limitations of Python float.
 """
 
 from statistics import mean
@@ -21,7 +24,7 @@ class LinearRegression(Regression):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tally=None, time_relative=False):
+    def __init__(self, tally=None, time_relative=True):
         """
         Constructor
         """
