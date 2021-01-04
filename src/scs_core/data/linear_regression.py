@@ -21,7 +21,7 @@ class LinearRegression(Regression):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tally=None, time_relative=False):
+    def __init__(self, tally=None, time_relative=True):
         """
         Constructor
         """
