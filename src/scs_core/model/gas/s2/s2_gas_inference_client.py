@@ -46,8 +46,8 @@ class S2GasInferenceClient(GasInferenceClient):
         # T / rH slope...
         slope_tally = GasRequest.slope_tally(gas_schedule_item.duration())
 
-        t_regression = LinearRegression(slope_tally, time_relative=True)
-        rh_regression = LinearRegression(slope_tally, time_relative=True)
+        t_regression = LinearRegression(tally=slope_tally)
+        rh_regression = LinearRegression(tally=slope_tally)
 
         return cls(uds_client, t_regression, rh_regression)
 
