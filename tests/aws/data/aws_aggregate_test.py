@@ -5,8 +5,6 @@ Created on 02 Dec 2020
 """
 # ----------------------------------------------------------------------------------------------------------------
 import logging
-import os
-import json
 
 from scs_core.aws.data.aws_aggregate import AWSAggregator
 from scs_core.aws.data.dynamo_messages import DynamoMessages
@@ -54,7 +52,7 @@ def lambda_handler(event, _context):
     logging.debug("Start:{}End:{}Check:{}Topic:{}MM:{}".format(start, end, checkpoint, topic, min_max))
 
     if status_code == 200:
-        #try:
+        # try:
         if checkpoint is not None:
             logging.debug('Checkpoint, use AWSAggregator')
             aggregate = AWSAggregator(topic, start, end, checkpoint, __MAX_LINES, min_max, aws_access_key,
@@ -63,7 +61,7 @@ def lambda_handler(event, _context):
             res, next_url = aggregate.run()
         else:
             logging.debug('No checkpoint, use DynamoMessages')
-            aws_messages = DynamoMessages(topic, start, end, __MAX_LINES, aws_access_key, aws_secret_key,
+            aws_messages = DynamoMessages(topic, start, end, True, __MAX_LINES, aws_access_key, aws_secret_key,
                                           session_token)
             res, next_url = aws_messages.run()
         #
@@ -75,10 +73,11 @@ def lambda_handler(event, _context):
     print(next_url)
 
 
-event = {
+test_event = {
     "start": "2020-01-01T12:15:36Z",
     "end": "2020-01-11T12:15:36Z",
     "topic": "south-coast-science-demo/brighton/loc/1/climate",
     "checkpoint": "**:/15:00"
 }
-lambda_handler(event, None)
+
+lambda_handler(test_event, None)

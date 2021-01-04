@@ -23,12 +23,13 @@ from scs_core.comms.uds_client import UDSClient
 
 from scs_core.data.json import JSONify
 
+from scs_core.model.particulates.pmx_inference_client import PMxInferenceClient
 from scs_core.model.particulates.s1.pmx_request import PMxRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PMxInferenceClient(object):
+class S1PMxInferenceClient(PMxInferenceClient):
     """
     classdocs
     """
@@ -51,23 +52,16 @@ class PMxInferenceClient(object):
         """
         Constructor
         """
-        self.__uds_client = uds_client                      # UDSClient
+        super().__init__(uds_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self):
-        self.__uds_client.connect()
-
-
-    def disconnect(self):
-        self.__uds_client.disconnect()
-
-
     def infer(self, opc_sample, ext_sht_sample):
         pmx_request = PMxRequest(opc_sample, ext_sht_sample)
-        self.__uds_client.request(JSONify.dumps(pmx_request.as_json()))
-        response = self.__uds_client.wait_for_response()
+        self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
+
+        response = self._uds_client.wait_for_response()
 
         return json.loads(response)
 
@@ -75,4 +69,4 @@ class PMxInferenceClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxInferenceClient(s1):{uds_client:%s}" %  self.__uds_client
+        return "S1PMxInferenceClient:{uds_client:%s}" %  self._uds_client

@@ -11,12 +11,9 @@ import hashlib
 import hmac
 import json
 import logging
-
 import requests
 
 from typing import *
-
-from scs_core.data.str import Str
 
 from scs_core.aws.manager.manager_error import InvalidKeyError
 

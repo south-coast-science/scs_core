@@ -4,10 +4,6 @@ Created on 22 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 an abstract ML model group configuration
-
-example JSON:
-{"uds_path": "N3", "sample-period": 10, "restart-on-zeroes": true, "power-saving": false,
-"inf": "/home/scs/SCS/pipes/lambda-uds_path-pmx-s1.uds", "exg": []}
 """
 
 import os
@@ -47,20 +43,20 @@ class ModelConf(ABC, PersistentJSONable):
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
-        model_filenames = jdict.get('model-filenames')
+        resource_names = jdict.get('resource-names')
 
-        return cls(uds_path, model_interface, model_filenames)
+        return cls(uds_path, model_interface, resource_names)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_filenames):
+    def __init__(self, uds_path, model_interface, resource_names):
         """
         Constructor
         """
         self.__uds_path = uds_path                                  # string
         self.__model_interface = model_interface                    # string
-        self.__model_filenames = model_filenames                    # dict of string: string
+        self.__resource_names = resource_names                      # dict of string: string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,20 +66,20 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
-        jdict['model-filenames'] = self.model_filenames
+        jdict['resource-names'] = self.resource_names
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set_filename(self, species, filename):
-        self.__model_filenames[species] = filename
+    def set_resource_name(self, species, filename):
+        self.__resource_names[species] = filename
 
 
-    def delete_filename(self, species):
+    def delete_resource_name(self, species):
         try:
-            del self.__model_filenames[species]
+            del self.__resource_names[species]
         except KeyError:
             pass
 
@@ -105,12 +101,12 @@ class ModelConf(ABC, PersistentJSONable):
 
 
     @property
-    def model_filenames(self):
-        return self.__model_filenames
+    def resource_names(self):
+        return self.__resource_names
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_filenames:%s}" %  \
-               (self.uds_path, self.model_interface, self.model_filenames)
+        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, resource_names:%s}" %  \
+               (self.uds_path, self.model_interface, self.resource_names)

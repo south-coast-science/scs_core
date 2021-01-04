@@ -33,6 +33,10 @@ class Average(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def has_midpoint(self):
+        return len(self.__data) > 0
+
+
     def has_tally(self):
         count = len(self)
 
@@ -59,18 +63,19 @@ class Average(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def compute(self):
+    def mid(self, ndigits=None):
         count = len(self)
 
         if count < Average.MIN_DATA_POINTS:
             return None
 
         total = None
-
         for value in self.__data:
             total = value if total is None else total + value
 
-        return total / count
+        average = total / count
+
+        return average if ndigits is None else round(average, ndigits)
 
 
     # ----------------------------------------------------------------------------------------------------------------

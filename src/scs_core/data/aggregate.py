@@ -13,7 +13,6 @@ from decimal import InvalidOperation
 from scs_core.data.categorical_regression import CategoricalRegression
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
 from scs_core.data.path_dict import PathDict
 from scs_core.data.precision import Precision
@@ -120,25 +119,15 @@ class Aggregate(object):
             regression = self.__regressions[path]
 
             if self.__regressions[path].has_midpoint():
-                _, midpoint = regression.midpoint(precision.digits)
-
                 if self.__min_max:
                     report.append(path + '.min', regression.min(precision.digits))
-                    report.append(path + '.mid', midpoint)
+                    report.append(path + '.mid', regression.mid(precision.digits))
                     report.append(path + '.max', regression.max(precision.digits))
 
                 else:
-                    report.append(path, midpoint)
+                    report.append(path, regression.mid(precision.digits))
 
         return report
-
-
-    def print(self, localised_datetime):
-        print(JSONify.dumps(self.report(localised_datetime)))
-        sys.stdout.flush()
-
-    def pass_back(self, localised_datetime):
-        return JSONify.dumps(self.report(localised_datetime))
 
 
     # ----------------------------------------------------------------------------------------------------------------

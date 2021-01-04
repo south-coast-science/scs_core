@@ -7,7 +7,6 @@ DESCRIPTION The aws_group is a class used by aws_group_setup to collect informat
 api
 """
 
-import json
 import sys
 
 from collections import OrderedDict
@@ -43,7 +42,7 @@ class AWSGroup(JSONable):
     def get_group_info_from_name(self):
         response = self.__client.list_groups()
 
-        d_groups = PathDict.construct_from_jstr(json.dumps(response))
+        d_groups = PathDict(response)
         g_node = d_groups.node("Groups")
         for sub_node in g_node:
             this_name = sub_node["Name"]
@@ -60,7 +59,7 @@ class AWSGroup(JSONable):
             GroupId=self.__group_info.node("GroupID"),
             GroupVersionId=self.__group_info.node("GroupLatestVersionID")
         )
-        v_group = PathDict.construct_from_jstr(json.dumps(response))
+        v_group = PathDict(response)
         sub_v_group = v_group.node("Definition")
 
         if "CoreDefinitionVersionArn" in sub_v_group:
