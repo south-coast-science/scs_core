@@ -200,6 +200,12 @@ class Timedelta(JSONable):
         return self.delta < other.delta
 
 
+    def __truediv__(self, other):
+        seconds = self.total_seconds() / other
+        return Timedelta(seconds=seconds)
+
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
