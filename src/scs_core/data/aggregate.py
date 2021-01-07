@@ -77,8 +77,8 @@ class Aggregate(object):
                         continue
 
                     self.__precisions[path] = Precision()
-                    self.__regressions[path] = LinearRegression() if Datum.is_numeric(sample.node(path)) else \
-                        CategoricalRegression()
+                    self.__regressions[path] = CategoricalRegression() if isinstance(sample.node(path), str) else \
+                        LinearRegression()
 
             self.__initialised = True
 
