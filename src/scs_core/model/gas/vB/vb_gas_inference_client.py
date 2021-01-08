@@ -24,12 +24,12 @@ from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
 
 from scs_core.model.gas.gas_inference_client import GasInferenceClient
-from scs_core.model.gas.s2.gas_request import GasRequest
+from scs_core.model.gas.vB.gas_request import GasRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class S2GasInferenceClient(GasInferenceClient):
+class VBGasInferenceClient(GasInferenceClient):
     """
     classdocs
     """
@@ -89,5 +89,5 @@ class S2GasInferenceClient(GasInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "S2GasInferenceClient:{uds_client:%s, t_regression:%s, rh_regression:%s}" %  \
+        return "VBGasInferenceClient:{uds_client:%s, t_regression:%s, rh_regression:%s}" %  \
                (self._uds_client, self.__t_regression, self.__rh_regression)

@@ -27,7 +27,7 @@ class GasModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 's2']
+    __INTERFACES = ['s1', 'vB']
 
     @classmethod
     def interfaces(cls):
@@ -50,8 +50,8 @@ class GasModelConf(ModelConf):
             from scs_core.model.gas.s1.s1_gas_inference_client import S1GasInferenceClient
             return S1GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item, afe_calib)
 
-        if self.model_interface == 's2':
-            from scs_core.model.gas.s2.s2_gas_inference_client import S2GasInferenceClient
-            return S2GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
+        if self.model_interface == 'vB':
+            from scs_core.model.gas.vB.vb_gas_inference_client import VBGasInferenceClient
+            return VBGasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
 
         raise ValueError(self.model_interface)
