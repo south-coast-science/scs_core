@@ -43,7 +43,7 @@ class GasRequest(JSONable):
         """
         Constructor
         """
-        self.__sample = sample                              # PathDict
+        self.__sample = sample                              # GasesSample
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
