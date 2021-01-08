@@ -6,7 +6,7 @@ Created on 9 Dec 2020
 a4_calibrated_datum.py is aligned to a4_calibrated_datum_vB.py
 
 The A4CalibratedDatum is designed to provide a model training data set that encapsulates the calibration of the
-electrochemical sensor - v_x_cal is only relevant to sensors with NO2 cross-sensitivity.
+electrochemical sensor. v_x_cal is only relevant to sensors with NO2 cross-sensitivity.
 """
 
 from collections import OrderedDict
