@@ -7,8 +7,6 @@ WARNING: if used with time_relative=False and the data time intervals are small,
 because of the precision limitations of Python float.
 """
 
-import sys
-
 from statistics import mean
 
 from scs_core.data.datetime import LocalizedDatetime

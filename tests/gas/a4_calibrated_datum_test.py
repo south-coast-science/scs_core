@@ -76,20 +76,22 @@ print("=")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-no2_calibrator = A4Calibrator.construct(no2_calib, era_start, era_end)
+no2_calibrator = A4Calibrator(no2_calib)
+# no2_calibrator = A4Calibrator.construct(no2_calib, era_start, era_end)
 print(no2_calibrator)
 
-ox_calibrator = A4Calibrator.construct(ox_calib, era_start, era_end)
+ox_calibrator = A4Calibrator(ox_calib)
+# ox_calibrator = A4Calibrator.construct(ox_calib, era_start, era_end)
 print(no2_calibrator)
 print("=")
 
-print("Training...")
-rec = LocalizedDatetime.construct_from_iso8601('2020-01-02T12:13:14Z')
-
-calibrated_datum = no2_calibrator.train(rec, no2_datum)
-print(calibrated_datum)
-print(JSONify.dumps(calibrated_datum))
-print("-")
+# print("Training...")
+# rec = LocalizedDatetime.construct_from_iso8601('2020-01-02T12:13:14Z')
+#
+# calibrated_datum = no2_calibrator.train(rec, no2_datum)
+# print(calibrated_datum)
+# print(JSONify.dumps(calibrated_datum))
+# print("-")
 
 print("NO2...")
 calibrated_datum = no2_calibrator.calibrate(no2_datum)
