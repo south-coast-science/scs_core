@@ -25,13 +25,13 @@ class AWSAggregator(object):
     """
 
     __REQUEST_PATH = "/topicMessages"
-    __END_POINT = "aws.southcoastscience.com"
 
     __TIMEOUT = 25.0        # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, checkpoint, max_lines, min_max, access_key, secret_access_key, session_token):
+    def __init__(self, topic, start, end, checkpoint, max_lines, min_max, access_key, secret_access_key, session_token,
+                 endpoint):
         """
         Constructor
         """
@@ -44,6 +44,7 @@ class AWSAggregator(object):
         self.__access_key = access_key
         self.__secret_access_key = secret_access_key
         self.__session_token = session_token
+        self.__endpoint = endpoint
 
         self.__generator = None
         self.__aggregate = None
@@ -66,7 +67,7 @@ class AWSAggregator(object):
         }
         query = urlencode(next_params)
 
-        url = 'https://{}{}?{}'.format(self.__END_POINT, self.__REQUEST_PATH, query)
+        url = 'https://{}{}?{}'.format(self.__endpoint, self.__REQUEST_PATH, query)
 
         return url
 

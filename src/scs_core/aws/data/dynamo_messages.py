@@ -19,11 +19,11 @@ class DynamoMessages(object):
     """
 
     __REQUEST_PATH = "/topicMessages"
-    __END_POINT = "aws.southcoastscience.com"
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, include_wrapper, max_lines, access_key, secret_access_key, session_token):
+    def __init__(self, topic, start, end, include_wrapper, max_lines, access_key, secret_access_key, session_token,
+                 endpoint):
         """
         Constructor
         """
@@ -32,6 +32,7 @@ class DynamoMessages(object):
         self.__end = end
         self.__include_wrapper = include_wrapper
         self.__max_lines = max_lines
+        self.__endpoint = endpoint
 
         self.__message_manager = MessageManager(access_key, secret_access_key, session_token)
 
@@ -39,6 +40,8 @@ class DynamoMessages(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_url(self, start):
+        if not self.__endpoint:
+            return None
         next_params = {
             'topic': self.__topic,
             'startTime': start,
@@ -46,7 +49,7 @@ class DynamoMessages(object):
         }
         query = urlencode(next_params)
 
-        url = 'https://{}{}?{}'.format(self.__END_POINT, self.__REQUEST_PATH, query)
+        url = 'https://{}{}?{}'.format(self.__endpoint, self.__REQUEST_PATH, query)
 
         return url
 
