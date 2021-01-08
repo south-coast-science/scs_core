@@ -26,6 +26,8 @@ from scs_core.data.linear_regression import LinearRegression
 from scs_core.model.gas.gas_inference_client import GasInferenceClient
 from scs_core.model.gas.vB.gas_request import GasRequest
 
+from scs_core.sync.schedule import ScheduleItem
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +37,7 @@ class VBGasInferenceClient(GasInferenceClient):
     """
 
     @classmethod
-    def construct(cls, inference_uds_path, gas_schedule_item):
+    def construct(cls, inference_uds_path, gas_schedule_item: ScheduleItem):
         # logger...
         logger = logging.getLogger(__name__)
         logging.basicConfig(stream=sys.stderr, level=logging.INFO)
@@ -78,8 +80,8 @@ class VBGasInferenceClient(GasInferenceClient):
         rh_slope = 0.0 if m is None else m
 
         # request...
-        gas_request = GasRequest(gas_sample, t_slope, rh_slope, board_temp)
-        self._uds_client.request(JSONify.dumps(gas_request.as_json()))
+        gas_request = GasRequest(gas_sample.as_json(), t_slope, rh_slope, board_temp)
+        self._uds_client.request(JSONify.dumps(gas_request))
 
         response = self._uds_client.wait_for_response()
 

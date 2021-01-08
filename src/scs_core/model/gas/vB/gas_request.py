@@ -17,7 +17,6 @@ example document:
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-from scs_core.gas.a4.a4_calibrated_datum import A4CalibratedDatum
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -43,7 +42,7 @@ class GasRequest(JSONable):
         """
         Constructor
         """
-        self.__sample = sample                              # PathDict
+        self.__sample = sample                              # dict
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
@@ -55,7 +54,7 @@ class GasRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['sample'] = self.sample.as_json()
+        jdict['sample'] = self.sample
 
         jdict['t-slope'] = self.t_slope
         jdict['rh-slope'] = self.rh_slope
