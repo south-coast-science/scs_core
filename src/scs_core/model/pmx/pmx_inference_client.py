@@ -35,6 +35,8 @@ class PMxInferenceClient(object):
         self._uds_client.request(json.dumps(None))
         self._uds_client.wait_for_response()
 
+        self._uds_client.log('connected')
+
 
     def open(self):
         self._uds_client.open()
