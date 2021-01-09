@@ -4,7 +4,11 @@ Created on 23 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
+
 from abc import abstractmethod
+
+from scs_core.comms.uds_client import UDSClient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -16,7 +20,7 @@ class GasInferenceClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_client):
+    def __init__(self, uds_client: UDSClient):
         """
         Constructor
         """
@@ -25,12 +29,19 @@ class GasInferenceClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self):
-        self._uds_client.connect()
+    def wait_for_server(self):
+        self._uds_client.open()
+
+        self._uds_client.request(json.dumps(None))
+        self._uds_client.wait_for_response()
 
 
-    def disconnect(self):
-        self._uds_client.disconnect()
+    def open(self):
+        self._uds_client.open()
+
+
+    def close(self):
+        self._uds_client.close()
 
 
     @abstractmethod

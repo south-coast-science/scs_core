@@ -13,6 +13,7 @@ example JSON:
 """
 
 from scs_core.model.model_conf import ModelConf
+from scs_core.model.particulates.pmx_inference_client import PMxInferenceClient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ class PMxModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self, host):
+    def client(self, host) -> PMxInferenceClient:
         if self.model_interface == 's1':
             from scs_core.model.particulates.s1.s1_pmx_inference_client import S1PMxInferenceClient
             return S1PMxInferenceClient.construct(self.abs_uds_path(host))

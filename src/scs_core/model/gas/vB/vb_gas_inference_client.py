@@ -29,8 +29,6 @@ from scs_core.model.gas.vB.gas_request import GasRequest
 from scs_core.sync.schedule import ScheduleItem
 
 
-# TODO: accept logger from client
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class VBGasInferenceClient(GasInferenceClient):
