@@ -3,6 +3,7 @@ Created on 09 Oct 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+
 import json
 import os
 import shutil
@@ -14,6 +15,8 @@ from urllib.request import urlopen
 from scs_core.data.json import PersistentJSONable
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
 class AWSSetup(PersistentJSONable):
 
     __AWS_REGION = "us-west-2"
@@ -22,6 +25,7 @@ class AWSSetup(PersistentJSONable):
     __FILENAME = "greengrass_identity.json"
 
     # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def persistence_location(cls):
         return cls.aws_dir(), cls.__FILENAME
@@ -40,6 +44,7 @@ class AWSSetup(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, iot_client, gg_client, core_name, group_name):
         """
         Constructor
@@ -56,6 +61,7 @@ class AWSSetup(PersistentJSONable):
         self.__latest_group_version_arn = None
         self.__hash = None
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def setup_device(self):
@@ -65,6 +71,7 @@ class AWSSetup(PersistentJSONable):
         self.create_group()
         self.persist_certs()
         self.update_config_file()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -105,6 +112,7 @@ class AWSSetup(PersistentJSONable):
         )
         print("Policy attached to cert", file=sys.stderr)
 
+
     def create_core(self):
         initial_core_definition_version = {
             'Cores': [
@@ -124,6 +132,7 @@ class AWSSetup(PersistentJSONable):
         print("Core created", file=sys.stderr)
         print(initial_core_definition_version, file=sys.stderr)
 
+
     def create_group(self):
         initial_group_definition_version = {
             'CoreDefinitionVersionArn': self.__latest_core_version_arn,
@@ -137,6 +146,7 @@ class AWSSetup(PersistentJSONable):
         self.__latest_group_version_arn = res['LatestVersionArn']
         print("Group definition created", file=sys.stderr)
         print(initial_group_definition_version, file=sys.stderr)
+
 
     def create_logger(self):
         res = self.__gg_client.create_logger_definition(
@@ -162,6 +172,7 @@ class AWSSetup(PersistentJSONable):
         )
         self.__latest_logger_version_arn = res['LatestVersionArn']
         print("Logger created", file=sys.stderr)
+
 
     def persist_certs(self):
         # Delete existing keys from dir
@@ -198,6 +209,7 @@ class AWSSetup(PersistentJSONable):
         f.write(keys["PublicKey"])
         f.close()
         print("Public key saved", file=sys.stderr)
+
 
     def update_config_file(self):
         res = self.__iot_client.describe_endpoint(
@@ -249,6 +261,7 @@ class AWSSetup(PersistentJSONable):
         print("Config saved", file=sys.stderr)
         print(json.dumps(default_config), file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self, *args, **kwargs):
@@ -258,6 +271,7 @@ class AWSSetup(PersistentJSONable):
         jdict['group-name'] = self.__group_name
 
         return jdict
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
