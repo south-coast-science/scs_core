@@ -10,7 +10,12 @@ example JSON:
 "model-filenames": {"NO2": "/trained-models/no2-s1-2020q13/xgboost-model"}}
 """
 
+from scs_core.gas.afe_calib import AFECalib
+
+from scs_core.model.gas.gas_inference_client import GasInferenceClient
 from scs_core.model.model_conf import ModelConf
+
+from scs_core.sync.schedule import ScheduleItem
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -27,7 +32,7 @@ class GasModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 's2']
+    __INTERFACES = ['s1', 'vB']
 
     @classmethod
     def interfaces(cls):
@@ -45,13 +50,13 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self, host, gas_schedule_item, afe_calib):
+    def client(self, host, gas_schedule_item: ScheduleItem, afe_calib: AFECalib) -> GasInferenceClient:
         if self.model_interface == 's1':
             from scs_core.model.gas.s1.s1_gas_inference_client import S1GasInferenceClient
             return S1GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item, afe_calib)
 
-        if self.model_interface == 's2':
-            from scs_core.model.gas.s2.s2_gas_inference_client import S2GasInferenceClient
-            return S2GasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
+        if self.model_interface == 'vB':
+            from scs_core.model.gas.vB.vb_gas_inference_client import VBGasInferenceClient
+            return VBGasInferenceClient.construct(self.abs_uds_path(host), gas_schedule_item)
 
         raise ValueError(self.model_interface)

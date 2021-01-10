@@ -144,42 +144,51 @@ class LinearRegression(Regression):
     # ----------------------------------------------------------------------------------------------------------------
 
     def min(self, ndigits=None):
-        value = float(min([y for _, y in self.__data]))
+        try:
+            value = float(min([y for _, y in self.__data]))
+            return value if ndigits is None else round(value, ndigits)
 
-        return value if ndigits is None else round(value, ndigits)
-
+        except TypeError:
+            return None
 
     def mid(self, ndigits=None):
         # validate...
         if not self.has_midpoint():
             return None
 
-        # single value...
-        if len(self) == 1:
-            for timestamp, value in self.__data:
-                return value
+        try:
+            # single value...
+            if len(self) == 1:
+                for timestamp, value in self.__data:
+                    return value
 
-        # multiple values...
-        slope, intercept = self.line()
+            # multiple values...
+            slope, intercept = self.line()
 
-        # x domain...
-        x_data = [x for x, _ in self.__data]
+            # x domain...
+            x_data = [x for x, _ in self.__data]
 
-        min_x = min(x_data)
-        max_x = max(x_data)
+            min_x = min(x_data)
+            max_x = max(x_data)
 
-        mid_x = mean((min_x, max_x))
+            mid_x = mean((min_x, max_x))
 
-        # y val...
-        value = slope * mid_x + intercept
+            # y val...
+            value = slope * mid_x + intercept
 
-        return value if ndigits is None else round(value, ndigits)
+            return value if ndigits is None else round(value, ndigits)
+
+        except TypeError:
+            return None
 
 
     def max(self, ndigits=None):
-        value = float(max([y for _, y in self.__data]))
+        try:
+            value = float(max([y for _, y in self.__data]))
+            return value if ndigits is None else round(value, ndigits)
 
-        return value if ndigits is None else round(value, ndigits)
+        except TypeError:
+            return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

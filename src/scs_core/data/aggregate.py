@@ -12,7 +12,6 @@ from decimal import InvalidOperation
 
 from scs_core.data.categorical_regression import CategoricalRegression
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Datum
 from scs_core.data.linear_regression import LinearRegression
 from scs_core.data.path_dict import PathDict
 from scs_core.data.precision import Precision
@@ -77,8 +76,8 @@ class Aggregate(object):
                         continue
 
                     self.__precisions[path] = Precision()
-                    self.__regressions[path] = LinearRegression() if Datum.is_numeric(sample.node(path)) else \
-                        CategoricalRegression()
+                    self.__regressions[path] = CategoricalRegression() if isinstance(sample.node(path), str) else \
+                        LinearRegression()
 
             self.__initialised = True
 

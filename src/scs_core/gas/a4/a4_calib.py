@@ -55,7 +55,6 @@ class A4Calib(SensorCalib):
         we_sens_mv = jdict.get('we_sensitivity_mv_ppb')
         we_no2_x_sens_mv = jdict.get('we_cross_sensitivity_no2_mv_ppb')
 
-
         return cls(serial_number, sensor_type, we_elc_mv, we_cal_mv, we_tot_mv, ae_elc_mv, ae_cal_mv, ae_tot_mv,
                    we_sens_na, we_x_sens_na, pcb_gain, we_sens_mv, we_no2_x_sens_mv)
 
