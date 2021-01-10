@@ -32,7 +32,7 @@ client = UDSClient(path, logger=logger)
 # run...
 
 try:
-    client.connect()
+    client.open()
     print(client)
 
     while True:
@@ -48,4 +48,4 @@ except KeyboardInterrupt:
     print()
 
 finally:
-    client.disconnect()
+    client.close()

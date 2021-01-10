@@ -35,23 +35,6 @@ class UDSClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self):
-        self.__disconnecting = False
-        self.__uds.connect()
-
-        self.__log('connected')
-
-
-    def disconnect(self):
-        self.__disconnecting = True
-        self.request(self.EOS)
-        self.__uds.close()
-
-        self.__log('disconnected')
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def request(self, message):
         while True:
             try:
@@ -64,7 +47,7 @@ class UDSClient(object):
 
                 time.sleep(self._RECONNECT_WAIT)
 
-                self.__log('attempting reconnection')
+                self.log('waiting for server')
 
                 self.__uds.close()                  # attempt to restart session
                 self.__uds.connect()
@@ -76,7 +59,22 @@ class UDSClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __log(self, message):
+    def open(self):
+        self.__disconnecting = False
+        self.__uds.connect()
+
+        self.log('opened')
+
+
+    def close(self):
+        self.__disconnecting = True
+        self.request(self.EOS)
+        self.__uds.close()
+
+        self.log('closed')
+
+
+    def log(self, message):
         if not self.__logger:
             return
 

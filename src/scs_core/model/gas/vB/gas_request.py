@@ -54,7 +54,7 @@ class GasRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['sample'] = self.sample.as_json()
+        jdict['sample'] = self.sample
 
         jdict['t-slope'] = self.t_slope
         jdict['rh-slope'] = self.rh_slope
@@ -88,5 +88,5 @@ class GasRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasRequest(s2):{sample:%s, t_slope:%s, rh_slope:%s, board_temp:%s}" %  \
+        return "GasRequest(vB):{sample:%s, t_slope:%s, rh_slope:%s, board_temp:%s}" %  \
                (self.sample, self.t_slope, self.rh_slope, self.board_temp)
