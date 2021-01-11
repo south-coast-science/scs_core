@@ -54,7 +54,7 @@ class GasRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['sample'] = self.sample.as_json()
+        jdict['sample'] = self.sample
 
         jdict['t-slope'] = self.t_slope
         jdict['rh-slope'] = self.rh_slope

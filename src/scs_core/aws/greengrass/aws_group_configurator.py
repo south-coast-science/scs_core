@@ -49,19 +49,9 @@ class AWSGroupConfigurator(PersistentJSONable):
     def construct(cls, group_name, unix_group):
         return Project(group_name, unix_group)
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict["time-initiated"] = self.__init_time
-        jdict['group-name'] = self.__group_name
-        jdict['unix-group'] = self.__unix_group
-        jdict['ml'] = self.__ml
-
-        return jdict
 
     # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, group_name, client, ml=False):
         """
         Constructor
@@ -80,7 +70,9 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__group_name = group_name
         self.__unix_group = group_info[2]
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def collect_information(self, host):
         aws_json_reader = AWSGroup(self.__group_name, self.__client)
         aws_json_reader.get_group_info_from_name()
@@ -109,7 +101,9 @@ class AWSGroupConfigurator(PersistentJSONable):
             self.__aws_info.append("LocationPath", project_json["location-path"])
             self.__aws_info.append("DevicePath", device_path)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_resources(self, host):
         # Setup default JSON
         if self.__ml:
@@ -148,7 +142,9 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__aws_info.append("NewResourceARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_functions(self):
         # Get template JSON
         if self.__ml:
@@ -190,7 +186,9 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__aws_info.append("NewFunctionARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_subscriptions(self):
         # Get template JSON
         j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_subscriptions.json')
@@ -220,7 +218,9 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__aws_info.append("NewSubscriptionARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def create_aws_group_definition(self):
         response = self.__client.create_group_version(
             CoreDefinitionVersionArn=self.__aws_info.node("CoreDefinitionARN"),
@@ -230,6 +230,20 @@ class AWSGroupConfigurator(PersistentJSONable):
             SubscriptionDefinitionVersionArn=self.__aws_info.node("NewSubscriptionARN"),
         )
         print(response, file=sys.stderr)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict["time-initiated"] = self.__init_time
+        jdict['group-name'] = self.__group_name
+        jdict['unix-group'] = self.__unix_group
+        jdict['ml'] = self.__ml
+
+        return jdict
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -245,7 +259,9 @@ class AWSGroupConfigurator(PersistentJSONable):
     def ml(self):
         return self.__ml
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Project:{group_name%s, unix_group:%d, ml:%s}" % (self.group_name, self.unix_group, self.ml)
+        return "AWSGroupConfigurator:{group_name%s, unix_group:%d, ml:%s}" % \
+               (self.group_name, self.unix_group, self.ml)

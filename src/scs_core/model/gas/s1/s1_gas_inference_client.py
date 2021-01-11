@@ -23,8 +23,12 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
 
+from scs_core.gas.afe_calib import AFECalib
+
 from scs_core.model.gas.gas_inference_client import GasInferenceClient
 from scs_core.model.gas.s1.gas_request import GasRequest
+
+from scs_core.sync.schedule import ScheduleItem
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -35,7 +39,7 @@ class S1GasInferenceClient(GasInferenceClient):
     """
 
     @classmethod
-    def construct(cls, inference_uds_path, gas_schedule_item, afe_calib):
+    def construct(cls, inference_uds_path, gas_schedule_item: ScheduleItem, afe_calib: AFECalib):
         # logger...
         logger = logging.getLogger(__name__)
         logging.basicConfig(stream=sys.stderr, level=logging.INFO)

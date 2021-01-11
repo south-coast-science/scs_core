@@ -5,6 +5,9 @@ Created on 9 Dec 2020
 
 The A4CalibratedDatum is designed to provide a model training data set that encapsulates the calibration of the
 electrochemical sensor - v_x_cal is only relevant to sensors with NO2 cross-sensitivity.
+
+example document:
+{"weV": 0.30338, "aeV": 0.27969, "weC": 2e-05, "cnc": 0.1, "weVz": 0.00738, "aeVz": 0.00469, "vCal": 9.087838}
 """
 
 from collections import OrderedDict
