@@ -3,18 +3,19 @@ Created on 11 Jan 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
-from getpass import getpass
 
 import boto3
+
+from getpass import getpass
 
 from scs_core.aws.greengrass.aws_group import AWSGroup
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
 class AWSGroupDeployer(object):
 
-    def __init__(self, group_name):
-        self.__group_name = group_name
-
+    # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
     def create_aws_client():
@@ -37,6 +38,15 @@ class AWSGroupDeployer(object):
 
         return client
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, group_name):
+        self.__group_name = group_name
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def retrieve_deployment_info(self, client):
         aws_group_info = AWSGroup(self.__group_name, client)
 
@@ -56,5 +66,3 @@ class AWSGroupDeployer(object):
             GroupVersionId=group_version_id
         )
         return response
-
-
