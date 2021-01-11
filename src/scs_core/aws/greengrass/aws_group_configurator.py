@@ -29,6 +29,9 @@ from scs_core.sys.system_id import SystemID
 
 class AWSGroupConfigurator(PersistentJSONable):
     __FILENAME = "aws_group_config.json"
+    __CWD = os.path.dirname(os.path.realpath(__file__))
+    __V1 = __CWD + "/v1"
+    __V2 = __CWD + "/v2"
 
     @classmethod
     def persistence_location(cls):
@@ -49,19 +52,9 @@ class AWSGroupConfigurator(PersistentJSONable):
     def construct(cls, group_name, unix_group):
         return Project(group_name, unix_group)
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict["time-initiated"] = self.__init_time
-        jdict['group-name'] = self.__group_name
-        jdict['unix-group'] = self.__unix_group
-        jdict['ml'] = self.__ml
-
-        return jdict
 
     # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, group_name, client, ml=False):
         """
         Constructor
@@ -80,7 +73,9 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__group_name = group_name
         self.__unix_group = group_info[2]
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def collect_information(self, host):
         aws_json_reader = AWSGroup(self.__group_name, self.__client)
         aws_json_reader.get_group_info_from_name()
@@ -109,13 +104,15 @@ class AWSGroupConfigurator(PersistentJSONable):
             self.__aws_info.append("LocationPath", project_json["location-path"])
             self.__aws_info.append("DevicePath", device_path)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_resources(self, host):
         # Setup default JSON
         if self.__ml:
-            j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_resources_ml.json')
+            j_file = os.path.join(self.__V2, 'gg_resources_ml.json')
         else:
-            j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_resources.json')
+            j_file = os.path.join(self.__V1, 'gg_resources.json')
         with open(j_file) as f:
             data = f.read()
         # Edit JSON for device
@@ -144,17 +141,21 @@ class AWSGroupConfigurator(PersistentJSONable):
             r_data["InitialVersion"]["Resources"][4]["Id"] = (
                 (system_id + "-ml-no2"))  # Edit resource name
         # Send request
+        print("Creating resource definition", file=sys.stderr)
+        print(r_data, file=sys.stderr)
         response = self.__client.create_resource_definition(InitialVersion=r_data["InitialVersion"])
         self.__aws_info.append("NewResourceARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_functions(self):
         # Get template JSON
         if self.__ml:
-            j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_functions_ml.json')
+            j_file = os.path.join(self.__V1, 'gg_functions_ml.json')
         else:
-            j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_functions.json')
+            j_file = os.path.join(self.__V1, 'gg_functions.json')
         with open(j_file) as f:
             data = f.read()
         # Update JSON for device
@@ -185,15 +186,19 @@ class AWSGroupConfigurator(PersistentJSONable):
             f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 1]["ResourceId"] = (system_id + "-ml-no2")
 
+        print("Creating function definition", file=sys.stderr)
+        print(f_data, file=sys.stderr)
         # Create request
         response = self.__client.create_function_definition(InitialVersion=f_data["InitialVersion"])
         self.__aws_info.append("NewFunctionARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def define_aws_group_subscriptions(self):
         # Get template JSON
-        j_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'gg_subscriptions.json')
+        j_file = os.path.join(self.__V1, 'gg_subscriptions.json')
         with open(j_file) as f:
             data = f.read()
 
@@ -215,21 +220,60 @@ class AWSGroupConfigurator(PersistentJSONable):
         s_data["InitialVersion"]["Subscriptions"][4]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
         s_data["InitialVersion"]["Subscriptions"][5]["Subject"] = (self.__aws_info.node("LocationPath") + "/gases")
 
+        print("Creating sub definition", file=sys.stderr)
+        print(s_data, file=sys.stderr)
         # Send request
         response = self.__client.create_subscription_definition(InitialVersion=s_data["InitialVersion"])
         self.__aws_info.append("NewSubscriptionARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
 
+    def define_aws_logger(self):
+        j_file = os.path.join(self.__V2, 'gg_logger.json')
+        with open(j_file) as f:
+            data = f.read()
+        system_id = str(self.__aws_info.node("SystemID"))
+        l_data = json.loads(data)
+
+        l_data["InitialVersion"]["Loggers"][0]["Id"] = (system_id + "-lambda-logger")
+
+        print("Creating logger definition", file=sys.stderr)
+        print(l_data, file=sys.stderr)
+
+        response = self.__client.create_logger_definition(InitialVersion=l_data["InitialVersion"])
+        self.__aws_info.append("NewLoggerARN", response["LatestVersionArn"])
+        print(response, file=sys.stderr)
+
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def create_aws_group_definition(self):
+        print("Creating group definition", file=sys.stderr)
+        print(self.__aws_info.node("GroupID"))
+
         response = self.__client.create_group_version(
             CoreDefinitionVersionArn=self.__aws_info.node("CoreDefinitionARN"),
             FunctionDefinitionVersionArn=self.__aws_info.node("NewFunctionARN"),
             GroupId=self.__aws_info.node("GroupID"),
             ResourceDefinitionVersionArn=self.__aws_info.node("NewResourceARN"),
             SubscriptionDefinitionVersionArn=self.__aws_info.node("NewSubscriptionARN"),
+            LoggerDefinitionVersionArn=self.__aws_info.node("NewLoggerARN"),
         )
+
         print(response, file=sys.stderr)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict["time-initiated"] = self.__init_time
+        jdict['group-name'] = self.__group_name
+        jdict['unix-group'] = self.__unix_group
+        jdict['ml'] = self.__ml
+
+        return jdict
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -245,7 +289,9 @@ class AWSGroupConfigurator(PersistentJSONable):
     def ml(self):
         return self.__ml
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Project:{group_name%s, unix_group:%d, ml:%s}" % (self.group_name, self.unix_group, self.ml)
+        return "AWSGroupConfigurator:{group_name%s, unix_group:%d, ml:%s}" % \
+               (self.group_name, self.unix_group, self.ml)

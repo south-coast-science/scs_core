@@ -1,0 +1,13 @@
+{
+  "InitialVersion": {
+    "Loggers": [
+            {
+                "Component": "Lambda",
+                "Id": "SYSTEM_ID-lambda-logger",
+                "Level": "INFO",
+                "Space" : 25,
+                "Type": "FileSystem"
+            }
+        ]
+    }
+}
