@@ -15,9 +15,12 @@ from scs_core.data.json import JSONable
 from scs_core.data.path_dict import PathDict
 
 
+# --------------------------------------------------------------------------------------------------------------------
+
 class AWSGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, group_name, client):
         """
         Constructor
@@ -26,6 +29,7 @@ class AWSGroup(JSONable):
         self.__group_info = PathDict()
         self.__group_info.append("GroupName", [group_name])
         self.__verbose_group_info = PathDict()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -36,6 +40,7 @@ class AWSGroup(JSONable):
         jdict['v-info'] = self.__verbose_group_info
 
         return jdict
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -51,6 +56,7 @@ class AWSGroup(JSONable):
                 self.__group_info.append("GroupLatestVersionID", sub_node["LatestVersion"])
                 self.__group_info.append("LastUpdated", sub_node["LastUpdatedTimestamp"])
                 break
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -82,7 +88,9 @@ class AWSGroup(JSONable):
             self.__group_info.append("SubscriptionDefinitionVersionArn",
                                      sub_v_group["SubscriptionDefinitionVersionArn"])
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def output_current_info(self):
         if self.__group_info.has_path("CoreDefinitionVersionArn"):
             self.get_core_definition()
@@ -95,7 +103,9 @@ class AWSGroup(JSONable):
         if self.__group_info.has_path("SubscriptionDefinitionVersionArn"):
             self.get_subscription_definition_version()
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def get_core_definition(self):
 
         if not self.__group_info.has_path("CoreDefinitionVersionArn"):
@@ -110,7 +120,9 @@ class AWSGroup(JSONable):
         )
         self.__verbose_group_info.append("Core Definition Response", response)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def get_function_definition(self):
 
         if not self.__group_info.has_path("FunctionDefinitionVersionArn"):
@@ -126,6 +138,7 @@ class AWSGroup(JSONable):
             FunctionDefinitionVersionId=arn[1]
         )
         self.__verbose_group_info.append("Function Definition Response", response)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -143,7 +156,9 @@ class AWSGroup(JSONable):
         )
         self.__verbose_group_info.append("Logger Definition Response", response)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def get_resource_definition(self):
 
         if not self.__group_info.has_path("ResourceDefinitionVersionArn"):
@@ -158,7 +173,9 @@ class AWSGroup(JSONable):
         )
         self.__verbose_group_info.append("Resource Definition Response", response)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def get_subscription_definition_version(self):
 
         if not self.__group_info.has_path("SubscriptionDefinitionVersionArn"):
@@ -175,18 +192,24 @@ class AWSGroup(JSONable):
         )
         self.__verbose_group_info.append("Subscription Definition Response", response)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def __append_to_group_info(self, path, value):
         self.__group_info.append(path, value)
 
+
     # ----------------------------------------------------------------------------------------------------------------
+
     def retrieve_node(self, path):
         if self.__group_info.has_path(path):
             return self.__group_info.node(path)
         else:
             return "-"
 
+
     # --------------------------------------------------------------------------------------------------------------------
+
     @staticmethod
     def __split_id_from_version_id(arn_type, combined):
         res = ""
