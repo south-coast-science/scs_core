@@ -36,6 +36,8 @@ class UDSClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def request(self, message):
+        reported_waiting = False
+
         while True:
             try:
                 self.__uds.client_send(message.strip())
@@ -45,9 +47,11 @@ class UDSClient(object):
                 if self.__disconnecting:
                     return                          # don't wait forever if terminating
 
-                time.sleep(self._RECONNECT_WAIT)
+                if not reported_waiting:
+                    self.log('waiting for server')
+                    reported_waiting = True
 
-                self.log('waiting for server')
+                time.sleep(self._RECONNECT_WAIT)
 
                 self.__uds.close()                  # attempt to restart session
                 self.__uds.connect()
