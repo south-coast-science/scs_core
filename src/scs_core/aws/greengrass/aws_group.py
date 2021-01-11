@@ -55,7 +55,7 @@ class AWSGroup(JSONable):
                 self.__group_info.append("GroupID", sub_node["Id"])
                 self.__group_info.append("GroupLatestVersionID", sub_node["LatestVersion"])
                 self.__group_info.append("LastUpdated", sub_node["LastUpdatedTimestamp"])
-                break
+                return self.__group_info
 
 
     # ----------------------------------------------------------------------------------------------------------------
