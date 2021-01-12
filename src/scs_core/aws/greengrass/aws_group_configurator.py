@@ -256,7 +256,7 @@ class AWSGroupConfigurator(PersistentJSONable):
             GroupId=self.__aws_info.node("GroupID"),
             ResourceDefinitionVersionArn=self.__aws_info.node("NewResourceARN"),
             SubscriptionDefinitionVersionArn=self.__aws_info.node("NewSubscriptionARN"),
-            LoggerDefinitionVersionArn=self.__aws_info.node("NewLoggerARN"),
+            # LoggerDefinitionVersionArn=self.__aws_info.node("NewLoggerARN"),
         )
 
         print(response, file=sys.stderr)
