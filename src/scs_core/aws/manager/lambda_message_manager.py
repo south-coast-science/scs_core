@@ -63,11 +63,11 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start_date, end_date, checkpoint, include_wrapper, _rec_only):
+    def find_for_topic(self, topic, start_date, end_date, checkpoint, include_wrapper, _rec_only, fetch_last):
         request_path = '/default/AWSAggregate/'
         # request_path = '/topicMessages'
 
-        params = MessageRequest(topic, start_date, end_date, include_wrapper, False, checkpoint).params()
+        params = MessageRequest(topic, start_date, end_date, include_wrapper, False, checkpoint, fetch_last).params()
 
         # request...
         self.__rest_client.connect()
@@ -125,7 +125,9 @@ class MessageRequest(object):
 
         include_wrapper = qsp.get("includeWrapper", 'false') == 'true'
         min_max = qsp.get("minMax", 'false') == 'true'
+        fetch_last_written = qsp.get("fetchLastWrittenData", 'false') == 'true'
         checkpoint = qsp.get('checkpoint')
+
 
         if topic is None or start is None or end is None:
             return None
@@ -133,12 +135,12 @@ class MessageRequest(object):
         if start > end:
             return None
 
-        return cls(topic, start, end, include_wrapper, min_max, checkpoint)
+        return cls(topic, start, end, include_wrapper, min_max, checkpoint, fetch_last_written)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, include_wrapper, min_max, checkpoint):
+    def __init__(self, topic, start, end, include_wrapper, min_max, checkpoint, fetch_last_written):
         """
         Constructor
         """
@@ -150,6 +152,8 @@ class MessageRequest(object):
         self.__min_max = bool(min_max)                      # bool
         self.__checkpoint = checkpoint                      # string
 
+        self.__fetch_last_written = fetch_last_written      # bool
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -159,7 +163,8 @@ class MessageRequest(object):
             'startTime': self.start.utc().as_iso8601(include_millis=True),
             'endTime': self.end.utc().as_iso8601(include_millis=True),
             'includeWrapper': str(self.include_wrapper).lower(),
-            'minMax': str(self.min_max).lower()
+            'minMax': str(self.min_max).lower(),
+            'fetchLastWritten': str(self.fetch_last_written).lower()
         }
 
         if self.checkpoint:
@@ -199,12 +204,18 @@ class MessageRequest(object):
     def checkpoint(self):
         return self.__checkpoint
 
+    @property
+    def fetch_last_written(self):
+        return self.__fetch_last_written
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{topic:%s, start:%s, end:%s, include_wrapper:%s, min_max:%s, checkpoint:%s}" % \
-               (self.topic, self.start, self.end, self.include_wrapper, self.min_max, self.checkpoint)
+        return "MessageResponse:{topic:%s, start:%s, end:%s, include_wrapper:%s, min_max:%s, checkpoint:%s, " \
+               "fetch_last_written:%s}" % \
+               (self.topic, self.start, self.end, self.include_wrapper, self.min_max, self.checkpoint,
+                self.fetch_last_written)
 
 
 # --------------------------------------------------------------------------------------------------------------------
