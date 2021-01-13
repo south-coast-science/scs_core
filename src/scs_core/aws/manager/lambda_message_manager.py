@@ -164,7 +164,7 @@ class MessageRequest(object):
             'endTime': self.end.utc().as_iso8601(include_millis=True),
             'includeWrapper': str(self.include_wrapper).lower(),
             'minMax': str(self.min_max).lower(),
-            'fetchLastWritten': str(self.fetch_last_written).lower()
+            'fetchLastWrittenData': str(self.fetch_last_written).lower()
         }
 
         if self.checkpoint:
