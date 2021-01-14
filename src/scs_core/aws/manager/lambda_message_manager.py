@@ -185,6 +185,11 @@ class MessageRequest(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def next_params(self, start):
+        return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
+                              self.include_wrapper, self.min_max).params()
+
+
     def params(self):
         params = {
             'topic': self.topic,
