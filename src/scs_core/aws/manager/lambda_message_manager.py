@@ -68,8 +68,7 @@ class MessageManager(object):
         # request_path = '/topicMessages'
 
         params = MessageRequest(topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, False).params()
-
-        print("params: %s" % params)
+        # print("params: %s" % params)
 
         # request...
         self.__rest_client.connect()
@@ -173,7 +172,7 @@ class MessageRequest(object):
         if self.checkpoint is not None:
             params['checkpoint'] =  self.checkpoint
 
-        if self.fetch_last_written is not None:
+        if self.fetch_last_written:
             params['fetchLastWrittenData'] =  str(self.fetch_last_written).lower()
 
         return params
