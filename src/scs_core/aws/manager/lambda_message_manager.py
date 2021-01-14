@@ -53,7 +53,7 @@ class MessageManager(object):
     def find_latest_for_topic(self, topic, end_date, include_wrapper):
         for back_off in (1, 10, 30, 60):                            # total = 91 mins
             start_date = end_date - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start_date, end_date, None, include_wrapper, False))
+            documents = list(self.find_for_topic(topic, start_date, end_date, False, None, include_wrapper, False))
 
             if documents:
                 return documents[-1]
@@ -63,11 +63,11 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start_date, end_date, checkpoint, include_wrapper, _rec_only, fetch_last):
+    def find_for_topic(self, topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, _rec_only):
         request_path = '/default/AWSAggregate/'
         # request_path = '/topicMessages'
 
-        params = MessageRequest(topic, start_date, end_date, include_wrapper, False, checkpoint, fetch_last).params()
+        params = MessageRequest(topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, False).params()
 
         # request...
         self.__rest_client.connect()
@@ -78,24 +78,23 @@ class MessageManager(object):
 
                 # messages...
                 block = MessageResponse.construct_from_jdict(jdict)
+                # print("block: %s" % block)
 
                 for item in block.items:
                     yield item
 
                 # report...
                 if self.__reporter:
-                    self.__reporter.print(params[self.__START], len(block))
+                    self.__reporter.print(block.start(), len(block))
 
                 # next request...
                 if block.next_url is None:
-                    if block.fetch_last is not None:
-                        fetch_last_written = {"fetchLastWrittenData": block.fetch_last}
-                        yield fetch_last_written
                     break
 
                 next_url = urlparse(block.next_url)
                 next_params = parse_qs(next_url.query)
 
+                # noinspection PyTypeChecker
                 params[self.__START] = next_params[self.__START][0]
 
         finally:
@@ -131,7 +130,6 @@ class MessageRequest(object):
         fetch_last_written = qsp.get("fetchLastWrittenData")
         checkpoint = qsp.get('checkpoint')
 
-
         if topic is None or start is None or end is None:
             return None
 
@@ -143,7 +141,7 @@ class MessageRequest(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, include_wrapper, min_max, checkpoint, fetch_last_written):
+    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, min_max):
         """
         Constructor
         """
@@ -151,11 +149,12 @@ class MessageRequest(object):
         self.__start = start                                # LocalizedDatetime
         self.__end = end                                    # LocalizedDatetime
 
+        self.__fetch_last_written = fetch_last_written      # bool or None
+
+        self.__checkpoint = checkpoint                      # string
         self.__include_wrapper = bool(include_wrapper)      # bool
         self.__min_max = bool(min_max)                      # bool
-        self.__checkpoint = checkpoint                      # string
 
-        self.__fetch_last_written = fetch_last_written      # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -167,11 +166,13 @@ class MessageRequest(object):
             'endTime': self.end.utc().as_iso8601(include_millis=True),
             'includeWrapper': str(self.include_wrapper).lower(),
             'minMax': str(self.min_max).lower(),
-            'fetchLastWrittenData': str(self.fetch_last_written).lower()
         }
 
-        if self.checkpoint:
+        if self.checkpoint is not None:
             params['checkpoint'] =  self.checkpoint
+
+        if self.fetch_last_written is not None:
+            params['fetchLastWrittenData'] =  str(self.fetch_last_written).lower()
 
         return params
 
@@ -194,6 +195,16 @@ class MessageRequest(object):
 
 
     @property
+    def fetch_last_written(self):
+        return self.__fetch_last_written
+
+
+    @property
+    def checkpoint(self):
+        return self.__checkpoint
+
+
+    @property
     def include_wrapper(self):
         return self.__include_wrapper
 
@@ -203,22 +214,13 @@ class MessageRequest(object):
         return self.__min_max
 
 
-    @property
-    def checkpoint(self):
-        return self.__checkpoint
-
-    @property
-    def fetch_last_written(self):
-        return self.__fetch_last_written
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{topic:%s, start:%s, end:%s, include_wrapper:%s, min_max:%s, checkpoint:%s, " \
-               "fetch_last_written:%s}" % \
-               (self.topic, self.start, self.end, self.include_wrapper, self.min_max, self.checkpoint,
-                self.fetch_last_written)
+        return "MessageRequest:{topic:%s, start:%s, end:%s, fetch_last_written:%s, checkpoint:%s, " \
+               "include_wrapper:%s, min_max:%s}" % \
+               (self.topic, self.start, self.end, self.fetch_last_written, self.checkpoint,
+                self.include_wrapper, self.min_max)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -237,7 +239,7 @@ class MessageResponse(JSONable):
 
         code = jdict.get('statusCode')
         status = jdict.get('status')
-        fetch_last = jdict.get('fetchLastWrittenData')
+        fetched_last = jdict.get('fetchedLastWrittenData')
 
         items = []
         for msg_jdict in jdict.get('Items'):
@@ -246,22 +248,23 @@ class MessageResponse(JSONable):
 
         next_url = jdict.get('next')
 
-        return cls(code, status, items, fetch_last, next_url)
+        return cls(code, status, fetched_last, items, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, items, fetch_last, next_url):
+    def __init__(self, code, status, fetched_last, items, next_url):
         """
         Constructor
         """
         self.__code = Datum.int(code)               # int
         self.__status = status                      # string
+        self.__fetched_last = fetched_last          # Fetched last written data flag
 
-        self.__items = items                        # list of Message or
+        self.__items = items                        # list of Message
+
         self.__next_url = next_url                  # URL string
 
-        self.__fetch_last = fetch_last              # Fetch last written data flag
 
 
     def __len__(self):
@@ -279,6 +282,9 @@ class MessageResponse(JSONable):
         if self.status is not None:
             jdict['status'] = self.status
 
+        if self.fetched_last is not None:
+            jdict['fetchedLastWrittenData'] = self.fetched_last
+
         if self.items is not None:
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
@@ -286,10 +292,23 @@ class MessageResponse(JSONable):
         if self.next_url is not None:
             jdict['next'] = self.next_url
 
-        if self.fetch_last is not None:
-            jdict['fetchLast'] = self.fetch_last
-
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def start(self):
+        if not self.items:
+            return None
+
+        return self.items[0].get('rec')
+
+
+    def end(self):
+        if not self.items:
+            return None
+
+        return self.items[len(self) - 1].get('rec')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -305,6 +324,11 @@ class MessageResponse(JSONable):
 
 
     @property
+    def fetched_last(self):
+        return self.__fetched_last
+
+
+    @property
     def items(self):
         return self.__items
 
@@ -313,13 +337,9 @@ class MessageResponse(JSONable):
     def next_url(self):
         return self.__next_url
 
-    @property
-    def fetch_last(self):
-        return self.__fetch_last
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{code:%s, status:%s, items:%s, next_url:%s}" % \
-               (self.code, self.status, Str.collection(self.items), self.next_url)
+        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, items:%s, next_url:%s}" % \
+               (self.code, self.status, self.fetched_last, Str.collection(self.items), self.next_url)
