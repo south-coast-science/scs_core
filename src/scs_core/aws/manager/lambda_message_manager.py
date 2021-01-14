@@ -88,6 +88,9 @@ class MessageManager(object):
 
                 # next request...
                 if block.next_url is None:
+                    if block.fetch_last is not None:
+                        fetch_last_written = {"fetchLastWrittenData": block.fetch_last}
+                        yield fetch_last_written
                     break
 
                 next_url = urlparse(block.next_url)
@@ -125,7 +128,7 @@ class MessageRequest(object):
 
         include_wrapper = qsp.get("includeWrapper", 'false') == 'true'
         min_max = qsp.get("minMax", 'false') == 'true'
-        fetch_last_written = qsp.get("fetchLastWrittenData", 'false') == 'true'
+        fetch_last_written = qsp.get("fetchLastWrittenData")
         checkpoint = qsp.get('checkpoint')
 
 
@@ -234,6 +237,7 @@ class MessageResponse(JSONable):
 
         code = jdict.get('statusCode')
         status = jdict.get('status')
+        fetch_last = jdict.get('fetchLastWrittenData')
 
         items = []
         for msg_jdict in jdict.get('Items'):
@@ -242,12 +246,12 @@ class MessageResponse(JSONable):
 
         next_url = jdict.get('next')
 
-        return cls(code, status, items, next_url)
+        return cls(code, status, items, fetch_last, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, items, next_url):
+    def __init__(self, code, status, items, fetch_last, next_url):
         """
         Constructor
         """
@@ -256,6 +260,8 @@ class MessageResponse(JSONable):
 
         self.__items = items                        # list of Message or
         self.__next_url = next_url                  # URL string
+
+        self.__fetch_last = fetch_last              # Fetch last written data flag
 
 
     def __len__(self):
@@ -280,7 +286,8 @@ class MessageResponse(JSONable):
         if self.next_url is not None:
             jdict['next'] = self.next_url
 
-        # TODO: fetched_last_written_data
+        if self.fetch_last is not None:
+            jdict['fetchLast'] = self.fetch_last
 
         return jdict
 
@@ -305,6 +312,10 @@ class MessageResponse(JSONable):
     @property
     def next_url(self):
         return self.__next_url
+
+    @property
+    def fetch_last(self):
+        return self.__fetch_last
 
 
     # ----------------------------------------------------------------------------------------------------------------
