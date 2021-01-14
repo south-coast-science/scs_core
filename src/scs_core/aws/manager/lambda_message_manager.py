@@ -189,6 +189,10 @@ class MessageRequest(object):
         return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
                               self.include_wrapper, self.min_max).params()
 
+    def change_params(self, start, end):
+        return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint, self.include_wrapper,
+                              self.min_max).params()
+
 
     def params(self):
         params = {
