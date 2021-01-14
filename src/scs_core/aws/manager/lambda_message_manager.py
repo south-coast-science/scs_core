@@ -117,6 +117,32 @@ class MessageRequest(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __DAY = Timedelta(days=1)
+    __WEEK = Timedelta(weeks=1)
+    __MONTH = Timedelta(days=28)
+    __YEAR = Timedelta(days=365)
+
+    @classmethod
+    def checkpoint_table(cls, start, end):
+        delta = end - start
+
+        if delta < cls.__DAY:
+            return None             # raw data rate
+
+        if delta < cls.__WEEK:
+            return '**:/01:00'
+
+        if delta < cls.__MONTH:
+            return '**:/15:00'
+
+        if delta < cls.__YEAR:
+            return '/01:00:00'
+
+        return '/06:00:00'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_qsp(cls, qsp):
         if not qsp:
@@ -157,7 +183,6 @@ class MessageRequest(object):
         self.__min_max = bool(min_max)                      # bool
 
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def params(self):
@@ -170,12 +195,25 @@ class MessageRequest(object):
         }
 
         if self.checkpoint is not None:
-            params['checkpoint'] =  self.checkpoint
+            params['checkpoint'] =  self.__checkpoint
 
         if self.fetch_last_written:
             params['fetchLastWrittenData'] =  str(self.fetch_last_written).lower()
 
         return params
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def checkpoint(self):
+        if self.__checkpoint is None:
+            return None
+
+        if self.__checkpoint == 'auto':
+            return self.checkpoint_table(self.start, self.end)
+
+        return self.__checkpoint
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -201,11 +239,6 @@ class MessageRequest(object):
 
 
     @property
-    def checkpoint(self):
-        return self.__checkpoint
-
-
-    @property
     def include_wrapper(self):
         return self.__include_wrapper
 
@@ -220,7 +253,7 @@ class MessageRequest(object):
     def __str__(self, *args, **kwargs):
         return "MessageRequest:{topic:%s, start:%s, end:%s, fetch_last_written:%s, checkpoint:%s, " \
                "include_wrapper:%s, min_max:%s}" % \
-               (self.topic, self.start, self.end, self.fetch_last_written, self.checkpoint,
+               (self.topic, self.start, self.end, self.fetch_last_written, self.__checkpoint,
                 self.include_wrapper, self.min_max)
 
 
