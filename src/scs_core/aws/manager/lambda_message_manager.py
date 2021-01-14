@@ -69,6 +69,8 @@ class MessageManager(object):
 
         params = MessageRequest(topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, False).params()
 
+        print("params: %s" % params)
+
         # request...
         self.__rest_client.connect()
 
@@ -127,7 +129,7 @@ class MessageRequest(object):
 
         include_wrapper = qsp.get("includeWrapper", 'false') == 'true'
         min_max = qsp.get("minMax", 'false') == 'true'
-        fetch_last_written = qsp.get("fetchLastWrittenData")
+        fetch_last_written = qsp.get("fetchLastWrittenData", 'false') == 'true'
         checkpoint = qsp.get('checkpoint')
 
         if topic is None or start is None or end is None:
