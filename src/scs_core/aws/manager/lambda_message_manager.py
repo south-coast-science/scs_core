@@ -136,7 +136,7 @@ class MessageRequest(object):
         if start > end:
             return None
 
-        return cls(topic, start, end, include_wrapper, min_max, checkpoint, fetch_last_written)
+        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, min_max)
 
 
     # ----------------------------------------------------------------------------------------------------------------
