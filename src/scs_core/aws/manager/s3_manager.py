@@ -9,6 +9,8 @@ import boto3
 from botocore.exceptions import ClientError
 from collections import OrderedDict
 
+from scs_core.aws.config.aws import AWS
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.tokens import Tokens
@@ -32,18 +34,18 @@ class S3Manager(object):
                 's3',
                 aws_access_key_id=access_key.key_id,
                 aws_secret_access_key=access_key.secret_key,
-                region_name='us-west-2'
+                region_name=AWS.region()
             )
             resource_client = boto3.resource(
                 's3',
                 aws_access_key_id=access_key.key_id,
                 aws_secret_access_key=access_key.secret_key,
-                region_name='us-west-2'
+                region_name=AWS.region()
             )
 
         else:
-            client = boto3.client('s3', region_name='us-west-2')
-            resource_client = boto3.resource('s3', region_name='us-west-2')
+            client = boto3.client('s3', region_name=AWS.region())
+            resource_client = boto3.resource('s3', region_name=AWS.region())
 
         return client, resource_client
 
