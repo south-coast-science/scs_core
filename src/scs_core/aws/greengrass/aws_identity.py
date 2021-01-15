@@ -12,6 +12,7 @@ import sys
 from collections import OrderedDict
 from urllib.request import urlopen
 
+from scs_core.aws.config.aws import AWS
 from scs_core.data.json import PersistentJSONable
 
 
@@ -19,7 +20,6 @@ from scs_core.data.json import PersistentJSONable
 
 class AWSSetup(PersistentJSONable):
 
-    __AWS_REGION = "us-west-2"
     __CERTS_PATH = "/greengrass/certs/"
     __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
     __FILENAME = "greengrass_identity.json"
@@ -229,7 +229,7 @@ class AWSSetup(PersistentJSONable):
                 "keyPath": "%s.private.key" % self.__hash,
                 "thingArn": self.__thing_arn,
                 "iotHost": endpoint,
-                "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % self.__AWS_REGION,
+                "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % AWS.region(),
                 "keepAlive": 600,
                 "ggDaemonPort": 8000,
                 "systemComponentAuthTimeout": 5000
