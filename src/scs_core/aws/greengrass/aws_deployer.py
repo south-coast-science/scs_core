@@ -4,16 +4,15 @@ Created on 11 Jan 2021
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-import boto3
-
-from scs_core.aws.client.access_key import AccessKey
-from scs_core.aws.config.aws import AWS
 from scs_core.aws.greengrass.aws_group import AWSGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSGroupDeployer(object):
+    """
+    classdocs
+    """
 
     BUILDING =      "Building"
     IN_PROGRESS =   "InProgress"
@@ -22,29 +21,12 @@ class AWSGroupDeployer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, group_name):
+    def __init__(self, group_name, client):
         self.__group_name = group_name
-        self.__client = None
+        self.__client = client
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def create_aws_client(self):
-        key = AccessKey.get()
-
-        if key.ok():
-            client = boto3.client(
-                'greengrass',
-                aws_access_key_id=key.id,
-                aws_secret_access_key=key.secret,
-                region_name=AWS.region()
-            )
-
-        else:
-            client = boto3.client('greengrass', region_name=AWS.region())
-
-        self.__client = client
-
 
     def retrieve_deployment_info(self, client):
         aws_group_info = AWSGroup(self.__group_name, client)

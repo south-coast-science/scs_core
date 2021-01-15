@@ -4,12 +4,8 @@ Created on 28 Sep 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-import boto3
-
 from botocore.exceptions import ClientError
 from collections import OrderedDict
-
-from scs_core.aws.config.aws import AWS
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
@@ -24,31 +20,6 @@ class S3Manager(object):
     """
     classdocs
     """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def create_clients(cls, access_key=None):
-        if access_key:
-            client = boto3.client(
-                's3',
-                aws_access_key_id=access_key.key_id,
-                aws_secret_access_key=access_key.secret_key,
-                region_name=AWS.region()
-            )
-            resource_client = boto3.resource(
-                's3',
-                aws_access_key_id=access_key.key_id,
-                aws_secret_access_key=access_key.secret_key,
-                region_name=AWS.region()
-            )
-
-        else:
-            client = boto3.client('s3', region_name=AWS.region())
-            resource_client = boto3.resource('s3', region_name=AWS.region())
-
-        return client, resource_client
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

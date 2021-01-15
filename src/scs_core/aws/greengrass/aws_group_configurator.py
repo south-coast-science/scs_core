@@ -28,6 +28,9 @@ from scs_core.sys.system_id import SystemID
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSGroupConfigurator(PersistentJSONable):
+    """
+    classdocs
+    """
 
     __FILENAME = "aws_group_config.json"
 
