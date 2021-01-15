@@ -157,6 +157,8 @@ class MessageRequest(object):
         fetch_last_written = qsp.get("fetchLastWrittenData", 'false') == 'true'
         checkpoint = qsp.get('checkpoint')
 
+        logging.debug("checkpoint:%s" % checkpoint)
+
         if topic is None or start is None or end is None:
             return None
 
