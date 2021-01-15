@@ -19,6 +19,9 @@ from scs_core.data.json import PersistentJSONable
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSSetup(PersistentJSONable):
+    """
+    classdocs
+    """
 
     __CERTS_PATH = "/greengrass/certs/"
     __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"

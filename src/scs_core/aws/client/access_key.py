@@ -4,6 +4,7 @@ Created on 16 Oct 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
 import os
 import sys
 
@@ -28,9 +29,11 @@ class AccessKey(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def get(cls):
-        key = cls.from_environment()
-        return key if key else cls.from_user()
+    def from_stdin(cls):
+        line = sys.stdin.readline()
+        jdict = json.loads(line)
+
+        return cls.construct_from_jdict(jdict)
 
 
     @classmethod

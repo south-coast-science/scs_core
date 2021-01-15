@@ -28,7 +28,7 @@ class S3Manager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create_clients(cls, access_key=None):
+    def create_clients_x(cls, access_key=None):
         if access_key:
             client = boto3.client(
                 's3',

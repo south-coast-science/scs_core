@@ -21,7 +21,7 @@ class SagemakerTrialManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def create_client(cls, access_key=None):
+    def create_client_x(cls, access_key=None):
         if access_key:
             client = boto3.client(
                 'sagemaker',
