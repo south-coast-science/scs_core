@@ -4,6 +4,7 @@ Created on 16 Oct 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
 import os
 import sys
 
@@ -28,12 +29,11 @@ class AccessKey(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def get(cls):
-        key = cls.from_environment()
-        if key:
-            return key
+    def from_stdin(cls):
+        line = sys.stdin.readline()
+        jdict = json.loads(line)
 
-        return cls.from_user()
+        return cls.construct_from_jdict(jdict)
 
 
     @classmethod
@@ -49,18 +49,18 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
-        print("Enter AWS Access Key ID:", file=sys.stderr)
+        print("Enter AWS Access Key ID: ", end="", file=sys.stderr)
         id = input().strip()
 
-        print("Enter AWS Secret Access Key:", file=sys.stderr)
-        secret = getpass().strip()
+        print("Enter AWS Secret Access Key: ", end="", file=sys.stderr)
+        secret = input().strip()
 
         return cls(id, secret)
 
 
     @staticmethod
     def password_from_user():
-        print("Enter password for AWS Access Key:", file=sys.stderr)
+        print("Enter password for AWS Access Key:", end="", file=sys.stderr)
         return getpass().strip()
 
 
