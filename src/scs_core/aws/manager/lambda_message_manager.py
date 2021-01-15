@@ -9,7 +9,7 @@ Equivalent to cURL:
 curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
-
+import logging
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
@@ -189,8 +189,15 @@ class MessageRequest(object):
         return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
                               self.include_wrapper, self.min_max).params()
 
+    def change_params(self, start, end):
+        return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint, self.include_wrapper,
+                              self.min_max).params()
+
 
     def params(self):
+
+        logging.debug("startTime:%s" % self.start)
+        logging.debug("type:%s" % type(self.start))
         params = {
             'topic': self.topic,
             'startTime': self.start.utc().as_iso8601(include_millis=True),
