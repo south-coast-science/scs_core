@@ -196,8 +196,8 @@ class MessageRequest(object):
 
     def params(self):
 
-        logging.debug("startTime:%s" % self.start)
-        logging.debug("type:%s" % type(self.start))
+        logging.debug("LambdaMessageManager: startTime:%s" % self.start)
+        logging.debug("LambdaMessageManager: type:%s" % type(self.start))
         params = {
             'topic': self.topic,
             'startTime': self.start.utc().as_iso8601(include_millis=True),
