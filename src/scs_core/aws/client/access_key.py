@@ -32,27 +32,27 @@ class AccessKey(PersistentJSONable):
         if cls.__ID_NAME not in os.environ or cls.__SECRET_NAME not in os.environ:
             return None
 
-        key_id = os.environ[cls.__ID_NAME]
-        secret_key = os.environ[cls.__SECRET_NAME]
+        id = os.environ[cls.__ID_NAME]
+        secret = os.environ[cls.__SECRET_NAME]
 
-        return cls(key_id, secret_key)
+        return cls(id, secret)
 
 
     @classmethod
     def from_user(cls):
         print("Enter AWS Access Key ID:", file=sys.stderr)
-        key_id = input()
+        id = input().strip()
 
         print("Enter AWS Secret Access Key:", file=sys.stderr)
-        secret_key = input()
+        secret = getpass().strip()
 
-        return cls(key_id, secret_key)
+        return cls(id, secret)
 
 
     @staticmethod
     def password_from_user():
         print("Enter password for AWS Access Key:", file=sys.stderr)
-        return getpass()
+        return getpass().strip()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,20 +67,26 @@ class AccessKey(PersistentJSONable):
         if not jdict:
             return None
 
-        key_id = jdict.get('key-id')
-        secret_key = jdict.get('secret-key')
+        id = jdict.get('key-id')
+        secret = jdict.get('secret-key')
 
-        return cls(key_id, secret_key)
+        return cls(id, secret)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, key_id, secret_key):
+    def __init__(self, id, secret):
         """
         Constructor
         """
-        self.__key_id = key_id                              # string
-        self.__secret_key = secret_key                      # string
+        self.__id = id                              # string
+        self.__secret = secret                      # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def ok(self):
+        return self.id and self.secret
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -88,8 +94,8 @@ class AccessKey(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['key-id'] = self.key_id
-        jdict['secret-key'] = self.secret_key
+        jdict['key-id'] = self.id
+        jdict['secret-key'] = self.secret
 
         return jdict
 
@@ -97,16 +103,16 @@ class AccessKey(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def key_id(self):
-        return self.__key_id
+    def id(self):
+        return self.__id
 
 
     @property
-    def secret_key(self):
-        return self.__secret_key
+    def secret(self):
+        return self.__secret
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AccessKey:{key_id:%s, secret_key:%s}" %  (self.key_id, self.secret_key)
+        return "AccessKey:{id:%s, secret:%s}" %  (self.id, self.secret)

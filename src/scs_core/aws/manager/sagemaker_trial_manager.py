@@ -8,6 +8,8 @@ Created on 04 Dec 2020
 import sys
 import boto3
 
+from scs_core.aws.config.aws import AWS
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -25,11 +27,11 @@ class SagemakerTrialManager(object):
                 'sagemaker',
                 aws_access_key_id=access_key.key_id,
                 aws_secret_access_key=access_key.secret_key,
-                region_name='us-west-2'
+                region_name=AWS.region()
             )
 
         else:
-            client = boto3.client('sagemaker', region_name='us-west-2')
+            client = boto3.client('sagemaker', region_name=AWS.region())
 
         return client
 

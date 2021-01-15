@@ -6,8 +6,8 @@ Created on 11 Jan 2021
 
 import boto3
 
-from getpass import getpass
-
+from scs_core.aws.client.access_key import AccessKey
+from scs_core.aws.config.aws import AWS
 from scs_core.aws.greengrass.aws_group import AWSGroup
 
 
@@ -19,22 +19,18 @@ class AWSGroupDeployer(object):
 
     @staticmethod
     def create_aws_client():
-        aws_region = "us-west-2"
+        key = AccessKey.from_user()
 
-        access_key_secret = ""
-        access_key_id = input("Enter AWS Access Key ID or leave blank to use environment variables: ")
-        if access_key_id:
-            access_key_secret = getpass(prompt="Enter Secret AWS Access Key: ")
-
-        if access_key_id and access_key_secret:
+        if key.ok():
             client = boto3.client(
                 'greengrass',
-                aws_access_key_id=access_key_id,
-                aws_secret_access_key=access_key_secret,
-                region_name='us-west-2'
+                aws_access_key_id=key.id,
+                aws_secret_access_key=key.secret,
+                region_name=AWS.region()
             )
+
         else:
-            client = boto3.client('greengrass', region_name=aws_region)
+            client = boto3.client('greengrass', region_name=AWS.region())
 
         return client
 
