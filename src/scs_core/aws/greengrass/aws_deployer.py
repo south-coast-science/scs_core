@@ -3,8 +3,6 @@ Created on 11 Jan 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
-import sys
-import time
 
 import boto3
 
@@ -17,10 +15,21 @@ from scs_core.aws.greengrass.aws_group import AWSGroup
 
 class AWSGroupDeployer(object):
 
+    BUILDING =      "Building"
+    IN_PROGRESS =   "InProgress"
+    SUCCESS =       "Success"
+    FAILURE =       "Failure"
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def create_aws_client():
+    def __init__(self, group_name):
+        self.__group_name = group_name
+        self.__client = None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def create_aws_client(self):
         key = AccessKey.get()
 
         if key.ok():
@@ -34,16 +43,8 @@ class AWSGroupDeployer(object):
         else:
             client = boto3.client('greengrass', region_name=AWS.region())
 
-        return client
+        self.__client = client
 
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, group_name):
-        self.__group_name = group_name
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     def retrieve_deployment_info(self, client):
         aws_group_info = AWSGroup(self.__group_name, client)
@@ -55,31 +56,30 @@ class AWSGroupDeployer(object):
         return group_id, group_version_id
 
 
-    def deploy(self, wait):
-        client = self.create_aws_client()
-        group_id, group_version_id = self.retrieve_deployment_info(client)
-        response = client.create_deployment(
+    def deploy(self):
+        group_id, group_version_id = self.retrieve_deployment_info(self.__client)
+
+        response = self.__client.create_deployment(
             DeploymentType="NewDeployment",
             GroupId=group_id,
             GroupVersionId=group_version_id
         )
 
-        if wait:
-            while True:
-                w_response = client.get_deployment_status(
-                    DeploymentId=response.get("DeploymentId"),
-                    GroupId=group_id
-                )
-                status = w_response.get("DeploymentStatus")
-                if status == "Failure":
-                    return "Deployment Failed."
-                if status == "Success":
-                    print(status, file=sys.stderr)
-                    break
-
-                print(status, file=sys.stderr)
-
-                time.sleep(5)
-
         return response
 
+
+    def status(self, response):
+        group_id, _ = self.retrieve_deployment_info(self.__client)
+
+        w_response = self.__client.get_deployment_status(
+            DeploymentId=response.get("DeploymentId"),
+            GroupId=group_id
+        )
+
+        return w_response.get("DeploymentStatus")
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AWSGroupDeployer:{group_name:%s, client:%s}" % (self.__group_name, self.__client)
