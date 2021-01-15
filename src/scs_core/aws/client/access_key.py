@@ -30,10 +30,7 @@ class AccessKey(PersistentJSONable):
     @classmethod
     def get(cls):
         key = cls.from_environment()
-        if key:
-            return key
-
-        return cls.from_user()
+        return key if key else cls.from_user()
 
 
     @classmethod
@@ -49,11 +46,11 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
-        print("Enter AWS Access Key ID:", file=sys.stderr)
+        print("Enter AWS Access Key ID: ", end="", file=sys.stderr)
         id = input().strip()
 
-        print("Enter AWS Secret Access Key:", file=sys.stderr)
-        secret = getpass().strip()
+        print("Enter AWS Secret Access Key: ", end="", file=sys.stderr)
+        secret = input().strip()
 
         return cls(id, secret)
 
