@@ -28,14 +28,20 @@ from scs_core.sys.system_id import SystemID
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSGroupConfigurator(PersistentJSONable):
+
     __FILENAME = "aws_group_config.json"
+
     __CWD = os.path.dirname(os.path.realpath(__file__))
+
     __V1 = __CWD + "/v1"
     __V2 = __CWD + "/v2"
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def persistence_location(cls):
         return cls.aws_dir(), cls.__FILENAME
+
 
     @classmethod
     def construct_from_jdict(cls, jdict):
@@ -47,6 +53,7 @@ class AWSGroupConfigurator(PersistentJSONable):
         ml = jdict.get('ml')
 
         return AWSGroupConfigurator(group_name, unix_group, ml)
+
 
     @classmethod
     def construct(cls, group_name, unix_group):
@@ -140,6 +147,7 @@ class AWSGroupConfigurator(PersistentJSONable):
                 (system_id + "-ml-pm10"))  # Edit resource name
             r_data["InitialVersion"]["Resources"][4]["Id"] = (
                 (system_id + "-ml-no2"))  # Edit resource name
+
         # Send request
         print("Creating resource definition", file=sys.stderr)
         print(r_data, file=sys.stderr)
@@ -222,10 +230,12 @@ class AWSGroupConfigurator(PersistentJSONable):
 
         print("Creating sub definition", file=sys.stderr)
         print(s_data, file=sys.stderr)
+
         # Send request
         response = self.__client.create_subscription_definition(InitialVersion=s_data["InitialVersion"])
         self.__aws_info.append("NewSubscriptionARN", response["LatestVersionArn"])
         print(response, file=sys.stderr)
+
 
     def define_aws_logger(self):
         j_file = os.path.join(self.__V2, 'gg_logger.json')
@@ -281,9 +291,11 @@ class AWSGroupConfigurator(PersistentJSONable):
     def group_name(self):
         return self.__group_name
 
+
     @property
     def unix_group(self):
         return self.__unix_group
+
 
     @property
     def ml(self):
