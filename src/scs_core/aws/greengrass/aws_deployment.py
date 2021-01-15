@@ -19,7 +19,7 @@ class AWSGroupDeployer(object):
 
     @staticmethod
     def create_aws_client():
-        key = AccessKey.from_user()
+        key = AccessKey.get()
 
         if key.ok():
             client = boto3.client(

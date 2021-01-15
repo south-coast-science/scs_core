@@ -28,6 +28,15 @@ class AccessKey(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def get(cls):
+        key = cls.from_environment()
+        if key:
+            return key
+
+        return cls.from_user()
+
+
+    @classmethod
     def from_environment(cls):
         if cls.__ID_NAME not in os.environ or cls.__SECRET_NAME not in os.environ:
             return None
