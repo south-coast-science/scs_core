@@ -9,7 +9,9 @@ Equivalent to cURL:
 curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
-import logging
+
+# import logging
+
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
@@ -30,14 +32,6 @@ class MessageManager(object):
     classdocs
     """
 
-    __TOPIC =               'topic'
-    __START =               'startTime'
-    __END =                 'endTime'
-    __CHECKPOINT =          'checkpoint'
-    __INCLUDE_WRAPPER =     'includeWrapper'
-    __REC_ONLY =            'recOnly'
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, api_key, reporter=None):
@@ -50,24 +44,24 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, end_date, include_wrapper):
+    def find_latest_for_topic(self, topic, end, include_wrapper, rec_only):
         for back_off in (1, 10, 30, 60):                            # total = 91 mins
-            start_date = end_date - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start_date, end_date, False, None, include_wrapper, False))
+            start = end - Timedelta(seconds=back_off)
+            documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only, False))
 
             if documents:
                 return documents[-1]
 
-            end_date = start_date
+            end = start
 
         return None
 
 
-    def find_for_topic(self, topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, _rec_only):
-        request_path = '/default/AWSAggregate/'
-        # request_path = '/topicMessages'
+    def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max):
+        # request_path = '/default/AWSAggregate/'
+        request_path = '/topicMessages'
 
-        params = MessageRequest(topic, start_date, end_date, fetch_last, checkpoint, include_wrapper, False).params()
+        params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max).params()
         # print("params: %s" % params)
 
         # request...
@@ -86,7 +80,7 @@ class MessageManager(object):
 
                 # report...
                 if self.__reporter:
-                    self.__reporter.print(block.start(), len(block))
+                    self.__reporter.print(None, len(block))     # block.start()
 
                 # next request...
                 if block.next_url is None:
@@ -96,7 +90,7 @@ class MessageManager(object):
                 next_params = parse_qs(next_url.query)
 
                 # noinspection PyTypeChecker
-                params[self.__START] = next_params[self.__START][0]
+                params[MessageRequest.START] = next_params[MessageRequest.START][0]
 
         finally:
             self.__rest_client.close()
@@ -114,6 +108,15 @@ class MessageRequest(object):
     """
     classdocs
     """
+
+    TOPIC = 'topic'
+    START = 'startTime'
+    END = 'endTime'
+    FETCH_LAST_WRITTEN = 'fetchLastWrittenData'
+    CHECKPOINT = 'checkpoint'
+    INCLUDE_WRAPPER = 'includeWrapper'
+    REC_ONLY = 'recOnly'
+    MIN_MAX = 'minMax'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -148,14 +151,10 @@ class MessageRequest(object):
         if not qsp:
             return None
 
-        topic = qsp.get('topic')
-        start = LocalizedDatetime.construct_from_iso8601(qsp.get('startTime'))
-        end = LocalizedDatetime.construct_from_iso8601(qsp.get('endTime'))
-
-        include_wrapper = qsp.get("includeWrapper", 'false') == 'true'
-        min_max = qsp.get("minMax", 'false') == 'true'
-        fetch_last_written = qsp.get("fetchLastWrittenData", 'false') == 'true'
-        checkpoint = qsp.get('checkpoint')
+        # compulsory...
+        topic = qsp.get(cls.TOPIC)
+        start = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.START))
+        end = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.END))
 
         if topic is None or start is None or end is None:
             return None
@@ -163,54 +162,66 @@ class MessageRequest(object):
         if start > end:
             return None
 
-        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, min_max)
+        # optional...
+        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false') == 'true'
+        checkpoint = qsp.get(cls.CHECKPOINT)
+        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false') == 'true'
+        rec_only = qsp.get(cls.REC_ONLY, 'false') == 'true'
+        min_max = qsp.get(cls.MIN_MAX, 'false') == 'true'
+
+        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, min_max):
+    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max):
         """
         Constructor
         """
-        self.__topic = topic                                # string
-        self.__start = start                                # LocalizedDatetime
-        self.__end = end                                    # LocalizedDatetime
+        self.__topic = topic                                    # string
+        self.__start = start                                    # LocalizedDatetime
+        self.__end = end                                        # LocalizedDatetime
 
-        self.__fetch_last_written = fetch_last_written      # bool or None
-
-        self.__checkpoint = checkpoint                      # string
-        self.__include_wrapper = bool(include_wrapper)      # bool
-        self.__min_max = bool(min_max)                      # bool
+        self.__fetch_last_written = bool(fetch_last_written)    # bool
+        self.__checkpoint = checkpoint                          # string
+        self.__include_wrapper = bool(include_wrapper)          # bool
+        self.__rec_only = bool(rec_only)                        # bool
+        self.__min_max = bool(min_max)                          # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, start):
         return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.min_max).params()
+                              self.include_wrapper, self.rec_only, self.min_max).params()
+
 
     def change_params(self, start, end):
-        return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint, self.include_wrapper,
-                              self.min_max).params()
+        return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint,
+                              self.include_wrapper, self.rec_only, self.min_max).params()
 
 
     def params(self):
-
-        logging.debug("startTime:%s" % self.start)
-        logging.debug("type:%s" % type(self.start))
         params = {
-            'topic': self.topic,
-            'startTime': self.start.utc().as_iso8601(include_millis=True),
-            'endTime': self.end.utc().as_iso8601(include_millis=True),
-            'includeWrapper': str(self.include_wrapper).lower(),
-            'minMax': str(self.min_max).lower(),
+            self.TOPIC: self.topic,
+            self.START: self.start.utc().as_iso8601(include_millis=True),
+            self.END: self.end.utc().as_iso8601(include_millis=True)
         }
 
-        if self.checkpoint is not None:
-            params['checkpoint'] =  self.__checkpoint
-
         if self.fetch_last_written:
-            params['fetchLastWrittenData'] =  str(self.fetch_last_written).lower()
+            params[self.FETCH_LAST_WRITTEN] = 'true'
+
+        if self.checkpoint is not None:
+            params[self.CHECKPOINT] = self.checkpoint
+
+        if self.include_wrapper:
+            params[self.INCLUDE_WRAPPER] = 'true'
+
+        if self.rec_only:
+            params[self.REC_ONLY] = 'true'
+
+        if self.min_max:
+            params[self.MIN_MAX] = 'true'
 
         return params
 
@@ -256,6 +267,11 @@ class MessageRequest(object):
 
 
     @property
+    def rec_only(self):
+        return self.__rec_only
+
+
+    @property
     def min_max(self):
         return self.__min_max
 
@@ -264,9 +280,9 @@ class MessageRequest(object):
 
     def __str__(self, *args, **kwargs):
         return "MessageRequest:{topic:%s, start:%s, end:%s, fetch_last_written:%s, checkpoint:%s, " \
-               "include_wrapper:%s, min_max:%s}" % \
+               "include_wrapper:%s, rec_only:%s, min_max:%s}" % \
                (self.topic, self.start, self.end, self.fetch_last_written, self.__checkpoint,
-                self.include_wrapper, self.min_max)
+                self.include_wrapper, self.rec_only, self.min_max)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -280,6 +296,8 @@ class MessageResponse(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("jdict: %s" % jdict)
+
         if not jdict:
             return None
 
@@ -289,7 +307,8 @@ class MessageResponse(JSONable):
 
         items = []
         for msg_jdict in jdict.get('Items'):
-            item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
+            # item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
+            item = msg_jdict['payload']
             items.append(item)
 
         next_url = jdict.get('next')
