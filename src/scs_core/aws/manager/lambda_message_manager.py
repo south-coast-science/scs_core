@@ -364,14 +364,20 @@ class MessageResponse(JSONable):
         if not self.items:
             return None
 
-        return self.items[0].get('rec')
+        item = self.items[0]
+        payload = item['payload'] if 'payload' in item else item
+
+        return payload.get('rec')
 
 
     def end(self):
         if not self.items:
             return None
 
-        return self.items[len(self) - 1].get('rec')
+        item = self.items[len(self) - 1]
+        payload = item['payload'] if 'payload' in item else item
+
+        return payload.get('rec')
 
 
     # ----------------------------------------------------------------------------------------------------------------
