@@ -58,8 +58,8 @@ class MessageManager(object):
 
 
     def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max):
-        # request_path = '/default/AWSAggregate/'
-        request_path = '/topicMessages'              # Paul lambda
+        request_path = '/default/AWSAggregate/'
+        # request_path = '/topicMessages'              # Paul lambda
 
         params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max).params()
 
@@ -79,8 +79,8 @@ class MessageManager(object):
 
                 # report...
                 if self.__reporter:
-                    # self.__reporter.print(block.start(), len(block))
-                    self.__reporter.print(None, len(block))     # Paul lambda
+                    self.__reporter.print(block.start(), len(block))
+                    # self.__reporter.print(None, len(block))     # Paul lambda
 
                 # next request...
                 if block.next_url is None:
@@ -305,8 +305,8 @@ class MessageResponse(JSONable):
 
         items = []
         for msg_jdict in jdict.get('Items'):
-            # item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
-            item = msg_jdict['payload']       # Paul lambda
+            item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
+            # item = msg_jdict['payload']       # Paul lambda
             items.append(item)
 
         next_url = jdict.get('next')
