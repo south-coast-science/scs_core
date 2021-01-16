@@ -79,8 +79,8 @@ class MessageManager(object):
 
                 # report...
                 if self.__reporter:
-                    self.__reporter.print(block.start(), len(block))
-                    # self.__reporter.print(None, len(block))     # Paul lambda
+                    # self.__reporter.print(block.start(), len(block))
+                    self.__reporter.print(None, len(block))     # Paul lambda
 
                 # next request...
                 if block.next_url is None:
