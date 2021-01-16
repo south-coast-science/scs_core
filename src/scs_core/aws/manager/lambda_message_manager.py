@@ -45,7 +45,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_latest_for_topic(self, topic, end, include_wrapper, rec_only):
-        for back_off in (1, 10, 30, 60):                            # total = 91 mins
+        for back_off in (1, 10, 30, 60):
             start = end - Timedelta(seconds=back_off)
             documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only, False))
 
@@ -329,7 +329,6 @@ class MessageResponse(JSONable):
         self.__next_url = next_url                  # URL string
 
 
-
     def __len__(self):
         return len(self.items)
 
@@ -365,9 +364,11 @@ class MessageResponse(JSONable):
             return None
 
         item = self.items[0]
-        payload = item['payload'] if 'payload' in item else item
 
-        return payload.get('rec')
+        try:
+            return item['rec']
+        except TypeError:
+            return item.payload['rec']
 
 
     def end(self):
@@ -375,9 +376,11 @@ class MessageResponse(JSONable):
             return None
 
         item = self.items[len(self) - 1]
-        payload = item['payload'] if 'payload' in item else item
 
-        return payload.get('rec')
+        try:
+            return item['rec']
+        except TypeError:
+            return item.payload['rec']
 
 
     # ----------------------------------------------------------------------------------------------------------------
