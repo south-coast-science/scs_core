@@ -37,7 +37,7 @@ class Publication(JSONable):
         Constructor
         """
         self.__topic = topic                    # string
-        self.__payload = payload                # string
+        self.__payload = payload                # dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ class ReceivedPublication(JSONable):
         Constructor
         """
         self.__received = received              # LocalizedDatetime
-        self.__message = message                # string
+        self.__message = message                # Publication or dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
