@@ -156,18 +156,12 @@ class MessageRequest(object):
         start = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.START))
         end = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.END))
 
-        if topic is None or start is None or end is None:
-            return None
-
-        if start > end:
-            return None
-
         # optional...
-        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false') == 'true'
+        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false').lower() == 'true'
         checkpoint = qsp.get(cls.CHECKPOINT)
-        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false') == 'true'
-        rec_only = qsp.get(cls.REC_ONLY, 'false') == 'true'
-        min_max = qsp.get(cls.MIN_MAX, 'false') == 'true'
+        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false').lower() == 'true'
+        rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
+        min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
 
         return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max)
 
@@ -187,6 +181,30 @@ class MessageRequest(object):
         self.__include_wrapper = bool(include_wrapper)          # bool
         self.__rec_only = bool(rec_only)                        # bool
         self.__min_max = bool(min_max)                          # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        if self.topic is None or self.start is None or self.end is None:
+            return False
+
+        if self.start > self.end:
+            return False
+
+        if self.min_max and self.checkpoint is None:
+            return False
+
+        if self.include_wrapper and self.checkpoint is not None:
+            return False
+
+        if self.rec_only and self.fetch_last_written:
+            return False
+
+        if self.rec_only and self.min_max:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
