@@ -72,11 +72,13 @@ class GasBaseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def offsets(self, gases):
-        offsets = OrderedDict()
+        offsets = {}
 
         for gas in gases:
             baseline = self.sensor_baseline(gas)
             offsets[gas] = 0 if baseline is None else baseline.offset
+
+        return offsets
 
 
     def sensor_baseline(self, gas):
