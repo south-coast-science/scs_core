@@ -1,0 +1,96 @@
+"""
+Created on 1 Mar 2017
+
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example JSON:
+"""
+
+from collections import OrderedDict
+
+from scs_core.data.json import PersistentJSONable
+from scs_core.data.str import Str
+
+from scs_core.gas.sensor_baseline import SensorBaseline
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class GasBaseline(PersistentJSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __FILENAME =    "gas_baseline.json"
+
+    @classmethod
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return cls({})
+
+        sensor_baselines = {}
+
+        for gas, baseline_jdict in jdict.items():
+            sensor_baselines[gas] = SensorBaseline.construct_from_jdict(baseline_jdict)
+
+        return cls(sensor_baselines)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, sensor_baselines):
+        """
+        Constructor
+        """
+        self.__sensor_baselines = sensor_baselines        # dict of gas: SensorBaseline
+
+
+    def __len__(self):
+        return len(self.__sensor_baselines)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        for gas in sorted(self.__sensor_baselines.keys()):
+            jdict[gas] = self.__sensor_baselines[gas]
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def offsets(self, gases):
+        offsets = OrderedDict()
+
+        for gas in gases:
+            baseline = self.sensor_baseline(gas)
+            offsets[gas] = 0 if baseline is None else baseline.offset
+
+
+    def sensor_baseline(self, gas):
+        try:
+            return self.__sensor_baselines[gas]
+        except KeyError:
+            return None
+
+
+    def set_sensor_baseline(self, gas, sensor_baseline):
+        self.__sensor_baselines[gas] = sensor_baseline
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "GasBaseline:{sensor_baselines:%s}" % Str.collection(self.__sensor_baselines)
