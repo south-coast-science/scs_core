@@ -63,7 +63,7 @@ class AFECalib(PersistentJSONable):
     ALPHASENSE_HEADER =     {"Accept": "application/json"}
 
     TEST_LOAD = '''
-                {"serial_number": "1", "type": "test-load", "calibrated_on": null, "dispatched_on": null, 
+                {"serial_number": "1", "type": "test-load", "calibrated_on": "2020-01-01", "dispatched_on": null, 
                 "pt1000_v20": 1.0, 
 
                 "sn1": {"serial_number": "01", "sensor_type": "SN1", "we_electronic_zero_mv": 1, 
