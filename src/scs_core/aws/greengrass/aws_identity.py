@@ -95,7 +95,7 @@ class AWSSetup(PersistentJSONable):
             thingName=self.__core_name,
             principal=cert_arn,
         )
-        print("Core attached", file=sys.stderr)
+        print("Cert attached to core", file=sys.stderr)
 
         # Create policy
         policy_doc = self.return_default_policy()
