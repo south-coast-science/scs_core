@@ -4,6 +4,8 @@ Created on 1 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
+{"CO": {"calibrated-on": "2021-01-19T10:07:27Z", "offset": 2, "env": {"hmd": 41.5, "tmp": 22.1, "pA": null}},
+"NO2": {"calibrated-on": "2021-01-19T11:07:27Z", "offset": 1, "env": {"hmd": 41.5, "tmp": 22.1, "pA": null}}}
 """
 
 from collections import OrderedDict
@@ -51,7 +53,7 @@ class GasBaseline(PersistentJSONable):
         """
         Constructor
         """
-        self.__sensor_baselines = sensor_baselines        # dict of gas: SensorBaseline
+        self.__sensor_baselines = sensor_baselines          # dict of gas: SensorBaseline
 
 
     def __len__(self):
@@ -71,14 +73,17 @@ class GasBaseline(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def gases(self):
+        return self.__sensor_baselines.keys()
+
+
     def offsets(self, gases):
-        offsets = {}
+        return {gas: self.sensor_offset(gas) for gas in gases}
 
-        for gas in gases:
-            baseline = self.sensor_baseline(gas)
-            offsets[gas] = 0 if baseline is None else baseline.offset
 
-        return offsets
+    def sensor_offset(self, gas):
+        baseline = self.sensor_baseline(gas)
+        return 0 if baseline is None else baseline.offset
 
 
     def sensor_baseline(self, gas):
