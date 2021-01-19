@@ -45,7 +45,7 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_latest_for_topic(self, topic, end, include_wrapper, rec_only):
-        for back_off in (1, 10, 30, 60):                            # total = 91 mins
+        for back_off in (1, 10, 30, 60):
             start = end - Timedelta(seconds=back_off)
             documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only, False))
 
@@ -58,8 +58,8 @@ class MessageManager(object):
 
 
     def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max):
-        # request_path = '/default/AWSAggregate/'
-        request_path = '/topicMessages'              # Paul lambda
+        request_path = '/default/AWSAggregate/'
+        # request_path = '/topicMessages'              # Paul lambda
 
         params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max).params()
 
@@ -79,8 +79,8 @@ class MessageManager(object):
 
                 # report...
                 if self.__reporter:
-                    # self.__reporter.print(block.start(), len(block))
-                    self.__reporter.print(None, len(block))     # Paul lambda
+                    self.__reporter.print(block.start(), len(block))
+                    # self.__reporter.print(None, len(block))     # Paul lambda
 
                 # next request...
                 if block.next_url is None:
@@ -156,18 +156,12 @@ class MessageRequest(object):
         start = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.START))
         end = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.END))
 
-        if topic is None or start is None or end is None:
-            return None
-
-        if start > end:
-            return None
-
         # optional...
-        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false') == 'true'
+        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false').lower() == 'true'
         checkpoint = qsp.get(cls.CHECKPOINT)
-        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false') == 'true'
-        rec_only = qsp.get(cls.REC_ONLY, 'false') == 'true'
-        min_max = qsp.get(cls.MIN_MAX, 'false') == 'true'
+        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false').lower() == 'true'
+        rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
+        min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
 
         return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max)
 
@@ -187,6 +181,30 @@ class MessageRequest(object):
         self.__include_wrapper = bool(include_wrapper)          # bool
         self.__rec_only = bool(rec_only)                        # bool
         self.__min_max = bool(min_max)                          # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        if self.topic is None or self.start is None or self.end is None:
+            return False
+
+        if self.start > self.end:
+            return False
+
+        if self.min_max and self.checkpoint is None:
+            return False
+
+        if self.include_wrapper and self.checkpoint is not None:
+            return False
+
+        if self.rec_only and self.fetch_last_written:
+            return False
+
+        if self.rec_only and self.min_max:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -305,8 +323,8 @@ class MessageResponse(JSONable):
 
         items = []
         for msg_jdict in jdict.get('Items'):
-            # item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
-            item = msg_jdict['payload']       # Paul lambda
+            item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
+            # item = msg_jdict['payload']       # Paul lambda
             items.append(item)
 
         next_url = jdict.get('next')
@@ -327,7 +345,6 @@ class MessageResponse(JSONable):
         self.__items = items                        # list of Message
 
         self.__next_url = next_url                  # URL string
-
 
 
     def __len__(self):
@@ -364,14 +381,24 @@ class MessageResponse(JSONable):
         if not self.items:
             return None
 
-        return self.items[0].get('rec')
+        item = self.items[0]
+
+        try:
+            return item['rec']
+        except TypeError:
+            return item.payload['rec']
 
 
     def end(self):
         if not self.items:
             return None
 
-        return self.items[len(self) - 1].get('rec')
+        item = self.items[len(self) - 1]
+
+        try:
+            return item['rec']
+        except TypeError:
+            return item.payload['rec']
 
 
     # ----------------------------------------------------------------------------------------------------------------
