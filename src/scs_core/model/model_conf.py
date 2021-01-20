@@ -100,6 +100,10 @@ class ModelConf(ABC, PersistentJSONable):
         return self.__model_interface
 
 
+    def species(self):
+        return self.resource_names.keys()
+
+
     @property
     def resource_names(self):
         return self.__resource_names

@@ -64,7 +64,6 @@ class AccessKey(PersistentJSONable):
 
     @staticmethod
     def password_from_user():
-        print("Enter password for AWS Access Key:", end="", file=sys.stderr)
         return getpass().strip()
 
 
