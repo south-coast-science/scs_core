@@ -49,7 +49,7 @@ class SensorBaseline(JSONable):
         """
         self.__calibrated_on = calibrated_on            # LocalizedDatetime
 
-        self.__offset = Datum.int(offset)               # int                       ppb
+        self.__offset = int(offset)                     # int                       ppb
         self.__environment = environment                # BaselineEnvironment
 
 
