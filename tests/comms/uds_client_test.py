@@ -13,6 +13,7 @@ from scs_core.comms.uds_client import UDSClient
 
 from scs_core.sys.logging import Logging
 
+
 # --------------------------------------------------------------------------------------------------------------------
 # resources...
 
