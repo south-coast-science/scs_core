@@ -10,7 +10,7 @@ import os
 import time
 
 from scs_core.comms.uds_client import UDSClient
-
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.sys.logging import Logging
 
 
@@ -35,7 +35,7 @@ try:
     print(client)
 
     while True:
-        client.request('hello')
+        client.request('%s: hello' % LocalizedDatetime.now().as_iso8601())
         print('requested')
 
         message = client.wait_for_response()

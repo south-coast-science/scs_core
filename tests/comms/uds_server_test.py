@@ -9,7 +9,6 @@ Created on 14 Aug 2020
 import os
 
 from scs_core.comms.uds_server import UDSServer
-
 from scs_core.sys.logging import Logging
 
 
