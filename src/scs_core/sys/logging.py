@@ -20,14 +20,19 @@ class Logging(object):
 
     __NAME = None
 
+    __MULTI_FORMAT = '%(name)s: %(message)s'
+    __SINGLE_FORMAT = '%(levelname)s: %(message)s'
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr):
+    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr, exclusive=False):
         cls.__NAME = name
 
+        fmt = cls.__SINGLE_FORMAT if exclusive else cls.__MULTI_FORMAT
         level = logging.INFO if verbose else level
-        logging.basicConfig(format='%(name)s: %(message)s', level=level, stream=stream)
+
+        logging.basicConfig(format=fmt, level=level, stream=stream)
 
 
     @classmethod
