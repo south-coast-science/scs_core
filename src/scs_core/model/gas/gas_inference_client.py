@@ -38,7 +38,7 @@ class GasInferenceClient(object):
         self._uds_client.request(json.dumps(None))
         self._uds_client.wait_for_response()
 
-        self.__logger.info('connected')
+        self.__logger.info('connected to server')
 
 
     def open(self):
