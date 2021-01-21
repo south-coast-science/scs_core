@@ -5,7 +5,6 @@ Created on 16 Apr 2018
 """
 
 import csv
-import sys
 import time
 
 from scs_core.csv.csv_dict import CSVDict
@@ -13,6 +12,7 @@ from scs_core.csv.csv_dict import CSVDict
 from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -189,6 +189,8 @@ class CSVSpaceManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, host, log, delete_oldest, min_free_space, check_interval):
+        self.__logger = Logging.getLogger()
+
         self.__host = host                                          # Host
         self.__log = log                                            # CSVLog
         self.__delete_oldest = delete_oldest                        # bool
@@ -218,7 +220,7 @@ class CSVSpaceManager(object):
 
         # stop on no-delete...
         if not self.__delete_oldest:
-            print("CSVSpaceManager.__clear_space: volume full.", file=sys.stderr)
+            self.__logger.error("CSVSpaceManager.__clear_space: volume full.")
             return False
 
         # delete until enough free...
@@ -226,7 +228,7 @@ class CSVSpaceManager(object):
             success = self.__delete_oldest_log()
 
             if not success:
-                print("CSVSpaceManager.__clear_space: delete failed.", file=sys.stderr)
+                self.__logger.error("CSVSpaceManager.__clear_space: delete failed.")
                 return False
 
         return True
@@ -251,7 +253,7 @@ class CSVSpaceManager(object):
 
             for file in files:
                 if not file.is_directory and file.has_suffix('csv'):
-                    print("CSVSpaceManager.__delete_oldest_log: deleting: %s" % file, file=sys.stderr)
+                    self.__logger.error("CSVSpaceManager.__delete_oldest_log: deleting: %s" % file)
 
                     success = file.delete()
 

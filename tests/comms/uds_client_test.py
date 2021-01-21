@@ -6,26 +6,24 @@ Created on 14 Aug 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import logging
 import os
-import sys
 import time
 
 from scs_core.comms.uds_client import UDSClient
 
+from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 # resources...
 
 # logging...
-logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = Logging.config(__name__, verbose=True)
 
 # client...
 location = os.getcwd()
 path = os.path.join(location, 'lambda-model.uds')
 
-client = UDSClient(path, logger=logger)
+client = UDSClient(path)
 
 
 # --------------------------------------------------------------------------------------------------------------------
