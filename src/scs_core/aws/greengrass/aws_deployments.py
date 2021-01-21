@@ -2,10 +2,27 @@
 Created on 21 Jan 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
+
+Allows the user to view deployment information for a specific group, or all groups, in the account which
+the auth keys are held for.
+
+Examples:
+./aws_deployments.py -a -i2
+./aws_deployments.py -g scs-bbe-532-group -i3
+
+Example output:
+{
+  "group_name": "scs-bbe-532-group",
+  "created_at": "2020-09-03T12:20:59.845Z",
+  "deployment_type": "NewDeployment",
+  "deployment_id": "41676649-b8d4-4bce-85e3-93c142a7975b"
+}
+
 """
 from scs_core.aws.greengrass.aws_group import AWSGroup
 from scs_core.aws.greengrass.deployment_report import DeploymentReport
 
+# --------------------------------------------------------------------------------------------------------------------
 
 class AWSDeployments(object):
 
