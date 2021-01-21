@@ -9,7 +9,6 @@ https://stackoverflow.com/questions/51700960/runtimeerror-generator-raised-stopi
 import sys
 import time
 
-from abc import ABC, abstractmethod
 from collections import OrderedDict
 from multiprocessing import Manager
 
@@ -20,6 +19,7 @@ from scs_core.csv.csv_reader import CSVReader
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.tail import Tail
 
 
@@ -46,10 +46,12 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, queue_builder, nullify=False, reporter=None):
+    def __init__(self, queue_builder, nullify=False):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+
         manager = Manager()
 
         SynchronisedProcess.__init__(self, manager.list())
@@ -61,7 +63,6 @@ class CSVLogReader(SynchronisedProcess):
 
         self.__queue_builder = queue_builder                                    # CSVLogQueueBuilder
         self.__nullify = bool(nullify)                                          # bool
-        self.__reporter = reporter                                              # CSVLogReporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,8 +72,7 @@ class CSVLogReader(SynchronisedProcess):
             # build queue...
             timeline_start, cursors = self.__queue_builder.find_cursors()       # waits indefinitely for network
 
-            if self.__reporter:
-                self.__reporter.timeline_start(timeline_start)
+            self.__logger.info("timeline_start: %s" % timeline_start)
 
             with self._lock:
                 queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
@@ -95,14 +95,12 @@ class CSVLogReader(SynchronisedProcess):
                         time.sleep(self.__IDLE_TIME)
                         continue
 
-                if self.__reporter:
-                    self.__reporter.opening(cursor)
+                self.__logger.info("reading: %s" % cursor)
 
                 # process...
                 read_count = self.__tail(cursor) if cursor.is_live else self.__read(cursor)
 
-                if self.__reporter:
-                    self.__reporter.closing(cursor, read_count)
+                self.__logger.info("closing: %s: read: %s" % (cursor, read_count))
 
                 # remove...
                 with self._lock:
@@ -111,7 +109,7 @@ class CSVLogReader(SynchronisedProcess):
                     queue.as_list(self._value)
 
         except FileNotFoundError as ex:
-            self.__reporter.exception(ex)
+            self.__logger.error(ex)
 
         except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -143,8 +141,7 @@ class CSVLogReader(SynchronisedProcess):
             pass                                # Python 3.7 response to StopIteration
 
         except TimeoutError:
-            if self.__reporter:
-                self.__reporter.timeout(cursor, reader.read_count)
+            self.__logger.error("TimeoutError: %s: read: %s" % (cursor, reader.read_count))
 
         finally:
             reader.close()
@@ -174,8 +171,8 @@ class CSVLogReader(SynchronisedProcess):
         with self._lock:
             queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
 
-        return "CSVLogReader:{queue_builder:%s, queue:%s, nullify:%s, reporter:%s}" % \
-               (self.__queue_builder, queue, self.__nullify, self.__reporter)
+        return "CSVLogReader:{queue_builder:%s, queue:%s, nullify:%s}" % \
+               (self.__queue_builder, queue, self.__nullify)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -224,38 +221,3 @@ class CSVLogQueueBuilder(object):
     def __str__(self):
         return "CSVLogQueueBuilder:{topic_name:%s, topic_path:%s, byline_manager:%s, system_id:%s, conf:%s}" % \
                (self.__topic_name, self.__topic_path, self.__byline_manager, self.__system_id, self.__conf)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class CSVLogReporter(ABC):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
-    def opening(self, cursor):
-        pass
-
-
-    @abstractmethod
-    def timeline_start(self, timeline_start):
-        pass
-
-
-    @abstractmethod
-    def closing(self, cursor, read_count):
-        pass
-
-
-    @abstractmethod
-    def timeout(self, cursor, read_count):
-        pass
-
-
-    @abstractmethod
-    def exception(self, ex):
-        pass
-

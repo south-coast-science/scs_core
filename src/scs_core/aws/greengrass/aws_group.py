@@ -127,10 +127,10 @@ class AWSGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_function_definition(self):
-
         if not self.__group_info.has_path("FunctionDefinitionVersionArn"):
             print("Group missing function definition version", file=sys.stderr)
             return
+
         if not self.__group_info.node("FunctionDefinitionVersionArn"):
             print("Group missing function definition version", file=sys.stderr)
             return
@@ -140,6 +140,7 @@ class AWSGroup(JSONable):
             FunctionDefinitionId=arn[0],
             FunctionDefinitionVersionId=arn[1]
         )
+
         self.__verbose_group_info.append("Function Definition Response", response)
 
 

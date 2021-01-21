@@ -8,6 +8,8 @@ import time
 
 from scs_host.comms.domain_socket import DomainSocket
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,12 +24,13 @@ class UDSClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, logger=None):
+    def __init__(self, path):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+
         self.__path = path                          # string
-        self.__logger = logger                      # Logger
 
         self.__uds = DomainSocket(path)             # DomainSocket
         self.__disconnecting = False                # bool
@@ -48,7 +51,7 @@ class UDSClient(object):
                     return                          # don't wait forever if terminating
 
                 if not reported_waiting:
-                    self.log('waiting for server')
+                    self.__logger.info('waiting for server')
                     reported_waiting = True
 
                 time.sleep(self._RECONNECT_WAIT)
@@ -67,7 +70,7 @@ class UDSClient(object):
         self.__disconnecting = False
         self.__uds.connect()
 
-        self.log('opened')
+        self.__logger.info('opened UDS')
 
 
     def close(self):
@@ -75,14 +78,7 @@ class UDSClient(object):
         self.request(self.EOS)
         self.__uds.close()
 
-        self.log('closed')
-
-
-    def log(self, message):
-        if not self.__logger:
-            return
-
-        self.__logger.info("UDSClient(%s): %s" % (self.__uds.path, message))
+        self.__logger.info('closed UDS')
 
 
     # ----------------------------------------------------------------------------------------------------------------

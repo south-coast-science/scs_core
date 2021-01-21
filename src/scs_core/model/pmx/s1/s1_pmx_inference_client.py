@@ -16,8 +16,6 @@ example request:
 """
 
 import json
-import logging
-import sys
 
 from scs_core.comms.uds_client import UDSClient
 
@@ -36,12 +34,8 @@ class S1PMxInferenceClient(PMxInferenceClient):
 
     @classmethod
     def construct(cls, inference_uds_path):
-        # logger...
-        logger = logging.getLogger(__name__)
-        logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-
         # UDS...
-        uds_client = UDSClient(inference_uds_path, logger)
+        uds_client = UDSClient(inference_uds_path)
 
         return cls(uds_client)
 

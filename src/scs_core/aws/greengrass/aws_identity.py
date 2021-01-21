@@ -7,13 +7,13 @@ Created on 09 Oct 2020
 import json
 import os
 import shutil
-import sys
 
 from collections import OrderedDict
 from urllib.request import urlopen
 
 from scs_core.aws.config.aws import AWS
 from scs_core.data.json import PersistentJSONable
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -52,6 +52,8 @@ class AWSSetup(PersistentJSONable):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+
         self.__iot_client = iot_client
         self.__gg_client = gg_client
         self.__core_name = core_name
@@ -83,11 +85,13 @@ class AWSSetup(PersistentJSONable):
         res = self.__iot_client.create_thing(thingName=self.__core_name)
         self.__thing_arn = res["thingArn"]
         self.__thing_id = res["thingId"]
-        print("Core created", file=sys.stderr)
+
+        self.__logger.info("Core created")
 
         # Create certs
         self.__certificate = self.__iot_client.create_keys_and_certificate(setAsActive=True)
-        print("Cert created", file=sys.stderr)
+
+        self.__logger.info("Cert created")
 
         # Attach cert to core
         cert_arn = self.__certificate["certificateArn"]
@@ -95,7 +99,8 @@ class AWSSetup(PersistentJSONable):
             thingName=self.__core_name,
             principal=cert_arn,
         )
-        print("Cert attached to core", file=sys.stderr)
+
+        self.__logger.info("Cert attached to core")
 
         # Create policy
         policy_doc = self.return_default_policy()
@@ -105,15 +110,18 @@ class AWSSetup(PersistentJSONable):
             policyName=policy_name,
             policyDocument=json.dumps(policy_doc)
         )
-        print("Policy created", file=sys.stderr)
-        print(json.dumps(policy_doc), file=sys.stderr)
+
+        self.__logger.info("Policy created")
+        self.__logger.info(json.dumps(policy_doc))
+
         # Attach policy
         # associate iot policy with core cert
         self.__iot_client.attach_policy(
             policyName=policy_name,
             target=cert_arn,
         )
-        print("Policy attached to cert", file=sys.stderr)
+
+        self.__logger.info("Policy attached to cert")
 
 
     def create_core(self):
@@ -132,8 +140,9 @@ class AWSSetup(PersistentJSONable):
             InitialVersion=initial_core_definition_version,
         )
         self.__latest_core_version_arn = res['LatestVersionArn']
-        print("Core created", file=sys.stderr)
-        print(initial_core_definition_version, file=sys.stderr)
+
+        self.__logger.info("Core created")
+        self.__logger.info(initial_core_definition_version)
 
 
     def create_group(self):
@@ -147,8 +156,9 @@ class AWSSetup(PersistentJSONable):
             Name=self.__group_name,
         )
         self.__latest_group_version_arn = res['LatestVersionArn']
-        print("Group definition created", file=sys.stderr)
-        print(initial_group_definition_version, file=sys.stderr)
+
+        self.__logger.info("Group definition created")
+        self.__logger.info(initial_group_definition_version)
 
 
     def create_logger(self):
@@ -174,7 +184,8 @@ class AWSSetup(PersistentJSONable):
             Name='Logger_definition_' + self.__group_name,
         )
         self.__latest_logger_version_arn = res['LatestVersionArn']
-        print("Logger created", file=sys.stderr)
+
+        self.__logger.info("Logger created")
 
 
     def persist_certs(self):
@@ -190,7 +201,7 @@ class AWSSetup(PersistentJSONable):
         certs_dir = self.__CERTS_PATH
         if os.path.isdir(certs_dir):
             shutil.rmtree(certs_dir)  # remove dir and all contains
-            print("Removed old keys", file=sys.stderr)
+            self.__logger.info("Removed old keys")
 
         os.mkdir(certs_dir)
 
@@ -201,17 +212,20 @@ class AWSSetup(PersistentJSONable):
         f = open(certs_dir + "/" + certificate_path, "w")
         f.write(self.__certificate["certificatePem"])
         f.close()
-        print("Cert saved", file=sys.stderr)
+
+        self.__logger.info("Cert saved")
 
         f = open(certs_dir + "/" + private_path, "w")
         f.write(keys["PrivateKey"])
         f.close()
-        print("Private key saved", file=sys.stderr)
+
+        self.__logger.info("Private key saved")
 
         f = open(certs_dir + "/" + public_path, "w")
         f.write(keys["PublicKey"])
         f.close()
-        print("Public key saved", file=sys.stderr)
+
+        self.__logger.info("Public key saved")
 
 
     def update_config_file(self):
@@ -222,7 +236,7 @@ class AWSSetup(PersistentJSONable):
         config_dir = "/greengrass/config"
         if os.path.isdir(config_dir):
             shutil.rmtree(config_dir)  # remove dir and all contains
-            print("Removed old config", file=sys.stderr)
+            self.__logger.info("Removed old config")
 
         os.mkdir(config_dir)
         default_config = {
@@ -261,8 +275,9 @@ class AWSSetup(PersistentJSONable):
         f = open(config_dir + "/config.json", "w")
         f.write(json.dumps(default_config))
         f.close()
-        print("Config saved", file=sys.stderr)
-        print(json.dumps(default_config), file=sys.stderr)
+
+        self.__logger.info("Config saved")
+        self.__logger.info(json.dumps(default_config))
 
 
     # ----------------------------------------------------------------------------------------------------------------

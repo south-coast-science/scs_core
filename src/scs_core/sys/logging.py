@@ -23,7 +23,7 @@ class Logging(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stdout):
+    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr):
         cls.__NAME = name
 
         level = logging.INFO if verbose else level
@@ -32,6 +32,6 @@ class Logging(object):
 
     @classmethod
     def getLogger(cls, name=None):
-        logger_name = name if cls.__NAME is None else cls.__NAME
+        logger_name = cls.__NAME if cls.__NAME else name
 
         return logging.getLogger(logger_name)
