@@ -20,7 +20,7 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, _logger=None):
+    def __init__(self, path):
         """
         Constructor
         """
