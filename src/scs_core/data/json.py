@@ -101,12 +101,7 @@ class JSONReport(JSONable):
         with open(filename, 'r') as f:
             jstr = f.read()
 
-        try:
-            jdict = cls.loads(jstr)
-        except json.decoder.JSONDecodeError:
-            raise ValueError(jstr.strip())
-
-        return cls.construct_from_jdict(jdict)
+        return cls.construct_from_jdict(cls.loads(jstr))
 
 
     @classmethod
