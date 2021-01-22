@@ -64,7 +64,7 @@ class AWSDeploymentReporter(object):
                     deployment = Deployment.construct_from_aws(group_name, last_deployment)
                     reports.append(deployment)
 
-        return reports
+        return sorted(reports)
 
 
     # ----------------------------------------------------------------------------------------------------------------

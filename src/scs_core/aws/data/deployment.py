@@ -28,7 +28,7 @@ class Deployment(JSONable):
             return None
 
         group_name = group_name
-        created_at = jdict.get("CreatedAt")
+        created_at = LocalizedDatetime.construct_from_iso8601(jdict.get('CreatedAt'))
         deployment_type = jdict.get("DeploymentType")
         deployment_id = jdict.get("DeploymentId")
 
