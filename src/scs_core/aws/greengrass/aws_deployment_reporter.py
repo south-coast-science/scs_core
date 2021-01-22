@@ -50,11 +50,12 @@ class AWSDeploymentReporter(object):
         return group_id
 
 
-    def get_group_names(self, group_ids, before=None):
-        return [deployment.group_name for deployment in self.get_deployments(group_ids, before=before)]
+    def get_group_names(self, group_ids, matching=None, before=None):
+        return [deployment.group_name for deployment in
+                self.get_deployments(group_ids, matching=matching, before=before)]
 
 
-    def get_deployments(self, group_ids, before=None):
+    def get_deployments(self, group_ids, matching=None, before=None):
         deployments = []
 
         for id in group_ids:
@@ -64,6 +65,10 @@ class AWSDeploymentReporter(object):
                 continue
 
             group_name = self.__get_group_name(id)
+
+            if matching and matching not in group_name:
+                continue
+
             last_deployment = response["Deployments"][0]
             deployment = Deployment.construct_from_aws(group_name, last_deployment)
 
