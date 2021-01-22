@@ -48,12 +48,12 @@ class AWSDeploymentReporter(object):
         return None if datum is None else datum.node("GroupID")
 
 
-    def get_group_names(self, group_ids, matching=None, before=None):
+    def get_group_names(self, group_ids, matching=None, currency=None):
         return [deployment.group_name for deployment in
-                self.get_deployments(group_ids, matching=matching, before=before)]
+                self.get_deployments(group_ids, matching=matching, currency=currency)]
 
 
-    def get_deployments(self, group_ids, matching=None, before=None):
+    def get_deployments(self, group_ids, matching=None, currency=None):
         deployments = []
 
         for id in group_ids:
@@ -62,18 +62,16 @@ class AWSDeploymentReporter(object):
 
             response = self.__client.list_deployments(GroupId=id)
 
-            if "Deployments" not in response or not response["Deployments"]:
-                continue
-
             group_name = self.__get_group_name(id)
 
             if matching and matching not in group_name:
                 continue
 
-            last_deployment = response["Deployments"][0]
-            deployment = Deployment.construct_from_aws(group_name, last_deployment)
+            deployments = response["Deployments"]
+            latest_deployment = deployments[0] if deployments else None
+            deployment = Deployment.construct_from_aws(group_name, latest_deployment)
 
-            if deployment.before(before):
+            if currency is None or deployment.is_current(currency):
                 deployments.append(deployment)
 
         return sorted(deployments)

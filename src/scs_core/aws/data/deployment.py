@@ -25,7 +25,7 @@ class Deployment(JSONable):
             return None
 
         if not jdict:
-            return None
+            return cls(group_name, None, None, None)
 
         group_name = group_name
         created_at = LocalizedDatetime.construct_from_iso8601(jdict.get('CreatedAt'))
@@ -70,7 +70,7 @@ class Deployment(JSONable):
         jdict = OrderedDict()
 
         jdict['group_name'] = self.group_name
-        jdict['created_at'] = self.created_at.as_iso8601()
+        jdict['created_at'] = None if self.created_at is None else self.created_at.as_iso8601()
         jdict['deployment_type'] = self.deployment_type
         jdict['deployment_id'] = self.deployment_id
 
@@ -79,11 +79,11 @@ class Deployment(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def before(self, datetime):
-        if datetime is None:
-            return True
+    def is_current(self, datetime):
+        if self.created_at is None:
+            return False
 
-        return self.created_at < datetime
+        return self.created_at >= datetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
