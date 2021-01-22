@@ -71,7 +71,7 @@ class AWSDeploymentReporter(object):
             latest_deployment = deployments[0] if deployments else None
             deployment = Deployment.construct_from_aws(group_name, latest_deployment)
 
-            if currency is None or deployment.is_current(currency):
+            if currency is None or not deployment.is_current(currency):
                 deployments.append(deployment)
 
         return sorted(deployments)
