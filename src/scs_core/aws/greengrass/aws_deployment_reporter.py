@@ -57,6 +57,9 @@ class AWSDeploymentReporter(object):
         deployments = []
 
         for id in group_ids:
+            if id is None:
+                continue
+
             response = self.__client.list_deployments(GroupId=id)
 
             if "Deployments" not in response or not response["Deployments"]:
