@@ -26,7 +26,7 @@ class AWSDeploymentReporter(object):
         group_ids = []
 
         while True:
-            response = self.get_groups(next_token)
+            response = self.__get_groups(next_token)
             if "Groups" in response:
                 for item in response["Groups"]:
                     group_ids.append(item.get("Id"))
@@ -40,7 +40,7 @@ class AWSDeploymentReporter(object):
         return group_ids
 
 
-    def get_groups(self, next_token):
+    def __get_groups(self, next_token):
         if next_token is None:
             return self.__client.list_groups()
 
@@ -50,9 +50,8 @@ class AWSDeploymentReporter(object):
     def get_deployments(self, group_ids):
         reports = []
         for id in group_ids:
-            response = self.__client.list_deployments(
-                GroupId=id
-            )
+            response = self.__client.list_deployments(GroupId=id)
+
             if "Deployments" in response:
                 if len(response["Deployments"]) > 0:
                     last_deployment = response["Deployments"][0]
