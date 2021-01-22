@@ -43,11 +43,9 @@ class AWSDeploymentReporter(object):
 
     def get_group_id(self, group_name):
         aws_group_info = AWSGroup(group_name, self.__client)
-
         datum = aws_group_info.get_group_info_from_name()
-        group_id = datum.node("GroupID")
 
-        return group_id
+        return None if datum is None else datum.node("GroupID")
 
 
     def get_group_names(self, group_ids, matching=None, before=None):
