@@ -44,7 +44,7 @@ class UDSServer(object):
         self.__uds.connect()
         self.__uds.accept()
 
-        self.__log('started')
+        self.__logger.info('started')
 
 
     def stop(self):
@@ -55,7 +55,7 @@ class UDSServer(object):
         except FileNotFoundError:
             pass
 
-        self.__log('stopped')
+        self.__logger.info('stopped')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ class UDSServer(object):
                 yield message
                 continue
 
-            self.__log('restart...')
+            self.__logger.info('restart...')
 
             self.stop()                             # attempt to restart session
             self.start()
@@ -76,15 +76,6 @@ class UDSServer(object):
 
     def respond(self, message):
         self.__uds.server_send(message.strip())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __log(self, message):
-        if not self.__logger:
-            return
-
-        self.__logger.info("UDSServer(%s): %s" % (self.__uds.path, message))
 
 
     # ----------------------------------------------------------------------------------------------------------------
