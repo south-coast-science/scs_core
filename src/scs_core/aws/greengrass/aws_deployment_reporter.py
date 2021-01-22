@@ -14,8 +14,7 @@ class AWSDeploymentReporter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, client, group_name=None):
-        self.__group_name = group_name
+    def __init__(self, client):
         self.__client = client
 
 
@@ -28,16 +27,16 @@ class AWSDeploymentReporter(object):
         while True:
             response = self.__get_groups(next_token)
 
-            if "Groups" in response:
-                for item in response["Groups"]:
-                    group_ids.append(item.get("Id"))
-            else:
+            if "Groups" not in response:
                 break
 
-            if "NextToken" in response:
-                next_token = response["NextToken"]
-            else:
+            for item in response["Groups"]:
+                group_ids.append(item.get("Id"))
+
+            if "NextToken" not in response:
                 break
+
+            next_token = response["NextToken"]
 
         return group_ids
 
@@ -56,21 +55,22 @@ class AWSDeploymentReporter(object):
 
 
     def get_deployments(self, group_ids, before=None):
-        reports = []
+        deployments = []
 
         for id in group_ids:
             response = self.__client.list_deployments(GroupId=id)
 
-            if "Deployments" in response:
-                if len(response["Deployments"]) > 0:
-                    last_deployment = response["Deployments"][0]
-                    group_name = self.__get_group_name(id)
-                    deployment = Deployment.construct_from_aws(group_name, last_deployment)
+            if "Deployments" not in response or not response["Deployments"]:
+                continue
 
-                    if deployment.before(before):
-                        reports.append(deployment)
+            group_name = self.__get_group_name(id)
+            last_deployment = response["Deployments"][0]
+            deployment = Deployment.construct_from_aws(group_name, last_deployment)
 
-        return sorted(reports)
+            if deployment.before(before):
+                deployments.append(deployment)
+
+        return sorted(deployments)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -85,13 +85,13 @@ class AWSDeploymentReporter(object):
     def __get_group_name(self, group_id):
         response = self.__client.get_group(GroupId=group_id)
 
-        try:
-            return response["Name"]
-        except KeyError:
+        if "Name" not in response:
             return None
+
+        return response["Name"]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSDeploymentReporter:{group_name:%s, client:%s}" % (self.__group_name, self.__client)
+        return "AWSDeploymentReporter:{client:%s}" % self.__client
