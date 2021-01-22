@@ -51,6 +51,10 @@ class AWSDeploymentReporter(object):
         return group_id
 
 
+    def get_group_names(self, group_ids, before=None):
+        return [deployment.group_name for deployment in self.get_deployments(group_ids, before=before)]
+
+
     def get_deployments(self, group_ids, before=None):
         reports = []
 
