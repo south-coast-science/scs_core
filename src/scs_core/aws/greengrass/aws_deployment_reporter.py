@@ -67,8 +67,7 @@ class AWSDeploymentReporter(object):
             if matching and matching not in group_name:
                 continue
 
-            deployments = response["Deployments"]
-            latest_deployment = deployments[0] if deployments else None
+            latest_deployment = response["Deployments"][0] if response["Deployments"] else None
             deployment = Deployment.construct_from_aws(group_name, latest_deployment)
 
             if currency is None or not deployment.is_current(currency):
