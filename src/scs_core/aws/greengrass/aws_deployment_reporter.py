@@ -74,6 +74,8 @@ class AWSDeploymentReporter(object):
             if currency is None or not deployment.is_current(currency):
                 deployments.append(deployment)
 
+        print("get - deployments: %s" % deployments)
+
         return sorted(deployments)
 
 
