@@ -51,7 +51,7 @@ class AWSDeploymentReporter(object):
         return group_id
 
 
-    def get_deployments(self, group_ids):
+    def get_deployments(self, group_ids, before_datetime=None):
         reports = []
 
         for id in group_ids:
@@ -62,7 +62,9 @@ class AWSDeploymentReporter(object):
                     last_deployment = response["Deployments"][0]
                     group_name = self.__get_group_name(id)
                     deployment = Deployment.construct_from_aws(group_name, last_deployment)
-                    reports.append(deployment)
+
+                    if deployment.before(before_datetime):
+                        reports.append(deployment)
 
         return sorted(reports)
 

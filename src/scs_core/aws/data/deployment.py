@@ -80,6 +80,9 @@ class Deployment(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def before(self, datetime):
+        if datetime is None:
+            return True
+
         return self.created_at < datetime
 
 
