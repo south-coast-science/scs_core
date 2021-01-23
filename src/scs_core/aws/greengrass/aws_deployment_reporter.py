@@ -61,7 +61,6 @@ class AWSDeploymentReporter(object):
                 continue
 
             response = self.__client.list_deployments(GroupId=id)
-
             group_name = self.__get_group_name(id)
 
             if matching and matching not in group_name:
