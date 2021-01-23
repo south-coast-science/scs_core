@@ -139,7 +139,7 @@ class MessageRequest(object):
             return '**:/15:00'
 
         if delta < cls.__YEAR:
-            return '/01:00:00'
+            return '**:00:00'
 
         return '/06:00:00'
 
@@ -187,6 +187,9 @@ class MessageRequest(object):
 
     def is_valid(self):
         if self.topic is None or self.start is None or self.end is None:
+            return False
+
+        if self.start > LocalizedDatetime.now():
             return False
 
         if self.start > self.end:
