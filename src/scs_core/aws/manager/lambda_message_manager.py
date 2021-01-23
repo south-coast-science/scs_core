@@ -189,7 +189,9 @@ class MessageRequest(object):
         if self.topic is None or self.start is None or self.end is None:
             return False
 
-        if self.start > LocalizedDatetime.now():
+        now = LocalizedDatetime.now()
+
+        if self.start > now or self.end > now:
             return False
 
         if self.start > self.end:
