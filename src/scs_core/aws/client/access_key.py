@@ -2,6 +2,8 @@
 Created on 16 Oct 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 """
 
 import json
@@ -10,6 +12,7 @@ import sys
 
 from collections import OrderedDict
 from getpass import getpass
+from termios import tcflush, TCIOFLUSH
 
 from scs_core.data.json import PersistentJSONable
 
@@ -49,6 +52,8 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
+        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
+
         print("Enter AWS Access Key ID: ", end="", file=sys.stderr)
         id = input().strip()
 
@@ -60,6 +65,8 @@ class AccessKey(PersistentJSONable):
 
     @staticmethod
     def password_from_user():
+        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
+
         return getpass().strip()
 
 
