@@ -9,6 +9,7 @@ import json
 from abc import abstractmethod
 
 from scs_core.comms.uds_client import UDSClient
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -24,6 +25,8 @@ class GasInferenceClient(object):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+
         self._uds_client = uds_client                       # UDSClient
 
 
@@ -35,7 +38,7 @@ class GasInferenceClient(object):
         self._uds_client.request(json.dumps(None))
         self._uds_client.wait_for_response()
 
-        self._uds_client.log('connected')
+        self.__logger.info('connected to server')
 
 
     def open(self):

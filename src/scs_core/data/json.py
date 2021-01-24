@@ -52,6 +52,16 @@ class JSONable(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def loads(cls, jstr):
+        try:
+            return json.loads(jstr)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(jstr.strip())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_list(self, jlist):
         del jlist[:]                                    # empty the list
 
@@ -91,9 +101,7 @@ class JSONReport(JSONable):
         with open(filename, 'r') as f:
             jstr = f.read()
 
-        jdict = json.loads(jstr.strip())
-
-        return cls.construct_from_jdict(jdict)
+        return cls.construct_from_jdict(cls.loads(jstr))
 
 
     @classmethod
@@ -206,7 +214,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(json.loads(jstr))
+        return cls.construct_from_jdict(cls.loads(jstr))
 
 
     @classmethod
@@ -277,7 +285,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(json.loads(jstr), name=name)
+        return cls.construct_from_jdict(cls.loads(jstr), name=name)
 
 
     @classmethod

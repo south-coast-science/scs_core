@@ -15,8 +15,6 @@ example request:
 """
 
 import json
-import logging
-import sys
 
 from scs_core.comms.uds_client import UDSClient
 
@@ -38,12 +36,8 @@ class VBGasInferenceClient(GasInferenceClient):
 
     @classmethod
     def construct(cls, inference_uds_path, gas_schedule_item: ScheduleItem):
-        # logger...
-        logger = logging.getLogger(__name__)
-        logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-
         # UDS...
-        uds_client = UDSClient(inference_uds_path, logger)
+        uds_client = UDSClient(inference_uds_path)
 
         # T / rH slope...
         slope_tally = GasRequest.slope_tally(gas_schedule_item.duration())

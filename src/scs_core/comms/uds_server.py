@@ -8,6 +8,8 @@ a non-threadsafe server
 
 import os
 
+from scs_core.sys.logging import Logging
+
 from scs_core.comms.uds_client import UDSClient
 from scs_host.comms.domain_socket import DomainSocket
 
@@ -21,13 +23,13 @@ class UDSServer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, logger=None):
+    def __init__(self, path):
         """
         Constructor
         """
-        self.__path = path                          # string
-        self.__logger = logger                      # Logger
+        self.__logger = Logging.getLogger()
 
+        self.__path = path                          # string
         self.__uds = DomainSocket(path)             # DomainSocket
 
 
@@ -42,7 +44,7 @@ class UDSServer(object):
         self.__uds.connect()
         self.__uds.accept()
 
-        self.__log('started')
+        self.__logger.info('started')
 
 
     def stop(self):
@@ -53,7 +55,7 @@ class UDSServer(object):
         except FileNotFoundError:
             pass
 
-        self.__log('stopped')
+        self.__logger.info('stopped')
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,7 +68,7 @@ class UDSServer(object):
                 yield message
                 continue
 
-            self.__log('restart...')
+            self.__logger.info('restart...')
 
             self.stop()                             # attempt to restart session
             self.start()
@@ -78,14 +80,5 @@ class UDSServer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __log(self, message):
-        if not self.__logger:
-            return
-
-        self.__logger.info("UDSServer(%s): %s" % (self.__uds.path, message))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "UDSServer:{uds:%s, logger=%s}" % (self.__uds, self.__logger)
+        return "UDSServer:{uds:%s}" % self.__uds

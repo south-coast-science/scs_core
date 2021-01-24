@@ -31,11 +31,7 @@ class AccessKey(PersistentJSONable):
     @classmethod
     def from_stdin(cls):
         line = sys.stdin.readline()
-
-        try:
-            jdict = json.loads(line)
-        except json.decoder.JSONDecodeError:
-            raise ValueError(line)
+        jdict = json.loads(line)
 
         return cls.construct_from_jdict(jdict)
 
@@ -64,7 +60,6 @@ class AccessKey(PersistentJSONable):
 
     @staticmethod
     def password_from_user():
-        print("Enter password for AWS Access Key:", end="", file=sys.stderr)
         return getpass().strip()
 
 
