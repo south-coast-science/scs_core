@@ -23,7 +23,7 @@ class UDSServer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path, logger=None):          # TODO: logger parameter is deprecated
+    def __init__(self, path):
         """
         Constructor
         """
