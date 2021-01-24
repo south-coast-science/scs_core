@@ -52,7 +52,7 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
-        tcflush(sys.stdin, TCIOFLUSH)
+        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
 
         print("Enter AWS Access Key ID: ", end="", file=sys.stderr)
         id = input().strip()
@@ -65,7 +65,7 @@ class AccessKey(PersistentJSONable):
 
     @staticmethod
     def password_from_user():
-        tcflush(sys.stdin, TCIOFLUSH)
+        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
 
         return getpass().strip()
 
