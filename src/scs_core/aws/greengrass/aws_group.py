@@ -52,13 +52,19 @@ class AWSGroup(JSONable):
 
         d_groups = PathDict(response)
         g_node = d_groups.node("Groups")
+
         for sub_node in g_node:
             this_name = sub_node["Name"]
-            if this_name == self.__group_info.node("GroupName")[0]:
-                self.__group_info.append("GroupID", sub_node["Id"])
-                self.__group_info.append("GroupLatestVersionID", sub_node["LatestVersion"])
-                self.__group_info.append("LastUpdated", sub_node["LastUpdatedTimestamp"])
-                return self.__group_info
+
+            if this_name != self.__group_info.node("GroupName")[0]:
+                continue
+
+            self.__group_info.append("GroupID", sub_node["Id"])
+            self.__group_info.append("GroupLatestVersionID", sub_node["LatestVersion"])
+            self.__group_info.append("LastUpdated", sub_node["LastUpdatedTimestamp"])
+            return self.__group_info
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -127,10 +133,10 @@ class AWSGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_function_definition(self):
-
         if not self.__group_info.has_path("FunctionDefinitionVersionArn"):
             print("Group missing function definition version", file=sys.stderr)
             return
+
         if not self.__group_info.node("FunctionDefinitionVersionArn"):
             print("Group missing function definition version", file=sys.stderr)
             return
@@ -140,6 +146,7 @@ class AWSGroup(JSONable):
             FunctionDefinitionId=arn[0],
             FunctionDefinitionVersionId=arn[1]
         )
+
         self.__verbose_group_info.append("Function Definition Response", response)
 
 

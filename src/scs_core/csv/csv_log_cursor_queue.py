@@ -5,7 +5,6 @@ Created on 20 Jan 2020
 """
 
 import json
-import sys
 
 from collections import OrderedDict
 
@@ -17,6 +16,7 @@ from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -171,6 +171,8 @@ class CSVLogCursor(JSONable):
 
     @classmethod
     def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # this cursor is NOT live
+        logger = Logging.getLogger()
+
         reader = None
         row_number = 0
 
@@ -199,10 +201,8 @@ class CSVLogCursor(JSONable):
             return None
 
         except (CSVReaderException, UnicodeDecodeError, ValueError) as ex:
-            print("CSVLogCursor: %s: %s" % (log_file.path(), ex), file=sys.stderr)
-            sys.stderr.flush()
-
-            return None                         # skip corrupt files
+            logger.error("CSVLogCursor: %s: %s" % (log_file.path(), ex))
+            return None                                                             # skip corrupt files
 
         finally:
             if reader is not None:

@@ -4,8 +4,6 @@ Created on 18 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 from collections import OrderedDict
 
 from scs_core.climate.sht_datum import SHTDatum
@@ -16,6 +14,8 @@ from scs_core.data.datum import Datum
 from scs_core.particulate.pmx_datum import PMxDatum
 
 from scs_core.sample.sample import Sample
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -32,6 +32,8 @@ class OPCDatum(PMxDatum):
         if not jdict:
             return None
 
+        logger = Logging.getLogger()
+
         source = jdict.get('src')
 
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
@@ -45,9 +47,7 @@ class OPCDatum(PMxDatum):
         bins = jdict.get('bin')
 
         if bins is None:
-            print("OPCDatum incomplete: %s" % jdict, file=sys.stderr)
-            sys.stderr.flush()
-
+            logger.error("OPCDatum incomplete: %s" % jdict)
             return None
 
         bin_1_mtof = jdict.get('mtf1')

@@ -9,7 +9,6 @@ the amazon greengrass API. It is dependent on aws_json_reader to collect informa
 
 import grp
 import json
-import sys
 import os
 
 from collections import OrderedDict
@@ -22,6 +21,7 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.system_id import SystemID
 
 
@@ -69,11 +69,13 @@ class AWSGroupConfigurator(PersistentJSONable):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+
         group_info = None
         try:
             group_info = grp.getgrnam('ggc_user')
         except KeyError:
-            print("Group GGC_USER not found. This may indicate an invalid system setup.", file=sys.stderr)
+            self.__logger.error("Group GGC_USER not found. This may indicate an invalid system setup.")
             exit(2)
 
         self.__client = client
@@ -152,11 +154,13 @@ class AWSGroupConfigurator(PersistentJSONable):
                 (system_id + "-ml-no2"))  # Edit resource name
 
         # Send request
-        print("Creating resource definition", file=sys.stderr)
-        print(r_data, file=sys.stderr)
+        self.__logger.info("Creating resource definition")
+        self.__logger.info(r_data)
+
         response = self.__client.create_resource_definition(InitialVersion=r_data["InitialVersion"])
         self.__aws_info.append("NewResourceARN", response["LatestVersionArn"])
-        print(response, file=sys.stderr)
+
+        self.__logger.info(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -197,12 +201,14 @@ class AWSGroupConfigurator(PersistentJSONable):
             f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 1]["ResourceId"] = (system_id + "-ml-no2")
 
-        print("Creating function definition", file=sys.stderr)
-        print(f_data, file=sys.stderr)
+        self.__logger.info("Creating function definition")
+        self.__logger.info(f_data)
+
         # Create request
         response = self.__client.create_function_definition(InitialVersion=f_data["InitialVersion"])
         self.__aws_info.append("NewFunctionARN", response["LatestVersionArn"])
-        print(response, file=sys.stderr)
+
+        self.__logger.info(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -231,13 +237,14 @@ class AWSGroupConfigurator(PersistentJSONable):
         s_data["InitialVersion"]["Subscriptions"][4]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
         s_data["InitialVersion"]["Subscriptions"][5]["Subject"] = (self.__aws_info.node("LocationPath") + "/gases")
 
-        print("Creating sub definition", file=sys.stderr)
-        print(s_data, file=sys.stderr)
+        self.__logger.info("Creating sub definition")
+        self.__logger.info(s_data)
 
         # Send request
         response = self.__client.create_subscription_definition(InitialVersion=s_data["InitialVersion"])
         self.__aws_info.append("NewSubscriptionARN", response["LatestVersionArn"])
-        print(response, file=sys.stderr)
+
+        self.__logger.info(response)
 
 
     def define_aws_logger(self):
@@ -249,19 +256,20 @@ class AWSGroupConfigurator(PersistentJSONable):
 
         l_data["InitialVersion"]["Loggers"][0]["Id"] = (system_id + "-lambda-logger")
 
-        print("Creating logger definition", file=sys.stderr)
-        print(l_data, file=sys.stderr)
+        self.__logger.info("Creating logger definition")
+        self.__logger.info(l_data)
 
         response = self.__client.create_logger_definition(InitialVersion=l_data["InitialVersion"])
         self.__aws_info.append("NewLoggerARN", response["LatestVersionArn"])
-        print(response, file=sys.stderr)
+
+        self.__logger.info(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def create_aws_group_definition(self):
-        print("Creating group definition", file=sys.stderr)
-        print(self.__aws_info.node("GroupID"))
+        self.__logger.info("Creating group definition")
+        self.__logger.info(self.__aws_info.node("GroupID"))
 
         response = self.__client.create_group_version(
             CoreDefinitionVersionArn=self.__aws_info.node("CoreDefinitionARN"),
@@ -272,7 +280,7 @@ class AWSGroupConfigurator(PersistentJSONable):
             # LoggerDefinitionVersionArn=self.__aws_info.node("NewLoggerARN"),
         )
 
-        print(response, file=sys.stderr)
+        self.__logger.info(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
