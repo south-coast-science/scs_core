@@ -71,6 +71,7 @@ class HTTPClient(object):
         query = path + '?' + params if params else path
 
         # print("get: query: {}".format(query), file=sys.stderr)
+        # print("headers: %s " % headers)
 
         # request...
         response = self.__request("GET", query, None, headers)
@@ -79,6 +80,8 @@ class HTTPClient(object):
         # error...
         if response.status != HTTPStatus.OK:
             raise HTTPException.construct(response, data)
+
+        # print("response: %s " % data.decode())
 
         return data.decode()
 

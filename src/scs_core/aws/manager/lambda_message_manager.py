@@ -10,8 +10,6 @@ curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
-# import logging
-
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
@@ -139,7 +137,7 @@ class MessageRequest(object):
             return '**:/15:00'
 
         if delta < cls.__YEAR:
-            return '/01:00:00'
+            return '**:00:00'
 
         return '/06:00:00'
 
@@ -187,6 +185,11 @@ class MessageRequest(object):
 
     def is_valid(self):
         if self.topic is None or self.start is None or self.end is None:
+            return False
+
+        now = LocalizedDatetime.now()
+
+        if self.start > now or self.end > now:
             return False
 
         if self.start > self.end:
