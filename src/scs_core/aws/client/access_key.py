@@ -9,10 +9,10 @@ https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-pyt
 import json
 import os
 import sys
+import termios
 
 from collections import OrderedDict
 from getpass import getpass
-from termios import tcflush, TCIOFLUSH
 
 from scs_core.data.json import PersistentJSONable
 
@@ -52,7 +52,10 @@ class AccessKey(PersistentJSONable):
 
     @classmethod
     def from_user(cls):
-        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
+        try:
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
+        except termios.error:
+            pass
 
         print("Enter AWS Access Key ID: ", end="", file=sys.stderr)
         id = input().strip()
@@ -65,7 +68,10 @@ class AccessKey(PersistentJSONable):
 
     @staticmethod
     def password_from_user():
-        tcflush(sys.stdin, TCIOFLUSH)       # flush stdin
+        try:
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
+        except termios.error:
+            pass
 
         return getpass().strip()
 
