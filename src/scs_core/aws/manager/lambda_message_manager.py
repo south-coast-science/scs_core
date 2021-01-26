@@ -161,7 +161,7 @@ class MessageRequest(object):
         rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
 
-        if checkpoint == 'none':
+        if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
         return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max)
