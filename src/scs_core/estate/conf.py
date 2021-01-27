@@ -15,10 +15,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
-try:
-    from scs_display.display.display_conf import DisplayConf
-except ImportError:
-    from scs_core.display.display_conf import DisplayConf
+from scs_core.display.display_conf import DisplayConf
 
 from scs_core.data.json import JSONable
 
