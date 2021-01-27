@@ -8,8 +8,47 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.climate.mpl115a2_conf import MPL115A2Conf
+from scs_core.climate.sht_conf import SHTConf
+
+from scs_core.comms.mqtt_conf import MQTTConf
+
+from scs_core.csv.csv_logger_conf import CSVLoggerConf
+
+try:
+    from scs_display.display.display_conf import DisplayConf
+except ImportError:
+    from scs_core.display.display_conf import DisplayConf
+
 from scs_core.data.json import JSONable
 
+from scs_core.gas.afe_baseline import AFEBaseline
+from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.afe.pt1000_calib import Pt1000Calib
+from scs_core.gas.ndir.ndir_conf import NDIRConf
+
+from scs_core.gps.gps_conf import GPSConf
+
+from scs_core.interface.interface_conf import InterfaceConf
+
+from scs_core.location.timezone_conf import TimezoneConf
+
+from scs_core.model.gas.gas_baseline import GasBaseline
+from scs_core.model.gas.gas_model_conf import GasModelConf
+from scs_core.model.pmx.pmx_model_conf import PMxModelConf
+
+from scs_core.particulate.opc_conf import OPCConf
+
+from scs_core.psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
+from scs_core.psu.psu_conf import PSUConf
+
+from scs_core.sync.schedule import Schedule
+
+from scs_core.sys.shared_secret import SharedSecret
+from scs_core.sys.system_id import SystemID
+
+
+# TODO: put scs_display and scs_psu packages into the scs_core repo
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -28,7 +67,6 @@ class Conf(JSONable):
         afe_baseline = jdict.get('afe-baseline')
         afe_calib = jdict.get('afe-calib')
         csv_logger_conf = jdict.get('csv-logger-conf')
-        dfe_conf = jdict.get('dfe-conf')
         display_conf = jdict.get('display-conf')
         gas_baseline = jdict.get('gas-baseline')
         gas_model_conf = jdict.get('gas-model-conf')
@@ -48,64 +86,98 @@ class Conf(JSONable):
         system_id = jdict.get('system-id')
         timezone_conf = jdict.get('timezone-conf')
 
-        return Conf(afe_baseline, afe_calib, csv_logger_conf, dfe_conf, display_conf,
-                    gas_baseline, gas_model_conf, gps_conf, interface_conf, max17055_params,
-                    mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
-                    pt1000_calib, schedule, shared_secret, sht_conf, system_id, timezone_conf)
+        return cls(afe_baseline, afe_calib, csv_logger_conf, display_conf, gas_baseline,
+                   gas_model_conf, gps_conf, interface_conf, max17055_params, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
+                   schedule, shared_secret, sht_conf, system_id, timezone_conf)
+
+
+    @classmethod
+    def load(cls, manager, encryption_key=None):
+        afe_baseline = AFEBaseline.load(manager, encryption_key=encryption_key)
+        afe_calib = AFECalib.load(manager, encryption_key=encryption_key)
+        csv_logger_conf = CSVLoggerConf.load(manager, encryption_key=encryption_key)
+
+        try:
+            display_conf = DisplayConf.load(manager, encryption_key=encryption_key)
+        except NotImplementedError:
+            display_conf = None
+
+        gas_baseline = GasBaseline.load(manager, encryption_key=encryption_key)
+        gas_model_conf = GasModelConf.load(manager, encryption_key=encryption_key)
+        gps_conf = GPSConf.load(manager, encryption_key=encryption_key)
+        interface_conf = InterfaceConf.load(manager, encryption_key=encryption_key)
+        max17055_params = Max17055Params.load(manager, encryption_key=encryption_key)
+        mpl115a2_calib = MPL115A2Conf.load(manager, encryption_key=encryption_key)
+        mqtt_conf = MQTTConf.load(manager, encryption_key=encryption_key)
+        ndir_conf = NDIRConf.load(manager, encryption_key=encryption_key)
+        opc_conf = OPCConf.load(manager, encryption_key=encryption_key)
+        pmx_model_conf = PMxModelConf.load(manager, encryption_key=encryption_key)
+        psu_conf = PSUConf.load(manager, encryption_key=encryption_key)
+        pt1000_calib = Pt1000Calib.load(manager, encryption_key=encryption_key)
+        schedule = Schedule.load(manager, encryption_key=encryption_key)
+        shared_secret = SharedSecret.load(manager, encryption_key=encryption_key)
+        sht_conf = SHTConf.load(manager, encryption_key=encryption_key)
+        system_id = SystemID.load(manager, encryption_key=encryption_key)
+        timezone_conf = TimezoneConf.load(manager, encryption_key=encryption_key)
+
+        return cls(afe_baseline, afe_calib, csv_logger_conf, display_conf, gas_baseline,
+                   gas_model_conf, gps_conf, interface_conf, max17055_params, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
+                   schedule, shared_secret, sht_conf, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, afe_baseline, afe_calib, csv_logger_conf, dfe_conf, display_conf,
-                 gas_baseline, gas_model_conf, gps_conf, interface_conf, max17055_params,
-                 mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
-                 pt1000_calib, schedule, shared_secret, sht_conf, system_id, timezone_conf):
+    def __init__(self, afe_baseline, afe_calib, csv_logger_conf, display_conf, gas_baseline,
+                 gas_model_conf, gps_conf, interface_conf, max17055_params, mpl115a2_calib,
+                 mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
+                 schedule, shared_secret, sht_conf, system_id, timezone_conf):
         """
         Constructor
         """
-        self.__afe_baseline = afe_baseline                      # string
-        self.__afe_calib = afe_calib                            # string
-        self.__csv_logger_conf = csv_logger_conf                # string
-        self.__dfe_conf = dfe_conf                              # XX
-        self.__display_conf = display_conf                      # XX
-        self.__gas_baseline = gas_baseline                      # XX
-        self.__gas_model_conf = gas_model_conf                  # XX
-        self.__gps_conf = gps_conf                              # XX
-        self.__interface_conf = interface_conf                  # XX
-        self.__max17055_params = max17055_params                # XX
-        self.__mpl115a2_calib = mpl115a2_calib                  # XX
-        self.__mqtt_conf = mqtt_conf                            # XX
-        self.__ndir_conf = ndir_conf                            # XX
-        self.__opc_conf = opc_conf                              # XX
-        self.__pmx_model_conf = pmx_model_conf                  # XX
-        self.__psu_conf = psu_conf                              # XX
-        self.__pt1000_calib = pt1000_calib                      # XX
-        self.__schedule = schedule                              # XX
-        self.__shared_secret = shared_secret                    # string
-        self.__sht_conf = sht_conf                              # XX
-        self.__system_id = system_id                            # XX
-        self.__timezone_conf = timezone_conf                    # XX
+        self.__afe_baseline = afe_baseline                      # AFEBaseline
+        self.__afe_calib = afe_calib                            # AFECalib
+        self.__csv_logger_conf = csv_logger_conf                # CSVLoggerConf
+        self.__display_conf = display_conf                      # DisplayConf
+        self.__gas_baseline = gas_baseline                      # GasBaseline
+        self.__gas_model_conf = gas_model_conf                  # GasModelConf
+        self.__gps_conf = gps_conf                              # GPSConf
+        self.__interface_conf = interface_conf                  # InterfaceConf
+        self.__max17055_params = max17055_params                # Max17055Params
+        self.__mpl115a2_calib = mpl115a2_calib                  # MPL115A2Conf
+        self.__mqtt_conf = mqtt_conf                            # MQTTConf
+        self.__ndir_conf = ndir_conf                            # NDIRConf
+        self.__opc_conf = opc_conf                              # OPCConf
+        self.__pmx_model_conf = pmx_model_conf                  # PMxModelConf
+        self.__psu_conf = psu_conf                              # PSUConf
+        self.__pt1000_calib = pt1000_calib                      # Pt1000Calib
+        self.__schedule = schedule                              # Schedule
+        self.__shared_secret = shared_secret                    # SharedSecret
+        self.__sht_conf = sht_conf                              # SHTConf
+        self.__system_id = system_id                            # SystemID
+        self.__timezone_conf = timezone_conf                    # TimezoneConf
 
 
     def __eq__(self, other):
         try:
             return self.afe_baseline == other.afe_baseline and self.afe_calib == other.afe_calib and \
-                   self.csv_logger_conf == other.csv_logger_conf and self.dfe_conf == other.dfe_conf and \
-                   self.display_conf == other.display_conf and self.gas_baseline == other.gas_baseline and \
-                   self.gas_model_conf == other.gas_model_conf and self.gps_conf == other.gps_conf and \
-                   self.interface_conf == other.interface_conf and self.max17055_params == other.max17055_params and \
-                   self.mpl115a2_calib == other.mpl115a2_calib and self.mqtt_conf == other.mqtt_conf and \
-                   self.ndir_conf == other.ndir_conf and self.opc_conf == other.opc_conf and \
-                   self.pmx_model_conf == other.pmx_model_conf and self.psu_conf == other.psu_conf and \
-                   self.pt1000_calib == other.pt1000_calib and self.schedule == other.schedule and \
-                   self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
-                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
+                   self.csv_logger_conf == other.csv_logger_conf and self.display_conf == other.display_conf and \
+                   self.gas_baseline == other.gas_baseline and self.gas_model_conf == other.gas_model_conf and \
+                   self.gps_conf == other.gps_conf and self.interface_conf == other.interface_conf and \
+                   self.max17055_params == other.max17055_params and self.mpl115a2_calib == other.mpl115a2_calib and \
+                   self.mqtt_conf == other.mqtt_conf and self.ndir_conf == other.ndir_conf and \
+                   self.opc_conf == other.opc_conf and self.pmx_model_conf == other.pmx_model_conf and \
+                   self.psu_conf == other.psu_conf and self.pt1000_calib == other.pt1000_calib and \
+                   self.schedule == other.schedule and self.shared_secret == other.shared_secret and \
+                   self.sht_conf == other.sht_conf and self.system_id == other.system_id and \
+                   self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
 
 
-        # ----------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
@@ -113,7 +185,6 @@ class Conf(JSONable):
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-calib'] = self.afe_calib
         jdict['csv-logger-conf'] = self.csv_logger_conf
-        jdict['dfe-conf'] = self.dfe_conf
         jdict['display-conf'] = self.display_conf
         jdict['gas-baseline'] = self.gas_baseline
         jdict['gas-model-conf'] = self.gas_model_conf
@@ -151,11 +222,6 @@ class Conf(JSONable):
     @property
     def csv_logger_conf(self):
         return self.__csv_logger_conf
-
-
-    @property
-    def dfe_conf(self):
-        return self.__dfe_conf
 
 
     @property
@@ -251,11 +317,11 @@ class Conf(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Conf:{afe_baseline:%s, afe_calib:%s, csv_logger_conf:%s, dfe_conf:%s, display_conf:%s, " \
-               "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, interface_conf:%s, max17055_params:%s, " \
-               "mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, " \
-               "pt1000_calib:%s, schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, xx:%s}" % \
-               (self.afe_baseline, self.afe_calib, self.csv_logger_conf, self.dfe_conf, self.display_conf,
-                self.gas_baseline, self.gas_model_conf, self.gps_conf, self.interface_conf, self.max17055_params,
-                self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf,
-                self.pt1000_calib, self.schedule, self.shared_secret, self.sht_conf, self.system_id, self.timezone_conf)
+        return "Conf:{afe_baseline:%s, afe_calib:%s, csv_logger_conf:%s, display_conf:%s, gas_baseline:%s, " \
+               "gas_model_conf:%s, gps_conf:%s, interface_conf:%s, max17055_params:%s, mpl115a2_calib:%s, " \
+               "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, pt1000_calib:%s, " \
+               "schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, timezone_conf:%s}" % \
+               (self.afe_baseline, self.afe_calib, self.csv_logger_conf, self.display_conf, self.gas_baseline,
+                self.gas_model_conf, self.gps_conf, self.interface_conf, self.max17055_params, self.mpl115a2_calib,
+                self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf, self.pt1000_calib,
+                self.schedule, self.shared_secret, self.sht_conf, self.system_id, self.timezone_conf)

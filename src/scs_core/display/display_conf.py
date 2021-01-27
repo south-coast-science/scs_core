@@ -20,12 +20,12 @@ class DisplayConf(object):
 
 
     @classmethod
-    def load(cls, _host):
+    def load(cls, manager, encryption_key=None):
         raise NotImplementedError
 
 
     @classmethod
-    def delete(cls, _host):
+    def delete(cls, manager):
         raise NotImplementedError
 
 
@@ -38,5 +38,5 @@ class DisplayConf(object):
         raise NotImplementedError
 
 
-    def save(self, _host):
+    def save(self, manager, encryption_key=None):
         raise NotImplementedError
