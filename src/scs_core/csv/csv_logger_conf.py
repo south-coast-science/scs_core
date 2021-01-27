@@ -52,6 +52,15 @@ class CSVLoggerConf(PersistentJSONable):
         self.__write_interval = int(write_interval)             # int
 
 
+    def __eq__(self, other):
+        try:
+            return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
+                   self.write_interval == other.write_interval
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def csv_log(self, topic_subject, tag=None, timeline_start=None):

@@ -64,6 +64,14 @@ class SHTConf(PersistentJSONable):
         self.__ext_addr = ext_addr          # int       I2C address of SHT exposed to air
 
 
+    def __eq__(self, other):
+        try:
+            return self.int_addr == other.int_addr and self.ext_addr == other.ext_addr
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

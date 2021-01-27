@@ -58,13 +58,25 @@ class DisplayConf(PersistentJSONable):
         """
         Constructor
         """
-        self.__mode = mode
+        self.__mode = mode                                          # string
 
-        self.__device_name = device_name
-        self.__startup_message = startup_message
-        self.__shutdown_message = shutdown_message
+        self.__device_name = device_name                            # string
+        self.__startup_message = startup_message                    # string
+        self.__shutdown_message = shutdown_message                  # string
 
-        self.__show_time = show_time
+        self.__show_time = show_time                                # bool
+
+
+    def __eq__(self, other):
+        try:
+            return self.mode == other.mode and \
+                   self.device_name == other.device_name and \
+                   self.startup_message == other.startup_message and \
+                   self.shutdown_message == other.shutdown_message and \
+                   self.show_time == other.show_time
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

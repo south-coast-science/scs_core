@@ -145,19 +145,36 @@ class AFECalib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs):
+    def __init__(self, serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs):
         """
         Constructor
         """
-        self.__serial_number = serial_number
-        self.__afe_type = afe_type
+        self.__serial_number = serial_number            # string
+        self.__afe_type = afe_type                      # string
 
-        self.__calibrated_on = calibrated_on        # date
-        self.__dispatched_on = dispatched_on        # date
+        self.__calibrated_on = calibrated_on            # date
+        self.__dispatched_on = dispatched_on            # date
 
-        self.__pt100_calib = pt100_calib            # Pt1000Calib
+        self.__pt1000_calib = pt1000_calib              # Pt1000Calib
 
-        self.__sensor_calibs = sensor_calibs        # array of SensorCalib
+        self.__sensor_calibs = sensor_calibs            # array of SensorCalib
+
+
+    def __eq__(self, other):
+        try:
+            if len(self) != len(other):
+                return False
+
+            for i in range(len(self)):
+                if self.sensor_calib(i) != other.sensor_calib(i):
+                    return False
+
+            return self.serial_number == other.serial_number and self.afe_type == other.afe_type and \
+                self.calibrated_on == other.calibrated_on and self.dispatched_on == other.dispatched_on and \
+                self.pt1000_calib == other.pt100_calib
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __len__(self):
@@ -300,7 +317,7 @@ class AFECalib(PersistentJSONable):
 
     @property
     def pt1000_calib(self):
-        return self.__pt100_calib
+        return self.__pt1000_calib
 
 
     def sensor_calib(self, i):

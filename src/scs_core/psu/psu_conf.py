@@ -60,6 +60,18 @@ class PSUConf(PersistentJSONable):
         self.__report_file = report_file                                    # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.psu_model == other.psu_model and \
+                   self.batt_model == other.batt_model and \
+                   self.ignore_threshold == other.ignore_threshold and \
+                   self.reporting_interval == other.reporting_interval and \
+                   self.report_file == other.report_file
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

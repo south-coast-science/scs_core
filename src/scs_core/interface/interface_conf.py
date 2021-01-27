@@ -49,6 +49,14 @@ class InterfaceConf(PersistentJSONable):
         self.__model = model                                        # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.model == other.model
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

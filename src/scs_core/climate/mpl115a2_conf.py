@@ -49,6 +49,14 @@ class MPL115A2Conf(PersistentJSONable):
         self.__altitude = altitude              # int, "auto" or None
 
 
+    def __eq__(self, other):
+        try:
+            return self.altitude == other.altitude
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

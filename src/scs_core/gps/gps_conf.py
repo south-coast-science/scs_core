@@ -64,6 +64,16 @@ class GPSConf(PersistentJSONable):
         self.__debug = bool(debug)                                  # bool
 
 
+    def __eq__(self, other):
+        try:
+            return self.model == other.model and self.sample_interval == other.sample_interval and \
+                   self.tally == other.tally and self.report_file == other.report_file and \
+                   self.debug == other.debug
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

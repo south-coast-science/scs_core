@@ -65,6 +65,16 @@ class OPCConf(MultiPersistentJSONable):
         self.__address = address                                    # int
 
 
+    def __eq__(self, other):                            # ignore name
+        try:
+            return self.model == other.model and self.sample_period == other.sample_period and \
+                   self.restart_on_zeroes == other.restart_on_zeroes and self.power_saving == other.power_saving and \
+                   self.bus == other.bus and self.address == other.address
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def opc_bus(self, host):

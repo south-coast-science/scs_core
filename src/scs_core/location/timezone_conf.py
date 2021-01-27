@@ -65,6 +65,14 @@ class TimezoneConf(PersistentJSONable):
         self.__name = name                              # a Pytz timezone name or None
 
 
+    def __eq__(self, other):
+        try:
+            return self.set_on == other.set_on and self.name == other.name
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def timezone(self):

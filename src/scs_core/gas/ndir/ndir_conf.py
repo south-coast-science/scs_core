@@ -37,6 +37,14 @@ class NDIRConf(PersistentJSONable, ABC):
         self.__raw = raw
 
 
+    def __eq__(self, other):
+        try:
+            return self.model == other.model and self.tally == other.tally and self.raw == other.raw
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # abstract NDIRConf...
 

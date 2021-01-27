@@ -63,6 +63,14 @@ class SharedSecret(PersistentJSONable):
         self.__key = key            # String
 
 
+    def __eq__(self, other):
+        try:
+            return self.key == other.key
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

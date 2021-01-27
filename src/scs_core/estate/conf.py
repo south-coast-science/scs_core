@@ -15,9 +15,9 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
-from scs_core.display.display_conf import DisplayConf
-
 from scs_core.data.json import JSONable
+
+from scs_core.display.display_conf import DisplayConf
 
 from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_calib import AFECalib
@@ -44,8 +44,6 @@ from scs_core.sync.schedule import Schedule
 from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
 
-
-# TODO: put scs_display and scs_psu packages into the scs_core repo
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -94,12 +92,7 @@ class Conf(JSONable):
         afe_baseline = AFEBaseline.load(manager, encryption_key=encryption_key)
         afe_calib = AFECalib.load(manager, encryption_key=encryption_key)
         csv_logger_conf = CSVLoggerConf.load(manager, encryption_key=encryption_key)
-
-        try:
-            display_conf = DisplayConf.load(manager, encryption_key=encryption_key)
-        except NotImplementedError:
-            display_conf = None
-
+        display_conf = DisplayConf.load(manager, encryption_key=encryption_key)
         gas_baseline = GasBaseline.load(manager, encryption_key=encryption_key)
         gas_model_conf = GasModelConf.load(manager, encryption_key=encryption_key)
         gps_conf = GPSConf.load(manager, encryption_key=encryption_key)
