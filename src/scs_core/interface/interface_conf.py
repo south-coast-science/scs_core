@@ -77,4 +77,4 @@ class InterfaceConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "InterfaceConf(core):{model:%s, inference:%s}" % self.model
+        return "InterfaceConf(core):{model:%s}" % self.model

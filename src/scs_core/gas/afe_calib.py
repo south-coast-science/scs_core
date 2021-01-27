@@ -128,7 +128,7 @@ class AFECalib(PersistentJSONable):
         dispatched_on = Datum.date(jdict.get('dispatched_on'))
 
         pt1000_v20 = jdict.get('pt1000_v20')
-        pt100_calib = None if pt1000_v20 is None else Pt1000Calib(calibrated_on, pt1000_v20)
+        pt1000_calib = None if pt1000_v20 is None else Pt1000Calib(calibrated_on, pt1000_v20)
 
         sensor_calibs = []
 
@@ -140,7 +140,7 @@ class AFECalib(PersistentJSONable):
 
                 sensor_calibs.append(SensorCalib.construct_from_jdict(jdict[key]))
 
-        return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs)
+        return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -162,18 +162,27 @@ class AFECalib(PersistentJSONable):
 
     def __eq__(self, other):
         try:
+            print(1)
+
             if len(self) != len(other):
                 return False
+
+            print(2)
 
             for i in range(len(self)):
                 if self.sensor_calib(i) != other.sensor_calib(i):
                     return False
 
+            print(3)
+
             return self.serial_number == other.serial_number and self.afe_type == other.afe_type and \
                 self.calibrated_on == other.calibrated_on and self.dispatched_on == other.dispatched_on and \
-                self.pt1000_calib == other.pt100_calib
+                self.pt1000_calib == other.pt1000_calib
 
         except (TypeError, AttributeError):
+
+            print(4)
+
             return False
 
 
@@ -329,6 +338,6 @@ class AFECalib(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         cls = self.__class__.__name__
         return cls + ":{serial_number:%s, afe_type:%s, calibrated_on:%s, " \
-                     "dispatched_on:%s, pt100_calib:%s, sensor_calibs:%s}" %  \
+                     "dispatched_on:%s, pt1000_calib:%s, sensor_calibs:%s}" %  \
                      (self.serial_number, self.afe_type, self.calibrated_on,
                       self.dispatched_on, self.pt1000_calib, Str.collection(self.__sensor_calibs))

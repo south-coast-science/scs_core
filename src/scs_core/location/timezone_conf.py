@@ -66,6 +66,8 @@ class TimezoneConf(PersistentJSONable):
 
 
     def __eq__(self, other):
+        print("self: %s" % self)
+        print("other: %s" % other)
         try:
             return self.set_on == other.set_on and self.name == other.name
 
@@ -93,7 +95,7 @@ class TimezoneConf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['set-on'] = None if self.set_on is None else self.set_on.as_iso8601(False)
+        jdict['set-on'] = None if self.set_on is None else self.set_on.as_iso8601(True)
         jdict['name'] = self.name
 
         return jdict

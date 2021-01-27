@@ -39,12 +39,12 @@ class Pt1000Calib(PersistentJSONable):
         if not jdict:
             return None
 
-        if 'calibrated_on' in jdict:                            # TODO: deprecated
-            date = Datum.date(jdict.get('calibrated_on'))
-            calibrated_on = LocalizedDatetime.construct_from_date(date)
-
-        else:
-            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+        # if 'calibrated_on' in jdict:                            # TODO: deprecated
+        #     date = Datum.date(jdict.get('calibrated_on'))
+        #     calibrated_on = LocalizedDatetime.construct_from_date(date)
+        #
+        # else:
+        calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
 
         v20 = jdict.get('v20')
 
@@ -83,7 +83,7 @@ class Pt1000Calib(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated-on'] = self.calibrated_on.as_iso8601(False)
+        jdict['calibrated-on'] = self.calibrated_on.as_iso8601(True)
         jdict['v20'] = self.v20
 
         return jdict

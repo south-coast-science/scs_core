@@ -55,6 +55,14 @@ class MPL115A2Calib(PersistentJSONable):
         self.__c25 = Datum.int(c25)                 # T adc count at 25 °C
 
 
+    def __eq__(self, other):
+        try:
+            return self.calibrated_on == other.calibrated_on and self.c25 == other.c25
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, host, encryption_key=None):
