@@ -46,7 +46,9 @@ from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
 
 
-# TODO: scd30_conf field
+# TODO: add scd30_conf field
+# TODO: add aws fields
+# TODO: remove Max17055Params field (and put the class back)
 # TODO: run save before doing comparisons to clear datetime millis, etc.
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -132,28 +134,28 @@ class Conf(JSONable):
         """
         Constructor
         """
-        self.__afe_baseline = afe_baseline                      # AFEBaseline
-        self.__afe_calib = afe_calib                            # AFECalib
-        self.__csv_logger_conf = csv_logger_conf                # CSVLoggerConf
-        self.__display_conf = display_conf                      # DisplayConf
-        self.__gas_baseline = gas_baseline                      # GasBaseline
-        self.__gas_model_conf = gas_model_conf                  # GasModelConf
-        self.__gps_conf = gps_conf                              # GPSConf
-        self.__interface_conf = interface_conf                  # InterfaceConf
-        self.__max17055_params = max17055_params                # Max17055Params
-        self.__mpl115a2_calib = mpl115a2_calib                  # MPL115A2Calib
-        self.__mpl115a2_conf = mpl115a2_conf                    # MPL115A2Conf
-        self.__mqtt_conf = mqtt_conf                            # MQTTConf
-        self.__ndir_conf = ndir_conf                            # NDIRConf
-        self.__opc_conf = opc_conf                              # OPCConf
-        self.__pmx_model_conf = pmx_model_conf                  # PMxModelConf
-        self.__psu_conf = psu_conf                              # PSUConf
-        self.__pt1000_calib = pt1000_calib                      # Pt1000Calib
-        self.__schedule = schedule                              # Schedule
-        self.__shared_secret = shared_secret                    # SharedSecret
-        self.__sht_conf = sht_conf                              # SHTConf
-        self.__system_id = system_id                            # SystemID
-        self.__timezone_conf = timezone_conf                    # TimezoneConf
+        self.__afe_baseline = afe_baseline                          # AFEBaseline
+        self.__afe_calib = afe_calib                                # AFECalib
+        self.__csv_logger_conf = csv_logger_conf                    # CSVLoggerConf
+        self.__display_conf = display_conf                          # DisplayConf
+        self.__gas_baseline = gas_baseline                          # GasBaseline
+        self.__gas_model_conf = gas_model_conf                      # GasModelConf
+        self.__gps_conf = gps_conf                                  # GPSConf
+        self.__interface_conf = interface_conf                      # InterfaceConf
+        self.__max17055_params = max17055_params                    # Max17055Params
+        self.__mpl115a2_calib = mpl115a2_calib                      # MPL115A2Calib
+        self.__mpl115a2_conf = mpl115a2_conf                        # MPL115A2Conf
+        self.__mqtt_conf = mqtt_conf                                # MQTTConf
+        self.__ndir_conf = ndir_conf                                # NDIRConf
+        self.__opc_conf = opc_conf                                  # OPCConf
+        self.__pmx_model_conf = pmx_model_conf                      # PMxModelConf
+        self.__psu_conf = psu_conf                                  # PSUConf
+        self.__pt1000_calib = pt1000_calib                          # Pt1000Calib
+        self.__schedule = schedule                                  # Schedule
+        self.__shared_secret = shared_secret                        # SharedSecret
+        self.__sht_conf = sht_conf                                  # SHTConf
+        self.__system_id = system_id                                # SystemID
+        self.__timezone_conf = timezone_conf                        # TimezoneConf
 
 
     def __eq__(self, other):
