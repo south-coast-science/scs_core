@@ -162,27 +162,18 @@ class AFECalib(PersistentJSONable):
 
     def __eq__(self, other):
         try:
-            print(1)
-
             if len(self) != len(other):
                 return False
-
-            print(2)
 
             for i in range(len(self)):
                 if self.sensor_calib(i) != other.sensor_calib(i):
                     return False
-
-            print(3)
 
             return self.serial_number == other.serial_number and self.afe_type == other.afe_type and \
                 self.calibrated_on == other.calibrated_on and self.dispatched_on == other.dispatched_on and \
                 self.pt1000_calib == other.pt1000_calib
 
         except (TypeError, AttributeError):
-
-            print(4)
-
             return False
 
 
