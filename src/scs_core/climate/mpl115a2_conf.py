@@ -1,17 +1,13 @@
 """
-Created on 2 Apr 2018
+Created on 21 Jun 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://stackoverflow.com/questions/2257441/
-random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+specifies fixed altitude or "auto" (altitude provided by GPS receiver), or None
 
-example document:
-{"key": "sxBhncFybpbMwZUa"}
+example JSON:
+{"altitude": "auto"}
 """
-
-import random
-import string
 
 from collections import OrderedDict
 
@@ -20,26 +16,16 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SharedSecret(PersistentJSONable):
+class MPL115A2Conf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "shared_secret.json"
+    __FILENAME = "mpl115a2_conf.json"
 
     @classmethod
     def persistence_location(cls):
         return cls.conf_dir(), cls.__FILENAME
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    __KEY_LENGTH = 16
-
-    @classmethod
-    def generate(cls):
-        return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits)
-                       for _ in range(cls.__KEY_LENGTH))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -49,23 +35,23 @@ class SharedSecret(PersistentJSONable):
         if not jdict:
             return None
 
-        key = jdict.get('key')
+        altitude = jdict.get('altitude')
 
-        return SharedSecret(key)
+        return MPL115A2Conf(altitude)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, key):
+    def __init__(self, altitude):
         """
         Constructor
         """
-        self.__key = key            # String
+        self.__altitude = altitude              # int, "auto" or None
 
 
     def __eq__(self, other):
         try:
-            return self.key == other.key
+            return self.altitude == other.altitude
 
         except (TypeError, AttributeError):
             return False
@@ -73,22 +59,22 @@ class SharedSecret(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def altitude(self):
+        return self.__altitude
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['key'] = self.key
+        jdict['altitude'] = self.__altitude
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def key(self):
-        return self.__key
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "SharedSecret:{key:%s}" % self.key
+        return "MPL115A2Conf:{altitude:%s}" % self.altitude

@@ -57,6 +57,14 @@ class SensorCalib(ABC, JSONable):
         self.__sensor_type = sensor_type                        # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.serial_number == other.serial_number and self.sensor_type == other.sensor_type
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def sensor(self, baseline):

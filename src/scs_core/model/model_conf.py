@@ -59,6 +59,15 @@ class ModelConf(ABC, PersistentJSONable):
         self.__resource_names = resource_names                      # dict of string: string
 
 
+    def __eq__(self, other):
+        try:
+            return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
+                   self.resource_names == other.resource_names
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

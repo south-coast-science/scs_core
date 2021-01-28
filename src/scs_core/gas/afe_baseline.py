@@ -65,6 +65,21 @@ class AFEBaseline(PersistentJSONable):
         self.__sensor_baselines = sensor_baselines        # array of SensorBaseline
 
 
+    def __eq__(self, other):
+        try:
+            if len(self) != len(other):
+                return False
+
+            for i in range(len(self)):
+                if self.sensor_baseline(i) != other.sensor_baseline(i):
+                    return False
+
+                return True
+
+        except (TypeError, AttributeError):
+            return False
+
+
     def __len__(self):
         return len(self.__sensor_baselines)
 

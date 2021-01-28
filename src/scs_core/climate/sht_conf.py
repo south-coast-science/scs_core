@@ -1,17 +1,13 @@
 """
-Created on 2 Apr 2018
+Created on 13 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://stackoverflow.com/questions/2257441/
-random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+the I2C addresses of the internal (in A4 pot) and external (exposed to air) SHTs
 
-example document:
-{"key": "sxBhncFybpbMwZUa"}
+example JSON:
+{"int": "0x44", "ext": "0x45"}
 """
-
-import random
-import string
 
 from collections import OrderedDict
 
@@ -20,12 +16,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SharedSecret(PersistentJSONable):
+class SHTConf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "shared_secret.json"
+    __FILENAME = "sht_conf.json"
 
     @classmethod
     def persistence_location(cls):
@@ -34,12 +30,12 @@ class SharedSecret(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __KEY_LENGTH = 16
-
     @classmethod
-    def generate(cls):
-        return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits)
-                       for _ in range(cls.__KEY_LENGTH))
+    def __addr_str(cls, addr):
+        if addr is None:
+            return None
+
+        return "0x%02x" % addr
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -49,23 +45,28 @@ class SharedSecret(PersistentJSONable):
         if not jdict:
             return None
 
-        key = jdict.get('key')
+        int_str = jdict.get('int')
+        ext_str = jdict.get('ext')
 
-        return SharedSecret(key)
+        int_addr = None if int_str is None else int(int_str, 0)
+        ext_addr = None if ext_str is None else int(ext_str, 0)
+
+        return SHTConf(int_addr, ext_addr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, key):
+    def __init__(self, int_addr, ext_addr):
         """
         Constructor
         """
-        self.__key = key            # String
+        self.__int_addr = int_addr          # int       I2C address of SHT in A4 package
+        self.__ext_addr = ext_addr          # int       I2C address of SHT exposed to air
 
 
     def __eq__(self, other):
         try:
-            return self.key == other.key
+            return self.int_addr == other.int_addr and self.ext_addr == other.ext_addr
 
         except (TypeError, AttributeError):
             return False
@@ -73,22 +74,29 @@ class SharedSecret(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def int_addr(self):
+        return self.__int_addr
+
+
+    @property
+    def ext_addr(self):
+        return self.__ext_addr
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['key'] = self.key
+        jdict['int'] = SHTConf.__addr_str(self.__int_addr)
+        jdict['ext'] = SHTConf.__addr_str(self.__ext_addr)
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def key(self):
-        return self.__key
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "SharedSecret:{key:%s}" % self.key
+        return "SHTConf(core):{int_addr:%s, ext_addr:%s}" %  \
+               (SHTConf.__addr_str(self.int_addr), SHTConf.__addr_str(self.ext_addr))

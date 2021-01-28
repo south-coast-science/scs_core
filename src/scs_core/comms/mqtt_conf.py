@@ -53,6 +53,15 @@ class MQTTConf(PersistentJSONable):
         self.__debug = bool(debug)                                          # DEBUG log level
 
 
+    def __eq__(self, other):
+        try:
+            return self.inhibit_publishing == other.inhibit_publishing and self.report_file == other.report_file and \
+                   self.debug == other.debug
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
