@@ -91,7 +91,7 @@ class JSONReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, filename):
+    def load(cls, filename, default=True):
         if filename is None:
             return None
 
@@ -101,7 +101,7 @@ class JSONReport(JSONable):
         with open(filename, 'r') as f:
             jstr = f.read()
 
-        return cls.construct_from_jdict(cls.loads(jstr))
+        return cls.construct_from_jdict(cls.loads(jstr), default=default)
 
 
     @classmethod
@@ -203,7 +203,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, encryption_key=None):
+    def load(cls, manager, encryption_key=None, default=True):
         try:
             dirname, filename = cls.persistence_location()
         except NotImplementedError:
@@ -214,7 +214,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(cls.loads(jstr))
+        return cls.construct_from_jdict(cls.loads(jstr), default=default)
 
 
     @classmethod
@@ -229,14 +229,11 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # noinspection PyUnusedLocal
-
     @classmethod
     @abstractmethod
     def construct_from_jdict(cls, jdict, default=True):
         return PersistentJSONable()
 
-    # noinspection PyUnusedLocal
 
     @classmethod
     @abstractmethod
@@ -273,7 +270,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, name=None, encryption_key=None):
+    def load(cls, manager, name=None, encryption_key=None, default=True):
         try:
             dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
@@ -284,7 +281,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(cls.loads(jstr), name=name)
+        return cls.construct_from_jdict(cls.loads(jstr), name=name, default=default)
 
 
     @classmethod
@@ -299,15 +296,11 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # noinspection PyUnusedLocal
-
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict, name=None):
+    def construct_from_jdict(cls, jdict, name=None, default=True):
         return PersistentJSONable()
 
-
-    # noinspection PyUnusedLocal
 
     @classmethod
     @abstractmethod

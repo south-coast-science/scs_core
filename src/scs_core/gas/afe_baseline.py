@@ -43,7 +43,7 @@ class AFEBaseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return AFEBaseline([SensorBaseline(None, 0, None)] * cls.__SENSORS) if default else None
+            return None if default is None else AFEBaseline([SensorBaseline(None, 0, None)] * cls.__SENSORS)
 
         sensor_baselines = []
 

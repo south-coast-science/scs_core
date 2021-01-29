@@ -47,7 +47,7 @@ class TimezoneConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return TimezoneConf(None, None) if default else None
+            return None if default is None else TimezoneConf(None, None)
 
         set_on = Datum.datetime(jdict.get('set-on'))
         name = jdict.get('name')

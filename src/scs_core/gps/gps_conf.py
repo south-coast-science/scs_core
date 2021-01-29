@@ -47,7 +47,7 @@ class GPSConf(PersistentJSONable):
         report_file = jdict.get('report-file')
         debug = jdict.get('debug', False)
 
-        return GPSConf(model, sample_interval, tally, report_file, debug)
+        return cls(model, sample_interval, tally, report_file, debug)
 
 
     # ----------------------------------------------------------------------------------------------------------------
