@@ -76,6 +76,16 @@ class GPSConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def gps_monitor(self, interface, host):
+        return None
+
+
+    def gps(self, interface, host):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def model(self):
         return self.__model

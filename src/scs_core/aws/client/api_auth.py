@@ -49,6 +49,14 @@ class APIAuth(PersistentJSONable):
         self.__api_key = api_key                # String
 
 
+    def __eq__(self, other):
+        try:
+            return self.endpoint == other.endpoint and self.api_key == other.api_key
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

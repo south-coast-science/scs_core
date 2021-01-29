@@ -20,7 +20,10 @@ conf1 = Conf.load(Host)
 print(conf1)
 print("-")
 
-# TODO: save
+conf1.save(Host)
+conf1 = Conf.load(Host)
+print(conf1)
+print("-")
 
 jstr = JSONify.dumps(conf1, indent=4)
 

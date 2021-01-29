@@ -1,27 +1,26 @@
 """
-Created on 21 Jun 2017
+Created on 8 Sep 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies which sensor interface board is present, if any
-
 example JSON:
-{"model": "DFE", "inf": "/home/scs/SCS/pipes/lambda-model-gas-s1.uds"}
+{"sample-interval": 2, "temp-offset": 0.0}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class InterfaceConf(PersistentJSONable):
+class SCD30Conf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "interface_conf.json"
+    __FILENAME = "scd30_conf.json"
 
     @classmethod
     def persistence_location(cls):
@@ -35,23 +34,26 @@ class InterfaceConf(PersistentJSONable):
         if not jdict:
             return None
 
-        model = jdict.get('model')
+        sample_interval = jdict.get('sample-interval')
+        temperature_offset = jdict.get('temp-offset')
 
-        return cls(model)
+        return cls(sample_interval, temperature_offset)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model):
+    def __init__(self, sample_interval, temperature_offset):
         """
         Constructor
         """
-        self.__model = model                                        # string
+        self.__sample_interval = Datum.int(sample_interval)                     # int       seconds
+        self.__temperature_offset = Datum.float(temperature_offset, 1)          # float     °C
 
 
     def __eq__(self, other):
         try:
-            return self.model == other.model
+            return self.sample_interval == other.sample_interval and \
+                   self.temperature_offset == other.temperature_offset
 
         except (TypeError, AttributeError):
             return False
@@ -59,15 +61,9 @@ class InterfaceConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interface(self):
+    @staticmethod
+    def scd30():
         return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def model(self):
-        return self.__model
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -75,12 +71,26 @@ class InterfaceConf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['model'] = self.model
+        jdict['sample-interval'] = self.sample_interval
+        jdict['temp-offset'] = self.temperature_offset
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def sample_interval(self):
+        return self.__sample_interval
+
+
+    @property
+    def temperature_offset(self):
+        return self.__temperature_offset
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "InterfaceConf(core):{model:%s}" % self.model
+        return "SCD30Conf(core):{sample_interval:%s, temperature_offset:%s}" %  \
+               (self.sample_interval, self.temperature_offset)

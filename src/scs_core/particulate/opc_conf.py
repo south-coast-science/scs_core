@@ -77,6 +77,18 @@ class OPCConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def opc_monitor(self, interface, host):
+        return None
+
+
+    def opc(self, interface, host):
+        return None
+
+
+    def uses_spi(self):
+        return True
+
+
     def opc_bus(self, host):
         try:
             return int(self.__bus)

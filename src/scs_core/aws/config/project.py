@@ -73,6 +73,14 @@ class Project(PersistentJSONable):
         self.__device_path = device_path              # string
 
 
+    def __eq__(self, other):
+        try:
+            return self.location_path == other.location_path and self.device_path == other.device_path
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

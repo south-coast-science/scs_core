@@ -80,6 +80,15 @@ class ClientAuth(PersistentJSONable):
         self.__manager = manager                    # FilesystemPersistenceManager
 
 
+    def __eq__(self, other):                # ignore manager
+        try:
+            return self.endpoint == other.endpoint and self.client_id == other.client_id and \
+                   self.cert_id == other.cert_id
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):

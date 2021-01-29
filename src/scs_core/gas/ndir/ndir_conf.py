@@ -60,6 +60,16 @@ class NDIRConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def ndir_monitor(self, interface, host):
+        return None
+
+
+    def ndir(self, interface, host):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 

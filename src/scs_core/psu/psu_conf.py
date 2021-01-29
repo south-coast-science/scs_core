@@ -74,6 +74,24 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def psu(self, host, interface_model):
+        return None
+
+
+    def psu_monitor(self, host, interface_model, ignore_standby):
+        return None
+
+
+    def psu_class(self):
+        return None
+
+
+    def psu_report_class(self):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def psu_model(self):
         return self.__psu_model
