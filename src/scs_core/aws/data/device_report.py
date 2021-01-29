@@ -13,7 +13,6 @@ from scs_core.data.json import JSONable
 
 class DeviceReport(JSONable):
 
-
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:

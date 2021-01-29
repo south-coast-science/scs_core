@@ -6,6 +6,8 @@ Created on 27 Jan 2021
 example:
 """
 
+import json
+
 from collections import OrderedDict
 
 from scs_core.aws.client.api_auth import APIAuth
@@ -54,7 +56,7 @@ from scs_core.sys.system_id import SystemID
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Conf(JSONable):
+class Configuration(JSONable):
     """
     classdocs
     """
@@ -62,11 +64,19 @@ class Conf(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_jstr(cls, jstr):
+        try:
+            return cls.construct_from_jdict(json.loads(jstr))
+        except json.decoder.JSONDecodeError:
+            return None
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
-        afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'))
+        afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=False)
         afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'))
         aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'))
         aws_client_auth = ClientAuth.construct_from_jdict(jdict.get('aws-client-auth'))
@@ -74,31 +84,32 @@ class Conf(JSONable):
         aws_project = Project.construct_from_jdict(jdict.get('aws-project'))
         csv_logger_conf = CSVLoggerConf.construct_from_jdict(jdict.get('csv-logger-conf'))
         display_conf = DisplayConf.construct_from_jdict(jdict.get('display-conf'))
-        gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'))
+        gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'), default=False)
         gas_model_conf = GasModelConf.construct_from_jdict(jdict.get('gas-model-conf'))
         gps_conf = GPSConf.construct_from_jdict(jdict.get('gps-conf'))
         greengrass_identity = AWSIdentity.construct_from_jdict(jdict.get('greengrass-identity'))
         interface_conf = InterfaceConf.construct_from_jdict(jdict.get('interface-conf'))
         mpl115a2_calib = MPL115A2Calib.construct_from_jdict(jdict.get('mpl115a2-calib'))
         mpl115a2_conf = MPL115A2Conf.construct_from_jdict(jdict.get('mpl115a2-conf'))
-        mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'))
+        mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'), default=False)
         ndir_conf = NDIRConf.construct_from_jdict(jdict.get('ndir-conf'))
         opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'))
         pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'))
         psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'))
         pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'))
         scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'))
-        schedule = Schedule.construct_from_jdict(jdict.get('schedule'))
+        schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=False)
         shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'))
         sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'))
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
-        timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
+        timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=False)
 
-        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth, aws_group_config,
-                   aws_project, csv_logger_conf, display_conf, gas_baseline, gas_model_conf,
-                   gps_conf, greengrass_identity, interface_conf, mpl115a2_calib, mpl115a2_conf,
-                   mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
-                   scd30_conf, schedule, shared_secret, sht_conf, system_id, timezone_conf)
+        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+                   aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
+                   pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
+                   timezone_conf)
 
 
     @classmethod
@@ -131,20 +142,22 @@ class Conf(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth, aws_group_config,
-                   aws_project, csv_logger_conf, display_conf, gas_baseline, gas_model_conf,
-                   gps_conf, greengrass_identity, interface_conf, mpl115a2_calib, mpl115a2_conf,
-                   mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
-                   scd30_conf, schedule, shared_secret, sht_conf, system_id, timezone_conf)
+        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+                   aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
+                   pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
+                   timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, afe_baseline, afe_calib, aws_api_auth, aws_client_auth, aws_group_config,
-                 aws_project, csv_logger_conf, display_conf, gas_baseline, gas_model_conf,
-                 gps_conf, greengrass_identity, interface_conf, mpl115a2_calib, mpl115a2_conf,
-                 mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf, pt1000_calib,
-                 scd30_conf, schedule, shared_secret, sht_conf, system_id, timezone_conf):
+    def __init__(self, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+                 aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
+                 gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                 mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
+                 pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
+                 timezone_conf):
         """
         Constructor
         """
@@ -268,6 +281,7 @@ class Conf(JSONable):
             self.scd30_conf.save(manager)
 
         if self.schedule:
+            print("saving schedule: %s" % self.schedule)
             self.schedule.save(manager)
 
         if self.shared_secret:
@@ -459,13 +473,15 @@ class Conf(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Conf:{afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, aws_client_auth:%s, aws_group_config:%s, " \
-               "aws_project:%s, csv_logger_conf:%s, display_conf:%s, gas_baseline:%s, gas_model_conf:%s, " \
-               "gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, mpl115a2_conf:%s, " \
-               "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, pt1000_calib:%s, " \
-               "scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.afe_baseline, self.afe_calib, self.aws_api_auth, self.aws_client_auth, self.aws_group_config,
-                self.aws_project, self.csv_logger_conf, self.display_conf, self.gas_baseline, self.gas_model_conf,
-                self.gps_conf, self.greengrass_identity, self.interface_conf, self.mpl115a2_calib, self.mpl115a2_conf,
-                self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf, self.pt1000_calib,
-                self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.system_id, self.timezone_conf)
+        return "Configuration:{afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, aws_client_auth:%s, " \
+               "aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, gas_baseline:%s, " \
+               "gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, " \
+               "mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, " \
+               "pt1000_calib:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, " \
+               "timezone_conf:%s}" % \
+               (self.afe_baseline, self.afe_calib, self.aws_api_auth, self.aws_client_auth,
+                self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf, self.gas_baseline,
+                self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf, self.mpl115a2_calib,
+                self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf,
+                self.pt1000_calib, self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.system_id,
+                self.timezone_conf)
