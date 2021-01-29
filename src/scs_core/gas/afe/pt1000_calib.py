@@ -35,7 +35,7 @@ class Pt1000Calib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -83,7 +83,7 @@ class Pt1000Calib(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated-on'] = self.calibrated_on.as_iso8601(True)
+        jdict['calibrated-on'] = self.calibrated_on.as_iso8601()
         jdict['v20'] = self.v20
 
         return jdict

@@ -41,7 +41,7 @@ class SHTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -70,6 +70,16 @@ class SHTConf(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def int_sht(self):
+        return None
+
+
+    def ext_sht(self):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

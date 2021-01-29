@@ -56,7 +56,7 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -78,6 +78,15 @@ class ClientAuth(PersistentJSONable):
         self.__cert_id = cert_id                    # String
 
         self.__manager = manager                    # FilesystemPersistenceManager
+
+
+    def __eq__(self, other):                # ignore manager
+        try:
+            return self.endpoint == other.endpoint and self.client_id == other.client_id and \
+                   self.cert_id == other.cert_id
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

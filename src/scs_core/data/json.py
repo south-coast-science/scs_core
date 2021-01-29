@@ -114,7 +114,7 @@ class JSONReport(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         return JSONReport()
 
 
@@ -233,9 +233,8 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         return PersistentJSONable()
-
 
     # noinspection PyUnusedLocal
 

@@ -28,7 +28,7 @@ class NDIRConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -56,6 +56,16 @@ class NDIRConf(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def ndir_monitor(self, interface, host):
+        return None
+
+
+    def ndir(self, interface, host):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

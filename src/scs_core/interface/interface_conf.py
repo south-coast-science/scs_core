@@ -31,7 +31,7 @@ class InterfaceConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -55,6 +55,12 @@ class InterfaceConf(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def interface(self):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

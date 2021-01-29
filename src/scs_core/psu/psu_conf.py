@@ -32,7 +32,7 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -70,6 +70,24 @@ class PSUConf(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def psu(self, host, interface_model):
+        return None
+
+
+    def psu_monitor(self, host, interface_model, ignore_standby):
+        return None
+
+
+    def psu_class(self):
+        return None
+
+
+    def psu_report_class(self):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ class GPSConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -72,6 +72,16 @@ class GPSConf(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def gps_monitor(self, interface, host):
+        return None
+
+
+    def gps(self, interface, host):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

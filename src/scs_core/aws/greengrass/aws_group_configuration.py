@@ -27,12 +27,10 @@ from scs_core.sys.system_id import SystemID
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSGroupConfigurator(PersistentJSONable):
+class AWSGroupConfiguration(PersistentJSONable):
     """
     classdocs
     """
-
-    __FILENAME = "aws_group_config.json"
 
     __CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -41,13 +39,15 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __FILENAME = "aws_group_config.json"
+
     @classmethod
     def persistence_location(cls):
         return cls.aws_dir(), cls.__FILENAME
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -55,11 +55,11 @@ class AWSGroupConfigurator(PersistentJSONable):
         unix_group = jdict.get('unix-group')
         ml = jdict.get('ml')
 
-        return AWSGroupConfigurator(group_name, unix_group, ml)
+        return cls(group_name, unix_group, ml)
 
 
     @classmethod
-    def construct(cls, group_name, unix_group):
+    def construct(cls, group_name, unix_group):     # TODO: remove this
         return Project(group_name, unix_group)
 
 
@@ -84,6 +84,15 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__ml = ml
         self.__group_name = group_name
         self.__unix_group = group_info[2]
+
+
+    def __eq__(self, other):            # ignore init_time??
+        try:
+            return self.group_name == other.group_name and self.unix_group == other.unix_group and \
+                   self.ml == other.ml
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -288,15 +297,20 @@ class AWSGroupConfigurator(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict["time-initiated"] = self.__init_time
-        jdict['group-name'] = self.__group_name
-        jdict['unix-group'] = self.__unix_group
-        jdict['ml'] = self.__ml
+        jdict["time-initiated"] = self.init_time
+        jdict['group-name'] = self.group_name
+        jdict['unix-group'] = self.unix_group
+        jdict['ml'] = self.ml
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def init_time(self):
+        return self.__init_time
+
 
     @property
     def group_name(self):
@@ -316,5 +330,5 @@ class AWSGroupConfigurator(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSGroupConfigurator:{group_name%s, unix_group:%d, ml:%s}" % \
+        return "AWSGroupConfiguration:{group_name%s, unix_group:%d, ml:%s}" % \
                (self.group_name, self.unix_group, self.ml)

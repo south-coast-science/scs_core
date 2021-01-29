@@ -53,7 +53,7 @@ class Project(PersistentJSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -71,6 +71,14 @@ class Project(PersistentJSONable):
         """
         self.__location_path = location_path          # string
         self.__device_path = device_path              # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.location_path == other.location_path and self.device_path == other.device_path
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
