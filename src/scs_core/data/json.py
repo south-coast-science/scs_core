@@ -96,7 +96,7 @@ class JSONReport(JSONable):
             return None
 
         if not os.path.isfile(filename):
-            return cls.construct_from_jdict(None)
+            return cls.construct_from_jdict(None, default=default)
 
         with open(filename, 'r') as f:
             jstr = f.read()
@@ -210,7 +210,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None)
+            return cls.construct_from_jdict(None, default=default)
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
@@ -277,7 +277,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, name=name)
+            return cls.construct_from_jdict(None, name=name, default=default)
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 

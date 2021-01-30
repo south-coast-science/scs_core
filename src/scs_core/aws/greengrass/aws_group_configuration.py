@@ -65,10 +65,10 @@ class AWSGroupConfiguration(PersistentJSONable):
             except KeyError:
                 raise KeyError('GGC_USER')
 
-        self.__group_name = group_name
-        self.__init_time = init_time
-        self.__unix_group = unix_group
-        self.__ml = ml
+        self.__group_name = group_name                  # string
+        self.__init_time = init_time                    # LocalisedDatetime
+        self.__unix_group = unix_group                  # int
+        self.__ml = ml                                  # bool
 
 
     def __eq__(self, other):
@@ -148,9 +148,9 @@ class AWSGroupConfigurator(object):
         """
         self.__logger = Logging.getLogger()
 
-        self.__config = config
-        self.__client = client
-        self.__aws_info = PathDict()
+        self.__config = config                      # AWSGroupConfiguration
+        self.__client = client                      #
+        self.__aws_info = PathDict()                # PathDict
 
 
     # ----------------------------------------------------------------------------------------------------------------
