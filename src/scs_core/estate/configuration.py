@@ -2,8 +2,6 @@
 Created on 27 Jan 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
 """
 
 import json
@@ -209,6 +207,98 @@ class Configuration(JSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    def diff(self, other):
+        diff = Configuration(None, None, None, None,
+                             None, None, None, None, None,
+                             None, None, None, None, None,
+                             None, None, None, None, None, None,
+                             None, None, None, None, None, None,
+                             None)
+
+        if self.afe_baseline != other.afe_baseline:
+            diff.__afe_baseline = self.__afe_baseline
+
+        if self.afe_calib != other.afe_calib:
+            diff.__afe_calib = self.__afe_calib
+
+        if self.aws_api_auth != other.aws_api_auth:
+            diff.__aws_api_auth = self.__aws_api_auth
+
+        if self.aws_client_auth != other.aws_client_auth:
+            diff.__aws_client_auth = self.__aws_client_auth
+
+        if self.aws_group_config != other.aws_group_config:
+            diff.__aws_group_config = self.__aws_group_config
+
+        if self.aws_project != other.aws_project:
+            diff.__aws_project = self.__aws_project
+
+        if self.csv_logger_conf != other.csv_logger_conf:
+            diff.__csv_logger_conf = self.__csv_logger_conf
+
+        if self.display_conf != other.display_conf:
+            diff.__display_conf = self.__display_conf
+
+        if self.gas_baseline != other.gas_baseline:
+            diff.__gas_baseline = self.__gas_baseline
+
+        if self.gas_model_conf != other.gas_model_conf:
+            diff.__gas_model_conf = self.__gas_model_conf
+
+        if self.gps_conf != other.gps_conf:
+            diff.__gps_conf = self.__gps_conf
+
+        if self.greengrass_identity != other.greengrass_identity:
+            diff.__greengrass_identity = self.__greengrass_identity
+
+        if self.interface_conf != other.interface_conf:
+            diff.__interface_conf = self.__interface_conf
+
+        if self.mpl115a2_calib != other.mpl115a2_calib:
+            diff.__mpl115a2_calib = self.__mpl115a2_calib
+
+        if self.mpl115a2_conf != other.mpl115a2_conf:
+            diff.__mpl115a2_conf = self.__mpl115a2_conf
+
+        if self.mqtt_conf != other.mqtt_conf:
+            diff.__mqtt_conf = self.__mqtt_conf
+
+        if self.ndir_conf != other.ndir_conf:
+            diff.__ndir_conf = self.__ndir_conf
+
+        if self.opc_conf != other.opc_conf:
+            diff.__opc_conf = self.__opc_conf
+
+        if self.pmx_model_conf != other.pmx_model_conf:
+            diff.__pmx_model_conf = self.__pmx_model_conf
+
+        if self.psu_conf != other.psu_conf:
+            diff.__psu_conf = self.__psu_conf
+
+        if self.pt1000_calib != other.pt1000_calib:
+            diff.__pt1000_calib = self.__pt1000_calib
+
+        if self.scd30_conf != other.scd30_conf:
+            diff.__scd30_conf = self.__scd30_conf
+
+        if self.schedule != other.schedule:
+            diff.__schedule = self.__schedule
+
+        if self.shared_secret != other.shared_secret:
+            diff.__shared_secret = self.__shared_secret
+
+        if self.sht_conf != other.sht_conf:
+            diff.__sht_conf = self.__sht_conf
+
+        if self.system_id != other.system_id:
+            diff.__system_id = self.__system_id
+
+        if self.timezone_conf != other.timezone_conf:
+            diff.__timezone_conf = self.__timezone_conf
+
+        return diff
 
 
     # ----------------------------------------------------------------------------------------------------------------
