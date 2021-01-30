@@ -75,17 +75,17 @@ class TimezoneConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def timezone(self):
-        return Timezone(self.reporting_name())
+    def save(self, manager, encryption_key=None):
+        if self.__set_on is None:
+            self.__set_on = LocalizedDatetime.now()
+
+        super().save(manager, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host, encryption_key=None):
-        if self.__set_on is None:
-            self.__set_on = LocalizedDatetime.now().utc()
-
-        super().save(host, encryption_key=encryption_key)
+    def timezone(self):
+        return Timezone(self.reporting_name())
 
 
     # ----------------------------------------------------------------------------------------------------------------

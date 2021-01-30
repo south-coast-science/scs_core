@@ -17,6 +17,7 @@ from scs_core.aws.config.project import Project
 from scs_core.aws.greengrass.aws_group import AWSGroup
 from scs_core.aws.greengrass.gg_errors import ProjectMissingError
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
@@ -78,6 +79,15 @@ class AWSGroupConfiguration(PersistentJSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, manager, encryption_key=None):
+        if self.__init_time is None:
+            self.__init_time = LocalizedDatetime.now()
+
+        super().save(manager, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,7 +159,7 @@ class AWSGroupConfigurator(object):
         self.__logger = Logging.getLogger()
 
         self.__config = config                      # AWSGroupConfiguration
-        self.__client = client                      #
+        self.__client = client                      # Client
         self.__aws_info = PathDict()                # PathDict
 
 
