@@ -45,9 +45,9 @@ class Schedule(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return Schedule(OrderedDict())
+            return None if default is None else Schedule(OrderedDict())
 
         items = OrderedDict()
 
@@ -64,6 +64,21 @@ class Schedule(PersistentJSONable):
         Constructor
         """
         self.__items = items                # dict of name: ScheduleItem
+
+
+    def __eq__(self, other):
+        try:
+            if list(self.names()) != list(other.names()):
+                return False
+
+            for name in self.names():
+                if self.item(name) != other.item(name):
+                    return False
+
+            return True
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -109,6 +124,10 @@ class Schedule(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def names(self):
+        return self.__items.keys()
+
 
     @property
     def items(self):
@@ -165,6 +184,15 @@ class ScheduleItem(JSONable):
         self.__name = name
         self.__interval = round(float(interval), 1)                 # float     seconds between samples
         self.__tally = int(tally)                                   # int       number of samples per report
+
+
+    def __eq__(self, other):
+        try:
+            return self.name == other.name and self.interval == other.interval and \
+                   self.tally == other.tally
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

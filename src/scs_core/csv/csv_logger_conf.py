@@ -30,7 +30,7 @@ class CSVLoggerConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -50,6 +50,15 @@ class CSVLoggerConf(PersistentJSONable):
         self.__root_path = root_path                            # string
         self.__delete_oldest = bool(delete_oldest)              # bool
         self.__write_interval = int(write_interval)             # int
+
+
+    def __eq__(self, other):
+        try:
+            return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
+                   self.write_interval == other.write_interval
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

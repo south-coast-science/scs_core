@@ -6,7 +6,7 @@ Created on 2 Apr 2018
 WARNING: Path methods require that the __HOST field must be instantiated.
 
 example document:
-{"endpoint": "asrft7e5j5ecz.iot.us-west-2.amazonaws.com", "client-id": "bruno", "cert-id": "9f08402232"}
+{"endpoint": "endpoint.iot.us-west-2.amazonaws.com", "client-id": "bruno", "cert-id": "9f08402232"}
 """
 
 import os
@@ -31,8 +31,8 @@ class ClientAuth(PersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, encryption_key=None):
-        auth = super().load(manager, encryption_key=encryption_key)
+    def load(cls, manager, encryption_key=None, default=True):
+        auth = super().load(manager, encryption_key=encryption_key, default=default)
 
         if auth is None:
             return None
@@ -56,7 +56,7 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -78,6 +78,15 @@ class ClientAuth(PersistentJSONable):
         self.__cert_id = cert_id                    # String
 
         self.__manager = manager                    # FilesystemPersistenceManager
+
+
+    def __eq__(self, other):                # ignore manager
+        try:
+            return self.endpoint == other.endpoint and self.client_id == other.client_id and \
+                   self.cert_id == other.cert_id
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

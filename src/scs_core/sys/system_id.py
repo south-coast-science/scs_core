@@ -33,7 +33,7 @@ class SystemID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -61,6 +61,16 @@ class SystemID(PersistentJSONable):
         self.__configuration = configuration        # string
 
         self.__system_serial_number = system_serial_number        # string (by convention, int)
+
+
+    def __eq__(self, other):
+        try:
+            return self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
+                   self.model_name == other.model_name and self.configuration == other.configuration and \
+                   self.system_serial_number == other.system_serial_number
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

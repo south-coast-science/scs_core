@@ -6,7 +6,6 @@ Created on 15 Mar 2017
 A stub class for an NDIRConf that may be implemented elsewhere
 """
 
-from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -14,16 +13,30 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NDIRConf(PersistentJSONable, ABC):
+class NDIRConf(PersistentJSONable):
     """
     classdocs
     """
 
-    _FILENAME = "ndir_conf.json"
+    __FILENAME = "ndir_conf.json"
 
     @classmethod
     def persistence_location(cls):
-        raise NotImplementedError
+        return cls.conf_dir(), cls.__FILENAME
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, default=True):
+        if not jdict:
+            return None
+
+        model = jdict.get('model')
+        tally = jdict.get('tally')
+        raw = jdict.get('raw', False)
+
+        return cls(model, tally, raw)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -37,17 +50,24 @@ class NDIRConf(PersistentJSONable, ABC):
         self.__raw = raw
 
 
+    def __eq__(self, other):
+        try:
+            return self.model == other.model and self.tally == other.tally and self.raw == other.raw
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
-    # abstract NDIRConf...
 
-    @abstractmethod
-    def ndir(self, interface, host):
-        pass
-
-
-    @abstractmethod
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def ndir_monitor(self, interface, host):
-        pass
+        return None
+
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def ndir(self, interface, host):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -82,4 +102,4 @@ class NDIRConf(PersistentJSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NDIRConf:{model:%s, tally:%s, raw:%s}" %  (self.model, self.tally, self.raw)
+        return "NDIRConf(core):{model:%s, tally:%s, raw:%s}" %  (self.model, self.tally, self.raw)

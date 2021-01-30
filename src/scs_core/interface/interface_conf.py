@@ -1,8 +1,12 @@
 """
-Created on 06 Nov 2020
+Created on 21 Jun 2017
 
-@author: Jade Page (jade.page@southcoastscience.com)
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+specifies which sensor interface board is present, if any
+
+example JSON:
+{"model": "DFE", "inf": "/home/scs/SCS/pipes/lambda-model-gas-s1.uds"}
 """
 
 from collections import OrderedDict
@@ -12,16 +16,16 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BylineList(PersistentJSONable):
+class InterfaceConf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "device_bylines_list"
+    __FILENAME = "interface_conf.json"
 
     @classmethod
     def persistence_location(cls):
-        return cls.aws_dir(), cls.__FILENAME
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -31,31 +35,47 @@ class BylineList(PersistentJSONable):
         if not jdict:
             return None
 
-        byline_list = jdict.get('byline_list')
+        model = jdict.get('model')
 
-        return BylineList(byline_list)
+        return cls(model)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, byline_list):
+    def __init__(self, model):
         """
         Constructor
         """
-        self.__byline_list = byline_list
+        self.__model = model                                        # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.model == other.model
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def interface(self):
+        return None
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def byline_list(self):
-        return self.__byline_list
+    def model(self):
+        return self.__model
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['byline_list'] = self.__byline_list
+        jdict['model'] = self.model
 
         return jdict
 
@@ -63,5 +83,4 @@ class BylineList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "UptimeList:{byline_list:%s}" %  \
-               self.byline_list
+        return "InterfaceConf(core):{model:%s}" % self.model

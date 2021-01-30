@@ -35,7 +35,7 @@ class Pt1000Calib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -61,6 +61,14 @@ class Pt1000Calib(PersistentJSONable):
         self.__v20 = Datum.float(v20, 6)            # voltage at 20 °C
 
 
+    def __eq__(self, other):
+        try:
+            return self.calibrated_on == other.calibrated_on and self.v20 == other.v20
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, host, encryption_key=None):
@@ -75,7 +83,7 @@ class Pt1000Calib(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['calibrated-on'] = self.calibrated_on.as_iso8601(False)
+        jdict['calibrated-on'] = self.calibrated_on.as_iso8601()
         jdict['v20'] = self.v20
 
         return jdict

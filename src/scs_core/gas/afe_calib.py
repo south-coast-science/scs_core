@@ -117,7 +117,7 @@ class AFECalib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -128,7 +128,7 @@ class AFECalib(PersistentJSONable):
         dispatched_on = Datum.date(jdict.get('dispatched_on'))
 
         pt1000_v20 = jdict.get('pt1000_v20')
-        pt100_calib = None if pt1000_v20 is None else Pt1000Calib(calibrated_on, pt1000_v20)
+        pt1000_calib = None if pt1000_v20 is None else Pt1000Calib(calibrated_on, pt1000_v20)
 
         sensor_calibs = []
 
@@ -140,24 +140,41 @@ class AFECalib(PersistentJSONable):
 
                 sensor_calibs.append(SensorCalib.construct_from_jdict(jdict[key]))
 
-        return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs)
+        return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, serial_number, afe_type, calibrated_on, dispatched_on, pt100_calib, sensor_calibs):
+    def __init__(self, serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs):
         """
         Constructor
         """
-        self.__serial_number = serial_number
-        self.__afe_type = afe_type
+        self.__serial_number = serial_number            # string
+        self.__afe_type = afe_type                      # string
 
-        self.__calibrated_on = calibrated_on        # date
-        self.__dispatched_on = dispatched_on        # date
+        self.__calibrated_on = calibrated_on            # date
+        self.__dispatched_on = dispatched_on            # date
 
-        self.__pt100_calib = pt100_calib            # Pt1000Calib
+        self.__pt1000_calib = pt1000_calib              # Pt1000Calib
 
-        self.__sensor_calibs = sensor_calibs        # array of SensorCalib
+        self.__sensor_calibs = sensor_calibs            # array of SensorCalib
+
+
+    def __eq__(self, other):
+        try:
+            if len(self) != len(other):
+                return False
+
+            for i in range(len(self)):
+                if self.sensor_calib(i) != other.sensor_calib(i):
+                    return False
+
+            return self.serial_number == other.serial_number and self.afe_type == other.afe_type and \
+                self.calibrated_on == other.calibrated_on and self.dispatched_on == other.dispatched_on and \
+                self.pt1000_calib == other.pt1000_calib
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __len__(self):
@@ -300,7 +317,7 @@ class AFECalib(PersistentJSONable):
 
     @property
     def pt1000_calib(self):
-        return self.__pt100_calib
+        return self.__pt1000_calib
 
 
     def sensor_calib(self, i):
@@ -312,6 +329,6 @@ class AFECalib(PersistentJSONable):
     def __str__(self, *args, **kwargs):
         cls = self.__class__.__name__
         return cls + ":{serial_number:%s, afe_type:%s, calibrated_on:%s, " \
-                     "dispatched_on:%s, pt100_calib:%s, sensor_calibs:%s}" %  \
+                     "dispatched_on:%s, pt1000_calib:%s, sensor_calibs:%s}" %  \
                      (self.serial_number, self.afe_type, self.calibrated_on,
                       self.dispatched_on, self.pt1000_calib, Str.collection(self.__sensor_calibs))

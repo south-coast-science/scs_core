@@ -41,9 +41,9 @@ class AFEBaseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return AFEBaseline([SensorBaseline(None, 0, None)] * cls.__SENSORS)
+            return None if default is None else AFEBaseline([SensorBaseline(None, 0, None)] * cls.__SENSORS)
 
         sensor_baselines = []
 
@@ -63,6 +63,21 @@ class AFEBaseline(PersistentJSONable):
         Constructor
         """
         self.__sensor_baselines = sensor_baselines        # array of SensorBaseline
+
+
+    def __eq__(self, other):
+        try:
+            if len(self) != len(other):
+                return False
+
+            for i in range(len(self)):
+                if self.sensor_baseline(i) != other.sensor_baseline(i):
+                    return False
+
+                return True
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __len__(self):

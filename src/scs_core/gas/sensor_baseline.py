@@ -53,6 +53,15 @@ class SensorBaseline(JSONable):
         self.__environment = environment                # BaselineEnvironment
 
 
+    def __eq__(self, other):
+        try:
+            return self.calibrated_on == other.calibrated_on and self.offset == other.offset and \
+                   self.environment == other.environment
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -120,6 +129,14 @@ class BaselineEnvironment(JSONable):
         self.__humid = Datum.float(humid, 1)            # float                 %
         self.__temp = Datum.float(temp, 1)              # float                 °C
         self.__press = Datum.float(press, 1)            # float                 kPa
+
+
+    def __eq__(self, other):
+        try:
+            return self.humid == other.humid and self.temp == other.temp and self.press == other.press
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

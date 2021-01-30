@@ -1,8 +1,12 @@
 """
-Created on 06 Nov 2020
+Created on 21 Jun 2018
 
-@author: Jade Page (jade.page@southcoastscience.com)
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+specifies fixed altitude or "auto" (altitude provided by GPS receiver), or None
+
+example JSON:
+{"altitude": "auto"}
 """
 
 from collections import OrderedDict
@@ -12,16 +16,16 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BylineList(PersistentJSONable):
+class MPL115A2Conf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "device_bylines_list"
+    __FILENAME = "mpl115a2_conf.json"
 
     @classmethod
     def persistence_location(cls):
-        return cls.aws_dir(), cls.__FILENAME
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -31,31 +35,41 @@ class BylineList(PersistentJSONable):
         if not jdict:
             return None
 
-        byline_list = jdict.get('byline_list')
+        altitude = jdict.get('altitude')
 
-        return BylineList(byline_list)
+        return MPL115A2Conf(altitude)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, byline_list):
+    def __init__(self, altitude):
         """
         Constructor
         """
-        self.__byline_list = byline_list
+        self.__altitude = altitude              # int, "auto" or None
+
+
+    def __eq__(self, other):
+        try:
+            return self.altitude == other.altitude
+
+        except (TypeError, AttributeError):
+            return False
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def byline_list(self):
-        return self.__byline_list
+    def altitude(self):
+        return self.__altitude
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['byline_list'] = self.__byline_list
+        jdict['altitude'] = self.__altitude
 
         return jdict
 
@@ -63,5 +77,4 @@ class BylineList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "UptimeList:{byline_list:%s}" %  \
-               self.byline_list
+        return "MPL115A2Conf:{altitude:%s}" % self.altitude

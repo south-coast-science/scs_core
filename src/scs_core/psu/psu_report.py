@@ -22,7 +22,7 @@ class PSUReport(JSONReport, ABC):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         pass
 
 

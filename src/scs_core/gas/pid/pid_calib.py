@@ -18,7 +18,7 @@ class PIDCalib(SensorCalib):
     """
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -41,6 +41,15 @@ class PIDCalib(SensorCalib):
 
         self.__pid_elc_mv = Datum.int(pid_elc_mv)                 # PID electronic zero                   mV
         self.__pid_sens_mv = Datum.float(pid_sens_mv, 6)          # PID sensitivity                       mV / ppm
+
+
+    def __eq__(self, other):
+        try:
+            return self.serial_number == other.serial_number and self.sensor_type == other.sensor_type and \
+                   self.pid_elc_mv == other.pid_elc_mv and self.pid_sens_mv == other.pid_sens_mv
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
