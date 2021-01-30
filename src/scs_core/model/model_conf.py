@@ -37,7 +37,7 @@ class ModelConf(ABC, PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -57,6 +57,15 @@ class ModelConf(ABC, PersistentJSONable):
         self.__uds_path = uds_path                                  # string
         self.__model_interface = model_interface                    # string
         self.__resource_names = resource_names                      # dict of string: string
+
+
+    def __eq__(self, other):
+        try:
+            return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
+                   self.resource_names == other.resource_names
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

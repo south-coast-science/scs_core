@@ -35,7 +35,7 @@ class MPL115A2Calib(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -53,6 +53,14 @@ class MPL115A2Calib(PersistentJSONable):
         """
         self.__calibrated_on = calibrated_on        # LocalizedDatetime
         self.__c25 = Datum.int(c25)                 # T adc count at 25 °C
+
+
+    def __eq__(self, other):
+        try:
+            return self.calibrated_on == other.calibrated_on and self.c25 == other.c25
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

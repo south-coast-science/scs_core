@@ -42,9 +42,9 @@ class AirNowMappingTaskList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return AirNowMappingTaskList({})
+            return None if default is None else AirNowMappingTaskList({})
 
         tasks = {literal_eval(key): MappingTask.construct_from_jdict(task) for key, task in jdict.get('tasks').items()}
 

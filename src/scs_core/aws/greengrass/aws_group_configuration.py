@@ -18,6 +18,7 @@ from scs_core.aws.greengrass.aws_group import AWSGroup
 from scs_core.aws.greengrass.gg_errors import ProjectMissingError
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
 
@@ -27,12 +28,122 @@ from scs_core.sys.system_id import SystemID
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSGroupConfigurator(PersistentJSONable):
+class AWSGroupConfiguration(PersistentJSONable):
     """
     classdocs
     """
 
     __FILENAME = "aws_group_config.json"
+
+    @classmethod
+    def persistence_location(cls):
+        return cls.aws_dir(), cls.__FILENAME
+
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, default=True):
+        if not jdict:
+            return None
+
+        group_name = jdict.get('group-name')
+        init_time = Datum.datetime(jdict.get('time-initiated'))
+        ml = jdict.get('ml')
+        unix_group = jdict.get('unix-group')
+
+        return cls(group_name, init_time, unix_group=unix_group, ml=ml)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, group_name, init_time, unix_group=None, ml=False):
+        """
+        Constructor
+        """
+        if unix_group is None:
+            try:
+                group_info = grp.getgrnam('ggc_user')
+                unix_group = group_info[2]
+            except KeyError:
+                raise KeyError('GGC_USER')
+
+        self.__group_name = group_name                  # string
+        self.__init_time = init_time                    # LocalisedDatetime
+        self.__unix_group = unix_group                  # int
+        self.__ml = ml                                  # bool
+
+
+    def __eq__(self, other):
+        try:
+            return self.group_name == other.group_name and self.init_time == other.init_time and \
+                   self.unix_group == other.unix_group and self.ml == other.ml
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, manager, encryption_key=None):
+        if self.__init_time is None:
+            self.__init_time = LocalizedDatetime.now()
+
+        super().save(manager, encryption_key=encryption_key)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def configurator(self, client):
+        return AWSGroupConfigurator(self, client)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['group-name'] = self.group_name
+        jdict["time-initiated"] = self.init_time
+        jdict['unix-group'] = self.unix_group
+        jdict['ml'] = self.ml
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def group_name(self):
+        return self.__group_name
+
+
+    @property
+    def init_time(self):
+        return self.__init_time
+
+
+    @property
+    def unix_group(self):
+        return self.__unix_group
+
+
+    @property
+    def ml(self):
+        return self.__ml
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AWSGroupConfiguration:{group_name%s, init_time:%d, unix_group:%d, ml:%s}" % \
+               (self.group_name, self.init_time, self.unix_group, self.ml)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AWSGroupConfigurator(object):
+    """
+    classdocs
+    """
 
     __CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -41,55 +152,21 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def persistence_location(cls):
-        return cls.aws_dir(), cls.__FILENAME
-
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        group_name = jdict.get('group-name')
-        unix_group = jdict.get('unix-group')
-        ml = jdict.get('ml')
-
-        return AWSGroupConfigurator(group_name, unix_group, ml)
-
-
-    @classmethod
-    def construct(cls, group_name, unix_group):
-        return Project(group_name, unix_group)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, group_name, client, ml=False):
+    def __init__(self, config: AWSGroupConfiguration, client):
         """
         Constructor
         """
         self.__logger = Logging.getLogger()
 
-        group_info = None
-        try:
-            group_info = grp.getgrnam('ggc_user')
-        except KeyError:
-            self.__logger.error("Group GGC_USER not found. This may indicate an invalid system setup.")
-            exit(2)
-
-        self.__client = client
-        self.__init_time = LocalizedDatetime.now().utc()
-        self.__aws_info = PathDict()
-        self.__ml = ml
-        self.__group_name = group_name
-        self.__unix_group = group_info[2]
+        self.__config = config                      # AWSGroupConfiguration
+        self.__client = client                      # Client
+        self.__aws_info = PathDict()                # PathDict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def collect_information(self, host):
-        aws_json_reader = AWSGroup(self.__group_name, self.__client)
+        aws_json_reader = AWSGroup(self.config.group_name, self.__client)
         aws_json_reader.get_group_info_from_name()
         aws_json_reader.get_group_arns()
         self.__aws_info.append("GroupID", aws_json_reader.retrieve_node("GroupID"))
@@ -121,7 +198,7 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     def define_aws_group_resources(self, host):
         # Setup default JSON
-        if self.__ml:
+        if self.config.ml:
             j_file = os.path.join(self.__V2, 'gg_resources_ml.json')
         else:
             j_file = os.path.join(self.__V1, 'gg_resources.json')
@@ -143,7 +220,7 @@ class AWSGroupConfigurator(PersistentJSONable):
         r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "GroupOwnerSetting"]["GroupOwner"] = group_owner_name
 
-        if self.__ml:
+        if self.config.ml:
             r_data["InitialVersion"]["Resources"][1]["Id"] = (
                 (system_id + "-ml-pm1"))  # Edit resource name
             r_data["InitialVersion"]["Resources"][2]["Id"] = (
@@ -167,7 +244,7 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     def define_aws_group_functions(self):
         # Get template JSON
-        if self.__ml:
+        if self.config.ml:
             j_file = os.path.join(self.__V1, 'gg_functions_ml.json')
         else:
             j_file = os.path.join(self.__V1, 'gg_functions.json')
@@ -184,7 +261,7 @@ class AWSGroupConfigurator(PersistentJSONable):
             "ResourceId"] = data_volume_name
         f_data["InitialVersion"]["Functions"][1]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
             "ResourceId"] = data_volume_name
-        if self.__ml:
+        if self.config.ml:
             f_data["InitialVersion"]["Functions"][2]["Id"] = (system_id + "-PMxInference")
             f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 0]["ResourceId"] = data_volume_name
@@ -265,8 +342,6 @@ class AWSGroupConfigurator(PersistentJSONable):
         self.__logger.info(response)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     def create_aws_group_definition(self):
         self.__logger.info("Creating group definition")
         self.__logger.info(self.__aws_info.node("GroupID"))
@@ -285,36 +360,23 @@ class AWSGroupConfigurator(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict["time-initiated"] = self.__init_time
-        jdict['group-name'] = self.__group_name
-        jdict['unix-group'] = self.__unix_group
-        jdict['ml'] = self.__ml
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @property
-    def group_name(self):
-        return self.__group_name
+    def config(self):
+        return self.__config
 
 
     @property
-    def unix_group(self):
-        return self.__unix_group
+    def client(self):
+        return self.__client
 
 
     @property
-    def ml(self):
-        return self.__ml
+    def aws_info(self):
+        return self.__aws_info
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSGroupConfigurator:{group_name%s, unix_group:%d, ml:%s}" % \
-               (self.group_name, self.unix_group, self.ml)
+        return "AWSGroupConfigurator:{config:%s, client:%s, aws_info:%s}" % \
+               (self.config, self.client, self.aws_info)

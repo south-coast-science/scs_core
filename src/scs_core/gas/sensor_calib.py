@@ -25,7 +25,7 @@ class SensorCalib(ABC, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         from scs_core.gas.a4.a4_calib import A4Calib            # late import
         from scs_core.gas.pid.pid_calib import PIDCalib         # late import
 
@@ -55,6 +55,14 @@ class SensorCalib(ABC, JSONable):
         """
         self.__serial_number = serial_number                    # int
         self.__sensor_type = sensor_type                        # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.serial_number == other.serial_number and self.sensor_type == other.sensor_type
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

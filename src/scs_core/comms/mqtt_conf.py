@@ -31,9 +31,9 @@ class MQTTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return MQTTConf(False, None, False)
+            return None if default is None else MQTTConf(False, None, False)
 
         inhibit_publishing = jdict.get('inhibit-publishing', False)
         report_file = jdict.get('report-file', None)
@@ -51,6 +51,15 @@ class MQTTConf(PersistentJSONable):
         self.__inhibit_publishing = bool(inhibit_publishing)                # do not attempt to publish
         self.__report_file = report_file                                    # tmp file to store current queue length
         self.__debug = bool(debug)                                          # DEBUG log level
+
+
+    def __eq__(self, other):
+        try:
+            return self.inhibit_publishing == other.inhibit_publishing and self.report_file == other.report_file and \
+                   self.debug == other.debug
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

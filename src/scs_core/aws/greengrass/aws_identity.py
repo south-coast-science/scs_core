@@ -18,23 +18,25 @@ from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSSetup(PersistentJSONable):
+class AWSIdentity(PersistentJSONable):
     """
     classdocs
     """
 
     __CERTS_PATH = "/greengrass/certs/"
     __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
-    __FILENAME = "greengrass_identity.json"
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    __FILENAME = "greengrass_identity.json"
 
     @classmethod
     def persistence_location(cls):
         return cls.aws_dir(), cls.__FILENAME
 
+
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if jdict is None:
             return None
 
@@ -43,7 +45,37 @@ class AWSSetup(PersistentJSONable):
         iot_client = None
         gg_client = None
 
-        return AWSSetup(iot_client, gg_client, core_name, group_name)
+        return AWSIdentity(iot_client, gg_client, core_name, group_name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def return_default_policy():
+        # create iot policy
+
+        core_policy_doc = {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    # iot data plane
+                    "Action": ["iot:Publish", "iot:Subscribe", "iot:Connect", "iot:Receive", "iot:GetThingShadow",
+                               "iot:DeleteThingShadow", "iot:UpdateThingShadow"],
+                    "Resource": ["arn:aws:iot:us-west-2:*:*"]
+                },
+                {
+                    "Effect": "Allow",
+                    # Greengrass data plane
+                    "Action": ["greengrass:AssumeRoleForGroup", "greengrass:CreateCertificate",
+                               "greengrass:GetConnectivityInfo", "greengrass:GetDeployment",
+                               "greengrass:GetDeploymentArtifacts", "greengrass:UpdateConnectivityInfo",
+                               "greengrass:UpdateCoreDeploymentStatus"],
+                    "Resource": ["*"]
+                }
+            ]
+        }
+        return core_policy_doc
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -65,6 +97,14 @@ class AWSSetup(PersistentJSONable):
         self.__latest_logger_version_arn = None
         self.__latest_group_version_arn = None
         self.__hash = None
+
+
+    def __eq__(self, other):
+        try:
+            return self.core_name == other.core_name and self.group_name == other.group_name
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -285,37 +325,26 @@ class AWSSetup(PersistentJSONable):
     def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
-        jdict['core-name'] = self.__core_name
-        jdict['group-name'] = self.__group_name
+        jdict['core-name'] = self.core_name
+        jdict['group-name'] = self.group_name
 
         return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def return_default_policy():
-        # create iot policy
+    @property
+    def core_name(self):
+        return self.__core_name
 
-        core_policy_doc = {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Effect": "Allow",
-                    # iot data plane
-                    "Action": ["iot:Publish", "iot:Subscribe", "iot:Connect", "iot:Receive", "iot:GetThingShadow",
-                               "iot:DeleteThingShadow", "iot:UpdateThingShadow"],
-                    "Resource": ["arn:aws:iot:us-west-2:*:*"]
-                },
-                {
-                    "Effect": "Allow",
-                    # Greengrass data plane
-                    "Action": ["greengrass:AssumeRoleForGroup", "greengrass:CreateCertificate",
-                               "greengrass:GetConnectivityInfo", "greengrass:GetDeployment",
-                               "greengrass:GetDeploymentArtifacts", "greengrass:UpdateConnectivityInfo",
-                               "greengrass:UpdateCoreDeploymentStatus"],
-                    "Resource": ["*"]
-                }
-            ]
-        }
-        return core_policy_doc
+
+    @property
+    def group_name(self):
+        return self.__group_name
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AWSIdentity:{core_name:%s, group_name:%s}" % (self.core_name, self.group_name)
+

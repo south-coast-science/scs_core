@@ -32,7 +32,7 @@ class A4Calib(SensorCalib):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -83,6 +83,21 @@ class A4Calib(SensorCalib):
 
         self.__we_sens_mv = Datum.float(we_sens_mv, 3)              # WE sensitivity                        mV / ppb
         self.__we_no2_x_sens_mv = Datum.float(we_no2_x_sens_mv, 3)  # WE cross-sensitivity                  mV / ppb
+
+
+    def __eq__(self, other):
+        try:
+            return self.serial_number == other.serial_number and self.sensor_type == other.sensor_type and \
+                   self.we_elc_mv == other.we_elc_mv and self.we_cal_mv == other.we_cal_mv and \
+                   self.we_tot_mv == other.we_tot_mv and \
+                   self.ae_elc_mv == other.ae_elc_mv and self.ae_cal_mv == other.ae_cal_mv and \
+                   self.ae_tot_mv == other.ae_tot_mv and \
+                   self.we_sens_na == other.we_sens_na and self.we_x_sens_na == other.we_x_sens_na and \
+                   self.pcb_gain == other.pcb_gain and \
+                   self.we_sens_mv == other.we_sens_mv and self.we_no2_x_sens_mv == other.we_no2_x_sens_mv
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

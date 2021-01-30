@@ -45,7 +45,7 @@ class SharedSecret(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -61,6 +61,14 @@ class SharedSecret(PersistentJSONable):
         Constructor
         """
         self.__key = key            # String
+
+
+    def __eq__(self, other):
+        try:
+            return self.key == other.key
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

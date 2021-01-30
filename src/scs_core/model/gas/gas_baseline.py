@@ -35,9 +35,9 @@ class GasBaseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return cls({})
+            return None if default is None else cls({})
 
         sensor_baselines = {}
 
@@ -54,6 +54,21 @@ class GasBaseline(PersistentJSONable):
         Constructor
         """
         self.__sensor_baselines = sensor_baselines          # dict of gas: SensorBaseline
+
+
+    def __eq__(self, other):
+        try:
+            if list(self.gases()) != list(other.gases()):
+                return False
+
+            for gas in self.gases():
+                if self.sensor_baseline(gas) != other.sensor_baseline(gas):
+                    return False
+
+            return True
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __len__(self):

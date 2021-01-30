@@ -1,29 +1,30 @@
 """
-Created on 2 Apr 2018
+Created on 8 Sep 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example document:
-{"endpoint": "xy1eszuu23.execute-api.us-west-2.amazonaws.com", "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d74a1f"}
+example JSON:
+{"sample-interval": 2, "temp-offset": 0.0}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class APIAuth(PersistentJSONable):
+class SCD30Conf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "aws_api_auth.json"
+    __FILENAME = "scd30_conf.json"
 
     @classmethod
     def persistence_location(cls):
-        return cls.aws_dir(), cls.__FILENAME
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -33,25 +34,26 @@ class APIAuth(PersistentJSONable):
         if not jdict:
             return None
 
-        endpoint = jdict.get('endpoint')
-        api_key = jdict.get('api-key')
+        sample_interval = jdict.get('sample-interval')
+        temperature_offset = jdict.get('temp-offset')
 
-        return cls(endpoint, api_key)
+        return cls(sample_interval, temperature_offset)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, endpoint, api_key):
+    def __init__(self, sample_interval, temperature_offset):
         """
         Constructor
         """
-        self.__endpoint = endpoint              # String
-        self.__api_key = api_key                # String
+        self.__sample_interval = Datum.int(sample_interval)                     # int       seconds
+        self.__temperature_offset = Datum.float(temperature_offset, 1)          # float     °C
 
 
     def __eq__(self, other):
         try:
-            return self.endpoint == other.endpoint and self.api_key == other.api_key
+            return self.sample_interval == other.sample_interval and \
+                   self.temperature_offset == other.temperature_offset
 
         except (TypeError, AttributeError):
             return False
@@ -59,11 +61,18 @@ class APIAuth(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def scd30():
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['endpoint'] = self.endpoint
-        jdict['api-key'] = self.api_key
+        jdict['sample-interval'] = self.sample_interval
+        jdict['temp-offset'] = self.temperature_offset
 
         return jdict
 
@@ -71,16 +80,17 @@ class APIAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def endpoint(self):
-        return self.__endpoint
+    def sample_interval(self):
+        return self.__sample_interval
 
 
     @property
-    def api_key(self):
-        return self.__api_key
+    def temperature_offset(self):
+        return self.__temperature_offset
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "APIAuth:{endpoint:%s, api_key:%s}" % (self.endpoint, self.api_key)
+        return "SCD30Conf(core):{sample_interval:%s, temperature_offset:%s}" %  \
+               (self.sample_interval, self.temperature_offset)

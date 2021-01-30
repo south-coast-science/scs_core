@@ -45,9 +45,9 @@ class TimezoneConf(PersistentJSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return TimezoneConf(None, None)
+            return None if default is None else TimezoneConf(None, None)
 
         set_on = Datum.datetime(jdict.get('set-on'))
         name = jdict.get('name')
@@ -65,6 +65,23 @@ class TimezoneConf(PersistentJSONable):
         self.__name = name                              # a Pytz timezone name or None
 
 
+    def __eq__(self, other):
+        try:
+            return self.set_on == other.set_on and self.name == other.name
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, manager, encryption_key=None):
+        if self.__set_on is None:
+            self.__set_on = LocalizedDatetime.now()
+
+        super().save(manager, encryption_key=encryption_key)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def timezone(self):
@@ -73,19 +90,10 @@ class TimezoneConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host, encryption_key=None):
-        if self.__set_on is None:
-            self.__set_on = LocalizedDatetime.now().utc()
-
-        super().save(host, encryption_key=encryption_key)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['set-on'] = None if self.set_on is None else self.set_on.as_iso8601(False)
+        jdict['set-on'] = None if self.set_on is None else self.set_on.as_iso8601()
         jdict['name'] = self.name
 
         return jdict
