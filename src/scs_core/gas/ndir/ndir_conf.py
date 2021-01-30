@@ -60,10 +60,13 @@ class NDIRConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def ndir_monitor(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def ndir(self, interface, host):
         return None
 
