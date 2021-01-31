@@ -74,18 +74,22 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def psu(self, host, interface_model):
         return None
 
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def psu_monitor(self, host, interface_model, ignore_standby):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def psu_class(self):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def psu_report_class(self):
         return None
 

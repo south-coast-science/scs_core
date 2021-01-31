@@ -76,10 +76,12 @@ class GPSConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def gps_monitor(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def gps(self, interface, host):
         return None
 
