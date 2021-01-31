@@ -74,10 +74,12 @@ class SHTConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic
     def int_sht(self):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def ext_sht(self):
         return None
 

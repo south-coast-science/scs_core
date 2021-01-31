@@ -77,14 +77,17 @@ class OPCConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def opc_monitor(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def opc(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def uses_spi(self):
         return True
 
