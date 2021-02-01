@@ -2,8 +2,6 @@
 Created on 27 Jan 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example:
 """
 
 import json
@@ -76,33 +74,33 @@ class Configuration(JSONable):
         if not jdict:
             return None
 
-        afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=False)
-        afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'))
-        aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'))
-        aws_client_auth = ClientAuth.construct_from_jdict(jdict.get('aws-client-auth'))
-        aws_group_config = AWSGroupConfiguration.construct_from_jdict(jdict.get('aws-group-config'))
-        aws_project = Project.construct_from_jdict(jdict.get('aws-project'))
-        csv_logger_conf = CSVLoggerConf.construct_from_jdict(jdict.get('csv-logger-conf'))
-        display_conf = DisplayConf.construct_from_jdict(jdict.get('display-conf'))
-        gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'), default=False)
-        gas_model_conf = GasModelConf.construct_from_jdict(jdict.get('gas-model-conf'))
-        gps_conf = GPSConf.construct_from_jdict(jdict.get('gps-conf'))
-        greengrass_identity = AWSIdentity.construct_from_jdict(jdict.get('greengrass-identity'))
-        interface_conf = InterfaceConf.construct_from_jdict(jdict.get('interface-conf'))
-        mpl115a2_calib = MPL115A2Calib.construct_from_jdict(jdict.get('mpl115a2-calib'))
-        mpl115a2_conf = MPL115A2Conf.construct_from_jdict(jdict.get('mpl115a2-conf'))
-        mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'), default=False)
-        ndir_conf = NDIRConf.construct_from_jdict(jdict.get('ndir-conf'))
-        opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'))
-        pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'))
-        psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'))
-        pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'))
-        scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'))
-        schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=False)
-        shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'))
-        sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'))
-        system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
-        timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=False)
+        afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=None)
+        afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'), default=None)
+        aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'), default=None)
+        aws_client_auth = ClientAuth.construct_from_jdict(jdict.get('aws-client-auth'), default=None)
+        aws_group_config = AWSGroupConfiguration.construct_from_jdict(jdict.get('aws-group-config'), default=None)
+        aws_project = Project.construct_from_jdict(jdict.get('aws-project'), default=None)
+        csv_logger_conf = CSVLoggerConf.construct_from_jdict(jdict.get('csv-logger-conf'), default=None)
+        display_conf = DisplayConf.construct_from_jdict(jdict.get('display-conf'), default=None)
+        gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'), default=None)
+        gas_model_conf = GasModelConf.construct_from_jdict(jdict.get('gas-model-conf'), default=None)
+        gps_conf = GPSConf.construct_from_jdict(jdict.get('gps-conf'), default=None)
+        greengrass_identity = AWSIdentity.construct_from_jdict(jdict.get('greengrass-identity'), default=None)
+        interface_conf = InterfaceConf.construct_from_jdict(jdict.get('interface-conf'), default=None)
+        mpl115a2_calib = MPL115A2Calib.construct_from_jdict(jdict.get('mpl115a2-calib'), default=None)
+        mpl115a2_conf = MPL115A2Conf.construct_from_jdict(jdict.get('mpl115a2-conf'), default=None)
+        mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'), default=None)
+        ndir_conf = NDIRConf.construct_from_jdict(jdict.get('ndir-conf'), default=None)
+        opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'), default=None)
+        pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'), default=None)
+        psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'), default=None)
+        pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'), default=None)
+        scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'), default=None)
+        schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=None)
+        shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'), default=None)
+        sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'), default=None)
+        system_id = SystemID.construct_from_jdict(jdict.get('system-id'), default=None)
+        timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=None)
 
         return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
                    aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
@@ -114,33 +112,33 @@ class Configuration(JSONable):
 
     @classmethod
     def load(cls, manager):
-        afe_baseline = AFEBaseline.load(manager)
-        afe_calib = AFECalib.load(manager)
-        aws_api_auth = APIAuth.load(manager)
-        aws_client_auth = ClientAuth.load(manager)
-        aws_group_config = AWSGroupConfiguration.load(manager)
-        aws_project = Project.load(manager)
-        csv_logger_conf = CSVLoggerConf.load(manager)
-        display_conf = DisplayConf.load(manager)
-        gas_baseline = GasBaseline.load(manager)
-        gas_model_conf = GasModelConf.load(manager)
-        gps_conf = GPSConf.load(manager)
-        greengrass_identity = AWSIdentity.load(manager)
-        interface_conf = InterfaceConf.load(manager)
-        mpl115a2_calib = MPL115A2Calib.load(manager)
-        mpl115a2_conf = MPL115A2Conf.load(manager)
-        mqtt_conf = MQTTConf.load(manager)
-        ndir_conf = NDIRConf.load(manager)
-        opc_conf = OPCConf.load(manager)
-        pmx_model_conf = PMxModelConf.load(manager)
-        psu_conf = PSUConf.load(manager)
-        pt1000_calib = Pt1000Calib.load(manager)
-        scd30_conf = SCD30Conf.load(manager)
-        schedule = Schedule.load(manager)
-        shared_secret = SharedSecret.load(manager)
-        sht_conf = SHTConf.load(manager)
-        system_id = SystemID.load(manager)
-        timezone_conf = TimezoneConf.load(manager)
+        afe_baseline = AFEBaseline.load(manager, default=None)
+        afe_calib = AFECalib.load(manager, default=None)
+        aws_api_auth = APIAuth.load(manager, default=None)
+        aws_client_auth = ClientAuth.load(manager, default=None)
+        aws_group_config = AWSGroupConfiguration.load(manager, default=None)
+        aws_project = Project.load(manager, default=None)
+        csv_logger_conf = CSVLoggerConf.load(manager, default=None)
+        display_conf = DisplayConf.load(manager, default=None)
+        gas_baseline = GasBaseline.load(manager, default=None)
+        gas_model_conf = GasModelConf.load(manager, default=None)
+        gps_conf = GPSConf.load(manager, default=None)
+        greengrass_identity = AWSIdentity.load(manager, default=None)
+        interface_conf = InterfaceConf.load(manager, default=None)
+        mpl115a2_calib = MPL115A2Calib.load(manager, default=None)
+        mpl115a2_conf = MPL115A2Conf.load(manager, default=None)
+        mqtt_conf = MQTTConf.load(manager, default=None)
+        ndir_conf = NDIRConf.load(manager, default=None)
+        opc_conf = OPCConf.load(manager, default=None)
+        pmx_model_conf = PMxModelConf.load(manager, default=None)
+        psu_conf = PSUConf.load(manager, default=None)
+        pt1000_calib = Pt1000Calib.load(manager, default=None)
+        scd30_conf = SCD30Conf.load(manager, default=None)
+        schedule = Schedule.load(manager, default=None)
+        shared_secret = SharedSecret.load(manager, default=None)
+        sht_conf = SHTConf.load(manager, default=None)
+        system_id = SystemID.load(manager, default=None)
+        timezone_conf = TimezoneConf.load(manager, default=None)
 
         return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
                    aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
@@ -209,6 +207,98 @@ class Configuration(JSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    def diff(self, other):
+        diff = Configuration(None, None, None, None,
+                             None, None, None, None, None,
+                             None, None, None, None, None,
+                             None, None, None, None, None, None,
+                             None, None, None, None, None, None,
+                             None)
+
+        if self.afe_baseline != other.afe_baseline:
+            diff.__afe_baseline = self.__afe_baseline
+
+        if self.afe_calib != other.afe_calib:
+            diff.__afe_calib = self.__afe_calib
+
+        if self.aws_api_auth != other.aws_api_auth:
+            diff.__aws_api_auth = self.__aws_api_auth
+
+        if self.aws_client_auth != other.aws_client_auth:
+            diff.__aws_client_auth = self.__aws_client_auth
+
+        if self.aws_group_config != other.aws_group_config:
+            diff.__aws_group_config = self.__aws_group_config
+
+        if self.aws_project != other.aws_project:
+            diff.__aws_project = self.__aws_project
+
+        if self.csv_logger_conf != other.csv_logger_conf:
+            diff.__csv_logger_conf = self.__csv_logger_conf
+
+        if self.display_conf != other.display_conf:
+            diff.__display_conf = self.__display_conf
+
+        if self.gas_baseline != other.gas_baseline:
+            diff.__gas_baseline = self.__gas_baseline
+
+        if self.gas_model_conf != other.gas_model_conf:
+            diff.__gas_model_conf = self.__gas_model_conf
+
+        if self.gps_conf != other.gps_conf:
+            diff.__gps_conf = self.__gps_conf
+
+        if self.greengrass_identity != other.greengrass_identity:
+            diff.__greengrass_identity = self.__greengrass_identity
+
+        if self.interface_conf != other.interface_conf:
+            diff.__interface_conf = self.__interface_conf
+
+        if self.mpl115a2_calib != other.mpl115a2_calib:
+            diff.__mpl115a2_calib = self.__mpl115a2_calib
+
+        if self.mpl115a2_conf != other.mpl115a2_conf:
+            diff.__mpl115a2_conf = self.__mpl115a2_conf
+
+        if self.mqtt_conf != other.mqtt_conf:
+            diff.__mqtt_conf = self.__mqtt_conf
+
+        if self.ndir_conf != other.ndir_conf:
+            diff.__ndir_conf = self.__ndir_conf
+
+        if self.opc_conf != other.opc_conf:
+            diff.__opc_conf = self.__opc_conf
+
+        if self.pmx_model_conf != other.pmx_model_conf:
+            diff.__pmx_model_conf = self.__pmx_model_conf
+
+        if self.psu_conf != other.psu_conf:
+            diff.__psu_conf = self.__psu_conf
+
+        if self.pt1000_calib != other.pt1000_calib:
+            diff.__pt1000_calib = self.__pt1000_calib
+
+        if self.scd30_conf != other.scd30_conf:
+            diff.__scd30_conf = self.__scd30_conf
+
+        if self.schedule != other.schedule:
+            diff.__schedule = self.__schedule
+
+        if self.shared_secret != other.shared_secret:
+            diff.__shared_secret = self.__shared_secret
+
+        if self.sht_conf != other.sht_conf:
+            diff.__sht_conf = self.__sht_conf
+
+        if self.system_id != other.system_id:
+            diff.__system_id = self.__system_id
+
+        if self.timezone_conf != other.timezone_conf:
+            diff.__timezone_conf = self.__timezone_conf
+
+        return diff
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -281,7 +371,6 @@ class Configuration(JSONable):
             self.scd30_conf.save(manager)
 
         if self.schedule:
-            print("saving schedule: %s" % self.schedule)
             self.schedule.save(manager)
 
         if self.shared_secret:

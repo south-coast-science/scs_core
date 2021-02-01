@@ -47,7 +47,7 @@ class TimezoneConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return TimezoneConf(None, None) if default else None
+            return None if default is None else TimezoneConf(None, None)
 
         set_on = Datum.datetime(jdict.get('set-on'))
         name = jdict.get('name')
@@ -75,17 +75,17 @@ class TimezoneConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def timezone(self):
-        return Timezone(self.reporting_name())
+    def save(self, manager, encryption_key=None):
+        if self.__set_on is None:
+            self.__set_on = LocalizedDatetime.now()
+
+        super().save(manager, encryption_key=encryption_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host, encryption_key=None):
-        if self.__set_on is None:
-            self.__set_on = LocalizedDatetime.now().utc()
-
-        super().save(host, encryption_key=encryption_key)
+    def timezone(self):
+        return Timezone(self.reporting_name())
 
 
     # ----------------------------------------------------------------------------------------------------------------

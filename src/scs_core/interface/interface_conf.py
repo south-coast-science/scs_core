@@ -59,6 +59,7 @@ class InterfaceConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic
     def interface(self):
         return None
 

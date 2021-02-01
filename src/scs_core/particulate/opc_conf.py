@@ -33,7 +33,7 @@ class OPCConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, name=None):
+    def construct_from_jdict(cls, jdict, name=None, default=True):
         if not jdict:
             return None
 
@@ -77,14 +77,17 @@ class OPCConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def opc_monitor(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def opc(self, interface, host):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def uses_spi(self):
         return True
 

@@ -51,7 +51,7 @@ class SHTConf(PersistentJSONable):
         int_addr = None if int_str is None else int(int_str, 0)
         ext_addr = None if ext_str is None else int(ext_str, 0)
 
-        return SHTConf(int_addr, ext_addr)
+        return cls(int_addr, ext_addr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -74,10 +74,12 @@ class SHTConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic
     def int_sht(self):
         return None
 
 
+    # noinspection PyMethodMayBeStatic
     def ext_sht(self):
         return None
 
