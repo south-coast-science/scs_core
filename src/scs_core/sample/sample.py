@@ -83,6 +83,11 @@ class Sample(JSONable):
         return self.__rec
 
 
+    @rec.setter
+    def rec(self, rec):
+        self.__rec = rec
+
+
     @property
     def src(self):
         return self.__src
