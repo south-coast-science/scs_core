@@ -16,7 +16,8 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-conf = '{"afe-baseline": {"sn1": {"calibrated-on": null, "offset": 0, "env": null}, "sn2": {"calibrated-on": null, ' \
+conf = '{"hostname": "scs-bbe-003", ' \
+       '"afe-baseline": {"sn1": {"calibrated-on": null, "offset": 0, "env": null}, "sn2": {"calibrated-on": null, ' \
        '"offset": 0, "env": null}, "sn3": {"calibrated-on": null, "offset": 0, "env": null}, ' \
        '"sn4": {"calibrated-on": null, "offset": 0, "env": null}}, "afe-calib": {"serial_number": "27-000001", ' \
        '"type": "810-0023-02", "calibrated_on": "2016-11-01", "dispatched_on": null, "pt1000_v20": 1.0, ' \
