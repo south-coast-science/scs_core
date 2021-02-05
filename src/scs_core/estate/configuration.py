@@ -5,6 +5,7 @@ Created on 27 Jan 2021
 """
 
 import json
+import socket
 
 from collections import OrderedDict
 
@@ -74,6 +75,8 @@ class Configuration(JSONable):
         if not jdict:
             return None
 
+        hostname = jdict.get('hostname')
+
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=None)
         afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'), default=None)
         aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'), default=None)
@@ -102,7 +105,7 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'), default=None)
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=None)
 
-        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+        return cls(hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
                    aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
                    gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
                    mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
@@ -112,6 +115,8 @@ class Configuration(JSONable):
 
     @classmethod
     def load(cls, manager):
+        hostname = socket.gethostname()
+
         afe_baseline = AFEBaseline.load(manager, default=None)
         afe_calib = AFECalib.load(manager, default=None)
         aws_api_auth = APIAuth.load(manager, default=None)
@@ -140,7 +145,7 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager, default=None)
         timezone_conf = TimezoneConf.load(manager, default=None)
 
-        return cls(afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+        return cls(hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
                    aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
                    gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
                    mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
@@ -150,7 +155,7 @@ class Configuration(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
+    def __init__(self, hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
                  aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
                  gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
                  mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
@@ -159,6 +164,8 @@ class Configuration(JSONable):
         """
         Constructor
         """
+        self.__hostname = hostname                                  # string
+
         self.__afe_baseline = afe_baseline                          # AFEBaseline
         self.__afe_calib = afe_calib                                # AFECalib
         self.__aws_api_auth = aws_api_auth                          # APIAuth
@@ -190,7 +197,8 @@ class Configuration(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.afe_baseline == other.afe_baseline and self.afe_calib == other.afe_calib and \
+            return self.hostname == other.hostname and \
+                   self.afe_baseline == other.afe_baseline and self.afe_calib == other.afe_calib and \
                    self.aws_api_auth == other.aws_api_auth and self.aws_client_auth == other.aws_client_auth and \
                    self.aws_group_config == other.aws_group_config and self.aws_project == other.aws_project and \
                    self.csv_logger_conf == other.csv_logger_conf and self.display_conf == other.display_conf and \
@@ -210,93 +218,93 @@ class Configuration(JSONable):
 
 
     def diff(self, other):
-        diff = Configuration(None, None, None, None,
+        diff = Configuration(None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None, None,
                              None, None, None, None, None, None,
                              None)
 
-        if self.afe_baseline != other.afe_baseline:
-            diff.__afe_baseline = self.__afe_baseline
+        if self.hostname != other.hostname:
+            diff.__hostname = self.hostname
 
         if self.afe_calib != other.afe_calib:
-            diff.__afe_calib = self.__afe_calib
+            diff.__afe_calib = self.afe_calib
 
         if self.aws_api_auth != other.aws_api_auth:
-            diff.__aws_api_auth = self.__aws_api_auth
+            diff.__aws_api_auth = self.aws_api_auth
 
         if self.aws_client_auth != other.aws_client_auth:
-            diff.__aws_client_auth = self.__aws_client_auth
+            diff.__aws_client_auth = self.aws_client_auth
 
         if self.aws_group_config != other.aws_group_config:
-            diff.__aws_group_config = self.__aws_group_config
+            diff.__aws_group_config = self.aws_group_config
 
         if self.aws_project != other.aws_project:
-            diff.__aws_project = self.__aws_project
+            diff.__aws_project = self.aws_project
 
         if self.csv_logger_conf != other.csv_logger_conf:
-            diff.__csv_logger_conf = self.__csv_logger_conf
+            diff.__csv_logger_conf = self.csv_logger_conf
 
         if self.display_conf != other.display_conf:
-            diff.__display_conf = self.__display_conf
+            diff.__display_conf = self.display_conf
 
         if self.gas_baseline != other.gas_baseline:
-            diff.__gas_baseline = self.__gas_baseline
+            diff.__gas_baseline = self.gas_baseline
 
         if self.gas_model_conf != other.gas_model_conf:
-            diff.__gas_model_conf = self.__gas_model_conf
+            diff.__gas_model_conf = self.gas_model_conf
 
         if self.gps_conf != other.gps_conf:
-            diff.__gps_conf = self.__gps_conf
+            diff.__gps_conf = self.gps_conf
 
         if self.greengrass_identity != other.greengrass_identity:
-            diff.__greengrass_identity = self.__greengrass_identity
+            diff.__greengrass_identity = self.greengrass_identity
 
         if self.interface_conf != other.interface_conf:
-            diff.__interface_conf = self.__interface_conf
+            diff.__interface_conf = self.interface_conf
 
         if self.mpl115a2_calib != other.mpl115a2_calib:
-            diff.__mpl115a2_calib = self.__mpl115a2_calib
+            diff.__mpl115a2_calib = self.mpl115a2_calib
 
         if self.mpl115a2_conf != other.mpl115a2_conf:
-            diff.__mpl115a2_conf = self.__mpl115a2_conf
+            diff.__mpl115a2_conf = self.mpl115a2_conf
 
         if self.mqtt_conf != other.mqtt_conf:
-            diff.__mqtt_conf = self.__mqtt_conf
+            diff.__mqtt_conf = self.mqtt_conf
 
         if self.ndir_conf != other.ndir_conf:
-            diff.__ndir_conf = self.__ndir_conf
+            diff.__ndir_conf = self.ndir_conf
 
         if self.opc_conf != other.opc_conf:
-            diff.__opc_conf = self.__opc_conf
+            diff.__opc_conf = self.opc_conf
 
         if self.pmx_model_conf != other.pmx_model_conf:
-            diff.__pmx_model_conf = self.__pmx_model_conf
+            diff.__pmx_model_conf = self.pmx_model_conf
 
         if self.psu_conf != other.psu_conf:
-            diff.__psu_conf = self.__psu_conf
+            diff.__psu_conf = self.psu_conf
 
         if self.pt1000_calib != other.pt1000_calib:
-            diff.__pt1000_calib = self.__pt1000_calib
+            diff.__pt1000_calib = self.pt1000_calib
 
         if self.scd30_conf != other.scd30_conf:
-            diff.__scd30_conf = self.__scd30_conf
+            diff.__scd30_conf = self.scd30_conf
 
         if self.schedule != other.schedule:
-            diff.__schedule = self.__schedule
+            diff.__schedule = self.schedule
 
         if self.shared_secret != other.shared_secret:
-            diff.__shared_secret = self.__shared_secret
+            diff.__shared_secret = self.shared_secret
 
         if self.sht_conf != other.sht_conf:
-            diff.__sht_conf = self.__sht_conf
+            diff.__sht_conf = self.sht_conf
 
         if self.system_id != other.system_id:
-            diff.__system_id = self.__system_id
+            diff.__system_id = self.system_id
 
         if self.timezone_conf != other.timezone_conf:
-            diff.__timezone_conf = self.__timezone_conf
+            diff.__timezone_conf = self.timezone_conf
 
         return diff
 
@@ -391,6 +399,8 @@ class Configuration(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['hostname'] = self.hostname
+
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-calib'] = self.afe_calib
         jdict['aws-api-auth'] = self.aws_api_auth
@@ -423,6 +433,11 @@ class Configuration(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def hostname(self):
+        return self.__hostname
+
 
     @property
     def afe_baseline(self):
@@ -562,13 +577,13 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, aws_client_auth:%s, " \
+        return "Configuration:{hostname:%s, afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, aws_client_auth:%s, " \
                "aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, gas_baseline:%s, " \
                "gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, " \
                "mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, " \
                "pt1000_calib:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, " \
                "timezone_conf:%s}" % \
-               (self.afe_baseline, self.afe_calib, self.aws_api_auth, self.aws_client_auth,
+               (self.hostname, self.afe_baseline, self.afe_calib, self.aws_api_auth, self.aws_client_auth,
                 self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf, self.gas_baseline,
                 self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf, self.mpl115a2_calib,
                 self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf,

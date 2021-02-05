@@ -43,27 +43,23 @@ class ModelConf(ABC, PersistentJSONable):
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
-        resource_names = jdict.get('resource-names')
 
-        return cls(uds_path, model_interface, resource_names)
+        return cls(uds_path, model_interface)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, resource_names):
+    def __init__(self, uds_path, model_interface):
         """
         Constructor
         """
         self.__uds_path = uds_path                                  # string
         self.__model_interface = model_interface                    # string
-        self.__resource_names = resource_names                      # dict of string: string
 
 
     def __eq__(self, other):
         try:
-            return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
-                   self.resource_names == other.resource_names
-
+            return self.uds_path == other.uds_path and self.model_interface == other.model_interface
         except (TypeError, AttributeError):
             return False
 
@@ -75,22 +71,8 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
-        jdict['resource-names'] = self.resource_names
 
         return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def set_resource_name(self, species, filename):
-        self.__resource_names[species] = filename
-
-
-    def delete_resource_name(self, species):
-        try:
-            del self.__resource_names[species]
-        except KeyError:
-            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -109,17 +91,8 @@ class ModelConf(ABC, PersistentJSONable):
         return self.__model_interface
 
 
-    def species(self):
-        return self.resource_names.keys()
-
-
-    @property
-    def resource_names(self):
-        return self.__resource_names
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, resource_names:%s}" %  \
-               (self.uds_path, self.model_interface, self.resource_names)
+        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s}" %  \
+               (self.uds_path, self.model_interface)
