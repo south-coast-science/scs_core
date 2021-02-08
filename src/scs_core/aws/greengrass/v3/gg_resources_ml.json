@@ -22,7 +22,7 @@
                 "ResourceDataContainer": {
                     "S3MachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/rn20/pm1",
-                        "S3Uri": "s3://xgboost-models/PMs/Ricardo-NPL/pm1/single-xgboost/rnpl-pm1-xgboost-regression-2021-02-02-12-46-07/output/model.tar.gz"
+                        "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm1/single-xgboost/rnpl-pm1-xgboost-regression-2021-02-02-12-46-07/output/model.tar.gz"
                     }
                 }
             },
@@ -32,7 +32,7 @@
                 "ResourceDataContainer": {
                     "S3MachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/rn20/pm2p5",
-                        "S3Uri": "s3://xgboost-models/PMs/Ricardo-NPL/pm2p5/single-xgboost/rnpl-pm2p5-xgboost-regression-2021-02-02-14-39-27/output/model.tar.gz"
+                        "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm2p5/single-xgboost/rnpl-pm2p5-xgboost-regression-2021-02-02-14-39-27/output/model.tar.gz"
                     }
                 }
             },
@@ -42,7 +42,7 @@
                 "ResourceDataContainer": {
                     "S3MachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/rn20/pm10",
-                        "S3Uri": "s3://xgboost-models/PMs/Ricardo-NPL/pm10/single-xgboost/rnpl-pm10-xgboost-regression-2021-02-02-15-13-42/output/model.tar.gz"
+                        "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm10/single-xgboost/rnpl-pm10-xgboost-regression-2021-02-02-15-13-42/output/model.tar.gz"
                     }
                 }
             },
@@ -52,7 +52,7 @@
                 "ResourceDataContainer": {
                     "S3MachineLearningModelResourceData": {
                         "DestinationPath": "/trained-models/vB20/NO2",
-                        "S3Uri": "s3://xgboost-models/xgboost-no2-vB-q13/single-xgboost/xgboost-no2-vB-q13-xgboost-2021-01-08-09-17-38/output/model.tar.gz"
+                        "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/xgboost-no2-vB-q13/single-xgboost/xgboost-no2-vB-q13-xgboost-2021-01-08-09-17-38/output/model.tar.gz"
                     }
                 }
             }
