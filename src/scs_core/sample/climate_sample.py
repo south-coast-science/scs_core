@@ -31,8 +31,8 @@ class ClimateSample(Sample):
             return None
 
         # Sample...
-        tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        tag = jdict.get('tag')
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
