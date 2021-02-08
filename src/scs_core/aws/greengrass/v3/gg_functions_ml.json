@@ -1,0 +1,103 @@
+{
+    "InitialVersion": {
+        "Functions": [
+           {
+            "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGControlSubscriber:ControlSubscriber",
+            "FunctionConfiguration": {
+                "Environment": {
+                    "AccessSysfs": true,
+                    "ResourceAccessPolicies": [
+                        {
+                            "Permission": "rw",
+                            "ResourceId": "DATA_VOLUME_NAME"
+                        }
+                    ]
+                },
+                "Executable": "lambda_function.lambda_handler",
+                "MemorySize": 16384,
+                "Pinned": true,
+                "Timeout": 180
+            },
+            "Id": "DEV_ID-ControlSubscriber"
+        },
+        {
+            "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:TopicPublisher",
+            "FunctionConfiguration": {
+                "Environment": {
+                    "AccessSysfs": true,
+                    "ResourceAccessPolicies": [
+                        {
+                            "Permission": "rw",
+                            "ResourceId": "DATA_VOLUME_NAME"
+                        }
+                    ]
+                },
+                "Executable": "lambda_function.lambda_handler",
+                "MemorySize": 16384,
+                "Pinned": true,
+                "Timeout": 180
+            },
+            "Id": "DEV_ID-TopicPublisher"
+        },
+        {
+            "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGPMxInferenceServer:PMxInference",
+            "FunctionConfiguration": {
+                "Environment": {
+                    "AccessSysfs": true,
+                    "ResourceAccessPolicies": [
+                        {
+                            "Permission": "rw",
+                            "ResourceId": "DATA_VOLUME_NAME"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-pm1"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-pm2p5"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-pm10"
+                        }
+                    ],
+                    "Variables": {
+                            "MODEL_NAME": "rn20"
+                    }
+                },
+                "Executable": "lambda_function.lambda_handler",
+                "MemorySize": 196608,
+                "Pinned": true,
+                "Timeout": 180
+            },
+            "Id": "DEV_ID-PMxInference"
+        }, {
+            "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGGasInferenceServer:GasInference",
+            "FunctionConfiguration": {
+                "Environment": {
+                    "AccessSysfs": true,
+                    "ResourceAccessPolicies": [
+                        {
+                            "Permission": "rw",
+                            "ResourceId": "DATA_VOLUME_NAME"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-no2"
+                        }
+                    ],
+                    "Variables": {
+                            "MODEL_NAME": "vB20"
+                    }
+                },
+                "Executable": "lambda_function.lambda_handler",
+                "MemorySize": 131072,
+                "Pinned": true,
+                "Timeout": 180
+            },
+            "Id": "DEV_ID-GasInference"
+        }
+        ]
+    }
+}
