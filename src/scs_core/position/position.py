@@ -92,21 +92,25 @@ class Position(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def distance(self, other):
-        if other is None or other.lat is None or other.lng is None:
+        if other is None:
             return None
 
         if not isinstance(other, self.__class__):
             raise TypeError(other)
 
+        if other.lat is None or other.lng is None:
+            return None
+
         lat1 = radians(self.lat)
-        lon1 = radians(self.lng)
+        lng1 = radians(self.lng)
+
         lat2 = radians(other.lat)
-        lon2 = radians(other.lng)
+        lng2 = radians(other.lng)
 
-        d_lon = lon2 - lon1
-        d_lat = lat2 - lat1
+        delta_lat = lat2 - lat1
+        delta_lng = lng2 - lng1
 
-        a = sin(d_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(d_lon / 2) ** 2
+        a = sin(delta_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(delta_lng / 2) ** 2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         distance = self.R * c
 
