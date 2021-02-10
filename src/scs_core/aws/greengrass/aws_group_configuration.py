@@ -134,7 +134,7 @@ class AWSGroupConfiguration(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSGroupConfiguration:{group_name%s, init_time:%d, unix_group:%d, ml:%s}" % \
+        return "AWSGroupConfiguration:{group_name%s, init_time:%s, unix_group:%s, ml:%s}" % \
                (self.group_name, self.init_time, self.unix_group, self.ml)
 
 
@@ -149,6 +149,7 @@ class AWSGroupConfigurator(object):
 
     __V1 = __CWD + "/v1"
     __V2 = __CWD + "/v2"
+    __V3 = __CWD + "/v3"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -199,7 +200,7 @@ class AWSGroupConfigurator(object):
     def define_aws_group_resources(self, host):
         # Setup default JSON
         if self.config.ml:
-            j_file = os.path.join(self.__V2, 'gg_resources_ml.json')
+            j_file = os.path.join(self.__V3, 'gg_resources_ml.json')
         else:
             j_file = os.path.join(self.__V1, 'gg_resources.json')
         with open(j_file) as f:
@@ -245,7 +246,7 @@ class AWSGroupConfigurator(object):
     def define_aws_group_functions(self):
         # Get template JSON
         if self.config.ml:
-            j_file = os.path.join(self.__V1, 'gg_functions_ml.json')
+            j_file = os.path.join(self.__V3, 'gg_functions_ml.json')
         else:
             j_file = os.path.join(self.__V1, 'gg_functions.json')
         with open(j_file) as f:
