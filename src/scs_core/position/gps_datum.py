@@ -16,6 +16,7 @@ from numbers import Number
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONReport
+
 from scs_core.position.position import Position
 
 

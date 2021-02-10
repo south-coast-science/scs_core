@@ -22,7 +22,7 @@ class Position(JSONable):
     classdocs
     """
 
-    R = 6373000.0              # approximate radius of earth in m
+    R = 6373.0              # approximate radius of earth in Km
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ class Position(JSONable):
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         distance = self.R * c
 
-        return round(distance, 1)
+        return round(distance, 3)
 
 
     # ----------------------------------------------------------------------------------------------------------------
