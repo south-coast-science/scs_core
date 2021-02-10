@@ -120,7 +120,7 @@ class GPSDatum(JSONReport):
         jdict['pos'] = self.pos
         jdict['elv'] = None if self.elv is None else round(self.elv, 1)
 
-        jdict['qual'] = None if self.quality is None else int(round(self.quality))
+        jdict['qual'] = None if self.quality is None else round(self.quality, 1)
 
         return jdict
 
