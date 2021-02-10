@@ -68,7 +68,7 @@ class GPSDatum(JSONReport):
         self.__pos = pos                            # Position
         self.__elv = Datum.float(elv, 1)            # metres above mean sea level
 
-        self.__quality = Datum.int(quality)         # 0 to 6 (?)
+        self.__quality = quality                    # number or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -96,6 +96,19 @@ class GPSDatum(JSONReport):
         quality = self.quality / other
 
         return GPSDatum(pos, elv, quality)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def distance(self, other_pos, minimum_acceptable_quality=None):
+        if self.pos is None:
+            return None
+
+        if minimum_acceptable_quality is not None:
+            if self.quality is None or round(self.quality) < minimum_acceptable_quality:
+                return None
+
+        return self.pos.distance(other_pos)
 
 
     # ----------------------------------------------------------------------------------------------------------------
