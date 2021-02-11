@@ -371,7 +371,7 @@ class MessageResponse(JSONable):
             jdict['fetchedLastWrittenData'] = self.fetched_last
 
         if self.interval is not None:
-            jdict['interval'] = self.interval
+            jdict['interval'] = int(round(self.interval))
 
         if self.items is not None:
             jdict['Items'] = self.items
