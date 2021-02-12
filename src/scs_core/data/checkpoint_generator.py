@@ -69,6 +69,24 @@ class CheckpointGenerator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def min_interval(self):
+        interval = self.__second.interval(1)
+        if interval is not None:
+            return interval
+
+        interval = self.__minute.interval(60)
+        if interval is not None:
+            return interval
+
+        interval = self.__hour.interval(3600)
+        if interval is not None:
+            return interval
+
+        return 86400            # 24 hours
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def enclosing_localised_datetime(self, localised_datetime):
         if self.aligns(localised_datetime):
             return localised_datetime
@@ -233,6 +251,15 @@ class CheckpointField(object):
 
     def __len__(self):
         return len(self.__ticks)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def interval(self, period):
+        if len(self) < 2:
+            return None
+
+        return (self.__ticks[1] - self.__ticks[0]) * period
 
 
     # ----------------------------------------------------------------------------------------------------------------
