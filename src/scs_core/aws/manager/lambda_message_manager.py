@@ -324,6 +324,7 @@ class MessageResponse(JSONable):
         code = jdict.get('statusCode')
         status = jdict.get('status')
         fetched_last = jdict.get('fetchedLastWrittenData')
+        interval = jdict.get('interval')
 
         items = []
         for msg_jdict in jdict.get('Items'):
@@ -332,18 +333,19 @@ class MessageResponse(JSONable):
 
         next_url = jdict.get('next')
 
-        return cls(code, status, fetched_last, items, next_url)
+        return cls(code, status, fetched_last, interval, items, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, fetched_last, items, next_url):
+    def __init__(self, code, status, fetched_last, interval, items, next_url):
         """
         Constructor
         """
         self.__code = Datum.int(code)               # int
         self.__status = status                      # string
         self.__fetched_last = fetched_last          # Fetched last written data flag
+        self.__interval = interval                  # int
 
         self.__items = items                        # list of Message
 
@@ -369,6 +371,8 @@ class MessageResponse(JSONable):
             jdict['fetchedLastWrittenData'] = self.fetched_last
 
         if self.items is not None:
+            jdict['interval'] = None if self.interval is None else int(round(self.interval))
+
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
@@ -422,6 +426,11 @@ class MessageResponse(JSONable):
 
 
     @property
+    def interval(self):
+        return self.__interval
+
+
+    @property
     def items(self):
         return self.__items
 
@@ -434,5 +443,5 @@ class MessageResponse(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, items:%s, next_url:%s}" % \
-               (self.code, self.status, self.fetched_last, Str.collection(self.items), self.next_url)
+        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, interval:%s, items:%s, next_url:%s}" % \
+               (self.code, self.status, self.fetched_last, self.interval, Str.collection(self.items), self.next_url)

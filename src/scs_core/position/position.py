@@ -3,9 +3,13 @@ Created on 5 Jan 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Getting distance between two points based on latitude/longitude
+https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
+
 https://en.wikipedia.org/wiki/Geographic_coordinate_system
 """
 
+from math import sin, cos, sqrt, atan2, radians
 from numbers import Number
 
 from scs_core.data.json import JSONable
@@ -18,6 +22,8 @@ class Position(JSONable):
     classdocs
     """
 
+    R = 6373.0              # approximate radius of earth in Km
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -27,6 +33,12 @@ class Position(JSONable):
 
         lat = jdict[0]
         lng = jdict[1]
+
+        if lat == '':
+            lat = None
+
+        if lng == '':
+            lng = None
 
         return Position(lat, lng)
 
@@ -75,6 +87,34 @@ class Position(JSONable):
         lng = self.lng / other
 
         return Position(lat, lng)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def distance(self, other):
+        if other is None:
+            return None
+
+        if not isinstance(other, self.__class__):
+            raise TypeError(other)
+
+        if other.lat is None or other.lng is None:
+            return None
+
+        lat1 = radians(self.lat)
+        lng1 = radians(self.lng)
+
+        lat2 = radians(other.lat)
+        lng2 = radians(other.lng)
+
+        delta_lat = lat2 - lat1
+        delta_lng = lng2 - lng1
+
+        a = sin(delta_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(delta_lng / 2) ** 2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        distance = self.R * c
+
+        return round(distance, 3)
 
 
     # ----------------------------------------------------------------------------------------------------------------
