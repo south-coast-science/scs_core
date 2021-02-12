@@ -37,7 +37,7 @@ class MPL115A2Conf(PersistentJSONable):
 
         altitude = jdict.get('altitude')
 
-        return MPL115A2Conf(altitude)
+        return cls(altitude)
 
 
     # ----------------------------------------------------------------------------------------------------------------
