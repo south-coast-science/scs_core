@@ -13,7 +13,7 @@ CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key 
 """
 
 import json
-import sys
+# import sys
 
 from scs_core.data.json import JSONify
 
@@ -60,8 +60,8 @@ class RESTClient(object):
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
-            print("response_jstr: %s" % response_jstr, file=sys.stderr)
-            print("-", file=sys.stderr)
+            # print("response_jstr: %s" % response_jstr, file=sys.stderr)
+            # print("-", file=sys.stderr)
 
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
