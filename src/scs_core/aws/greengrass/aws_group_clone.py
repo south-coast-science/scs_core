@@ -69,7 +69,7 @@ class AWSGroupCloner(object):
 
     def retrieve_group_info(self):
         aws_json_reader = AWSGroup(self.__origin_group_name, self.__client)
-        group_info = aws_json_reader.get_group_info_from_name()
+        aws_json_reader.get_group_info_from_name()
         aws_json_reader.get_group_arns()
         aws_json_reader.get_function_definition()
         aws_json_reader.get_logger_definition()
@@ -78,14 +78,19 @@ class AWSGroupCloner(object):
 
         origin_info = aws_json_reader.return_verbose_info()
 
-        group_id = group_info.node("GroupID")
-        self.__dest_group_id = group_id
-
         function_info = origin_info.node("Function Definition Response")
         self.__origin_function_info = function_info["Definition"]
 
         resource_info = origin_info.node("Resource Definition Response")
         self.__origin_resource_info = resource_info["Definition"]
+
+
+        aws_json_reader = AWSGroup(self.__dest_group_name, self.__client)
+        group_info = aws_json_reader.get_group_info_from_name()
+        group_id = group_info.node("GroupID")
+        self.__dest_group_id = group_id
+        aws_json_reader.get_group_arns()
+        self.__aws_info.append("CoreDefinitionARN", aws_json_reader.retrieve_node("CoreDefinitionVersionArn"))
 
     def update_function_info(self):
 
@@ -156,12 +161,12 @@ class AWSGroupCloner(object):
 
         # Send request
         self.__logger.info("Creating resource definition")
-        self.__logger.info(jdict)
+        self.__logger.debug(jdict)
 
         response = self.__client.create_resource_definition(InitialVersion=jdict["InitialVersion"])
         self.__aws_info.append("NewResourceARN", response["LatestVersionArn"])
 
-        self.__logger.info(response)
+        self.__logger.debug(response)
 
     def create_function_version(self):
 
@@ -175,15 +180,13 @@ class AWSGroupCloner(object):
         jdict['InitialVersion'] = jdict_init
 
         self.__logger.info("Creating function definition")
-        self.__logger.info(jdict)
-
-        print(json.dumps(jdict))
+        self.__logger.debug(jdict)
 
         # Create request
         response = self.__client.create_function_definition(InitialVersion=jdict["InitialVersion"])
         self.__aws_info.append("NewFunctionARN", response["LatestVersionArn"])
 
-        self.__logger.info(response)
+        self.__logger.debug(response)
 
     def get_project_locations(self):
         system_id = SystemID.load(Host)
@@ -193,7 +196,10 @@ class AWSGroupCloner(object):
             return False
 
         sample = Sample(system_id.message_tag(), LocalizedDatetime.now(), values=Configuration.load(Host))
-        datum = JSONify.dumps(sample)
+
+        data = JSONify.dumps(sample)
+        datum = json.loads(data)
+
         temp = datum["val"]["aws-project"]
         self.__dest_loc_path = temp["location-path"]
         self.__dest_dev_path = temp["device-path"]
@@ -227,13 +233,13 @@ class AWSGroupCloner(object):
         s_data["InitialVersion"]["Subscriptions"][5]["Subject"] = (loc_path + "/gases")
 
         self.__logger.info("Creating sub definition")
-        self.__logger.info(s_data)
+        self.__logger.debug(s_data)
 
         # Send request
         response = self.__client.create_subscription_definition(InitialVersion=s_data["InitialVersion"])
         self.__aws_info.append("NewSubscriptionARN", response["LatestVersionArn"])
 
-        self.__logger.info(response)
+        self.__logger.debug(response)
 
     def create_aws_group_definition(self):
         self.__logger.info("Creating group definition")
@@ -241,7 +247,7 @@ class AWSGroupCloner(object):
         response = self.__client.create_group_version(
             CoreDefinitionVersionArn=self.__aws_info.node("CoreDefinitionARN"),
             FunctionDefinitionVersionArn=self.__aws_info.node("NewFunctionARN"),
-            GroupId=self.__aws_info.node("GroupID"),
+            GroupId=self.__dest_group_id,
             ResourceDefinitionVersionArn=self.__aws_info.node("NewResourceARN"),
             SubscriptionDefinitionVersionArn=self.__aws_info.node("NewSubscriptionARN"),
         )
