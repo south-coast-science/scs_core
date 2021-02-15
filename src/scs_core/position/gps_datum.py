@@ -16,6 +16,7 @@ from numbers import Number
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONReport
+
 from scs_core.position.position import Position
 
 
@@ -68,7 +69,7 @@ class GPSDatum(JSONReport):
         self.__pos = pos                            # Position
         self.__elv = Datum.float(elv, 1)            # metres above mean sea level
 
-        self.__quality = Datum.int(quality)         # 0 to 6 (?)
+        self.__quality = quality                    # number or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -100,13 +101,26 @@ class GPSDatum(JSONReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def distance(self, other_pos, minimum_acceptable_quality=None):
+        if self.pos is None:
+            return None
+
+        if minimum_acceptable_quality is not None:
+            if self.quality is None or round(self.quality) < minimum_acceptable_quality:
+                return None
+
+        return self.pos.distance(other_pos)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['pos'] = self.pos
         jdict['elv'] = None if self.elv is None else round(self.elv, 1)
 
-        jdict['qual'] = None if self.quality is None else int(round(self.quality))
+        jdict['qual'] = None if self.quality is None else round(self.quality, 1)
 
         return jdict
 

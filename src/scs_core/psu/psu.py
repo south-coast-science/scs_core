@@ -115,6 +115,11 @@ class PSU(ABC):
         pass
 
 
+    @abstractmethod
+    def power_peripherals(self, on):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
