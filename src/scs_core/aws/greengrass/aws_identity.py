@@ -23,6 +23,8 @@ class AWSIdentity(PersistentJSONable):
     classdocs
     """
 
+    __KEEP_ALIVE = 60               # seconds
+
     __CERTS_PATH = "/greengrass/certs/"
     __ATS_ROOT_CA_RSA_2048_REMOTE_LOCATION = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
 
@@ -287,7 +289,7 @@ class AWSIdentity(PersistentJSONable):
                 "thingArn": self.__thing_arn,
                 "iotHost": endpoint,
                 "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % AWS.region(),
-                "keepAlive": 600,
+                "keepAlive": self.__KEEP_ALIVE,
                 "ggDaemonPort": 8000,
                 "systemComponentAuthTimeout": 5000
             },
