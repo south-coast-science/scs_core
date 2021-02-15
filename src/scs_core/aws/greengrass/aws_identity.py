@@ -287,7 +287,7 @@ class AWSIdentity(PersistentJSONable):
                 "thingArn": self.__thing_arn,
                 "iotHost": endpoint,
                 "ggHost": "greengrass-ats.iot.%s.amazonaws.com" % AWS.region(),
-                "keepAlive": 600,
+                "keepAlive": 60,
                 "ggDaemonPort": 8000,
                 "systemComponentAuthTimeout": 5000
             },
