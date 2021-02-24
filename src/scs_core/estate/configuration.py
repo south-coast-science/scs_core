@@ -78,7 +78,7 @@ class Configuration(JSONable):
             return None
 
         hostname = jdict.get('hostname')
-        git_pull = GitPull.construct_from_jdict('git-pull', default=None)
+        git_pull = GitPull.construct_from_jdict(jdict.get('git-pull'), default=None)
 
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=None)
         afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'), default=None)
