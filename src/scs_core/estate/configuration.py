@@ -222,14 +222,6 @@ class Configuration(JSONable):
         except (TypeError, AttributeError):
             return False
 
-    """
-        def __init__(self, hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
-                 aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
-                 gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
-                 mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                 pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
-                 shared_secret, sht_conf, system_id, timezone_conf):
-"""
 
     def diff(self, other):
         diff = Configuration(None, None, None, None, None,
