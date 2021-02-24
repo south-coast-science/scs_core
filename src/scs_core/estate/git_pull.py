@@ -47,6 +47,7 @@ class GitPull(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __DIR_PREFIX = 'scs_'
     __EXCLUSIONS = ('scs_exegesis', )
 
     @classmethod
@@ -61,7 +62,7 @@ class GitPull(PersistentJSONable):
         if not items:
             return []
 
-        return [item.name for item in items if item.name.startswith("scs_")]
+        return [item.name for item in items if item.is_directory and item.name.startswith(cls.__DIR_PREFIX)]
 
 
     @classmethod

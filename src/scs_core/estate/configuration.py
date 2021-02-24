@@ -27,6 +27,8 @@ from scs_core.data.json import JSONable
 
 from scs_core.display.display_conf import DisplayConf
 
+from scs_core.estate.git_pull import GitPull
+
 from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_calib import AFECalib
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
@@ -76,6 +78,7 @@ class Configuration(JSONable):
             return None
 
         hostname = jdict.get('hostname')
+        git_pull = GitPull.construct_from_jdict('git-pull', default=None)
 
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=None)
         afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'), default=None)
@@ -105,17 +108,18 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'), default=None)
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=None)
 
-        return cls(hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
-                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
-                   mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
-                   pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
-                   timezone_conf)
+        return cls(hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+                   aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
+                   gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
+                   mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
+                   pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                   shared_secret, sht_conf, system_id, timezone_conf)
 
 
     @classmethod
     def load(cls, manager):
         hostname = socket.gethostname()
+        git_pull = GitPull.load(manager, default=None)
 
         afe_baseline = AFEBaseline.load(manager, default=None)
         afe_calib = AFECalib.load(manager, default=None)
@@ -145,26 +149,28 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager, default=None)
         timezone_conf = TimezoneConf.load(manager, default=None)
 
-        return cls(hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
-                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
-                   mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
-                   pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
-                   timezone_conf)
+        return cls(hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+                   aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
+                   gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
+                   mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
+                   pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                   shared_secret, sht_conf, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, afe_baseline, afe_calib, aws_api_auth, aws_client_auth,
-                 aws_group_config, aws_project, csv_logger_conf, display_conf, gas_baseline,
-                 gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
-                 mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, psu_conf,
-                 pt1000_calib, scd30_conf, schedule, shared_secret, sht_conf, system_id,
-                 timezone_conf):
+    def __init__(self, hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+                 aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
+                 gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
+                 mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
+                 pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                 shared_secret, sht_conf, system_id, timezone_conf):
         """
         Constructor
         """
+
         self.__hostname = hostname                                  # string
+        self.__git_pull = git_pull                                  # GitPull
 
         self.__afe_baseline = afe_baseline                          # AFEBaseline
         self.__afe_calib = afe_calib                                # AFECalib
@@ -197,7 +203,7 @@ class Configuration(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.hostname == other.hostname and \
+            return self.hostname == other.hostname and self.git_pull == other.git_pull and \
                    self.afe_baseline == other.afe_baseline and self.afe_calib == other.afe_calib and \
                    self.aws_api_auth == other.aws_api_auth and self.aws_client_auth == other.aws_client_auth and \
                    self.aws_group_config == other.aws_group_config and self.aws_project == other.aws_project and \
@@ -216,17 +222,28 @@ class Configuration(JSONable):
         except (TypeError, AttributeError):
             return False
 
+    """
+        def __init__(self, hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+                 aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
+                 gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
+                 mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
+                 pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                 shared_secret, sht_conf, system_id, timezone_conf):
+"""
 
     def diff(self, other):
         diff = Configuration(None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None, None, None, None,
-                             None, None, None, None, None, None,
-                             None)
+                             None, None, None, None, None,
+                             None, None, None, None, None,
+                             None, None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
+
+        if self.git_pull != other.git_pull:
+            diff.__git_pull = self.git_pull
 
         if self.afe_calib != other.afe_calib:
             diff.__afe_calib = self.afe_calib
@@ -312,6 +329,12 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager):
+        if self.hostname:
+            raise ValueError('hostname may not be set')
+
+        if self.git_pull:
+            raise ValueError('git_pull may not be set')
+
         if self.afe_baseline:
             self.afe_baseline.save(manager)
 
@@ -400,6 +423,7 @@ class Configuration(JSONable):
         jdict = OrderedDict()
 
         jdict['hostname'] = self.hostname
+        jdict['git-pull'] = self.git_pull
 
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-calib'] = self.afe_calib
@@ -437,6 +461,11 @@ class Configuration(JSONable):
     @property
     def hostname(self):
         return self.__hostname
+
+
+    @property
+    def git_pull(self):
+        return self.__git_pull
 
 
     @property
@@ -577,15 +606,15 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, aws_client_auth:%s, " \
-               "aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, gas_baseline:%s, " \
-               "gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, " \
-               "mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, psu_conf:%s, " \
-               "pt1000_calib:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, system_id:%s, " \
-               "timezone_conf:%s}" % \
-               (self.hostname, self.afe_baseline, self.afe_calib, self.aws_api_auth, self.aws_client_auth,
-                self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf, self.gas_baseline,
-                self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf, self.mpl115a2_calib,
-                self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf, self.psu_conf,
-                self.pt1000_calib, self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.system_id,
-                self.timezone_conf)
+        return "Configuration:{hostname:%s, git_pull:%s, afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, " \
+               "aws_client_auth:%s, aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
+               "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
+               "mpl115a2_calib:%s, mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
+               "pmx_model_conf:%s, psu_conf:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
+               "shared_secret:%s, sht_conf:%s, system_id:%s, timezone_conf:%s}" % \
+               (self.hostname, self.git_pull, self.afe_baseline, self.afe_calib, self.aws_api_auth,
+                self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
+                self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
+                self.mpl115a2_calib, self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf,
+                self.pmx_model_conf, self.psu_conf, self.pt1000_calib, self.scd30_conf, self.schedule,
+                self.shared_secret, self.sht_conf, self.system_id, self.timezone_conf)
