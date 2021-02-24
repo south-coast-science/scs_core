@@ -4,6 +4,9 @@ Created on 24 Feb 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
+{"pulled-on": "2021-02-24T17:35:08Z", "success": true,
+"installed": ["scs_core", "scs_dev", "scs_dfe_eng", "scs_host_cpc", "scs_mfr", "scs_psu"],
+"pulled": ["scs_core", "scs_dev", "scs_dfe_eng", "scs_host_cpc", "scs_mfr", "scs_psu"]}
 """
 
 from collections import OrderedDict
@@ -37,21 +40,38 @@ class GitPull(PersistentJSONable):
         pulled_on = LocalizedDatetime.construct_from_jdict(jdict.get('pulled-on'))
         success = jdict.get('success')
         installed = jdict.get('installed')
-        updated = jdict.get('updated')
+        pulled = jdict.get('pulled')
 
-        return cls(pulled_on, success, installed, updated)
+        return cls(pulled_on, success, installed, pulled)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __EXCLUSIONS = ('scs_exegesis', )
+
+    @classmethod
+    def excludes(cls, name):
+        return name in cls.__EXCLUSIONS
+
+
     @classmethod
     def dirs(cls, root):
-        return [item.name for item in Filesystem.ls(root) if item.name.startswith("scs_")]
+        items = Filesystem.ls(root)
+
+        if not items:
+            return []
+
+        return [item.name for item in items if item.name.startswith("scs_")]
 
 
     @classmethod
     def is_clone(cls, path):
-        return '.git' in [item.name for item in Filesystem.ls(path)]
+        items = Filesystem.ls(path)
+
+        if not items:
+            return False
+
+        return '.git' in [item.name for item in items]
 
 
     @classmethod
@@ -72,20 +92,20 @@ class GitPull(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pulled_on, success, installed, updated):
+    def __init__(self, pulled_on, success, installed, pulled):
         """
         Constructor
         """
         self.__pulled_on = pulled_on                    # LocalizedDatetime
         self.__success = success                        # bool
         self.__installed = installed                    # array of strings
-        self.__updated = updated                        # array of strings
+        self.__pulled = pulled                          # array of strings
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_comprehensive(self):
-        return self.installed == self.updated
+        return self.installed == self.pulled
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -96,7 +116,7 @@ class GitPull(PersistentJSONable):
         jdict['pulled-on'] = None if self.pulled_on is None else self.pulled_on.as_iso8601()
         jdict['success'] = self.success
         jdict['installed'] = self.installed
-        jdict['updated'] = self.updated
+        jdict['pulled'] = self.pulled
 
         return jdict
 
@@ -119,12 +139,12 @@ class GitPull(PersistentJSONable):
 
 
     @property
-    def updated(self):
-        return self.__updated
+    def pulled(self):
+        return self.__pulled
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GitPull:{pulled_on:%s, success:%s, installed:%s, updated:%s}" % \
-               (self.pulled_on, self.success, self.installed, self.updated)
+        return "GitPull:{pulled_on:%s, success:%s, installed:%s, pulled:%s}" % \
+               (self.pulled_on, self.success, self.installed, self.pulled)
