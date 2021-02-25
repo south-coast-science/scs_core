@@ -58,6 +58,13 @@ class UDSServer(object):
         self.__logger.info('stopped')
 
 
+    def restart(self):
+        self.__logger.info('restart...')
+
+        self.stop()
+        self.start()
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def requests(self):
@@ -68,14 +75,16 @@ class UDSServer(object):
                 yield message
                 continue
 
-            self.__logger.info('restart...')
-
-            self.stop()                             # attempt to restart session
-            self.start()
+            self.restart()
 
 
     def respond(self, message):
-        self.__uds.server_send(message.strip())
+        try:
+            self.__uds.server_send(message.strip())
+
+        except BrokenPipeError:
+            self.restart()
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
