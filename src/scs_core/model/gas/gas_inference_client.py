@@ -49,6 +49,15 @@ class GasInferenceClient(object):
         self._uds_client.close()
 
 
+    def model_name(self):
+        self._uds_client.request('"?"')
+        response = self._uds_client.wait_for_response()
+
+        return json.loads(response)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @abstractmethod
     def infer(self, gas_sample, board_temp):
         pass
