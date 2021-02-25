@@ -25,26 +25,6 @@ class GitPull(PersistentJSONable):
     classdocs
     """
 
-    __FILENAME = "git_pull.json"
-
-    @classmethod
-    def persistence_location(cls):
-        return cls.conf_dir(), cls.__FILENAME
-
-
-    @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
-        if not jdict:
-            return None if default is None else cls(None, False, [], [])
-
-        pulled_on = LocalizedDatetime.construct_from_jdict(jdict.get('pulled-on'))
-        success = jdict.get('success')
-        installed = jdict.get('installed')
-        pulled = jdict.get('pulled')
-
-        return cls(pulled_on, success, installed, pulled)
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     __DIR_PREFIX = 'scs_'
@@ -89,6 +69,28 @@ class GitPull(PersistentJSONable):
 
         except TimeoutExpired:
             raise TimeoutError(timeout)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __FILENAME = "git_pull.json"
+
+    @classmethod
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
+
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, default=True):
+        if not jdict:
+            return None if default is None else cls(None, False, [], [])
+
+        pulled_on = LocalizedDatetime.construct_from_jdict(jdict.get('pulled-on'))
+        success = jdict.get('success')
+        installed = jdict.get('installed')
+        pulled = jdict.get('pulled')
+
+        return cls(pulled_on, success, installed, pulled)
 
 
     # ----------------------------------------------------------------------------------------------------------------
