@@ -37,7 +37,7 @@ class UDSServer(object):
 
     def start(self):
         try:
-            os.remove(self.__path)                  # override any previous use of the UDS
+            os.remove(self.path)                    # override any previous use of the UDS
         except FileNotFoundError:
             pass
 
@@ -51,7 +51,7 @@ class UDSServer(object):
         self.__uds.close()
 
         try:
-            os.remove(self.__path)
+            os.remove(self.path)
         except FileNotFoundError:
             pass
 
@@ -59,7 +59,7 @@ class UDSServer(object):
 
 
     def restart(self):
-        self.__logger.info('restart...')
+        self.__logger.info('closed')
 
         self.stop()
         self.start()
@@ -85,6 +85,12 @@ class UDSServer(object):
         except BrokenPipeError:
             self.restart()
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def path(self):
+        return self.__path
 
 
     # ----------------------------------------------------------------------------------------------------------------
