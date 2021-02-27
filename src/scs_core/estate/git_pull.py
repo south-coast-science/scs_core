@@ -4,9 +4,10 @@ Created on 24 Feb 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 JSON example:
-{"pulled-on": "2021-02-24T17:35:08Z", "success": true,
+{"pulled-on": "2021-02-27T08:37:09Z", "success": true,
 "installed": ["scs_core", "scs_dev", "scs_dfe_eng", "scs_host_cpc", "scs_mfr", "scs_psu"],
-"pulled": ["scs_core", "scs_dev", "scs_dfe_eng", "scs_host_cpc", "scs_mfr", "scs_psu"]}
+"pulled": ["scs_core", "scs_dev", "scs_dfe_eng", "scs_host_cpc", "scs_mfr", "scs_psu"],
+"excluded": []}
 """
 
 from collections import OrderedDict
@@ -107,6 +108,16 @@ class GitPull(PersistentJSONable):
         self.__installed = installed                    # array of strings
         self.__pulled = pulled                          # array of strings
         self.__excluded = excluded                      # array of strings
+
+
+    def __eq__(self, other):
+        try:
+            return self.pulled_on == other.pulled_on and self.success == other.success and \
+                   self.installed == other.installed and self.pulled == other.pulled and \
+                   self.excluded == other.excluded
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
