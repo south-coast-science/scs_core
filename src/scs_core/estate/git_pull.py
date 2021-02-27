@@ -28,7 +28,7 @@ class GitPull(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     __DIR_PREFIX = 'scs_'
-    __EXCLUSIONS = ('scs_exegesis', )
+    __EXCLUSIONS = ('scs_exegesis', 'scs_exegesis_modelling', 'scs_experimental', 'scs_inference', 'scs-installer')
 
     @classmethod
     def excludes(cls, name):
@@ -83,26 +83,30 @@ class GitPull(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return None if default is None else cls(None, False, [], [])
+            return None if default is None else cls(None, False, [], [], [])
 
         pulled_on = LocalizedDatetime.construct_from_jdict(jdict.get('pulled-on'))
         success = jdict.get('success')
+
         installed = jdict.get('installed')
         pulled = jdict.get('pulled')
+        excluded = jdict.get('excluded')
 
-        return cls(pulled_on, success, installed, pulled)
+        return cls(pulled_on, success, installed, pulled, excluded)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pulled_on, success, installed, pulled):
+    def __init__(self, pulled_on, success, installed, pulled, excluded):
         """
         Constructor
         """
         self.__pulled_on = pulled_on                    # LocalizedDatetime
         self.__success = success                        # bool
+
         self.__installed = installed                    # array of strings
         self.__pulled = pulled                          # array of strings
+        self.__excluded = excluded                      # array of strings
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -118,8 +122,10 @@ class GitPull(PersistentJSONable):
 
         jdict['pulled-on'] = None if self.pulled_on is None else self.pulled_on.as_iso8601()
         jdict['success'] = self.success
+
         jdict['installed'] = self.installed
         jdict['pulled'] = self.pulled
+        jdict['excluded'] = self.excluded
 
         return jdict
 
@@ -146,8 +152,13 @@ class GitPull(PersistentJSONable):
         return self.__pulled
 
 
+    @property
+    def excluded(self):
+        return self.__excluded
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GitPull:{pulled_on:%s, success:%s, installed:%s, pulled:%s}" % \
-               (self.pulled_on, self.success, self.installed, self.pulled)
+        return "GitPull:{pulled_on:%s, success:%s, installed:%s, pulled:%s, excluded:%s}" % \
+               (self.pulled_on, self.success, self.installed, self.pulled, self.excluded)
