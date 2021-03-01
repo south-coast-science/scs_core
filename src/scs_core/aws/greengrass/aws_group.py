@@ -217,6 +217,9 @@ class AWSGroup(JSONable):
         else:
             return "-"
 
+    def return_verbose_info(self):
+        return self.__verbose_group_info
+
 
     # --------------------------------------------------------------------------------------------------------------------
 
