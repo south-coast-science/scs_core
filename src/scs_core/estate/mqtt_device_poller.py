@@ -1,20 +1,17 @@
-#!/usr/bin/env python3
-
 """
 Created on 22 Feb 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+
 import json
 import logging
+import requests
 import sys
 import time
-import requests
 
 from collections import OrderedDict
 from AWSIoTPythonSDK.exception import operationError, operationTimeoutException
-
-from scs_analysis.handler.aws_mqtt_control_handler import AWSMQTTControlHandler
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
@@ -22,6 +19,7 @@ from scs_core.aws.data.byline import TopicBylineGroup
 from scs_core.aws.manager.dynamo_manager import DynamoManager
 
 from scs_core.control.control_datum import ControlDatum
+from scs_core.control.control_handler import ControlHandler
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
@@ -30,14 +28,16 @@ from scs_core.estate.configuration import Configuration
 
 from scs_host.sys.host import Host
 
-# ----------------------------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------------------------
 
 class MQTTDevicePoller(object):
     __BUCKET = "scs-persistence"
     __KEY = "conf/mqtt_peers.json"
     __TABLE = "device_configuration"
     __TIMEOUT = 10
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, s3_manager, dynamo_client=None, dynamo_resource=None):
         """
@@ -132,7 +132,7 @@ class MQTTDevicePoller(object):
             exit(1)
 
         # responder...
-        handler = AWSMQTTControlHandler()
+        handler = ControlHandler()
 
         # tag...
         host_tag = Host.name()
