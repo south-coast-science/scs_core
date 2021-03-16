@@ -32,9 +32,18 @@ from scs_host.sys.host import Host
 # ----------------------------------------------------------------------------------------------------------------
 
 class MQTTDevicePoller(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __DEVICE_TOPICS_URL = 'https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/dev/device-topics'
+
     __BUCKET = "scs-persistence"
     __KEY = "conf/mqtt_peers.json"
     __TABLE = "device_configuration"
+
     __TIMEOUT = 10
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,67 +52,61 @@ class MQTTDevicePoller(object):
         """
         Constructor
         """
-        self.__manager = s3_manager
+        self.__s3_manager = s3_manager
         self.__dynamo_manager = DynamoManager(dynamo_client, dynamo_resource) if dynamo_client and dynamo_resource \
             else None
-        self.__known_devices = []
-        self.__missing_devices = []
-        self.__all_devices = []
+
         self.__logger = logging.getLogger()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def get_all_devices(self):
-
-        req = requests.get('https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/dev/device-topics')
+    @classmethod
+    def all_devices(cls):
+        req = requests.get(cls.__DEVICE_TOPICS_URL)
         status = req.status_code
         if status != 200:
             return None
 
         res = req.content
-        json_data = json.loads(res)
+        jdict = json.loads(res)
 
-        group = TopicBylineGroup.construct_from_jdict(json_data, excluded="/control")
+        group = TopicBylineGroup.construct_from_jdict(jdict, excluded="/control")
 
-        for device in group.devices:
-            self.__all_devices.append(device)
+        return group.devices
 
-    def get_known_devices(self, with_info=False):
-        res = self.__manager.retrieve_from_bucket(self.__BUCKET, self.__KEY)
+
+    def known_devices(self, with_info=False):
+        res = self.__s3_manager.retrieve_from_bucket(self.__BUCKET, self.__KEY)
         json_data = json.loads(res)
         data = json_data["peers"]
+
+        known_dev = []
+
         if not with_info:
             for item in data.items():
                 tag = item[1]["tag"]
-                self.__known_devices.append(tag)
+                known_dev.append(tag)
         else:
             for item in data.items():
                 data = item[1]
-                self.__known_devices.append(data)
+                known_dev.append(data)
 
-    def compare(self):
-        known_dev = self.__known_devices
-        all_dev = self.__all_devices
+        return known_dev
 
-        missing_dev = set(all_dev) - set(known_dev)
-        return missing_dev
 
-    def get_missing_devices(self):
-        self.get_all_devices()
-        self.get_known_devices()
-        missing_dev = self.compare()
+    def missing_devices(self):
+        missing_dev = set(self.all_devices()) - set(self.known_devices())
 
-        res = dict.fromkeys(missing_dev, 0)
-        return res
+        return sorted(missing_dev)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def update_configs(self):
-        self.get_known_devices(True)
         jdict = OrderedDict()
 
-        known_dev = self.__known_devices
-        for device in known_dev:
-            # resources
-
+        for device in self.known_devices(with_info=True):
             d_tag = device["tag"]
             d_ss = device["shared-secret"]
             d_topic = device["topic"]
@@ -117,11 +120,13 @@ class MQTTDevicePoller(object):
                 if "configuration" in res[0]:
                     self.get_configuration(d_tag, d_ss, d_topic)
 
+
     def get_configuration(self, device_tag, shared_secret, topic):
         tokens = ["configuration"]
         print(type(tokens))
         res = self.send_mqtt(device_tag, shared_secret, topic, tokens)
         self.save_changes(device_tag, res)
+
 
     def send_mqtt(self, d_tag, d_ss, d_topic, token):
         # ClientAuth...
@@ -177,6 +182,7 @@ class MQTTDevicePoller(object):
                 return "Timeout"
 
             time.sleep(0.1)
+
 
     def save_changes(self, device_tag, response):
         # see if item already in DB
