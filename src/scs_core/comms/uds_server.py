@@ -11,7 +11,6 @@ import os
 from scs_core.sys.logging import Logging
 
 from scs_core.comms.uds_client import UDSClient
-# from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------

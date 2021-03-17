@@ -8,8 +8,6 @@ https://realpython.com/python-sockets/#multi-connection-server
 
 import sys
 
-# from scs_host.comms.domain_socket import DomainSocket
-
 
 # --------------------------------------------------------------------------------------------------------------------
 

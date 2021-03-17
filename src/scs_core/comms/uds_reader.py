@@ -9,8 +9,6 @@ https://realpython.com/python-sockets/#multi-connection-server
 import os
 import sys
 
-# from scs_host.comms.domain_socket import DomainSocket
-
 
 # --------------------------------------------------------------------------------------------------------------------
 # input reader...
