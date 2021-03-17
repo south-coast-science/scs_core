@@ -39,5 +39,5 @@ dynamo_resource = Client.resource('dynamodb', key)
 manager = S3Manager(client, resource_client)
 
 reporter = MQTTDevicePoller(manager, dynamo_client, dynamo_resource)
-reporter.update_configs()
+reporter.update_configs(Host)
 

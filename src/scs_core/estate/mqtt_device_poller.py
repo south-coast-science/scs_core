@@ -26,8 +26,6 @@ from scs_core.data.publication import Publication
 
 from scs_core.estate.configuration import Configuration
 
-from scs_host.sys.host import Host
-
 
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -103,14 +101,14 @@ class MQTTDevicePoller(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def update_configs(self):
+    def update_configs(self, host):
         jdict = OrderedDict()
 
         for device in self.known_devices(with_info=True):
             d_tag = device["tag"]
             d_ss = device["shared-secret"]
             d_topic = device["topic"]
-            res = self.send_mqtt(d_tag, d_ss, d_topic, "?")
+            res = self.send_mqtt(host, d_tag, d_ss, d_topic, "?")
 
             jdict[d_tag] = res
             print("Device:%s :%s" % (d_tag, res))
@@ -118,19 +116,19 @@ class MQTTDevicePoller(object):
 
             if res != "Timeout":
                 if "configuration" in res[0]:
-                    self.get_configuration(d_tag, d_ss, d_topic)
+                    self.get_configuration(host, d_tag, d_ss, d_topic)
 
 
-    def get_configuration(self, device_tag, shared_secret, topic):
+    def get_configuration(self, host, device_tag, shared_secret, topic):
         tokens = ["configuration"]
         print(type(tokens))
-        res = self.send_mqtt(device_tag, shared_secret, topic, tokens)
+        res = self.send_mqtt(host, device_tag, shared_secret, topic, tokens)
         self.save_changes(device_tag, res)
 
 
-    def send_mqtt(self, d_tag, d_ss, d_topic, token):
+    def send_mqtt(self, host, d_tag, d_ss, d_topic, token):
         # ClientAuth...
-        auth = ClientAuth.load(Host)
+        auth = ClientAuth.load(host)
 
         if auth is None:
             # log no auth
@@ -140,7 +138,7 @@ class MQTTDevicePoller(object):
         handler = ControlHandler()
 
         # tag...
-        host_tag = Host.name()
+        host_tag = host.name()
 
         subscriber = MQTTSubscriber(d_topic, handler.handle)
         client = MQTTClient(subscriber)
