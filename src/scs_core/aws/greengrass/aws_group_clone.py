@@ -3,20 +3,25 @@ Created on 08 Feb 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+
 import json
 import os
 import re
+
 from collections import OrderedDict
 
 from scs_core.aws.greengrass.aws_group import AWSGroup
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
+
 from scs_core.estate.configuration import Configuration
+
 from scs_core.sample.sample import Sample
+
 from scs_core.sys.logging import Logging
 from scs_core.sys.system_id import SystemID
-from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -65,6 +70,7 @@ class AWSGroupCloner(object):
         self.__dest_dev_path = None
         self.__dest_group_id = None
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def retrieve_group_info(self):
@@ -84,7 +90,6 @@ class AWSGroupCloner(object):
         resource_info = origin_info.node("Resource Definition Response")
         self.__origin_resource_info = resource_info["Definition"]
 
-
         aws_json_reader = AWSGroup(self.__dest_group_name, self.__client)
         group_info = aws_json_reader.get_group_info_from_name()
         group_id = group_info.node("GroupID")
@@ -92,8 +97,8 @@ class AWSGroupCloner(object):
         aws_json_reader.get_group_arns()
         self.__aws_info.append("CoreDefinitionARN", aws_json_reader.retrieve_node("CoreDefinitionVersionArn"))
 
-    def update_function_info(self):
 
+    def update_function_info(self):
         new_dict = []
 
         for item in self.__origin_function_info["Functions"]:
@@ -113,8 +118,8 @@ class AWSGroupCloner(object):
 
         self.__dest_function_info = new_dict
 
-    def update_resource_info(self):
 
+    def update_resource_info(self):
         new_dict = []
 
         for item in self.__origin_resource_info["Resources"]:
@@ -134,6 +139,7 @@ class AWSGroupCloner(object):
 
         self.__dest_resource_info = new_dict
 
+
     def validate_names(self):
         reg = re.compile("scs-(\\w+)-(\\d{3})-group")
         is_valid = reg.fullmatch(self.__origin_group_name)
@@ -146,8 +152,8 @@ class AWSGroupCloner(object):
 
         return True
 
-    def create_resources_version(self):
 
+    def create_resources_version(self):
         jdict = OrderedDict()
 
         resources = self.__dest_resource_info
@@ -168,8 +174,8 @@ class AWSGroupCloner(object):
 
         self.__logger.debug(response)
 
-    def create_function_version(self):
 
+    def create_function_version(self):
         jdict = OrderedDict()
 
         functions = self.__dest_function_info
@@ -188,14 +194,16 @@ class AWSGroupCloner(object):
 
         self.__logger.debug(response)
 
-    def get_project_locations(self):
-        system_id = SystemID.load(Host)
+
+    def get_project_locations(self, host):
+        system_id = SystemID.load(host)
 
         if system_id is None:
             self.__logger.error('SystemID not available.')
             return False
 
-        sample = Sample(system_id.message_tag(), LocalizedDatetime.now(), values=Configuration.load(Host))
+        configuration = Configuration.load(host)
+        sample = Sample(system_id.message_tag(), LocalizedDatetime.now(), values=configuration)
 
         data = JSONify.dumps(sample)
         datum = json.loads(data)
@@ -205,6 +213,7 @@ class AWSGroupCloner(object):
         self.__dest_dev_path = temp["device-path"]
 
         return True
+
 
     def create_subscription_version(self):
         # Get template JSON
@@ -241,6 +250,7 @@ class AWSGroupCloner(object):
 
         self.__logger.debug(response)
 
+
     def create_aws_group_definition(self):
         self.__logger.info("Creating group definition")
 
@@ -254,7 +264,8 @@ class AWSGroupCloner(object):
 
         self.__logger.info(response)
 
-    def run(self):
+
+    def run(self, host):
         temp = self.__origin_group_name.split("-")
         self.__origin_group_number = temp[2]
         self.__origin_owner = "pi" if temp[1] == "rpi" else "scs"
@@ -271,7 +282,7 @@ class AWSGroupCloner(object):
         self.create_resources_version()
         self.create_function_version()
 
-        if not self.get_project_locations():
+        if not self.get_project_locations(host):
             return False
 
         self.create_subscription_version()

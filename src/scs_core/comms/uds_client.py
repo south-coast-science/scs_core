@@ -6,8 +6,6 @@ Created on 14 Aug 2020
 
 import time
 
-from scs_host.comms.domain_socket import DomainSocket
-
 from scs_core.sys.logging import Logging
 
 
@@ -24,7 +22,7 @@ class UDSClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path):
+    def __init__(self, socket, path):
         """
         Constructor
         """
@@ -32,7 +30,7 @@ class UDSClient(object):
 
         self.__path = path                          # string
 
-        self.__uds = DomainSocket(path)             # DomainSocket
+        self.__uds = socket(path)                   # DomainSocket
         self.__disconnecting = False                # bool
 
 
