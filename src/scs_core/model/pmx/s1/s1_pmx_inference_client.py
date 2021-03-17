@@ -33,9 +33,9 @@ class S1PMxInferenceClient(PMxInferenceClient):
     """
 
     @classmethod
-    def construct(cls, inference_uds_path):
+    def construct(cls, socket, inference_uds_path):
         # UDS...
-        uds_client = UDSClient(inference_uds_path)
+        uds_client = UDSClient(socket, inference_uds_path)
 
         return cls(uds_client)
 

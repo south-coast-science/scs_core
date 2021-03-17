@@ -26,8 +26,6 @@ from scs_core.data.publication import Publication
 
 from scs_core.estate.configuration import Configuration
 
-from scs_host.sys.host import Host
-
 
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -48,10 +46,11 @@ class MQTTDevicePoller(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, s3_manager, dynamo_client=None, dynamo_resource=None):
+    def __init__(self, host, s3_manager, dynamo_client=None, dynamo_resource=None):
         """
         Constructor
         """
+        self.__host = host
         self.__s3_manager = s3_manager
         self.__dynamo_manager = DynamoManager(dynamo_client, dynamo_resource) if dynamo_client and dynamo_resource \
             else None
@@ -130,7 +129,7 @@ class MQTTDevicePoller(object):
 
     def send_mqtt(self, d_tag, d_ss, d_topic, token):
         # ClientAuth...
-        auth = ClientAuth.load(Host)
+        auth = ClientAuth.load(self.__host)
 
         if auth is None:
             # log no auth
@@ -140,7 +139,7 @@ class MQTTDevicePoller(object):
         handler = ControlHandler()
 
         # tag...
-        host_tag = Host.name()
+        host_tag = self.__host.name()
 
         subscriber = MQTTSubscriber(d_topic, handler.handle)
         client = MQTTClient(subscriber)
