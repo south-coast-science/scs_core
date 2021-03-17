@@ -11,7 +11,7 @@ import os
 from scs_core.sys.logging import Logging
 
 from scs_core.comms.uds_client import UDSClient
-from scs_host.comms.domain_socket import DomainSocket
+# from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -23,14 +23,14 @@ class UDSServer(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path):
+    def __init__(self, socket, path):
         """
         Constructor
         """
         self.__logger = Logging.getLogger()
 
         self.__path = path                          # string
-        self.__uds = DomainSocket(path)             # DomainSocket
+        self.__uds = socket(path)             # DomainSocket
 
 
     # ----------------------------------------------------------------------------------------------------------------

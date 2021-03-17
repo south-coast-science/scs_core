@@ -45,10 +45,10 @@ class PMxModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self, host) -> PMxInferenceClient:
+    def client(self, host, socket) -> PMxInferenceClient:
         if self.model_interface == 's1':
             from scs_core.model.pmx.s1.s1_pmx_inference_client import S1PMxInferenceClient
 
-            return S1PMxInferenceClient.construct(self.abs_uds_path(host))
+            return S1PMxInferenceClient.construct(socket, self.abs_uds_path(host))
 
         raise ValueError(self.model_interface)

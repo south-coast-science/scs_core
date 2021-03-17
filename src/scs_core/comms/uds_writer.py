@@ -8,7 +8,7 @@ https://realpython.com/python-sockets/#multi-connection-server
 
 import sys
 
-from scs_host.comms.domain_socket import DomainSocket
+# from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -20,11 +20,11 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path):
+    def __init__(self, socket, path):
         """
         Constructor
         """
-        self.__uds = DomainSocket(path) if path else None
+        self.__uds = socket(path) if path else None
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ https://realpython.com/python-sockets/#multi-connection-server
 import os
 import sys
 
-from scs_host.comms.domain_socket import DomainSocket
+# from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ class UDSReader(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path):
+    def __init__(self, socket, path):
         """
         Constructor
         """
@@ -35,7 +35,7 @@ class UDSReader(object):
         except OSError:
             pass
 
-        self.__uds = DomainSocket(path)
+        self.__uds = socket(path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
