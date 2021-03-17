@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Created on 22 Feb 2021
 
@@ -6,17 +8,20 @@ Created on 22 Feb 2021
 
 import sys
 
-from scs_core.estate.mqtt_device_poller import MQTTDevicePoller
 from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.client.client import Client
 from scs_core.aws.manager.s3_manager import S3Manager
+
+from scs_core.estate.mqtt_device_poller import MQTTDevicePoller
+
 from scs_host.sys.host import Host
 
-auth = APIAuth.load(Host)
 
 # ------------------------------------------------------------------------------------------------------------
 # resources...
+
+auth = APIAuth.load(Host)
 
 key = None
 
@@ -39,5 +44,5 @@ dynamo_resource = Client.resource('dynamodb', key)
 manager = S3Manager(client, resource_client)
 
 reporter = MQTTDevicePoller(manager, dynamo_client, dynamo_resource)
-reporter.update_configs(Host)
+reporter.update_configs()
 
