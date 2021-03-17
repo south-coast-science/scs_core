@@ -29,7 +29,7 @@ class UDSServer(object):
         self.__logger = Logging.getLogger()
 
         self.__path = path                          # string
-        self.__uds = socket(path)             # DomainSocket
+        self.__uds = socket(path)                   # DomainSocket
 
 
     # ----------------------------------------------------------------------------------------------------------------

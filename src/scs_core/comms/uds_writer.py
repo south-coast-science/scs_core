@@ -22,7 +22,7 @@ class UDSWriter(object):
         """
         Constructor
         """
-        self.__uds = socket(path) if path else None
+        self.__uds = socket(path) if path else None             # DomainSocket
 
 
     # ----------------------------------------------------------------------------------------------------------------
