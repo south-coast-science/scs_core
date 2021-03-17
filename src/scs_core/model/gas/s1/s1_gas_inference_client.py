@@ -37,9 +37,9 @@ class S1GasInferenceClient(GasInferenceClient):
     """
 
     @classmethod
-    def construct(cls, inference_uds_path, gas_schedule_item: ScheduleItem, afe_calib: AFECalib):
+    def construct(cls, socket, inference_uds_path, gas_schedule_item: ScheduleItem, afe_calib: AFECalib):
         # UDS...
-        uds_client = UDSClient(inference_uds_path)
+        uds_client = UDSClient(socket, inference_uds_path)
 
         # T / rH slope...
         slope_tally = GasRequest.slope_tally(gas_schedule_item.duration())
