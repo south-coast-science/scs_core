@@ -127,7 +127,10 @@ class MQTTDevicePoller(object):
         self.save_changes(device_tag, res)
 
 
-    def send_mqtt(self, d_tag, d_ss, d_topic, token):
+    def send_mqtt(self, device_tag, d_ss, d_topic, token):
+        # tag...
+        host_tag = self.__host.name()
+
         # ClientAuth...
         auth = ClientAuth.load(self.__host)
 
@@ -136,10 +139,7 @@ class MQTTDevicePoller(object):
             exit(1)
 
         # responder...
-        handler = ControlHandler()
-
-        # tag...
-        host_tag = self.__host.name()
+        handler = ControlHandler(host_tag, device_tag)
 
         subscriber = MQTTSubscriber(d_topic, handler.handle)
         client = MQTTClient(subscriber)
@@ -148,11 +148,11 @@ class MQTTDevicePoller(object):
         client.connect(auth, False)
         # datum...
         now = LocalizedDatetime.now().utc()
-        datum = ControlDatum.construct(host_tag, d_tag, now, token, d_ss)
+        datum = ControlDatum.construct(host_tag, device_tag, now, token, d_ss)
 
         publication = Publication(d_topic, datum)
 
-        handler.set(publication)
+        handler.set_outgoing(publication)
 
         try:
             client.publish(publication)
