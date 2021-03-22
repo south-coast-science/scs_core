@@ -44,7 +44,7 @@ class ControlDatum(JSONable):
         cmd_tokens = jdict.get('cmd_tokens')
         digest = jdict.get('digest')
 
-        datum = ControlDatum(tag, attn, rec, cmd_tokens, digest)
+        datum = cls(tag, attn, rec, cmd_tokens, digest)
 
         return datum
 
@@ -53,7 +53,7 @@ class ControlDatum(JSONable):
     def construct(cls, tag, attn, rec, cmd_tokens, key):
         digest = cls.__hash(tag, attn, rec, cmd_tokens, key)
 
-        return ControlDatum(tag, attn, rec, cmd_tokens, digest)
+        return cls(tag, attn, rec, cmd_tokens, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self, key):
-        digest = ControlDatum.__hash(self.tag, self.attn, self.rec, self.cmd_tokens, key)
+        digest = self.__hash(self.tag, self.attn, self.rec, self.cmd_tokens, key)
 
         return digest == self.digest
 

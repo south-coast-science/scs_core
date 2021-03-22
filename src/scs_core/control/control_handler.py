@@ -5,6 +5,7 @@ Created on 11 Jan 2018
 """
 
 import json
+import sys
 
 from scs_core.control.control_receipt import ControlReceipt
 
@@ -34,6 +35,7 @@ class ControlHandler(object):
 
 
     def handle(self, _client, _userdata, message):
+        print("handle - message: %s" % message, file=sys.stderr)
         payload = json.loads(message.payload.decode())
 
         try:
