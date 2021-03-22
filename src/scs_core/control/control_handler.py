@@ -5,7 +5,6 @@ Created on 11 Jan 2018
 """
 
 import json
-import sys
 
 from scs_core.control.control_receipt import ControlReceipt
 
@@ -19,23 +18,25 @@ class ControlHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    def __init__(self, host_tag, device_tag):
         """
         Constructor
         """
-        self.__outgoing_pub = None                      # Publication
+        self.__host_tag = host_tag                      # string
+        self.__device_tag = device_tag                  # string
+
+        self.__outgoing_pub = None                      # ControlDatum
         self.__receipt = None                           # ControlReceipt
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set(self, outgoing_pub):
+    def set_outgoing(self, outgoing_pub):
         self.__outgoing_pub = outgoing_pub
         self.__receipt = None
 
 
     def handle(self, _client, _userdata, message):
-        print("handle - message: %s" % message, file=sys.stderr)
         payload = json.loads(message.payload.decode())
 
         try:
@@ -43,8 +44,14 @@ class ControlHandler(object):
         except TypeError:
             return
 
-        # if receipt.tag == self.__outgoing_pub.payload.attn and receipt.omd == self.__outgoing_pub.payload.digest:
-        #     self.__receipt = receipt
+        if receipt.tag != self.__device_tag:
+            return
+
+        if receipt.attn is not None and receipt.attn != self.__host_tag:
+            return
+
+        if receipt.omd != self.__outgoing_pub.payload.digest:
+            return
 
         self.__receipt = receipt
 
@@ -59,4 +66,5 @@ class ControlHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlHandler:{outgoing_pub:%s, receipt:%s}" %  (self.__outgoing_pub, self.receipt)
+        return "ControlHandler:{host_tag:%s, device_tag:%s, outgoing_pub:%s, receipt:%s}" %  \
+               (self.__host_tag, self.__device_tag, self.__outgoing_pub, self.receipt)
