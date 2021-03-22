@@ -86,8 +86,8 @@ class ControlReceipt(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self, subscriber_sn):
-        digest = self.__hash(self.tag, self.attn, self.rec, self.command, subscriber_sn)
+    def is_valid(self, key):
+        digest = self.__hash(self.tag, self.attn, self.rec, self.command, key)
 
         return digest == self.__digest
 

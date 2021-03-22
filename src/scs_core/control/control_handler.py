@@ -43,8 +43,10 @@ class ControlHandler(object):
         except TypeError:
             return
 
-        if receipt.tag == self.__outgoing_pub.payload.attn and receipt.omd == self.__outgoing_pub.payload.digest:
-            self.__receipt = receipt
+        # if receipt.tag == self.__outgoing_pub.payload.attn and receipt.omd == self.__outgoing_pub.payload.digest:
+        #     self.__receipt = receipt
+
+        self.__receipt = receipt
 
 
     # ----------------------------------------------------------------------------------------------------------------
