@@ -16,7 +16,7 @@ with open('requirements.txt') as req_txt:
 
 setuptools.setup(
     name="scs-core",
-    version="1.0.2",
+    version="1.0.4",
     author="South Coast Science",
     author_email="contact@southcoastscience.com",
     description="The root of all South Coast Science environmental monitoring applications.",
