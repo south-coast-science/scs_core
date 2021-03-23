@@ -134,7 +134,7 @@ class AWSGroupConfiguration(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSGroupConfiguration:{group_name%s, init_time:%s, unix_group:%s, ml:%s}" % \
+        return "AWSGroupConfiguration:{group_name:%s, init_time:%s, unix_group:%s, ml:%s}" % \
                (self.group_name, self.init_time, self.unix_group, self.ml)
 
 
