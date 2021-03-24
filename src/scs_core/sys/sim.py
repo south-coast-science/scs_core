@@ -58,18 +58,22 @@ class SIM(JSONable):
             match = re.match(r'sim.properties.imsi\s+:\s+([\d]+)', line)
             if match:
                 imsi = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.iccid\s+:\s+([\d]+)', line)
             if match:
                 iccid = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.operator-code\s+:\s+([\d]+)', line)
             if match:
                 operator_code = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
             if match:
                 operator_name = match.groups()[0].strip()
+                continue
 
         return cls(imsi, iccid, operator_code, operator_name)
 
