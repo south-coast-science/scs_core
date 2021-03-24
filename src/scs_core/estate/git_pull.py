@@ -60,7 +60,7 @@ class GitPull(PersistentJSONable):
     def pull_repo(cls, path, timeout):
         try:
             p = Popen(['git', '-C', path, 'pull'], stdout=PIPE, stderr=PIPE)
-            stdout_bytes, stderr_bytes = p.communicate(None, timeout)
+            stdout_bytes, stderr_bytes = p.communicate(timeout=timeout)
 
             success = p.returncode == 0
             stdout = stdout_bytes.decode()
