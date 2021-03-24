@@ -3,7 +3,7 @@ Created on 24 Mar 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Subscriber Identity Module
+Subscriber Identity Module (SIM)
 
 sim.dbus-path                             : /org/freedesktop/ModemManager1/SIM/0
 sim.properties.imsi                       : 234104886708667
