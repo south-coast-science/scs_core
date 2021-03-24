@@ -137,8 +137,9 @@ class IoTNode(Node):
     # ----------------------------------------------------------------------------------------------------------------
     # SIM...
 
+    @classmethod
     @abstractmethod
-    def sim(self):
+    def sim(cls):
         pass
 
 
