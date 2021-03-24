@@ -400,7 +400,7 @@ class MessageResponse(JSONable):
         if not self.items:
             return None
 
-        item = self.items[len(self) - 1]
+        item = self.items[-1]
 
         try:
             return item['rec']

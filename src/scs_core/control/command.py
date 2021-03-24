@@ -122,7 +122,7 @@ class Command(JSONable):
     def __execute(self, statement, host):
         p = Popen(statement, cwd=host.command_path(), stdout=PIPE, stderr=PIPE)
 
-        stdout_bytes, stderr_bytes = p.communicate(None, Command.__TIMEOUT)
+        stdout_bytes, stderr_bytes = p.communicate(timeout=Command.__TIMEOUT)
 
         self.__stdout = stdout_bytes.decode().strip().splitlines()
         self.__stderr = stderr_bytes.decode().strip().splitlines()
