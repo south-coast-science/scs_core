@@ -281,7 +281,7 @@ class CheckpointField(object):
             if tick <= value:
                 return tick
 
-        return self.__ticks[len(self.__ticks) - 1]
+        return self.__ticks[-1]
 
 
     # ----------------------------------------------------------------------------------------------------------------
