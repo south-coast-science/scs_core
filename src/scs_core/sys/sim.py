@@ -15,7 +15,7 @@ sim.properties.emergency-numbers.value[1] : 999
 sim.properties.emergency-numbers.value[2] : 00112
 
 example JSON:
-{"imsi": "123", "iccid": "456", "operator-id": "789 012", "operator-name": "giff gaff"}
+{"imsi": "123", "iccid": "456", "operator-code": "789 012", "operator-name": "giff gaff"}
 """
 
 import re
@@ -58,18 +58,22 @@ class SIM(JSONable):
             match = re.match(r'sim.properties.imsi\s+:\s+([\d]+)', line)
             if match:
                 imsi = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.iccid\s+:\s+([\d]+)', line)
             if match:
                 iccid = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.operator-code\s+:\s+([\d]+)', line)
             if match:
                 operator_code = match.groups()[0]
+                continue
 
             match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
             if match:
                 operator_name = match.groups()[0].strip()
+                continue
 
         return cls(imsi, iccid, operator_code, operator_name)
 
@@ -177,7 +181,7 @@ class ModemList(object):
         return self.__modems[index]
 
 
-    def code(self, index):
+    def number(self, index):
         pieces = self.modem(index).split('/')
 
         return pieces[-1]
@@ -187,3 +191,56 @@ class ModemList(object):
 
     def __str__(self, *args, **kwargs):
         return "ModemList:{modems:%s}" % self.__modems
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class SIMList(object):
+    """
+    modem.generic.sim    : /org/freedesktop/ModemManager1/SIM/0
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_mmcli(cls, lines):
+        sims = []
+
+        for line in lines:
+            match = re.match(r'modem.generic.sim\s+:\s+([\S]+)', line)
+            if match:
+                sims.append(match.groups()[0])
+                break
+
+        return cls(sims)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, sims):
+        """
+        Constructor
+        """
+        self.__sims = sims                                  # array of string
+
+
+    def __len__(self):
+        return len(self.__sims)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def sim(self, index):
+        return self.__sims[index]
+
+
+    def number(self, index):
+        pieces = self.sim(index).split('/')
+
+        return pieces[-1]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "SIMList:{sims:%s}" % self.__sims
