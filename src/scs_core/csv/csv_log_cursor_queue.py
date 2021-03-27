@@ -37,11 +37,7 @@ class CSVLogCursorQueue(JSONable):
         if log.timeline_start is not None:
             for directory_path in cls.__directory_paths(log):                   # may raise FileNotFoundError
                 for log_file in cls.__log_files(log, directory_path):
-                    try:
-                        cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
-                    except csv.Error:
-                        print("CSVLogCursorQueue - skipping corrupt file %s" % log_file, file=sys.stderr)
-                        continue
+                    cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
 
                     if cursor is not None:
                         cursors.append(cursor)
@@ -71,6 +67,9 @@ class CSVLogCursorQueue(JSONable):
     def __log_files(log: CSVLog, directory_path):
         for file in Filesystem.ls(directory_path):
             log_file = CSVLogFile.construct(file)
+
+            if log_file is None:
+                continue
 
             if log_file.tag != log.tag:
                 continue
@@ -206,7 +205,7 @@ class CSVLogCursor(JSONable):
 
             return None
 
-        except (CSVReaderException, UnicodeDecodeError, ValueError) as ex:
+        except (csv.Error, CSVReaderException, UnicodeDecodeError, ValueError) as ex:
             logger.error("CSVLogCursor: %s: %s" % (log_file.path(), ex))
             return None                                                             # skip corrupt files
 
