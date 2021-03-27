@@ -6,6 +6,7 @@ Created on 20 Jan 2020
 
 import csv
 import json
+import sys
 
 from collections import OrderedDict
 
@@ -39,7 +40,7 @@ class CSVLogCursorQueue(JSONable):
                     try:
                         cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
                     except csv.Error:
-                        print("CSVLogCursorQueue - skipping corrupt file %s" % log_file)
+                        print("CSVLogCursorQueue - skipping corrupt file %s" % log_file, file=sys.stderr)
                         continue
 
                     if cursor is not None:
