@@ -4,9 +4,7 @@ Created on 20 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import csv
 import json
-import sys
 
 from collections import OrderedDict
 
@@ -205,7 +203,7 @@ class CSVLogCursor(JSONable):
 
             return None
 
-        except (csv.Error, CSVReaderException, UnicodeDecodeError, ValueError) as ex:
+        except (CSVReaderException, UnicodeDecodeError, ValueError) as ex:
             logger.error("CSVLogCursor: %s: %s" % (log_file.path(), ex))
             return None                                                             # skip corrupt files
 
