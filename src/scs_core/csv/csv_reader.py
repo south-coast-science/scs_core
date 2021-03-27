@@ -85,16 +85,21 @@ class CSVReader(object):
         self.__nullify = bool(nullify)                              # bool
         self.__start_row = int(start_row)                           # int
 
-        self.__reader = csv.reader(iterable, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-
         try:
-            paths = next(self.__reader)
-        except StopIteration:                                       # no input
-            paths = []
+            self.__reader = csv.reader(iterable, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
+                                       skipinitialspace=True)
 
-        self.__read_count = 0                                       # int
+            try:
+                paths = next(self.__reader)
+            except StopIteration:                                       # no input
+                paths = []
 
-        self.__header = CSVHeader.construct_from_paths(paths)       # CSVHeader
+            self.__read_count = 0                                       # int
+
+            self.__header = CSVHeader.construct_from_paths(paths)       # CSVHeader
+
+        except csv.Error as ex:
+            raise CSVReaderException(ex)
 
 
     # ----------------------------------------------------------------------------------------------------------------
