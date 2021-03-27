@@ -4,6 +4,7 @@ Created on 20 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import csv
 import json
 
 from collections import OrderedDict
@@ -35,7 +36,11 @@ class CSVLogCursorQueue(JSONable):
         if log.timeline_start is not None:
             for directory_path in cls.__directory_paths(log):                   # may raise FileNotFoundError
                 for log_file in cls.__log_files(log, directory_path):
-                    cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
+                    try:
+                        cursor = CSVLogCursor.construct_for_log_file(log, log_file, rec_field)
+                    except csv.Error:
+                        print("CSVLogCursorQueue - skipping corrupt file %s" % log_file)
+                        continue
 
                     if cursor is not None:
                         cursors.append(cursor)
