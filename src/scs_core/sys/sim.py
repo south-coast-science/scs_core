@@ -73,7 +73,6 @@ class SIM(JSONable):
             match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
             if match:
                 operator_name = match.groups()[0].strip()
-                continue
 
         return cls(imsi, iccid, operator_code, operator_name)
 
@@ -210,7 +209,6 @@ class SIMList(object):
             match = re.match(r'modem.generic.sim\s+:\s+([\S]+)', line)
             if match:
                 sims.append(match.groups()[0])
-                break
 
         return cls(sims)
 

@@ -66,6 +66,9 @@ class CSVLogCursorQueue(JSONable):
         for file in Filesystem.ls(directory_path):
             log_file = CSVLogFile.construct(file)
 
+            if log_file is None:
+                continue
+
             if log_file.tag != log.tag:
                 continue
 
