@@ -48,7 +48,7 @@ class AWSGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_group_info_from_name(self):
-        response = self.__client.list_groups()
+        response = self.__client.list_groups(MaxResults='1000')
 
         print("response...", file=sys.stderr)
         print(response, file=sys.stderr)
