@@ -50,6 +50,9 @@ class AWSGroup(JSONable):
     def get_group_info_from_name(self):
         response = self.__client.list_groups()
 
+        print("response...", file=sys.stderr)
+        print(response, file=sys.stderr)
+
         d_groups = PathDict(response)
         g_node = d_groups.node("Groups")
 
