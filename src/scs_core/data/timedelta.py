@@ -57,7 +57,7 @@ class Timedelta(JSONable):
             return None
 
         # CPU time...
-        match = re.match(r'(\d+)?(?::)?(\d+):(\d+)(?:\.)?(\d{2})?', report)
+        match = re.match(r'(\d+)?:?(\d+):(\d+)\.?(\d{2})?', report)
 
         if match is None:
             return None
@@ -78,7 +78,7 @@ class Timedelta(JSONable):
             return None
 
         # elapsed time...
-        match = re.match(r'(\d+)?(-)?(\d+)?(?::)?(\d+):(\d+)', report)
+        match = re.match(r'(\d+)?(-)?(\d+)?:?(\d+):(\d+)', report)
 
         if match is None:
             return None
@@ -104,7 +104,7 @@ class Timedelta(JSONable):
             return None
 
         # uptime...
-        match = re.match(r'.*up (\d+)?\s*(day)?(?:s)?(?:,)?\s*(\d+)?\s*(min)?(?:s)?(?:,)?\s*(\d+)?(?::)?(\d+)?,',
+        match = re.match(r'.*up (\d+)?\s*(day)?s?,?\s*(\d+)?\s*(min)?s?,?\s*(\d+)?:?(\d+)?,',
                          report)
 
         if match:
