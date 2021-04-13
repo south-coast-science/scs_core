@@ -11,6 +11,7 @@ import os
 import sys
 
 from scs_core.csv.csv_dict import CSVDict
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ class CSVWriter(object):
             self.__append = append and os.path.exists(self.__filename)
 
             if self.__append and not header_scan:
-                self.__paths = self.__append_paths()
+                self.__paths = self.__build_paths()
 
             self.__file = open(self.__filename, "a" if self.__append else "w", newline='')
             self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
@@ -49,19 +50,6 @@ class CSVWriter(object):
         self.__header_scan = header_scan
 
         self.__data = []
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __append_paths(self):
-        file = sys.stdin if self.__filename is None else open(self.__filename, "r")
-        reader = csv.reader(file)
-
-        paths = next(reader)
-
-        file.close()
-
-        return paths
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -77,10 +65,7 @@ class CSVWriter(object):
 
         if self.__header_scan:
             self.__data.append(datum)
-
-            for path in datum.paths():
-                if path not in self.__paths:
-                    self.__paths.append(path)
+            self.__paths = self.__scan_paths(datum)
 
             return True
 
@@ -111,6 +96,52 @@ class CSVWriter(object):
             return
 
         self.__file.close()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __build_paths(self):
+        file = sys.stdin if self.__filename is None else open(self.__filename, "r")
+        reader = csv.reader(file)
+
+        paths = next(reader)
+
+        file.close()
+
+        return paths
+
+
+    def __scan_paths(self, datum):
+        datum_paths = datum.paths()
+        max_len = max(len(self.__paths), len(datum_paths))
+        paths = []
+
+        for i in range(max_len):
+            try:
+                if datum_paths[i] not in paths and not self.__is_sub_path(datum_paths[i], self.__paths):
+                    paths.append(datum_paths[i])
+            except IndexError:
+                pass
+
+            try:
+                if self.__paths[i] not in paths and not self.__is_sub_path(self.__paths[i], datum_paths):
+                    paths.append(self.__paths[i])
+            except IndexError:
+                pass
+
+        return paths
+
+
+    @staticmethod
+    def __is_sub_path(candidate, paths):
+        for path in paths:
+            if candidate == path:
+                continue
+
+            if PathDict.sub_path_includes_path(candidate, path):
+                return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
