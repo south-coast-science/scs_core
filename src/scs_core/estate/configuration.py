@@ -48,6 +48,7 @@ from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 from scs_core.particulate.opc_conf import OPCConf
 
 from scs_core.psu.psu_conf import PSUConf
+from scs_core.psu.psu_version import PSUVersion
 
 from scs_core.sync.schedule import Schedule
 
@@ -101,6 +102,7 @@ class Configuration(JSONable):
         opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'), default=None)
         pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'), default=None)
         psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'), default=None)
+        psu_version = PSUVersion.construct_from_jdict(jdict.get('psu-version'))
         pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'), default=None)
         scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'), default=None)
         schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=None)
@@ -114,12 +116,12 @@ class Configuration(JSONable):
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                   pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
                    shared_secret, sht_conf, sim, system_id, timezone_conf)
 
 
     @classmethod
-    def load(cls, manager):
+    def load(cls, manager, psu):
         hostname = socket.gethostname()
         git_pull = GitPull.load(manager, default=None)
 
@@ -143,6 +145,7 @@ class Configuration(JSONable):
         opc_conf = OPCConf.load(manager, default=None)
         pmx_model_conf = PMxModelConf.load(manager, default=None)
         psu_conf = PSUConf.load(manager, default=None)
+        psu_version = None if psu is None else psu.version()
         pt1000_calib = Pt1000Calib.load(manager, default=None)
         scd30_conf = SCD30Conf.load(manager, default=None)
         schedule = Schedule.load(manager, default=None)
@@ -156,7 +159,7 @@ class Configuration(JSONable):
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                   pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
                    shared_secret, sht_conf, sim, system_id, timezone_conf)
 
 
@@ -166,7 +169,7 @@ class Configuration(JSONable):
                  aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                  gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                  mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                 pmx_model_conf, psu_conf, pt1000_calib, scd30_conf, schedule,
+                 pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
                  shared_secret, sht_conf, sim, system_id, timezone_conf):
         """
         Constructor
@@ -195,6 +198,7 @@ class Configuration(JSONable):
         self.__opc_conf = opc_conf                                  # OPCConf
         self.__pmx_model_conf = pmx_model_conf                      # PMxModelConf
         self.__psu_conf = psu_conf                                  # PSUConf
+        self.__psu_version = psu_version                            # PSUVersion
         self.__pt1000_calib = pt1000_calib                          # Pt1000Calib
         self.__scd30_conf = scd30_conf                              # SCD30Conf
         self.__schedule = schedule                                  # Schedule
@@ -218,10 +222,11 @@ class Configuration(JSONable):
                    self.mpl115a2_conf == other.mpl115a2_conf and self.mqtt_conf == other.mqtt_conf and \
                    self.ndir_conf == other.ndir_conf and self.opc_conf == other.opc_conf and \
                    self.pmx_model_conf == other.pmx_model_conf and self.psu_conf == other.psu_conf and \
-                   self.pt1000_calib == other.pt1000_calib and self.scd30_conf == other.scd30_conf and \
-                   self.schedule == other.schedule and self.shared_secret == other.shared_secret and \
-                   self.sht_conf == other.sht_conf and self.sim == other.sim and \
-                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
+                   self.psu_version == other.psu_version and self.pt1000_calib == other.pt1000_calib and \
+                   self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
+                   self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
+                   self.sim == other.sim and self.system_id == other.system_id and \
+                   self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -233,7 +238,8 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None, None, None)
+                             None, None, None, None, None,
+                             None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -297,6 +303,9 @@ class Configuration(JSONable):
 
         if self.psu_conf != other.psu_conf:
             diff.__psu_conf = self.psu_conf
+
+        if self.psu_version != other.psu_version:
+            diff.__psu_version = self.psu_version
 
         if self.pt1000_calib != other.pt1000_calib:
             diff.__pt1000_calib = self.pt1000_calib
@@ -394,6 +403,9 @@ class Configuration(JSONable):
         if self.psu_conf:
             self.psu_conf.save(manager)
 
+        if self.psu_version:
+            raise ValueError('psu_version may not be set')
+
         if self.pt1000_calib:
             self.pt1000_calib.save(manager)
 
@@ -447,6 +459,7 @@ class Configuration(JSONable):
         jdict['opc-conf'] = self.opc_conf
         jdict['pmx-model-conf'] = self.pmx_model_conf
         jdict['psu-conf'] = self.psu_conf
+        jdict['psu-version'] = self.psu_version
         jdict['pt1000-calib'] = self.pt1000_calib
         jdict['scd30-conf'] = self.scd30_conf
         jdict['schedule'] = self.schedule
@@ -572,6 +585,11 @@ class Configuration(JSONable):
 
 
     @property
+    def psu_version(self):
+        return self.__psu_version
+
+
+    @property
     def pt1000_calib(self):
         return self.__pt1000_calib
 
@@ -618,11 +636,11 @@ class Configuration(JSONable):
                "aws_client_auth:%s, aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
                "mpl115a2_calib:%s, mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
-               "pmx_model_conf:%s, psu_conf:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
+               "pmx_model_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
                "shared_secret:%s, sht_conf:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.git_pull, self.afe_baseline, self.afe_calib, self.aws_api_auth,
                 self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
                 self.mpl115a2_calib, self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf,
-                self.pmx_model_conf, self.psu_conf, self.pt1000_calib, self.scd30_conf, self.schedule,
+                self.pmx_model_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_conf, self.schedule,
                 self.shared_secret, self.sht_conf, self.sim, self.system_id, self.timezone_conf)

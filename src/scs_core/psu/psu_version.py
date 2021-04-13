@@ -22,6 +22,13 @@ class PSUVersion(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct(cls, id, tag_jdict, compile_date=None, compile_time=None):
+        tag = PSUTag.construct_from_jdict(tag_jdict)
+
+        return cls(id, tag, compile_date, compile_time)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -33,7 +40,7 @@ class PSUVersion(JSONable):
         compile_date = jdict.get('c-date')
         compile_time = jdict.get('c-time')
 
-        return PSUVersion(id, tag, compile_date, compile_time)
+        return cls(id, tag, compile_date, compile_time)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -112,7 +119,7 @@ class PSUTag(JSONable):
         api = int(items[1])
         patch = int(items[2])
 
-        return PSUTag(device, api, patch)
+        return cls(device, api, patch)
 
 
     # ----------------------------------------------------------------------------------------------------------------
