@@ -3,9 +3,7 @@ Created on 08 Mar 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Python.03.html#GettingStarted.Python.03.02
-
-
+https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
 """
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -66,3 +64,47 @@ class DynamoManager(object):
                 raise
 
         return response
+
+    def retrieve_all(self, table_name):
+
+        lek = None
+        datum = []
+
+        table = self.__dynamo_resource.Table(table_name)
+
+        response = table.scan()
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        print(data)
+
+        try:
+            lek = data["LastEvaluatedKey"]
+        except KeyError:
+            return data["Items"]
+
+        while lek is not None:
+            lek, data = self.scan(table_name, lek)
+            datum.append(data)
+
+        return datum
+
+    def scan(self, table_name, lek):
+        response = self.__dynamo_client.scan(
+            TableName=table_name,
+            ExclusiveStartKey=lek
+        )
+
+        data = response.json()
+
+        if "Items" not in data:
+            return None, None
+
+        try:
+            lek = data["LastEvaluatedKey"]
+        except KeyError:
+            return None, data["Items"]
+
+        return lek, data["Items"]
