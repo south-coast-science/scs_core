@@ -56,6 +56,15 @@ class PSUVersion(JSONable):
         self.__compile_time = compile_time              # string (time)
 
 
+    def __eq__(self, other):
+        try:
+            return self.id == other.id and self.tag == other.tag and \
+                   self.compile_date == other.compile_date and self.compile_time == other.compile_time
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -115,9 +124,9 @@ class PSUTag(JSONable):
 
         items = jdict.split('.')
 
-        device = int(items[0])
-        api = int(items[1])
-        patch = int(items[2])
+        device = items[0]
+        api = items[1]
+        patch = items[2]
 
         return cls(device, api, patch)
 
@@ -128,15 +137,23 @@ class PSUTag(JSONable):
         """
         Constructor
         """
-        self.__device = device                  # int
-        self.__api = api                        # int
-        self.__patch = patch                    # int
+        self.__device = device                  # string representation of int
+        self.__api = api                        # string representation of int
+        self.__patch = patch                    # string representation of int
+
+
+    def __eq__(self, other):
+        try:
+            return self.device == other.device and self.api == other.api and self.patch == other.patch
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return '.'.join((str(self.device), str(self.api), str(self.patch)))
+        return '.'.join((self.device, self.api, self.patch))
 
 
     # ----------------------------------------------------------------------------------------------------------------
