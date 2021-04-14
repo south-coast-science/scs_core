@@ -6,18 +6,28 @@ Created on 08 Mar 2021
 https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
 """
 
-# ----------------------------------------------------------------------------------------------------------------
-from boto3.dynamodb.conditions import Key
-from botocore.exceptions import ClientError
 import logging
 
+from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
+
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class DynamoManager(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, dynamo_client, dynamo_resource):
         self.__dynamo_client = dynamo_client
         self.__dynamo_resource = dynamo_resource
         self.__logger = logging.getLogger()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, table_name, primary_key):
         # get specific item
@@ -28,6 +38,7 @@ class DynamoManager(object):
             self.__logger.error(e.response['Error']['Message'])
         else:
             return response['Item'] if 'Item' in response else None
+
 
     def exists(self, table_name, primary_key_name, primary_key):
         table = self.__dynamo_resource.Table(table_name)
@@ -40,14 +51,15 @@ class DynamoManager(object):
         else:
             return response['Items'] if 'Items' in response else None
 
-    def add(self, table_name, item):
 
+    def add(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
         response = table.put_item(
             Item=item
         )
         self.__logger.info(response)
+
 
     def delete(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
@@ -65,13 +77,10 @@ class DynamoManager(object):
 
         return response
 
+
     def retrieve_all(self, table_name):
-
-        lek = None
         datum = []
-
         table = self.__dynamo_resource.Table(table_name)
-
         response = table.scan()
 
         if "Items" not in response:
@@ -90,6 +99,7 @@ class DynamoManager(object):
             datum.append(data)
 
         return datum
+
 
     def scan(self, table_name, lek):
         response = self.__dynamo_client.scan(
