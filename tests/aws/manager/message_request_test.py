@@ -20,7 +20,7 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2020-01-01T01:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, False, 'auto', False, False, False)
+request = MessageRequest('topic', start, end, False, 'auto', False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
@@ -30,7 +30,7 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2020-01-02T00:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, False, 'auto', False, False, False)
+request = MessageRequest('topic', start, end, False, 'auto', False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
@@ -40,7 +40,7 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2020-01-08T00:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, False, 'auto', False, False, False)
+request = MessageRequest('topic', start, end, False, 'auto', False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
@@ -50,7 +50,7 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2020-02-01T00:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, False, 'auto', False, False, False)
+request = MessageRequest('topic', start, end, False, 'auto', False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
@@ -60,13 +60,13 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2021-01-01T00:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, False, 'auto', False, False, False)
+request = MessageRequest('topic', start, end, False, 'auto', False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
 print("-")
 
-request = MessageRequest('topic', start, end, False, None, False, False, False)
+request = MessageRequest('topic', start, end, False, None, False, False, False, False)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)

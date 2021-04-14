@@ -148,7 +148,7 @@ class CSVHeaderCell(object):
 
     @classmethod
     def construct_from_path(cls, path):
-        p = re.compile("([^.:]+)([.:])?")
+        p = re.compile(r'([^.:]+)([.:])?')
         nodes = p.findall(path)
 
         if not nodes:
