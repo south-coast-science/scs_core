@@ -15,7 +15,7 @@ from scs_core.psu.psu_version import PSUVersion
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jstr = '{"id": "South Coast Science PSU", "tag": "1.2.3", "c-date": "Aug  8 2017", "c-time": "08:35:25"}'
+jstr = '{"id": "South Coast Science PSU", "tag": "001.002.003", "c-date": "Aug  8 2017", "c-time": "08:35:25"}'
 print(jstr)
 print("-")
 

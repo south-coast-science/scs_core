@@ -45,7 +45,8 @@ class MessageManager(object):
     def find_latest_for_topic(self, topic, end, include_wrapper, rec_only):
         for back_off in (1, 10, 30, 60):
             start = end - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only, False))
+            documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only,
+                                                 False, False))
 
             if documents:
                 return documents[-1]
@@ -55,10 +56,12 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max):
+    def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
+                       min_max, exclude_remainder):
         request_path = '/topicMessages'
 
-        params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only, min_max).params()
+        params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
+                                min_max, exclude_remainder).params()
 
         # request...
         self.__rest_client.connect()
@@ -113,6 +116,7 @@ class MessageRequest(object):
     INCLUDE_WRAPPER = 'includeWrapper'
     REC_ONLY = 'recOnly'
     MIN_MAX = 'minMax'
+    EXCLUDE_REMAINDER = 'excludeRemainder'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -158,28 +162,32 @@ class MessageRequest(object):
         include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false').lower() == 'true'
         rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
+        exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
 
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
-        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max)
+        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only,
+                   min_max, exclude_remainder)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only, min_max):
+    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only,
+                 min_max, exclude_remainder):
         """
         Constructor
         """
-        self.__topic = topic                                    # string
-        self.__start = start                                    # LocalizedDatetime
-        self.__end = end                                        # LocalizedDatetime
+        self.__topic = topic                                        # string
+        self.__start = start                                        # LocalizedDatetime
+        self.__end = end                                            # LocalizedDatetime
 
-        self.__fetch_last_written = bool(fetch_last_written)    # bool
-        self.__checkpoint = checkpoint                          # string
-        self.__include_wrapper = bool(include_wrapper)          # bool
-        self.__rec_only = bool(rec_only)                        # bool
-        self.__min_max = bool(min_max)                          # bool
+        self.__fetch_last_written = bool(fetch_last_written)        # bool
+        self.__checkpoint = checkpoint                              # string
+        self.__include_wrapper = bool(include_wrapper)              # bool
+        self.__rec_only = bool(rec_only)                            # bool
+        self.__min_max = bool(min_max)                              # bool
+        self.__exclude_remainder = bool(exclude_remainder)          # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -196,9 +204,6 @@ class MessageRequest(object):
         if self.start > self.end:
             return False
 
-        if self.min_max and self.checkpoint is None:
-            return False
-
         if self.include_wrapper and self.checkpoint is not None:
             return False
 
@@ -208,6 +213,12 @@ class MessageRequest(object):
         if self.rec_only and self.min_max:
             return False
 
+        if self.min_max and self.checkpoint is None:
+            return False
+
+        if self.exclude_remainder and self.checkpoint is None:
+            return False
+
         return True
 
 
@@ -215,12 +226,12 @@ class MessageRequest(object):
 
     def next_params(self, start):
         return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max).params()
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder).params()
 
 
     def change_params(self, start, end):
         return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max)
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
 
 
     def params(self):
@@ -298,13 +309,18 @@ class MessageRequest(object):
         return self.__min_max
 
 
+    @property
+    def exclude_remainder(self):
+        return self.__exclude_remainder
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "MessageRequest:{topic:%s, start:%s, end:%s, fetch_last_written:%s, checkpoint:%s, " \
-               "include_wrapper:%s, rec_only:%s, min_max:%s}" % \
+               "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s}" % \
                (self.topic, self.start, self.end, self.fetch_last_written, self.__checkpoint,
-                self.include_wrapper, self.rec_only, self.min_max)
+                self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
 
 
 # --------------------------------------------------------------------------------------------------------------------
