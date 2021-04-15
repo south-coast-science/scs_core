@@ -35,11 +35,14 @@ class PathDict(JSONable):
 
     @staticmethod
     def sub_path_includes_path(sub_path, path):
-        sub_path_nodes = [node[0] for node in re.findall('([^.:]+)([.:]*)', sub_path)]
-        path_nodes = [node[0] for node in re.findall('([^.:]+)([.:]*)', path)]
+        sub_path_nodes = [node[0] for node in re.findall(r'([^.:]+)([.:]*)', sub_path)]
+        path_nodes = [node[0] for node in re.findall(r'([^.:]+)([.:]*)', path)]
 
         for i in range(len(sub_path_nodes)):
-            if sub_path_nodes[i] != path_nodes[i]:
+            try:
+                if sub_path_nodes[i] != path_nodes[i]:
+                    return False
+            except IndexError:
                 return False
 
         return True
