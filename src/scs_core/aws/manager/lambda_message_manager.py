@@ -256,6 +256,9 @@ class MessageRequest(object):
         if self.min_max:
             params[self.MIN_MAX] = 'true'
 
+        if self.exclude_remainder:
+            params[self.EXCLUDE_REMAINDER] = 'true'
+
         return params
 
 
