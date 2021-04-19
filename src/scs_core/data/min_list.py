@@ -3,8 +3,8 @@ Created on 19 Apr 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A tool to remove outlier (excessively low) minimum values
-Note that we sort the list in order to minimise the number of required tests.
+A tool to remove outlier (excessively low) minimum values...
+note that we sort the list in order to minimise the number of required tests.
 """
 
 from scs_core.data.str import Str
@@ -32,14 +32,17 @@ class MinList(object):
     def append(self, value):
         mins_length = len(self.__minimums)
 
+        # seed the list...
         if mins_length < self.__length:
             self.__minimums.append(value)
             self.__minimums.sort(reverse=True)
             return
 
+        # ignore non-minimals...
         if value >= max(self.__minimums):
             return
 
+        # replace highest possible...
         for i in range(mins_length):
             if value < self.__minimums[i]:
                 self.__minimums[i] = value
@@ -51,6 +54,7 @@ class MinList(object):
         if not self.__minimums:
             return None
 
+        # return highest...
         return self.__minimums[0]
 
 
