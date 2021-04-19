@@ -3,7 +3,7 @@ Created on 19 Apr 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A tool to remove outlier minimum values
+A tool to remove outlier (excessively low) minimum values
 Note that we sort the list in order to minimise the number of required tests.
 """
 
