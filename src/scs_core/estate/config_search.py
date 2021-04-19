@@ -19,12 +19,16 @@ class ConfigurationSearcher(object):
         j_data = data.json()
         self.__data = j_data
 
+        return j_data
+
     def get_by_name(self, name):
         include = []
         for item in self.__data:
             if name in item['device_tag']:
-                x = Configuration.construct_from_jstr(item['data'][0])
+                x = Configuration.construct_from_jstr(item['data'])
                 include.append(x)
 
         return include
+
+
 
