@@ -23,7 +23,7 @@ class ConfigurationSearcher(object):
         include = []
         for item in self.__data:
             if name in item['device_tag']:
-                x = Configuration.construct_from_jstr(item['data'][0])
+                x = Configuration.construct_from_jstr(item['data'])
                 include.append(x)
 
         return include
