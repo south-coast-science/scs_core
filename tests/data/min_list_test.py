@@ -15,7 +15,7 @@ min_list = MinList(4)
 print(min_list)
 print("-")
 
-mins = (5, 7321, 58, 61, 48, 4)
+mins = (5, 60, 60, 60, 7321, 58, 61, 48, 4, 7322)
 
 for candidate in mins:
     print("candidate: %s" % candidate)
