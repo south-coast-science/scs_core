@@ -8,7 +8,7 @@ https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto
 
 import logging
 
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
 
@@ -102,6 +102,29 @@ class DynamoManager(object):
 
 
     def scan(self, table_name, lek):
+        response = self.__dynamo_client.scan(
+            TableName=table_name,
+            ExclusiveStartKey=lek
+        )
+
+        data = response.json()
+
+        if "Items" not in data:
+            return None, None
+
+        try:
+            lek = data["LastEvaluatedKey"]
+        except KeyError:
+            return None, data["Items"]
+
+        return lek, data["Items"]
+
+    def includes(self, table_name, scan_key, scan_value, lek):
+
+        table = self.__dynamo_resource.Table(table_name)
+        table.scan(
+            FilterExpression=Attr(scan_key).contains(scan_value)
+        )
         response = self.__dynamo_client.scan(
             TableName=table_name,
             ExclusiveStartKey=lek
