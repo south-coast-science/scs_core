@@ -13,6 +13,7 @@ import termios
 from collections import OrderedDict
 from getpass import getpass
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 
@@ -83,12 +84,10 @@ class ConfigurationAuth(PersistentJSONable):
         self.__password = password                          # String
 
 
-    def __eq__(self, other):
-        try:
-            return self.email_address == other.email_address and self.password == other.password
+    # ----------------------------------------------------------------------------------------------------------------
 
-        except (TypeError, AttributeError):
-            return False
+    def has_valid_email_address(self):
+        return Datum.is_email_address(self.email_address)
 
 
     # ----------------------------------------------------------------------------------------------------------------
