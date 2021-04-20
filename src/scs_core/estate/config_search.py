@@ -15,7 +15,19 @@ class ConfigurationSearcher(object):
         self.__data = None
 
     def get_data(self):
-        data = requests.get(self.__URL)
+
+        # TODO This is a temporary basic auth, will be updated with cognito pools prob
+        headers = {'Authorization': 'scs123'}
+
+        data = requests.get(self.__URL, headers=headers)
+        if data.status_code != 400:
+            if data.status_code == 403:
+                return 1
+            if data.status_code == 401:
+                return 2
+            else:
+                return 3
+
         j_data = data.json()
         self.__data = j_data
 
