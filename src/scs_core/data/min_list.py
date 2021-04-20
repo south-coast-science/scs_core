@@ -39,7 +39,7 @@ class MinList(object):
             return
 
         # ignore non-minimals...
-        if value >= max(self.__minimums):
+        if value >= self.__minimums[0]:
             return
 
         # replace highest possible...
@@ -50,7 +50,7 @@ class MinList(object):
                 return
 
 
-    def max_minimum(self):
+    def max(self):
         if not self.__minimums:
             return None
 

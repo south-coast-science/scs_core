@@ -21,6 +21,6 @@ for candidate in mins:
     print("candidate: %s" % candidate)
     min_list.append(candidate)
     print(min_list)
-    print("max_minimum: %s" % min_list.max_minimum())
+    print("max_minimum: %s" % min_list.max())
     print("-")
 
