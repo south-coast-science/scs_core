@@ -26,7 +26,6 @@ class DynamoManager(object):
         self.__dynamo_resource = dynamo_resource
         self.__logger = logging.getLogger()
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, table_name, primary_key):
@@ -39,7 +38,6 @@ class DynamoManager(object):
         else:
             return response['Item'] if 'Item' in response else None
 
-
     def exists(self, table_name, primary_key_name, primary_key):
         table = self.__dynamo_resource.Table(table_name)
         try:
@@ -51,7 +49,6 @@ class DynamoManager(object):
         else:
             return response['Items'] if 'Items' in response else None
 
-
     def add(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -59,7 +56,6 @@ class DynamoManager(object):
             Item=item
         )
         self.__logger.info(response)
-
 
     def delete(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
@@ -77,7 +73,6 @@ class DynamoManager(object):
 
         return response
 
-
     def retrieve_all(self, table_name):
         datum = []
         table = self.__dynamo_resource.Table(table_name)
@@ -86,22 +81,71 @@ class DynamoManager(object):
         if "Items" not in response:
             return None
 
+        print(response)
         data = response['Items']
-        print(data)
+
 
         try:
-            lek = data["LastEvaluatedKey"]
+            lek = response["LastEvaluatedKey"]
         except KeyError:
-            return data["Items"]
+            return data
 
         while lek is not None:
-            lek, data = self.scan(table_name, lek)
+            lek, data = self.scan_all(table_name, lek)
             datum.append(data)
 
         return datum
 
+    def retrieve_selective(self, table_name, scan_key, scan_value):
+        datum = []
+        table = self.__dynamo_resource.Table(table_name)
+        response = table.scan(
+            FilterExpression=Attr(scan_key).contains(scan_value)
+        )
 
-    def scan(self, table_name, lek):
+        print("DB RES %s " % response)
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            return data
+
+        while lek is not None:
+            lek, data = self.selective_scan(table_name, scan_key, scan_value, lek)
+            datum.append(data)
+
+        return datum
+
+    def retrieve_all_pk(self, table_name, pk):
+        datum = []
+        table = self.__dynamo_resource.Table(table_name)
+        response = table.scan(
+            AttributesToGet=["tag"]
+        )
+
+        print("DB RES: %s" % response)
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            return data
+
+        while lek is not None:
+            lek, data = self.scan_pk(table_name, pk, lek)
+            datum.append(data)
+
+        return datum
+
+    def scan_all(self, table_name, lek):
         response = self.__dynamo_client.scan(
             TableName=table_name,
             ExclusiveStartKey=lek
@@ -119,12 +163,27 @@ class DynamoManager(object):
 
         return lek, data["Items"]
 
-    def includes(self, table_name, scan_key, scan_value, lek):
+    def selective_scan(self, table_name, scan_key, scan_value, lek):
 
         table = self.__dynamo_resource.Table(table_name)
-        table.scan(
-            FilterExpression=Attr(scan_key).contains(scan_value)
+        response = table.scan(
+            FilterExpression=Attr(scan_key).contains(scan_value),
+            ExclusiveStartKey=lek
         )
+
+        data = response.json()
+
+        if "Items" not in data:
+            return None, None
+
+        try:
+            lek = data["LastEvaluatedKey"]
+        except KeyError:
+            return None, data["Items"]
+
+        return lek, data["Items"]
+
+    def scan_pk(self, table_name, pk, lek):
         response = self.__dynamo_client.scan(
             TableName=table_name,
             ExclusiveStartKey=lek
