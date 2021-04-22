@@ -14,8 +14,8 @@ from scs_core.aws.manager.configuration_finder import ConfigurationRequest
 MODE = ConfigurationRequest.MODE
 print(MODE)
 
-mode = MODE['TAGS_ONL']
-print(mode)
+mode = MODE['TAGS_ONLY']
+print(mode.name)
 
 request = ConfigurationRequest(None, mode)
 print(request)

@@ -114,7 +114,7 @@ class ConfigurationRequest(object):
     def params(self):
         params = {
             self.TAG_FILTER: self.tag_filter,
-            self.RESPONSE_MODE: self.response_mode
+            self.RESPONSE_MODE: self.response_mode.name
         }
 
         return params
