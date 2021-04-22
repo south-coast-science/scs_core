@@ -14,12 +14,17 @@ class ConfigurationSearcher(object):
     def __init__(self):
         self.__data = None
 
-    def get_data(self):
+    def get_data(self, name=None, search_filters=None):
 
         # TODO This is a temporary basic auth, will be updated with cognito pools prob
         headers = {'Authorization': 'scs123'}
 
-        data = requests.get(self.__URL, headers=headers)
+        params = {
+            'tag_filter': name,
+            'search_filters': search_filters
+        }
+
+        data = requests.get(self.__URL, headers=headers, params=params)
         if data.status_code != 400:
             if data.status_code == 403:
                 return 1
@@ -33,14 +38,6 @@ class ConfigurationSearcher(object):
 
         return j_data
 
-    def get_by_name(self, name):
-        include = []
-        for item in self.__data:
-            if name in item['device_tag']:
-                x = Configuration.construct_from_jstr(item['data'])
-                include.append(x)
-
-        return include
 
 
 
