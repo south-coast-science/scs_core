@@ -14,9 +14,9 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
-from scs_core.sample.sample import Sample
-
 # from scs_core.estate.configuration import Configuration
+
+from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
