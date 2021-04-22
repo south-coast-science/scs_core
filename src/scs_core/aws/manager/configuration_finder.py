@@ -6,8 +6,6 @@ Created on 07 Apr 2020
 
 from enum import Enum
 
-from scs_core.client.http_client import HTTPClient
-
 # from scs_core.estate.configuration import Configuration
 
 
@@ -33,7 +31,7 @@ class ConfigurationFinder(object):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
         headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
-
+        print(request)
         data = self.__http_lib.get(self.__URL, headers=headers, params=request.params())
 
         if data.status_code != 400:
@@ -77,7 +75,11 @@ class ConfigurationRequest(object):
 
         # compulsory...
         tag_filter = qsp.get(cls.TAG_FILTER)
-        response_mode = qsp.get(cls.RESPONSE_MODE)
+
+        try:
+            response_mode = cls.MODE[qsp.get(cls.RESPONSE_MODE)]
+        except KeyError:
+            response_mode = None
 
         return cls(tag_filter, response_mode)
 
