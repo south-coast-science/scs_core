@@ -4,9 +4,9 @@ Created on 07 Apr 2020
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-import requests
-
 from enum import Enum
+
+from scs_core.client.http_client import HTTPClient
 
 # from scs_core.estate.configuration import Configuration
 
@@ -22,7 +22,8 @@ class ConfigurationFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, auth):
+    def __init__(self, http_lib, auth):
+        self.__http_lib = http_lib
         self.__auth = auth
 
 
@@ -33,7 +34,7 @@ class ConfigurationFinder(object):
         headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
 
-        data = requests.get(self.__URL, headers=headers, params=request.params())
+        data = self.__http_lib.get(self.__URL, headers=headers, params=request.params())
 
         if data.status_code != 400:
             if data.status_code == 403:
@@ -96,6 +97,14 @@ class ConfigurationRequest(object):
     def is_valid(self):
         if self.response_mode is None:
             return False
+
+
+    def tags_only(self):
+        return self.__response_mode == self.MODE.TAGS_ONLY
+
+
+    def history(self):
+        return self.__response_mode == self.MODE.HISTORY
 
 
     # ----------------------------------------------------------------------------------------------------------------
