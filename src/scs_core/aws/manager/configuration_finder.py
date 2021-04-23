@@ -42,6 +42,9 @@ class ConfigurationFinder(object):
 
         body = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
+        print("body: %s" % body)
+        print("-")
+
         return ConfigurationResponse.construct_from_jdict(body.json())
 
 
@@ -154,7 +157,7 @@ class ConfigurationResponse(HTTPResponse):
         if not jdict:
             return None
 
-        status = HTTPStatus[jdict.get('statusCode')]
+        status = HTTPStatus[jdict.get('status')]
 
         try:
             mode = ConfigurationRequest.MODE[jdict.get('mode')]
@@ -193,7 +196,7 @@ class ConfigurationResponse(HTTPResponse):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['statusCode'] = self.status.phrase
+        jdict['status'] = self.status.phrase
 
         if not self.is_ok():
             return jdict
