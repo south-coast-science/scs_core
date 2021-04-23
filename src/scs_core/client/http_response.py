@@ -25,7 +25,7 @@ class HTTPResponse(JSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status: HTTPStatus):
+    def __init__(self, status):
         """
         Constructor
         """
