@@ -15,7 +15,7 @@ from scs_core.data.str import Str
 
 # from scs_core.estate.configuration import Configuration
 
-from scs_core.sample.sample import Sample
+from scs_core.sample.configuration_sample import ConfigurationSample
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -38,26 +38,12 @@ class ConfigurationFinder(object):
 
     def find(self, tag_filter, response_mode):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs123'}
+        headers = {'Authorization': 'scs13'}
         request = ConfigurationRequest(tag_filter, response_mode)
-        print("request: %s" % request)
-        print("-")
 
-        data = self.__http_client.get(self.__URL, headers=headers, params=request.params())
-        print("response: %s" % data.text)
-        print("-")
+        body = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        if data.status_code != 400:
-            if data.status_code == 403:
-                return 1
-            if data.status_code == 401:
-                return 2
-            else:
-                return 3
-
-        j_data = data.json()
-
-        return j_data
+        return ConfigurationResponse.construct_from_jdict(body.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -169,11 +155,14 @@ class ConfigurationResponse(JSONable):
         code = jdict.get('statusCode')
         status = jdict.get('status')
 
-        mode = ConfigurationRequest.MODE[jdict.get('mode')]
+        try:
+            mode = ConfigurationRequest.MODE[jdict.get('mode')]
+        except KeyError:
+            mode = None
 
         items = []
         for item_jdict in jdict.get('Items'):
-            item = Sample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
+            item = ConfigurationSample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
             items.append(item)
 
         next_url = jdict.get('next')
@@ -183,7 +172,7 @@ class ConfigurationResponse(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, mode, items, next_url=None):
+    def __init__(self, code, status, mode=None, items=(), next_url=None):
         """
         Constructor
         """
@@ -198,6 +187,12 @@ class ConfigurationResponse(JSONable):
 
     def __len__(self):
         return len(self.items)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_ok(self):
+        return self.code == 200
 
 
     # ----------------------------------------------------------------------------------------------------------------
