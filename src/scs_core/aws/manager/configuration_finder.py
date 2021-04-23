@@ -10,7 +10,7 @@ from enum import Enum
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, JSONify
 from scs_core.data.str import Str
 
 # from scs_core.estate.configuration import Configuration
@@ -169,10 +169,7 @@ class ConfigurationResponse(JSONable):
         code = jdict.get('statusCode')
         status = jdict.get('status')
 
-        try:
-            mode = ConfigurationRequest.MODE[jdict.get('mode')]
-        except KeyError:
-            mode = None
+        mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
         items = []
         for item_jdict in jdict.get('Items'):
@@ -186,7 +183,7 @@ class ConfigurationResponse(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, mode, items, next_url):
+    def __init__(self, code, status, mode, items, next_url=None):
         """
         Constructor
         """
@@ -225,6 +222,13 @@ class ConfigurationResponse(JSONable):
             jdict['next'] = self.next_url
 
         return jdict
+
+
+    def as_response(self):
+        return {
+            'statusCode': self.code,
+            'body': JSONify.dumps(self)
+        }
 
 
     # ----------------------------------------------------------------------------------------------------------------
