@@ -148,6 +148,9 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print(jdict)
+        print("-")
+
         if not jdict:
             return None
 
