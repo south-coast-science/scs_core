@@ -164,20 +164,21 @@ class ConfigurationResponse(HTTPResponse):
         except KeyError:
             mode = None
 
-        items = []
+        items = None
         if jdict.get('Items'):
+            items = []
             for item_jdict in jdict.get('Items'):
                 item = ConfigurationSample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
                 items.append(item)
 
         next_url = jdict.get('next')
 
-        return cls(status, mode, items, next_url)
+        return cls(status, mode=mode, items=items, next_url=next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, mode=None, items=(), next_url=None):
+    def __init__(self, status, mode=None, items=None, next_url=None):
         """
         Constructor
         """
