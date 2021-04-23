@@ -6,11 +6,12 @@ Created on 07 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
-from enum import Enum
-
 from collections import OrderedDict
+from enum import Enum
+from http import HTTPStatus
 
-from scs_core.data.json import JSONable, JSONify
+from scs_core.client.http_response import HTTPResponse
+
 from scs_core.data.str import Str
 
 from scs_core.sample.configuration_sample import ConfigurationSample
@@ -138,7 +139,7 @@ class ConfigurationRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationResponse(JSONable):
+class ConfigurationResponse(HTTPResponse):
     """
     classdocs
     """
@@ -150,8 +151,7 @@ class ConfigurationResponse(JSONable):
         if not jdict:
             return None
 
-        code = jdict.get('statusCode')
-        status = jdict.get('status')
+        status = HTTPStatus[jdict.get('statusCode')]
 
         try:
             mode = ConfigurationRequest.MODE[jdict.get('mode')]
@@ -165,21 +165,19 @@ class ConfigurationResponse(JSONable):
 
         next_url = jdict.get('next')
 
-        return cls(code, status, mode, items, next_url)
+        return cls(status, mode, items, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, mode=None, items=(), next_url=None):
+    def __init__(self, status, mode=None, items=(), next_url=None):
         """
         Constructor
         """
-        self.__code = int(code)                     # int
-        self.__status = status                      # string
+        super().__init__(status)
+
         self.__mode = mode                          # ConfigurationRequest.Mode
-
-        self.__items = items                        # list of ConfigurationSample or device tag string
-
+        self.__items = items                        # list of ConfigurationSample or string
         self.__next_url = next_url                  # URL string
 
 
@@ -189,17 +187,10 @@ class ConfigurationResponse(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_ok(self):
-        return self.code == 200
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.code is not None:
-            jdict['statusCode'] = self.code
+        jdict['statusCode'] = self.status.value
 
         if self.status is not None:
             jdict['status'] = self.status
@@ -220,24 +211,7 @@ class ConfigurationResponse(JSONable):
         return jdict
 
 
-    def as_http_response(self):
-        return {
-            'statusCode': self.code,
-            'body': JSONify.dumps(self)
-        }
-
-
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def code(self):
-        return self.__code
-
-
-    @property
-    def status(self):
-        return self.__status
-
 
     @property
     def mode(self):
@@ -257,6 +231,5 @@ class ConfigurationResponse(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationResponse:{code:%s, status:%s, mode:%s, items:%s, next_url:%s}" % \
-               (self.code, self.status, self.mode, Str.collection(self.items), self.next_url)
-
+        return "ConfigurationResponse:{status:%s, mode:%s, items:%s, next_url:%s}" % \
+               (self.status, self.mode, Str.collection(self.items), self.next_url)
