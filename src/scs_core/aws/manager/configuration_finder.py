@@ -40,9 +40,12 @@ class ConfigurationFinder(object):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
         headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
-        print(request)
+        print("request: %s" % request)
+        print("-")
 
         data = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        print("response: %s" % data.text)
+        print("-")
 
         if data.status_code != 400:
             if data.status_code == 403:
