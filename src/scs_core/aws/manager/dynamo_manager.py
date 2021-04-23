@@ -6,8 +6,6 @@ Created on 08 Mar 2021
 https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
 """
 
-import logging
-
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
@@ -196,7 +194,7 @@ class DynamoManager(object):
         return lek, data["Items"]
 
 
-    def scan_pk(self, table_name, pk, lek):
+    def scan_pk(self, table_name, _pk, lek):
         response = self.__dynamo_client.scan(
             TableName=table_name,
             ExclusiveStartKey=lek

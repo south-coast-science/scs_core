@@ -10,7 +10,7 @@ from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
 
-from scs_core.client.http_response import HTTPResponse
+from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.data.str import Str
 
@@ -26,6 +26,7 @@ class ConfigurationFinder(object):
 
     __URL = "https://bwhogrzl3b.execute-api.us-west-2.amazonaws.com/default/MQTTDynamoHandler"
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
@@ -38,14 +39,11 @@ class ConfigurationFinder(object):
     def find(self, tag_filter, response_mode):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
         headers = {'Authorization': 'scs123'}
+
         request = ConfigurationRequest(tag_filter, response_mode)
+        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        body = self.__http_client.get(self.__URL, headers=headers, params=request.params())
-
-        print("body: %s" % body)
-        print("-")
-
-        return ConfigurationResponse.construct_from_jdict(body.json())
+        return ConfigurationResponse.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -151,9 +149,6 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        print(jdict)
-        print("-")
-
         if not jdict:
             return None
 
