@@ -99,6 +99,8 @@ class ConfigurationRequest(object):
         if self.response_mode is None:
             return False
 
+        return True
+
 
     def tags_only(self):
         return self.__response_mode == self.MODE.TAGS_ONLY
@@ -179,9 +181,9 @@ class ConfigurationResponse(HTTPResponse):
         """
         super().__init__(status)
 
-        self.__mode = mode                          # ConfigurationRequest.Mode member
-        self.__items = items                        # list of ConfigurationSample or string
-        self.__next_url = next_url                  # URL string
+        self.__mode = mode                              # ConfigurationRequest.Mode member
+        self.__items = items                            # list of ConfigurationSample or string
+        self.__next_url = next_url                      # URL string
 
 
     def __len__(self):
