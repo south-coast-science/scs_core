@@ -193,7 +193,7 @@ class ConfigurationResponse(HTTPResponse):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['statusCode'] = self.status.value
+        jdict['statusCode'] = self.status.phrase
 
         if self.status is not None:
             jdict['status'] = self.status
