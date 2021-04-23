@@ -29,7 +29,7 @@ class HTTPResponse(JSONable, ABC):
         """
         Constructor
         """
-        self.__status = status                          # HTTPStatus
+        self.__status = status                          # HTTPStatus member
 
 
     # ----------------------------------------------------------------------------------------------------------------
