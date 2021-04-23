@@ -10,7 +10,6 @@ from enum import Enum
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
@@ -30,8 +29,8 @@ class ConfigurationFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_lib, auth):
-        self.__http_lib = http_lib
+    def __init__(self, http_client, auth):
+        self.__http_client = http_client
         self.__auth = auth
 
 
@@ -42,7 +41,8 @@ class ConfigurationFinder(object):
         headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
         print(request)
-        data = self.__http_lib.get(self.__URL, headers=headers, params=request.params())
+
+        data = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
         if data.status_code != 400:
             if data.status_code == 403:
@@ -187,7 +187,7 @@ class ConfigurationResponse(JSONable):
         """
         Constructor
         """
-        self.__code = Datum.int(code)               # int
+        self.__code = int(code)                     # int
         self.__status = status                      # string
         self.__mode = mode                          # ConfigurationRequest.Mode
 
