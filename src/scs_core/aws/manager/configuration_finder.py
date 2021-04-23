@@ -195,9 +195,6 @@ class ConfigurationResponse(HTTPResponse):
 
         jdict['statusCode'] = self.status.phrase
 
-        if self.status is not None:
-            jdict['status'] = self.status
-
         if not self.is_ok():
             return jdict
 
