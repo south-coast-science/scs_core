@@ -165,9 +165,10 @@ class ConfigurationResponse(HTTPResponse):
             mode = None
 
         items = []
-        for item_jdict in jdict.get('Items'):
-            item = ConfigurationSample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
-            items.append(item)
+        if jdict.get('Items'):
+            for item_jdict in jdict.get('Items'):
+                item = ConfigurationSample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
+                items.append(item)
 
         next_url = jdict.get('next')
 
