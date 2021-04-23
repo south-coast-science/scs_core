@@ -13,8 +13,6 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable, JSONify
 from scs_core.data.str import Str
 
-# from scs_core.estate.configuration import Configuration
-
 from scs_core.sample.configuration_sample import ConfigurationSample
 
 
@@ -38,7 +36,7 @@ class ConfigurationFinder(object):
 
     def find(self, tag_filter, response_mode):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs13'}
+        headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
 
         body = self.__http_client.get(self.__URL, headers=headers, params=request.params())
@@ -180,7 +178,7 @@ class ConfigurationResponse(JSONable):
         self.__status = status                      # string
         self.__mode = mode                          # ConfigurationRequest.Mode
 
-        self.__items = items                        # list of Sample or device tag string
+        self.__items = items                        # list of ConfigurationSample or device tag string
 
         self.__next_url = next_url                  # URL string
 
@@ -206,6 +204,9 @@ class ConfigurationResponse(JSONable):
         if self.status is not None:
             jdict['status'] = self.status
 
+        if not self.is_ok():
+            return jdict
+
         if self.mode is not None:
             jdict['mode'] = self.mode.name
 
@@ -219,7 +220,7 @@ class ConfigurationResponse(JSONable):
         return jdict
 
 
-    def as_response(self):
+    def as_http_response(self):
         return {
             'statusCode': self.code,
             'body': JSONify.dumps(self)
