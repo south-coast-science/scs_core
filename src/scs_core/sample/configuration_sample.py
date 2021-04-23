@@ -62,5 +62,4 @@ class ConfigurationSample(Sample):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationSample:{tag:%s, rec:%s, configuration:%s}" % \
-            (self.tag, self.rec, self.configuration)
+        return "ConfigurationSample:{tag:%s, rec:%s, configuration:%s}" % (self.tag, self.rec, self.configuration)
