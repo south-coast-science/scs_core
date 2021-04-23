@@ -2,6 +2,9 @@
 Created on 23 Apr 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://docs.python.org/3/library/http.html
+https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 """
 
 from abc import ABC

@@ -37,7 +37,7 @@ class ConfigurationFinder(object):
 
     def find(self, tag_filter, response_mode):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs12'}
+        headers = {'Authorization': 'scs123'}
         request = ConfigurationRequest(tag_filter, response_mode)
 
         body = self.__http_client.get(self.__URL, headers=headers, params=request.params())
@@ -184,7 +184,7 @@ class ConfigurationResponse(HTTPResponse):
         """
         super().__init__(status)
 
-        self.__mode = mode                          # ConfigurationRequest.Mode
+        self.__mode = mode                          # ConfigurationRequest.Mode member
         self.__items = items                        # list of ConfigurationSample or string
         self.__next_url = next_url                  # URL string
 
