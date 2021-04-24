@@ -121,7 +121,7 @@ class Configuration(JSONable):
 
 
     @classmethod
-    def load(cls, manager, psu):
+    def load(cls, manager, psu=None):
         hostname = socket.gethostname()
         git_pull = GitPull.load(manager, default=None)
 
