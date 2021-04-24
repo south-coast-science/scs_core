@@ -41,7 +41,9 @@ class HTTPResponse(JSONable, ABC):
         return self.status == HTTPStatus.OK
 
 
-    def as_http_response(self, cors=False):
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_http(self, cors=False):
         jdict = {
             'statusCode': self.status.value,
             'body': JSONify.dumps(self)
@@ -53,10 +55,8 @@ class HTTPResponse(JSONable, ABC):
         return jdict
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
-        return ''
+        return {'statusCode': self.status.value}
 
 
     # ----------------------------------------------------------------------------------------------------------------
