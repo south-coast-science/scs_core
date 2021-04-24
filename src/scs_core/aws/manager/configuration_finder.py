@@ -169,12 +169,12 @@ class ConfigurationResponse(HTTPResponse):
 
         next_url = jdict.get('next')
 
-        return cls(status, mode=mode, items=items, next_url=next_url)
+        return cls(status, mode, items, next_url=next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, mode=None, items=None, next_url=None):
+    def __init__(self, status, mode, items, next_url=None):
         """
         Constructor
         """
