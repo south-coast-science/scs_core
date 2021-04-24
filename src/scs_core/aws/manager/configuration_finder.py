@@ -13,6 +13,7 @@ from http import HTTPStatus
 from scs_core.aws.data.http_response import HTTPResponse
 from scs_core.data.str import Str
 from scs_core.sample.configuration_sample import ConfigurationSample
+from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -151,18 +152,15 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        print(jdict)
-        print("-")
-
         if not jdict:
             return None
 
         status = HTTPStatus(jdict.get('statusCode'))
 
-        try:
-            mode = ConfigurationRequest.MODE[jdict.get('mode')]
-        except KeyError:
-            mode = None
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, status.phrase, status.description)
+
+        mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
         items = None
         if jdict.get('Items'):
