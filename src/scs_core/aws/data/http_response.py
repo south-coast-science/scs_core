@@ -28,11 +28,12 @@ class HTTPResponse(JSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status):
+    def __init__(self, status, reason=None):
         """
         Constructor
         """
         self.__status = status                          # HTTPStatus member
+        self.__reason = reason                          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,7 +67,12 @@ class HTTPResponse(JSONable, ABC):
         return self.__status
 
 
+    @property
+    def reason(self):
+        return self.__reason
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "HTTPResponse:{status:%s}" % self.status
+        return "HTTPResponse:{status:%s, reason:%s}" % (self.status, self.reason)

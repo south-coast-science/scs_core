@@ -71,7 +71,6 @@ class ConfigurationRequest(object):
         if not qsp:
             return None
 
-        # compulsory...
         tag_filter = qsp.get(cls.TAG_FILTER)
 
         try:
@@ -160,9 +159,8 @@ class ConfigurationResponse(HTTPResponse):
 
         mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
-        items = None
+        items = []
         if jdict.get('Items'):
-            items = []
             for item_jdict in jdict.get('Items'):
                 item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
                     ConfigurationSample.construct_from_jdict(item_jdict)
