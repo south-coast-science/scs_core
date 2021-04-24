@@ -11,9 +11,7 @@ from enum import Enum
 from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
-
 from scs_core.data.str import Str
-
 from scs_core.sample.configuration_sample import ConfigurationSample
 
 
@@ -165,7 +163,8 @@ class ConfigurationResponse(HTTPResponse):
         if jdict.get('Items'):
             items = []
             for item_jdict in jdict.get('Items'):
-                item = ConfigurationSample.construct_from_jdict(item_jdict)      # TODO: class depends on mode
+                item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
+                    ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
 
         next_url = jdict.get('next')
