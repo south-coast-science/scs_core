@@ -36,12 +36,14 @@ class ConfigurationFinder(object):
 
     def find(self, tag_filter, response_mode):
         # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs123'}
+        headers = {'Authorization': 'scs13'}
 
         request = ConfigurationRequest(tag_filter, response_mode)
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        return ConfigurationResponse.construct_from_jdict(response.json())
+        res = ConfigurationResponse.construct_from_jdict(response.json())
+
+        return res
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -149,6 +151,9 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print(jdict)
+        print("-")
+
         if not jdict:
             return None
 
