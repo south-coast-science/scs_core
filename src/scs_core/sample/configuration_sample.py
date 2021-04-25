@@ -6,10 +6,10 @@ Created on 23 Apr 2021
 
 import json
 
-from scs_core.estate.configuration import Configuration
+from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
-
+from scs_core.estate.configuration import Configuration
 from scs_core.sample.sample import Sample
 
 
@@ -43,6 +43,18 @@ class ConfigurationSample(Sample):
         super().__init__(tag, rec)
 
         self.__configuration = configuration                # SHT31Datum
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['tag'] = self.tag
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['val'] = self.values
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
