@@ -114,15 +114,15 @@ class CSVWriter(object):
     def __update_paths(self, datum):
         datum_paths = datum.paths()
 
-        append_paths = []
+        appended_paths = []
         for i in range(len(datum_paths)):
             if datum_paths[i] not in self.__paths and not self.__is_sub_path(datum_paths[i], self.__paths):
                 self.__paths.insert(i, datum_paths[i])
-                append_paths.append(datum_paths[i])
+                appended_paths.append(datum_paths[i])
 
-        if append_paths:
+        if appended_paths:
             for i in reversed(range(len(self.__paths))):
-                if self.__is_sub_path(self.__paths[i], append_paths):
+                if self.__is_sub_path(self.__paths[i], appended_paths):
                     self.__paths.pop(i)
 
 
