@@ -65,7 +65,7 @@ class CSVWriter(object):
 
         if self.__header_scan:
             self.__data.append(datum)
-            self.__paths = self.__scan_paths(datum)
+            self.__update_paths(datum)
 
             return True
 
@@ -111,32 +111,26 @@ class CSVWriter(object):
         return paths
 
 
-    def __scan_paths(self, datum):
+    def __update_paths(self, datum):
         datum_paths = datum.paths()
-        max_len = max(len(self.__paths), len(datum_paths))
-        paths = []
 
-        for i in range(max_len):
-            try:
-                if datum_paths[i] not in paths and not self.__is_sub_path(datum_paths[i], self.__paths):
-                    paths.append(datum_paths[i])
-            except IndexError:
-                pass
+        append_paths = []
+        for i in range(len(datum_paths)):
+            if datum_paths[i] not in self.__paths and not self.__is_sub_path(datum_paths[i], self.__paths):
+                self.__paths.insert(i, datum_paths[i])
+                append_paths.append(datum_paths[i])
 
-            try:
-                if self.__paths[i] not in paths and not self.__is_sub_path(self.__paths[i], datum_paths):
-                    paths.append(self.__paths[i])
-            except IndexError:
-                pass
-
-        return paths
+        if append_paths:
+            for i in reversed(range(len(self.__paths))):
+                if self.__is_sub_path(self.__paths[i], append_paths):
+                    self.__paths.pop(i)
 
 
     @staticmethod
     def __is_sub_path(candidate, paths):
         for path in paths:
             if candidate == path:
-                continue
+                return False            # exit here because paths are assumed to be unique
 
             if PathDict.sub_path_includes_path(candidate, path):
                 return True
