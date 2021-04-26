@@ -6,11 +6,13 @@ Created on 08 Mar 2021
 https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
 """
 
-import logging
-
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
+from scs_core.sys.logging import Logging
+
+
+# TODO: where does sorting happen?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -24,7 +26,9 @@ class DynamoManager(object):
     def __init__(self, dynamo_client, dynamo_resource):
         self.__dynamo_client = dynamo_client
         self.__dynamo_resource = dynamo_resource
-        self.__logger = logging.getLogger()
+
+        self.__logger = Logging.getLogger()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -38,6 +42,7 @@ class DynamoManager(object):
         else:
             return response['Item'] if 'Item' in response else None
 
+
     def exists(self, table_name, primary_key_name, primary_key):
         table = self.__dynamo_resource.Table(table_name)
         try:
@@ -49,6 +54,7 @@ class DynamoManager(object):
         else:
             return response['Items'] if 'Items' in response else None
 
+
     def add(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -56,6 +62,7 @@ class DynamoManager(object):
             Item=item
         )
         self.__logger.info(response)
+
 
     def delete(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
@@ -73,6 +80,7 @@ class DynamoManager(object):
 
         return response
 
+
     def retrieve_all(self, table_name):
         datum = []
         table = self.__dynamo_resource.Table(table_name)
@@ -84,7 +92,6 @@ class DynamoManager(object):
         print(response)
         data = response['Items']
 
-
         try:
             lek = response["LastEvaluatedKey"]
         except KeyError:
@@ -95,6 +102,7 @@ class DynamoManager(object):
             datum.append(data)
 
         return datum
+
 
     def retrieve_selective(self, table_name, scan_key, scan_value):
         datum = []
@@ -121,6 +129,7 @@ class DynamoManager(object):
 
         return datum
 
+
     def retrieve_all_pk(self, table_name, pk):
         datum = []
         table = self.__dynamo_resource.Table(table_name)
@@ -145,6 +154,7 @@ class DynamoManager(object):
 
         return datum
 
+
     def scan_all(self, table_name, lek):
         response = self.__dynamo_client.scan(
             TableName=table_name,
@@ -163,8 +173,8 @@ class DynamoManager(object):
 
         return lek, data["Items"]
 
-    def selective_scan(self, table_name, scan_key, scan_value, lek):
 
+    def selective_scan(self, table_name, scan_key, scan_value, lek):
         table = self.__dynamo_resource.Table(table_name)
         response = table.scan(
             FilterExpression=Attr(scan_key).contains(scan_value),
@@ -183,7 +193,8 @@ class DynamoManager(object):
 
         return lek, data["Items"]
 
-    def scan_pk(self, table_name, pk, lek):
+
+    def scan_pk(self, table_name, _pk, lek):
         response = self.__dynamo_client.scan(
             TableName=table_name,
             ExclusiveStartKey=lek

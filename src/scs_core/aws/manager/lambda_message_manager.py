@@ -17,7 +17,6 @@ from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
@@ -368,7 +367,7 @@ class MessageResponse(JSONable):
         """
         Constructor
         """
-        self.__code = Datum.int(code)               # int
+        self.__code = int(code)                     # int
         self.__status = status                      # string
         self.__fetched_last = fetched_last          # Fetched last written data flag
         self.__interval = interval                  # int

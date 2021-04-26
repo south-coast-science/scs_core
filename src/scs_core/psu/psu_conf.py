@@ -22,6 +22,8 @@ class PSUConf(PersistentJSONable):
     classdocs
     """
 
+    __DEFAULT_REPORTING_INTERVAL = 10               # seconds
+
     __FILENAME = "psu_conf.json"
 
     @classmethod
@@ -40,7 +42,7 @@ class PSUConf(PersistentJSONable):
         batt_model = jdict.get('batt-model')
         ignore_threshold = jdict.get('ignore-threshold', False)
 
-        reporting_interval = jdict.get('reporting-interval')
+        reporting_interval = jdict.get('reporting-interval', cls.__DEFAULT_REPORTING_INTERVAL)
         report_file = jdict.get('report-file')
 
         return cls(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)

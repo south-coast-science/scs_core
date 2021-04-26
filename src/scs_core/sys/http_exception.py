@@ -24,7 +24,7 @@ class HTTPException(RuntimeError, JSONable):
         reason = response.reason
         data = encoded_data.decode()
 
-        return HTTPException(status, reason, data)
+        return cls(status, reason, data)
 
 
     # ----------------------------------------------------------------------------------------------------------------
