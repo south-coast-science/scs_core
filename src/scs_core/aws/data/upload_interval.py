@@ -77,8 +77,8 @@ class UploadInterval(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['upload'] = self.upload.as_iso8601(self.INCLUDE_MILLIS)
-        jdict['rec'] = self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['upload'] = self.upload.as_iso8601(include_millis=self.INCLUDE_MILLIS)
+        jdict['rec'] = self.rec.as_iso8601(include_millis=self.INCLUDE_MILLIS)
 
         jdict['offset'] = self.offset
 
