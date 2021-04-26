@@ -9,6 +9,8 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.str import Str
+
 from scs_core.estate.configuration import Configuration
 from scs_core.sample.sample import Sample
 
@@ -42,7 +44,17 @@ class ConfigurationSample(Sample):
         """
         super().__init__(tag, rec)
 
-        self.__configuration = configuration                # SHT31Datum
+        self.__configuration = configuration                # Configuration
+
+
+    def __lt__(self, other):
+        if self.tag < other.tag:
+            return True
+
+        if self.rec < other.rec:
+            return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -51,7 +63,7 @@ class ConfigurationSample(Sample):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601()
         jdict['val'] = self.values
 
         return jdict
@@ -64,8 +76,6 @@ class ConfigurationSample(Sample):
         return self.configuration.as_json()
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     @property
     def configuration(self):
         return self.__configuration
@@ -75,3 +85,67 @@ class ConfigurationSample(Sample):
 
     def __str__(self, *args, **kwargs):
         return "ConfigurationSample:{tag:%s, rec:%s, configuration:%s}" % (self.tag, self.rec, self.configuration)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ConfigurationSampleHistory(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, latest_only=False, items=None):
+        """
+        Constructor
+        """
+        self.__latest_only = latest_only                            # bool
+        self.__items = {} if items is None else items               # dict of tag: array of ConfigurationSample
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def insert(self, sample: ConfigurationSample):
+        if sample.tag not in self.__items:
+            self.__items[sample.tag] = []
+
+        if not self.__items[sample.tag] or not self.__latest_only:
+            self.__items[sample.tag].append(sample)
+            return
+
+        for item in self.__items[sample.tag]:
+            if sample.rec > item.rec:
+                self.__items[sample.tag] = [sample]
+                return
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def tags(self):
+        return sorted(self.__items.keys())
+
+
+    def items_for_tag(self, tag):
+        if tag not in self.__items:
+            return None
+
+        return sorted(self.__items[tag])
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        items = []
+
+        for tag in self.tags():
+            items += self.items_for_tag(tag)
+
+        return items
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ConfigurationSampleHistory:{latest_only:%s, items:%s}" % \
+               (self.__latest_only, Str.collection(self.__items))
