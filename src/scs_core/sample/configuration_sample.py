@@ -31,7 +31,7 @@ class ConfigurationSample(Sample):
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
 
-        configuration = Configuration.construct_from_jdict(json.loads(jdict.get('value')))      # TODO: should be 'val'
+        configuration = Configuration.construct_from_jdict(json.loads(jdict.get('val')))
 
         return cls(tag, rec, configuration)
 
