@@ -102,7 +102,7 @@ class ConfigurationSampleHistory(JSONable):
         Constructor
         """
         self.__latest_only = latest_only                            # bool
-        self.__items = {} if items is None else items               # dict of tag: array of ConfigurationSample
+        self.__items = {} if items is None else items               # dict of tag: list of ConfigurationSample
 
 
     # ----------------------------------------------------------------------------------------------------------------
