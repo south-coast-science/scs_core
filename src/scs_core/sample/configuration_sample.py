@@ -9,6 +9,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
@@ -89,7 +90,7 @@ class ConfigurationSample(Sample):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationSampleHistory(object):
+class ConfigurationSampleHistory(JSONable):
     """
     classdocs
     """
