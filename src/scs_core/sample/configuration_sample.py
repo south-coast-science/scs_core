@@ -117,7 +117,7 @@ class ConfigurationSampleHistory(JSONable):
 
         for item in self.__items[sample.tag]:
             if sample.rec > item.rec:
-                self.__items[sample.tag] = [sample]
+                self.__items[sample.tag] = (sample, )
                 return
 
 
