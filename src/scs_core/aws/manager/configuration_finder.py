@@ -12,7 +12,7 @@ from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
 from scs_core.data.str import Str
-from scs_core.sample.configuration_sample import ConfigurationSample
+from scs_core.sample.configuration_sample import ConfigurationSample, ConfigurationSampleHistory
 from scs_core.sys.http_exception import HTTPException
 
 
@@ -25,13 +25,11 @@ class ConfigurationFinder(object):
 
     __URL = "https://bwhogrzl3b.execute-api.us-west-2.amazonaws.com/default/MQTTDynamoHandler"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
         self.__http_client = http_client
         self.__auth = auth
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -42,8 +40,7 @@ class ConfigurationFinder(object):
         request = ConfigurationRequest(tag_filter, response_mode)
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        return ConfigurationResponse.construct_from_jdict(response.json())
-
+        return ConfigurationResponse.construct_from_jdict(response.json(), tag_filter)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -63,7 +60,6 @@ class ConfigurationRequest(object):
     TAG_FILTER = 'tagFilter'
     RESPONSE_MODE = 'responseMode'
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -80,16 +76,14 @@ class ConfigurationRequest(object):
 
         return cls(tag_filter, response_mode)
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag_filter, response_mode):
         """
         Constructor
         """
-        self.__tag_filter = tag_filter                          # string
-        self.__response_mode = response_mode                    # MODE enum
-
+        self.__tag_filter = tag_filter  # string
+        self.__response_mode = response_mode  # MODE enum
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -99,14 +93,11 @@ class ConfigurationRequest(object):
 
         return True
 
-
     def tags_only(self):
         return self.__response_mode == self.MODE.TAGS_ONLY
 
-
     def history(self):
         return self.__response_mode == self.MODE.HISTORY
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -118,18 +109,15 @@ class ConfigurationRequest(object):
 
         return params
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def tag_filter(self):
         return self.__tag_filter
 
-
     @property
     def response_mode(self):
         return self.__response_mode
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -148,7 +136,7 @@ class ConfigurationResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, tag=None):
         if not jdict:
             return None
 
@@ -159,17 +147,30 @@ class ConfigurationResponse(HTTPResponse):
 
         mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
-        items = []
+        result = None
+        history = ConfigurationSampleHistory(False if mode == ConfigurationRequest.MODE.HISTORY else True)
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
-                item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
-                    ConfigurationSample.construct_from_jdict(item_jdict)
-                items.append(item)
+                item = ConfigurationSample.construct_from_jdict(item_jdict)
+                history.insert(item)
+
+            if mode == ConfigurationRequest.MODE.TAGS_ONLY:
+                result = history.tags()
+            elif mode == ConfigurationRequest.MODE.FULL:
+                result = history.as_json()
+            elif mode == ConfigurationRequest.MODE.HISTORY:
+                # check validity of request
+                if len(history.tags()) > 1:
+                    # TODO would it be better to create exceptions rather than returning nothing?
+                    return None
+                result = history.items_for_tag(tag)
+
+        else:
+            return None
 
         next_url = jdict.get('next')
 
-        return cls(status, mode, items, next_url=next_url)
-
+        return cls(status, mode, result, next_url=next_url)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -179,14 +180,12 @@ class ConfigurationResponse(HTTPResponse):
         """
         super().__init__(status)
 
-        self.__mode = mode                              # ConfigurationRequest.Mode member
-        self.__items = items                            # list of ConfigurationSample or string
-        self.__next_url = next_url                      # URL string
-
+        self.__mode = mode  # ConfigurationRequest.Mode member
+        self.__items = items  # list of ConfigurationSample or string
+        self.__next_url = next_url  # URL string
 
     def __len__(self):
         return len(self.items)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -207,23 +206,19 @@ class ConfigurationResponse(HTTPResponse):
 
         return jdict
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def mode(self):
         return self.__mode
 
-
     @property
     def items(self):
         return self.__items
 
-
     @property
     def next_url(self):
         return self.__next_url
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

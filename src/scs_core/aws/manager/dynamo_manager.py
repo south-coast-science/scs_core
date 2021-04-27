@@ -165,3 +165,37 @@ class DynamoManager(object):
             datum.append(data)
 
         return datum
+
+    def retrieve_filtered_pk(self, table_name, pk, tag_filter, lek=None):
+        datum = []
+        table = self.__dynamo_resource.Table(table_name)
+
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(pk).contains(tag_filter),
+                AttributesToGet=["tag"],
+                LastEvaluatedKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(pk).contains(tag_filter),
+                AttributesToGet=["tag"]
+            )
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        for item in data:
+            datum.append(item)
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            lek = None
+
+        while lek is not None:
+            data = self.retrieve_all_pk(table_name, pk, lek)
+            datum.append(data)
+
+        return datum
