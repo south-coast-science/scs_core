@@ -154,6 +154,8 @@ class ConfigurationResponse(HTTPResponse):
                 item = ConfigurationSample.construct_from_jdict(item_jdict)
                 history.insert(item)
 
+            # TODO move this into the lambda function
+
             if mode == ConfigurationRequest.MODE.TAGS_ONLY:
                 result = history.tags()
             elif mode == ConfigurationRequest.MODE.FULL:
@@ -161,7 +163,6 @@ class ConfigurationResponse(HTTPResponse):
             elif mode == ConfigurationRequest.MODE.HISTORY:
                 # check validity of request
                 if len(history.tags()) > 1:
-                    # TODO would it be better to create exceptions rather than returning nothing?
                     return None
                 result = history.items_for_tag(tag)
 

@@ -100,6 +100,8 @@ class DynamoManager(object):
         while lek is not None:
             data = self.retrieve_all(table_name, lek)
             datum.append(data)
+        # TODO datum += data (EVERYWHERE)
+        # TODO rename datum / read a dictionary ...
 
         return datum
 
