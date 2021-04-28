@@ -63,7 +63,7 @@ class ControlReceipt(JSONable):
 
     @classmethod
     def __hash(cls, tag, rec, command, omd, key):
-        rec_iso8601 = rec.as_iso8601(Sample.INCLUDE_MILLIS)
+        rec_iso8601 = rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
         text = str(tag) + JSONify.dumps(rec_iso8601) + JSONify.dumps(command) + str(omd) + str(key)
         hash_object = hashlib.sha256(text.encode())
@@ -102,7 +102,7 @@ class ControlReceipt(JSONable):
         jdict['tag'] = self.tag
         jdict['attn'] = self.attn
 
-        jdict['rec'] = self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
+        jdict['rec'] = self.rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
         jdict['cmd'] = self.command
         jdict['omd'] = self.omd

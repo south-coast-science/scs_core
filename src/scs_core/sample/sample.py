@@ -66,7 +66,7 @@ class Sample(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(include_millis=self.INCLUDE_MILLIS)
 
         if self.tag is not None:
             jdict['tag'] = self.tag

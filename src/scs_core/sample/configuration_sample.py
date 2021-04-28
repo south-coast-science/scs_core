@@ -9,6 +9,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
@@ -89,7 +90,7 @@ class ConfigurationSample(Sample):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationSampleHistory(object):
+class ConfigurationSampleHistory(JSONable):
     """
     classdocs
     """
@@ -101,7 +102,7 @@ class ConfigurationSampleHistory(object):
         Constructor
         """
         self.__latest_only = latest_only                            # bool
-        self.__items = {} if items is None else items               # dict of tag: array of ConfigurationSample
+        self.__items = {} if items is None else items               # dict of tag: list of ConfigurationSample
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -116,7 +117,7 @@ class ConfigurationSampleHistory(object):
 
         for item in self.__items[sample.tag]:
             if sample.rec > item.rec:
-                self.__items[sample.tag] = [sample]
+                self.__items[sample.tag] = (sample, )
                 return
 
 
