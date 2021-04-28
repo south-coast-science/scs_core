@@ -23,7 +23,7 @@ class ConfigurationFinder(object):
     classdocs
     """
 
-    __URL = "https://bwhogrzl3b.execute-api.us-west-2.amazonaws.com/default/MQTTDynamoHandler"
+    __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationFinder"
 
     # ----------------------------------------------------------------------------------------------------------------
 

@@ -103,7 +103,7 @@ class DynamoManager(object):
 
         return datum
 
-    def retrieve_selective(self, table_name, scan_key, scan_value, lek=None):
+    def retrieve_filtered(self, table_name, scan_key, scan_value, lek=None):
         datum = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
@@ -129,7 +129,7 @@ class DynamoManager(object):
             lek = None
 
         while lek is not None:
-            data = self.retrieve_selective(table_name, scan_key, scan_value, lek)
+            data = self.retrieve_filtered(table_name, scan_key, scan_value, lek)
             datum.append(data)
 
         return datum
@@ -199,3 +199,68 @@ class DynamoManager(object):
             datum.append(data)
 
         return datum
+
+    def retrieve_double_filtered(self, table_name, scan_key, scan_value, second_key, second_value, lek=None):
+        datum = []
+        table = self.__dynamo_resource.Table(table_name)
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(scan_key).contains(scan_value) & Attr(second_key).contains(second_value),
+                LastEvaluatedKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(scan_key).contains(scan_value) & Attr(second_key).contains(second_value)
+            )
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        for item in data:
+            datum.append(item)
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            lek = None
+
+        while lek is not None:
+            data = self.retrieve_filtered(table_name, scan_key, scan_value, lek)
+            datum.append(data)
+
+        return datum
+
+    def retrieve_double_filtered_pk(self, table_name, scan_key, scan_value, second_key, second_value, lek=None):
+        datum = []
+        table = self.__dynamo_resource.Table(table_name)
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(scan_key).contains(scan_value) & Attr(second_key).contains(second_value),
+                AttributesToGet=["tag"],
+                LastEvaluatedKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(scan_key).contains(scan_value) & Attr(second_key).contains(second_value),
+                AttributesToGet=["tag"]
+            )
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        for item in data:
+            datum.append(item)
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            lek = None
+
+        while lek is not None:
+            data = self.retrieve_filtered(table_name, scan_key, scan_value, lek)
+            datum.append(data)
+
+        return datum
+
