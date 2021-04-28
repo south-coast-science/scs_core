@@ -124,7 +124,8 @@ class ConfigurationSampleHistory(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def tags(self):
-        return sorted(self.__items.keys())
+        # remove duplicates
+        return list(set(self.__items.keys()))
 
 
     def items_for_tag(self, tag):
