@@ -30,7 +30,7 @@ class MQTTClient(object):
     """
     classdocs
     """
-    __KEEP_ALIVE_INTERVAL =         600                     # recommended: 30 default: 600 (sec)
+    __KEEP_ALIVE_INTERVAL =         60                     # recommended: 30 default: 600 (sec)
 
     __PORT =                        8883
 
