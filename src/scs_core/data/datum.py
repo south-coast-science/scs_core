@@ -4,9 +4,11 @@ Created on 24 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://docs.python.org/3/library/struct.html
+https://stackoverflow.com/questions/8022530/how-to-check-for-valid-email-address
 """
 
 import math
+import re
 import struct
 
 from datetime import date
@@ -45,6 +47,14 @@ class Datum(object):
 
     # ----------------------------------------------------------------------------------------------------------------
     # morphological numeracy...
+
+    @classmethod
+    def is_email_address(cls, value):
+        try:
+            return bool(re.match(r'[^@\W]+@[^@\W]+\.[^@\W]+', value))
+        except TypeError:
+            return False
+
 
     @classmethod
     def is_numeric(cls, value):

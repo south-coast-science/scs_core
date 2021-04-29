@@ -100,7 +100,7 @@ class OPCDatum(PMxDatum):
 
         jdict['src'] = self.source
 
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(Sample.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
         jdict['per'] = self.period
 

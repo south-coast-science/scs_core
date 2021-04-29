@@ -51,12 +51,22 @@ class Sample(JSONable):
         self.__exegeses = exegeses              # OrderedDict
 
 
+    def __eq__(self, other):
+        try:
+            return self.tag == other.tag and self.rec == other.rec and \
+                   self.src == other.src and self.values == other.values and \
+                   self.exegeses == other.exegeses
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(include_millis=self.INCLUDE_MILLIS)
 
         if self.tag is not None:
             jdict['tag'] = self.tag

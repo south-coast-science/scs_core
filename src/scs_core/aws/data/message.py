@@ -74,7 +74,7 @@ class Message(JSONable):
 
         jdict['device'] = self.device
         jdict['topic'] = self.topic
-        jdict['upload'] = self.upload.as_iso8601(self.INCLUDE_MILLIS)
+        jdict['upload'] = self.upload.as_iso8601(include_millis=self.INCLUDE_MILLIS)
 
         jdict['payload'] = self.payload
 
