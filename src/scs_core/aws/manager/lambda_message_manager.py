@@ -17,10 +17,11 @@ from scs_core.aws.client.rest_client import RESTClient
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -38,6 +39,8 @@ class MessageManager(object):
         """
         self.__rest_client = RESTClient(api_key)
         self.__reporter = reporter
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,8 +63,11 @@ class MessageManager(object):
                        min_max, exclude_remainder):
         request_path = '/topicMessages'
 
-        params = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
-                                min_max, exclude_remainder).params()
+        request = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
+                                 min_max, exclude_remainder)
+        self.__logger.debug(request)
+
+        params = request.params()
 
         # request...
         self.__rest_client.connect()
@@ -72,7 +78,7 @@ class MessageManager(object):
 
                 # messages...
                 block = MessageResponse.construct_from_jdict(jdict)
-                # print("block: %s" % block)
+                self.__logger.debug(block)
 
                 for item in block.items:
                     yield item
@@ -361,7 +367,7 @@ class MessageResponse(JSONable):
         """
         Constructor
         """
-        self.__code = Datum.int(code)               # int
+        self.__code = int(code)                     # int
         self.__status = status                      # string
         self.__fetched_last = fetched_last          # Fetched last written data flag
         self.__interval = interval                  # int

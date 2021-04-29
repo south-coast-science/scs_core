@@ -71,4 +71,5 @@ class IntervalTimer(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "IntervalTimer:{interval:%s, time_to_next_yield:%0.3f}" % (self.interval, self.time_to_next_yield)
+        return "IntervalTimer:{interval:%s, time_to_next_yield:%s}" % \
+               (round(self.interval, 1), round(self.time_to_next_yield, 1))
