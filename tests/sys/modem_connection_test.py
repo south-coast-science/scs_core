@@ -17,6 +17,7 @@ from scs_core.sys.modem import ModemConnection
 
 lines = [
     'modem.generic.state                            : connected',
+    'modem.generic.state-failed-reason              : --',
     'modem.generic.signal-quality.value             : 67',
     'modem.generic.signal-quality.recent            : yes'
 ]
@@ -34,6 +35,5 @@ print(connection2)
 jstr = JSONify.dumps(connection2)
 print(jstr)
 print("-")
-
 
 print(connection1 == connection2)
