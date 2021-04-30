@@ -104,7 +104,7 @@ class ModemConnection(JSONable):
             return None
 
         state = jdict.get('state')
-        signal = jdict.get('signal')
+        signal = Signal.construct_from_jdict(jdict.get('signal'))
 
         return cls(state, signal)
 
@@ -189,6 +189,8 @@ class Signal(JSONable):
     modem.generic.signal-quality.recent         : yes
     """
 
+    __SIGNIFICANT_QUALITY_DIFFERENCE = 10
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -214,7 +216,7 @@ class Signal(JSONable):
 
     def __eq__(self, other):
         try:
-            return abs(self.quality - other.quality) < 10
+            return abs(self.quality - other.quality) < self.__SIGNIFICANT_QUALITY_DIFFERENCE
 
         except (TypeError, AttributeError):
             return False
