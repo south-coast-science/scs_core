@@ -53,7 +53,7 @@ from scs_core.psu.psu_version import PSUVersion
 from scs_core.sync.schedule import Schedule
 
 from scs_core.sys.shared_secret import SharedSecret
-from scs_core.sys.sim import SIM
+from scs_core.sys.modem import SIM
 from scs_core.sys.system_id import SystemID
 
 

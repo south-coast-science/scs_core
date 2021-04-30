@@ -9,7 +9,7 @@ Created on 24 Mar 2021
 import json
 
 from scs_core.data.json import JSONify
-from scs_core.sys.sim import SIM
+from scs_core.sys.modem import SIM
 
 
 # --------------------------------------------------------------------------------------------------------------------
