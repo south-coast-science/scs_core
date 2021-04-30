@@ -139,7 +139,7 @@ class IoTNode(Node):
 
     @classmethod
     @abstractmethod
-    def modem_connection(cls):
+    def modem_conn(cls):
         pass
 
 
