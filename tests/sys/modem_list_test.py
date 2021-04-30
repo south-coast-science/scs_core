@@ -6,7 +6,7 @@ Created on 24 Mar 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.sys.sim import ModemList
+from scs_core.sys.modem import ModemList
 
 
 # --------------------------------------------------------------------------------------------------------------------

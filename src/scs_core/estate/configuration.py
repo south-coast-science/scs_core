@@ -52,8 +52,8 @@ from scs_core.psu.psu_version import PSUVersion
 
 from scs_core.sync.schedule import Schedule
 
+from scs_core.sys.modem import ModemConnection, SIM
 from scs_core.sys.shared_secret import SharedSecret
-from scs_core.sys.sim import SIM
 from scs_core.sys.system_id import SystemID
 
 
@@ -109,6 +109,7 @@ class Configuration(JSONable):
         shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'), default=None)
         sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'), default=None)
         sim = SIM.construct_from_jdict(jdict.get('sim'))
+        modem_connection = ModemConnection.construct_from_jdict(jdict.get('modem-connection'))
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'), default=None)
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=None)
 
@@ -117,7 +118,7 @@ class Configuration(JSONable):
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                    pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, sim, system_id, timezone_conf)
+                   shared_secret, sht_conf, sim, modem_connection, system_id, timezone_conf)
 
 
     @classmethod
@@ -152,6 +153,7 @@ class Configuration(JSONable):
         shared_secret = SharedSecret.load(manager, default=None)
         sht_conf = SHTConf.load(manager, default=None)
         sim = manager.sim()
+        modem_connection = manager.modem_connection()
         system_id = SystemID.load(manager, default=None)
         timezone_conf = TimezoneConf.load(manager, default=None)
 
@@ -160,7 +162,7 @@ class Configuration(JSONable):
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                    pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, sim, system_id, timezone_conf)
+                   shared_secret, sht_conf, sim, modem_connection, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -170,7 +172,7 @@ class Configuration(JSONable):
                  gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                  mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                  pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                 shared_secret, sht_conf, sim, system_id, timezone_conf):
+                 shared_secret, sht_conf, sim, modem_connection, system_id, timezone_conf):
         """
         Constructor
         """
@@ -205,6 +207,7 @@ class Configuration(JSONable):
         self.__shared_secret = shared_secret                        # SharedSecret
         self.__sht_conf = sht_conf                                  # SHTConf
         self.__sim = sim                                            # SIM
+        self.__modem_connection = modem_connection                  # ModemConnection
         self.__system_id = system_id                                # SystemID
         self.__timezone_conf = timezone_conf                        # TimezoneConf
 
@@ -225,8 +228,8 @@ class Configuration(JSONable):
                    self.psu_version == other.psu_version and self.pt1000_calib == other.pt1000_calib and \
                    self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
                    self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
-                   self.sim == other.sim and self.system_id == other.system_id and \
-                   self.timezone_conf == other.timezone_conf
+                   self.sim == other.sim and self.modem_connection == other.modem_connection and \
+                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -239,7 +242,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None)
+                             None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -324,6 +327,9 @@ class Configuration(JSONable):
 
         if self.sim != other.sim:
             diff.__sim = self.sim
+
+        if self.modem_connection != other.modem_connection:
+            diff.__modem_connection = self.modem_connection
 
         if self.system_id != other.system_id:
             diff.__system_id = self.system_id
@@ -424,6 +430,9 @@ class Configuration(JSONable):
         if self.sim:
             raise ValueError('sim may not be set')
 
+        if self.modem_connection:
+            raise ValueError('modem_connection may not be set')
+
         if self.system_id:
             self.system_id.save(manager)
 
@@ -466,6 +475,7 @@ class Configuration(JSONable):
         jdict['shared-secret'] = self.shared_secret
         jdict['sht-conf'] = self.sht_conf
         jdict['sim'] = self.sim
+        jdict['modem-connection'] = self.modem_connection
         jdict['system-id'] = self.system_id
         jdict['timezone-conf'] = self.timezone_conf
 
@@ -620,6 +630,11 @@ class Configuration(JSONable):
 
 
     @property
+    def modem_connection(self):
+        return self.__modem_connection
+
+
+    @property
     def system_id(self):
         return self.__system_id
 
@@ -637,10 +652,10 @@ class Configuration(JSONable):
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
                "mpl115a2_calib:%s, mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
                "pmx_model_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
-               "shared_secret:%s, sht_conf:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
+               "shared_secret:%s, sht_conf:%s, sim:%s, modem_connection:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.git_pull, self.afe_baseline, self.afe_calib, self.aws_api_auth,
                 self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
                 self.mpl115a2_calib, self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf,
                 self.pmx_model_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_conf, self.schedule,
-                self.shared_secret, self.sht_conf, self.sim, self.system_id, self.timezone_conf)
+                self.shared_secret, self.sht_conf, self.sim, self.modem_connection, self.system_id, self.timezone_conf)

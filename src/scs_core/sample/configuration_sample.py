@@ -48,6 +48,14 @@ class ConfigurationSample(Sample):
         self.__configuration = configuration                # Configuration
 
 
+    def __eq__(self, other):
+        try:
+            return self.tag == other.tag and self.configuration == other.configuration
+
+        except (TypeError, AttributeError):
+            return False
+
+
     def __lt__(self, other):
         if self.tag < other.tag:
             return True
@@ -56,6 +64,10 @@ class ConfigurationSample(Sample):
             return True
 
         return False
+
+
+    def diff(self, other):
+        return ConfigurationSample(self.tag, self.rec, self.configuration.diff(other.configuration))
 
 
     # ----------------------------------------------------------------------------------------------------------------

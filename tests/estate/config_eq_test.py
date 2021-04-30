@@ -15,34 +15,38 @@ from scs_core.estate.configuration import Configuration
 # --------------------------------------------------------------------------------------------------------------------
 
 with open('config1.json') as f:
-    jstr_c1 = f.read()
+    jstr_c1 = f.read().strip()
 
 with open('config2.json') as f:
-    jstr_c2 = f.read()
+    jstr_c2 = f.read().strip()
 
 with open('config3.json') as f:
-    jstr_c3 = f.read()
+    jstr_c3 = f.read().strip()
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-c1 = Configuration.construct_from_jdict(json.loads(jstr_c1))
+c1 = Configuration.construct_from_jdict(json.loads(jstr_c1).get('val'))
 print(c1)
 print("-")
 
-c2 = Configuration.construct_from_jdict(json.loads(jstr_c2))
+c2 = Configuration.construct_from_jdict(json.loads(jstr_c2).get('val'))
 print(c2)
 print("-")
 
-c3 = Configuration.construct_from_jdict(json.loads(jstr_c3))
+c3 = Configuration.construct_from_jdict(json.loads(jstr_c3).get('val'))
 print(c3)
 print("-")
 
 eq12 = c1 == c2
 print("eq12: %s" % eq12)
 
-eq13 = c1 == c3
-print("eq13: %s" % eq13)
+if not eq12:
+    print(JSONify.dumps(c2.diff(c1), indent=4))
 print("-")
 
-print(JSONify.dumps(c1.diff(c3), indent=4))
+eq13 = c1 == c3
+print("eq13: %s" % eq13)
+
+if not eq13:
+    print(JSONify.dumps(c3.diff(c1), indent=4))
