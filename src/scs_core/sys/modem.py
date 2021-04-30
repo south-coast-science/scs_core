@@ -3,17 +3,31 @@ Created on 24 Mar 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Signal quality
+Modem
+-----
+modem.generic.device-identifier                 : 3f07553c31ce11715037ac16c24ceddcfb6f7a0b
+modem.generic.manufacturer                      : QUALCOMM INCORPORATED
+modem.generic.model                             : QUECTEL Mobile Broadband Module
+modem.generic.revision                          : EC21EFAR06A01M4G
 
+example JSON:
+{"id": "3f07553c31ce11715037ac16c24ceddcfb6f7a0b", "mfr": "QUALCOMM INCORPORATED",
+"model": "QUECTEL Mobile Broadband Module", "rev": "EC21EFAR06A01M4G"}
+
+
+ModemConnection
+---------------
 modem.generic.state                         : connected
+modem.generic.state-failed-reason           : --
 modem.generic.signal-quality.value          : 67
 modem.generic.signal-quality.recent         : yes
 
 example JSON:
-{"state": "connected", "signal": {"quality": 67, "recent": true}}
+{"state": "connected", "failure": null, "signal": {"quality": 67, "recent": true}}
 
-Subscriber Identity Module (SIM)
 
+SIM (Subscriber Identity Module)
+--------------------------------
 sim.dbus-path                               : /org/freedesktop/ModemManager1/SIM/0
 sim.properties.imsi                         : 234104886708667
 sim.properties.iccid                        : 8944110068256270054
@@ -89,9 +103,129 @@ class ModemList(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
+class Modem(JSONable):
+    """
+    modem.generic.device-identifier                 : 3f07553c31ce11715037ac16c24ceddcfb6f7a0b
+    modem.generic.manufacturer                      : QUALCOMM INCORPORATED
+    modem.generic.model                             : QUECTEL Mobile Broadband Module
+    modem.generic.revision                          : EC21EFAR06A01M4G
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        id = jdict.get('id')
+        mfr = jdict.get('mfr')
+        model = jdict.get('model')
+        rev = jdict.get('rev')
+
+        return cls(id, mfr, model, rev)
+
+
+    @classmethod
+    def construct_from_mmcli(cls, lines):
+        id = None
+        mfr = None
+        model = None
+        rev = None
+
+        for line in lines:
+            match = re.match(r'modem.generic.device-identifier\s+:\s+(\S+)', line)
+            if match:
+                id = match.groups()[0]
+                continue
+
+            match = re.match(r'modem.generic.manufacturer\s+:\s+(\S.*\S)', line)
+            if match:
+                mfr = match.groups()[0]
+                continue
+
+            match = re.match(r'modem.generic.model\s+:\s+(\S.*\S)', line)
+            if match:
+                model = match.groups()[0]
+                continue
+
+            match = re.match(r'modem.generic.revision\s+:\s+(\S+)', line)
+            if match:
+                rev = match.groups()[0]
+                continue
+
+        return cls(id, mfr, model, rev)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, id, mfr, model, rev):
+        """
+        Constructor
+        """
+        self.__id = id                              # string
+        self.__mfr = mfr                            # string
+        self.__model = model                        # string
+        self.__rev = rev                            # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.id == other.id and self.mfr == other.mfr and \
+                   self.model == other.model and self.rev == other.rev
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def id(self):
+        return self.__id
+
+
+    @property
+    def mfr(self):
+        return self.__mfr
+
+
+    @property
+    def model(self):
+        return self.__model
+
+
+    @property
+    def rev(self):
+        return self.__rev
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['id'] = self.id
+        jdict['mfr'] = self.mfr
+        jdict['model'] = self.model
+        jdict['rev'] = self.rev
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "Modem:{id:%s, mfr:%s, model:%s, rev:%s}" %  \
+               (self.id, self.mfr, self.model, self.rev)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class ModemConnection(JSONable):
     """
     modem.generic.state                         : connected
+    modem.generic.state-failed-reason           : --
     modem.generic.signal-quality.value          : 67
     modem.generic.signal-quality.recent         : yes
     """
@@ -104,14 +238,16 @@ class ModemConnection(JSONable):
             return None
 
         state = jdict.get('state')
+        failure = jdict.get('failure')
         signal = Signal.construct_from_jdict(jdict.get('signal'))
 
-        return cls(state, signal)
+        return cls(state, failure, signal)
 
 
     @classmethod
     def construct_from_mmcli(cls, lines):
         state = None
+        failure = None
         quality = None
         recent = None
 
@@ -119,6 +255,11 @@ class ModemConnection(JSONable):
             match = re.match(r'modem.generic.state\s+:\s+([a-z]+)', line)
             if match:
                 state = match.groups()[0]
+                continue
+
+            match = re.match(r'modem.generic.state-failed-reason\s+:\s+(\S.*\S)', line)
+            if match:
+                failure = None if match.groups()[0] == '--' else match.groups()[0]
                 continue
 
             match = re.match(r'modem.generic.signal-quality.value\s+:\s+([\d]+)', line)
@@ -131,22 +272,23 @@ class ModemConnection(JSONable):
                 recent = match.groups()[0] == 'yes'
                 continue
 
-        return cls(state, Signal(quality, recent))
+        return cls(state, failure, Signal(quality, recent))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, state, signal):
+    def __init__(self, state, failure, signal):
         """
         Constructor
         """
         self.__state = state                            # string
+        self.__failure = failure                        # string
         self.__signal = signal                          # Signal
 
 
     def __eq__(self, other):
         try:
-            return self.state == other.state and self.signal == other.signal
+            return self.state == other.state and self.failure == other.failure and self.signal == other.signal
 
         except (TypeError, AttributeError):
             return False
@@ -160,6 +302,11 @@ class ModemConnection(JSONable):
 
 
     @property
+    def failure(self):
+        return self.__failure
+
+
+    @property
     def signal(self):
         return self.__signal
 
@@ -170,6 +317,7 @@ class ModemConnection(JSONable):
         jdict = OrderedDict()
 
         jdict['state'] = self.state
+        jdict['failure'] = self.failure
         jdict['signal'] = self.signal
 
         return jdict
@@ -178,7 +326,7 @@ class ModemConnection(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ModemConnection:{state:%s, signal:%s}" %  (self.state, self.signal)
+        return "ModemConnection:{state:%s, failure:%s, signal:%s}" %  (self.state, self.failure, self.signal)
 
 
 # --------------------------------------------------------------------------------------------------------------------
