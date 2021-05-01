@@ -26,7 +26,7 @@ class Command(JSONable):
 
     __PROHIBITED_TOKENS = ('-i', '--interactive', '<', '>', ';', '|')
 
-    __TIMEOUT = 30.0
+    __DEFAULT_TIMEOUT = 30.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,35 +38,37 @@ class Command(JSONable):
 
         cmd = jdict.get('cmd')
         params = jdict.get('params')
+        timeout = jdict.get('timeout', cls.__DEFAULT_TIMEOUT)
 
         stdout = jdict.get('stdout')
         stderr = jdict.get('stderr')
         return_code = jdict.get('ret')
 
-        datum = Command(cmd, params, stdout, stderr, return_code)
+        datum = cls(cmd, params, timeout, stdout=stdout, stderr=stderr, return_code=return_code)
 
         return datum
 
 
     @classmethod
-    def construct_from_tokens(cls, tokens):
+    def construct_from_tokens(cls, tokens, timeout):
         if not tokens:
-            return Command(None, [])
+            return Command(None, [], timeout)
 
         cmd = tokens[0]
         params = tokens[1:]
 
-        return Command(cmd, params)
+        return cls(cmd, params, timeout)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, cmd, params, stdout=None, stderr=None, return_code=None):
+    def __init__(self, cmd, params, timeout, stdout=None, stderr=None, return_code=None):
         """
         Constructor
         """
         self.__cmd = cmd                        # string
         self.__params = params                  # array
+        self.__timeout = int(timeout)           # int
 
         self.__stdout = stdout                  # array of string
         self.__stderr = stderr                  # array of string
@@ -123,7 +125,7 @@ class Command(JSONable):
         p = Popen(statement, cwd=host.command_path(), stdout=PIPE, stderr=PIPE)
 
         try:
-            stdout_bytes, stderr_bytes = p.communicate(timeout=Command.__TIMEOUT)
+            stdout_bytes, stderr_bytes = p.communicate(timeout=self.timeout)
 
             self.__stdout = stdout_bytes.decode().strip().splitlines()
             self.__stderr = stderr_bytes.decode().strip().splitlines()
@@ -144,6 +146,7 @@ class Command(JSONable):
 
         jdict['cmd'] = self.cmd
         jdict['params'] = self.params
+        jdict['timeout'] = self.timeout
 
         jdict['stdout'] = self.stdout
         jdict['stderr'] = self.stderr
@@ -165,6 +168,11 @@ class Command(JSONable):
 
 
     @property
+    def timeout(self):
+        return self.__timeout
+
+
+    @property
     def stdout(self):
         return self.__stdout
 
@@ -182,5 +190,5 @@ class Command(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Command:{cmd:%s, params:%s, stdout:%s, stderr:%s, return_code:%s}" % \
-               (self.cmd, self.params, self.stdout, self.stderr, self.return_code)
+        return "Command:{cmd:%s, params:%s, timeout:%s, stdout:%s, stderr:%s, return_code:%s}" % \
+               (self.cmd, self.params, self.timeout, self.stdout, self.stderr, self.return_code)
