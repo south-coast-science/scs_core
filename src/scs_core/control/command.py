@@ -130,8 +130,8 @@ class Command(JSONable):
             self.__return_code = p.returncode
 
         except TimeoutExpired as ex:
-            self.__stdout = ''
-            self.__stderr = repr(ex)
+            self.__stdout = []
+            self.__stderr = [repr(ex)]
             self.__return_code = 1
 
         return self.__return_code == 0
