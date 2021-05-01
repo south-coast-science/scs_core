@@ -9,7 +9,7 @@ https://pymotw.com/2/subprocess/
 import os
 
 from collections import OrderedDict
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, TimeoutExpired
 
 from scs_core.data.json import JSONable
 from scs_core.data.json import JSONify
@@ -122,11 +122,17 @@ class Command(JSONable):
     def __execute(self, statement, host):
         p = Popen(statement, cwd=host.command_path(), stdout=PIPE, stderr=PIPE)
 
-        stdout_bytes, stderr_bytes = p.communicate(timeout=Command.__TIMEOUT)
+        try:
+            stdout_bytes, stderr_bytes = p.communicate(timeout=Command.__TIMEOUT)
 
-        self.__stdout = stdout_bytes.decode().strip().splitlines()
-        self.__stderr = stderr_bytes.decode().strip().splitlines()
-        self.__return_code = p.returncode
+            self.__stdout = stdout_bytes.decode().strip().splitlines()
+            self.__stderr = stderr_bytes.decode().strip().splitlines()
+            self.__return_code = p.returncode
+
+        except TimeoutExpired as ex:
+            self.__stdout = ''
+            self.__stderr = repr(ex)
+            self.__return_code = 1
 
         return self.__return_code == 0
 
