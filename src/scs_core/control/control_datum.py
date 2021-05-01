@@ -65,6 +65,7 @@ class ControlDatum(JSONable):
     def __hash(cls, tag, attn, rec, cmd_tokens, key):
         rec_iso8601 = rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
+        # timeout is ignored to maintain backward compatibility
         text = str(tag) + str(attn) + JSONify.dumps(rec_iso8601) + str(cmd_tokens) + str(key)
         hash_object = hashlib.sha256(text.encode())
 
