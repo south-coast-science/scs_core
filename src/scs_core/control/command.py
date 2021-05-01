@@ -38,13 +38,12 @@ class Command(JSONable):
 
         cmd = jdict.get('cmd')
         params = jdict.get('params')
-        timeout = jdict.get('timeout', cls.__DEFAULT_TIMEOUT)
 
         stdout = jdict.get('stdout')
         stderr = jdict.get('stderr')
         return_code = jdict.get('ret')
 
-        datum = cls(cmd, params, timeout, stdout=stdout, stderr=stderr, return_code=return_code)
+        datum = cls(cmd, params, stdout=stdout, stderr=stderr, return_code=return_code)
 
         return datum
 
@@ -57,18 +56,18 @@ class Command(JSONable):
         cmd = tokens[0]
         params = tokens[1:]
 
-        return cls(cmd, params, timeout)
+        return cls(cmd, params, timeout=timeout)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, cmd, params, timeout, stdout=None, stderr=None, return_code=None):
+    def __init__(self, cmd, params, timeout=None, stdout=None, stderr=None, return_code=None):
         """
         Constructor
         """
         self.__cmd = cmd                        # string
         self.__params = params                  # array
-        self.__timeout = int(timeout)           # int
+        self.__timeout = timeout                # int or None
 
         self.__stdout = stdout                  # array of string
         self.__stderr = stderr                  # array of string
@@ -146,7 +145,6 @@ class Command(JSONable):
 
         jdict['cmd'] = self.cmd
         jdict['params'] = self.params
-        jdict['timeout'] = self.timeout
 
         jdict['stdout'] = self.stdout
         jdict['stderr'] = self.stderr
