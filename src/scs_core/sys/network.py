@@ -59,7 +59,9 @@ class Network(JSONable):
 
         device = match.groups()[0]
         kind = match.groups()[1]
-        connection = match.groups()[3].strip()
+
+        reported_connection = match.groups()[3].strip()
+        connection = None if reported_connection == '--' else reported_connection
 
         return cls(device, kind, state, connection)
 
