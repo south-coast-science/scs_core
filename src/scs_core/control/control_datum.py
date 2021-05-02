@@ -30,6 +30,8 @@ class ControlDatum(JSONable):
     classdocs
     """
 
+    __DEFAULT_TIMEOUT = 30.0            # seconds
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -42,18 +44,19 @@ class ControlDatum(JSONable):
 
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         cmd_tokens = jdict.get('cmd_tokens')
+        timeout = jdict.get('timeout', cls.__DEFAULT_TIMEOUT)
         digest = jdict.get('digest')
 
-        datum = cls(tag, attn, rec, cmd_tokens, digest)
+        datum = cls(tag, attn, rec, cmd_tokens, timeout, digest)
 
         return datum
 
 
     @classmethod
-    def construct(cls, tag, attn, rec, cmd_tokens, key):
+    def construct(cls, tag, attn, rec, cmd_tokens, timeout, key):
         digest = cls.__hash(tag, attn, rec, cmd_tokens, key)
 
-        return cls(tag, attn, rec, cmd_tokens, digest)
+        return cls(tag, attn, rec, cmd_tokens, timeout, digest)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,6 +65,7 @@ class ControlDatum(JSONable):
     def __hash(cls, tag, attn, rec, cmd_tokens, key):
         rec_iso8601 = rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
+        # timeout is ignored to maintain backward compatibility
         text = str(tag) + str(attn) + JSONify.dumps(rec_iso8601) + str(cmd_tokens) + str(key)
         hash_object = hashlib.sha256(text.encode())
 
@@ -70,7 +74,7 @@ class ControlDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, attn, rec, cmd_tokens, digest):
+    def __init__(self, tag, attn, rec, cmd_tokens, timeout, digest):
         """
         Constructor
         """
@@ -79,6 +83,7 @@ class ControlDatum(JSONable):
 
         self.__rec = rec                    # LocalizedDatetime
         self.__cmd_tokens = cmd_tokens      # array of { string | int | float }
+        self.__timeout = int(timeout)       # int
         self.__digest = digest              # string
 
 
@@ -101,6 +106,7 @@ class ControlDatum(JSONable):
         jdict['rec'] = self.rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
 
         jdict['cmd_tokens'] = self.cmd_tokens
+        jdict['timeout'] = self.timeout
         jdict['digest'] = self.digest
 
         return jdict
@@ -129,6 +135,11 @@ class ControlDatum(JSONable):
 
 
     @property
+    def timeout(self):
+        return self.__timeout
+
+
+    @property
     def digest(self):
         return self.__digest
 
@@ -136,5 +147,5 @@ class ControlDatum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ControlDatum:{tag:%s, attn:%s, rec:%s, cmd_tokens:%s, digest:%s}" % \
-               (self.tag, self.attn, self.rec, self.cmd_tokens, self.digest)
+        return "ControlDatum:{tag:%s, attn:%s, rec:%s, cmd_tokens:%s, timeout:%s, digest:%s}" % \
+               (self.tag, self.attn, self.rec, self.cmd_tokens, self.timeout, self.digest)

@@ -42,7 +42,7 @@ class MQTTDevicePoller(object):
     __KEY = "conf/mqtt_peers.json"
     __TABLE = "device_configuration"
 
-    __TIMEOUT = 10
+    __TIMEOUT = 30          # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ class MQTTDevicePoller(object):
         client.connect(auth, False)
         # datum...
         now = LocalizedDatetime.now().utc()
-        datum = ControlDatum.construct(host_tag, device_tag, now, token, d_ss)
+        datum = ControlDatum.construct(host_tag, device_tag, now, token, self.__TIMEOUT, d_ss)
 
         publication = Publication(d_topic, datum)
 

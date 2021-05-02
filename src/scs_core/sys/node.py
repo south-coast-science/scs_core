@@ -135,7 +135,13 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # modem...
+    # networks and modem...
+
+    @classmethod
+    @abstractmethod
+    def networks(cls):
+        pass
+
 
     @classmethod
     @abstractmethod
