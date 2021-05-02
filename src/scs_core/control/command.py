@@ -25,7 +25,7 @@ class Command(JSONable):
 
     __PROHIBITED_TOKENS = ('-i', '--interactive', '<', '>', ';', '|')
 
-    __DEFAULT_TIMEOUT = 30.0
+    __DEFAULT_TIMEOUT = 30.0            # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------

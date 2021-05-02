@@ -30,7 +30,7 @@ class ControlDatum(JSONable):
     classdocs
     """
 
-    __DEFAULT_TIMEOUT = 30.0
+    __DEFAULT_TIMEOUT = 30.0            # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
