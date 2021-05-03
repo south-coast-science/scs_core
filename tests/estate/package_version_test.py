@@ -17,6 +17,7 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 root = Host.scs_path()
+# root = '/Users/bruno/Python/MacProject'
 
 
 pvs1 = PackageVersions.construct_from_installation(root)

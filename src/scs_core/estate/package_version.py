@@ -132,7 +132,7 @@ class PackageVersions(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        if not jdict:
+        if jdict is None:
             return None
 
         versions = OrderedDict()
