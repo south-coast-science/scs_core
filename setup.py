@@ -41,7 +41,7 @@ with open('requirements.txt') as req_txt:
 
 
 setuptools.setup(
-    name="scs-corex",
+    name="scs-core",
     version=get_version("src/scs_core/__init__.py"),
     author="South Coast Science",
     author_email="contact@southcoastscience.com",
