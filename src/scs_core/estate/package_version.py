@@ -49,7 +49,7 @@ class PackageVersion(JSONable):
         if not jdict:
             return None
 
-        repository = jdict.get('repository')
+        repository = jdict.get('repo')
         version = jdict.get('version')
 
         return cls(repository, version)
@@ -68,7 +68,6 @@ class PackageVersion(JSONable):
     def __eq__(self, other):
         try:
             return self.repository == other.repository and self.version == other.version
-
         except (TypeError, AttributeError):
             return False
 
@@ -90,7 +89,7 @@ class PackageVersion(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['repository'] = self.repository
+        jdict['repo'] = self.repository
         jdict['version'] = self.version
 
         return jdict
@@ -118,11 +117,9 @@ class PackageVersions(JSONable):
         for repository in GitPull.dirs(root):
             contents = Filesystem.ls(os.path.join(root, repository, 'src'))
 
-            if len(contents) != 1:
-                continue
-
-            package = contents[0].name
-            versions[package] = (PackageVersion.construct_from_installation(package, repository))
+            for content in contents:
+                package = content.name
+                versions[package] = (PackageVersion.construct_from_installation(package, repository))
 
         return cls(versions)
 

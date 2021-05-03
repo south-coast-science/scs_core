@@ -468,7 +468,7 @@ class Configuration(JSONable):
         jdict = OrderedDict()
 
         jdict['hostname'] = self.hostname
-        jdict['git-pull'] = self.packs
+        jdict['packs'] = self.packs
 
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-calib'] = self.afe_calib
