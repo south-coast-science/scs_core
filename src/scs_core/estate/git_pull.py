@@ -18,8 +18,6 @@ from scs_core.data.json import PersistentJSONable
 
 from scs_core.sys.filesystem import Filesystem
 
-import importlib
-importlib.import_module()
 
 # --------------------------------------------------------------------------------------------------------------------
 
