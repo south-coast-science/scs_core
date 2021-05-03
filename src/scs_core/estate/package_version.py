@@ -3,6 +3,8 @@ Created on 3 May 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://stackoverflow.com/questions/6677424/how-do-i-import-variable-packages-in-python-like-using-variable-variables-i
+
 example JSON:
 {"scs_core": {"repo": "scs_core", "version": "1.0.5"}, "scs_dev": {"repo": "scs_dev", "version": "1.0.4"},
 "scs_dfe": {"repo": "scs_dfe_eng", "version": "1.0.2"}, "scs_host": {"repo": "scs_host_cpc", "version": "1.0.2"},
