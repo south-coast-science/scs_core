@@ -123,7 +123,7 @@ class PackageVersions(JSONable):
 
             for content in contents:
                 package = content.name
-                versions[package] = (PackageVersion.construct_from_installation(package, repository))
+                versions[package] = PackageVersion.construct_from_installation(package, repository)
 
         return cls(versions)
 
