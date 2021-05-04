@@ -498,7 +498,8 @@ class SIM(JSONable):
 
             match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
             if match:
-                operator_name = match.groups()[0].strip()
+                name = match.groups()[0].strip()
+                operator_name = None if name == '--' else name
 
         return cls(imsi, iccid, operator_code, operator_name)
 
