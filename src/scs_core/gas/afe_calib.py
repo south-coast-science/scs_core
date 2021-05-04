@@ -140,7 +140,7 @@ class AFECalib(PersistentJSONable):
 
                 sensor_calibs.append(SensorCalib.construct_from_jdict(jdict[key]))
 
-        return AFECalib(serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs)
+        return cls(serial_number, afe_type, calibrated_on, dispatched_on, pt1000_calib, sensor_calibs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
