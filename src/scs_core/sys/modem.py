@@ -23,7 +23,7 @@ modem.generic.signal-quality.value          : 67
 modem.generic.signal-quality.recent         : yes
 
 example JSON:
-{"state": "connected", "failure": null, "signal": {"quality": 67, "recent": true}}
+{"state": "connected", "signal": {"quality": 67, "recent": true}}
 
 
 SIM (Subscriber Identity Module)
