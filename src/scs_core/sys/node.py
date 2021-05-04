@@ -135,7 +135,25 @@ class IoTNode(Node):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # SIM...
+    # networks and modem...
+
+    @classmethod
+    @abstractmethod
+    def networks(cls):
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def modem(cls):
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def modem_conn(cls):
+        pass
+
 
     @classmethod
     @abstractmethod

@@ -27,7 +27,7 @@ from scs_core.data.json import JSONable
 
 from scs_core.display.display_conf import DisplayConf
 
-from scs_core.estate.git_pull import GitPull
+from scs_core.estate.package_version import PackageVersions
 
 from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_calib import AFECalib
@@ -52,8 +52,9 @@ from scs_core.psu.psu_version import PSUVersion
 
 from scs_core.sync.schedule import Schedule
 
+from scs_core.sys.modem import Modem, ModemConnection, SIM
+from scs_core.sys.network import Networks
 from scs_core.sys.shared_secret import SharedSecret
-from scs_core.sys.sim import SIM
 from scs_core.sys.system_id import SystemID
 
 
@@ -80,7 +81,7 @@ class Configuration(JSONable):
             return None
 
         hostname = jdict.get('hostname')
-        git_pull = GitPull.construct_from_jdict(jdict.get('git-pull'), default=None)
+        packs = PackageVersions.construct_from_jdict(jdict.get('packs'))
 
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'), default=None)
         afe_calib = AFECalib.construct_from_jdict(jdict.get('afe-calib'), default=None)
@@ -108,22 +109,25 @@ class Configuration(JSONable):
         schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=None)
         shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'), default=None)
         sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'), default=None)
+        networks = Networks.construct_from_jdict(jdict.get('networks'))
+        modem = Modem.construct_from_jdict(jdict.get('modem'))
+        modem_conn = ModemConnection.construct_from_jdict(jdict.get('modem-conn'))
         sim = SIM.construct_from_jdict(jdict.get('sim'))
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'), default=None)
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'), default=None)
 
-        return cls(hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+        return cls(hostname, packs, afe_baseline, afe_calib, aws_api_auth,
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                    pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, sim, system_id, timezone_conf)
+                   shared_secret, sht_conf, networks, modem, modem_conn, sim, system_id, timezone_conf)
 
 
     @classmethod
     def load(cls, manager, psu=None):
         hostname = socket.gethostname()
-        git_pull = GitPull.load(manager, default=None)
+        packs = PackageVersions.construct_from_installation(manager.scs_path())
 
         afe_baseline = AFEBaseline.load(manager, default=None)
         afe_calib = AFECalib.load(manager, default=None)
@@ -151,32 +155,37 @@ class Configuration(JSONable):
         schedule = Schedule.load(manager, default=None)
         shared_secret = SharedSecret.load(manager, default=None)
         sht_conf = SHTConf.load(manager, default=None)
+        networks = manager.networks()
+        modem = manager.modem()
+        modem_conn = manager.modem_conn()
         sim = manager.sim()
         system_id = SystemID.load(manager, default=None)
         timezone_conf = TimezoneConf.load(manager, default=None)
 
-        return cls(hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+        return cls(hostname, packs, afe_baseline, afe_calib, aws_api_auth,
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                    pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, sim, system_id, timezone_conf)
+                   shared_secret, sht_conf, networks, modem, modem_conn, sim,
+                   system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, git_pull, afe_baseline, afe_calib, aws_api_auth,
+    def __init__(self, hostname, packs, afe_baseline, afe_calib, aws_api_auth,
                  aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                  gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                  mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
                  pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                 shared_secret, sht_conf, sim, system_id, timezone_conf):
+                 shared_secret, sht_conf, networks, modem, modem_conn, sim,
+                 system_id, timezone_conf):
         """
         Constructor
         """
 
         self.__hostname = hostname                                  # string
-        self.__git_pull = git_pull                                  # GitPull
+        self.__packs = packs                                        # PackageVersions
 
         self.__afe_baseline = afe_baseline                          # AFEBaseline
         self.__afe_calib = afe_calib                                # AFECalib
@@ -204,6 +213,9 @@ class Configuration(JSONable):
         self.__schedule = schedule                                  # Schedule
         self.__shared_secret = shared_secret                        # SharedSecret
         self.__sht_conf = sht_conf                                  # SHTConf
+        self.__networks = networks                                  # Networks
+        self.__modem = modem                                        # Modem
+        self.__modem_conn = modem_conn                              # ModemConnection
         self.__sim = sim                                            # SIM
         self.__system_id = system_id                                # SystemID
         self.__timezone_conf = timezone_conf                        # TimezoneConf
@@ -211,7 +223,7 @@ class Configuration(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.hostname == other.hostname and self.git_pull == other.git_pull and \
+            return self.hostname == other.hostname and self.packs == other.packs and \
                    self.afe_baseline == other.afe_baseline and self.afe_calib == other.afe_calib and \
                    self.aws_api_auth == other.aws_api_auth and self.aws_client_auth == other.aws_client_auth and \
                    self.aws_group_config == other.aws_group_config and self.aws_project == other.aws_project and \
@@ -225,8 +237,9 @@ class Configuration(JSONable):
                    self.psu_version == other.psu_version and self.pt1000_calib == other.pt1000_calib and \
                    self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
                    self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
-                   self.sim == other.sim and self.system_id == other.system_id and \
-                   self.timezone_conf == other.timezone_conf
+                   self.networks == other.networks and self.modem == other.modem and \
+                   self.modem_conn == other.modem_conn and self.sim == other.sim and \
+                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -239,13 +252,13 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None)
+                             None, None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
 
-        if self.git_pull != other.git_pull:
-            diff.__git_pull = self.git_pull
+        if self.packs != other.packs:
+            diff.__packs = self.packs
 
         if self.afe_calib != other.afe_calib:
             diff.__afe_calib = self.afe_calib
@@ -322,6 +335,15 @@ class Configuration(JSONable):
         if self.sht_conf != other.sht_conf:
             diff.__sht_conf = self.sht_conf
 
+        if self.networks != other.networks:
+            diff.__networks = self.networks
+
+        if self.modem != other.modem:
+            diff.__modem = self.modem
+
+        if self.modem_conn != other.modem_conn:
+            diff.__modem_conn = self.modem_conn
+
         if self.sim != other.sim:
             diff.__sim = self.sim
 
@@ -340,8 +362,8 @@ class Configuration(JSONable):
         if self.hostname:
             raise ValueError('hostname may not be set')
 
-        if self.git_pull:
-            raise ValueError('git_pull may not be set')
+        if self.packs:
+            raise ValueError('packs may not be set')
 
         if self.afe_baseline:
             self.afe_baseline.save(manager)
@@ -421,6 +443,15 @@ class Configuration(JSONable):
         if self.sht_conf:
             self.sht_conf.save(manager)
 
+        if self.networks:
+            raise ValueError('networks may not be set')
+
+        if self.modem:
+            raise ValueError('modem may not be set')
+
+        if self.modem_conn:
+            raise ValueError('modem_conn may not be set')
+
         if self.sim:
             raise ValueError('sim may not be set')
 
@@ -437,7 +468,7 @@ class Configuration(JSONable):
         jdict = OrderedDict()
 
         jdict['hostname'] = self.hostname
-        jdict['git-pull'] = self.git_pull
+        jdict['packs'] = self.packs
 
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-calib'] = self.afe_calib
@@ -465,6 +496,9 @@ class Configuration(JSONable):
         jdict['schedule'] = self.schedule
         jdict['shared-secret'] = self.shared_secret
         jdict['sht-conf'] = self.sht_conf
+        jdict['networks'] = self.networks
+        jdict['modem'] = self.modem
+        jdict['modem-conn'] = self.modem_conn
         jdict['sim'] = self.sim
         jdict['system-id'] = self.system_id
         jdict['timezone-conf'] = self.timezone_conf
@@ -480,8 +514,8 @@ class Configuration(JSONable):
 
 
     @property
-    def git_pull(self):
-        return self.__git_pull
+    def packs(self):
+        return self.__packs
 
 
     @property
@@ -615,6 +649,21 @@ class Configuration(JSONable):
 
 
     @property
+    def networks(self):
+        return self.__networks
+
+
+    @property
+    def modem(self):
+        return self.__modem
+
+
+    @property
+    def modem_conn(self):
+        return self.__modem_conn
+
+
+    @property
     def sim(self):
         return self.__sim
 
@@ -632,15 +681,17 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, git_pull:%s, afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, " \
+        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_calib:%s, aws_api_auth:%s, " \
                "aws_client_auth:%s, aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
                "mpl115a2_calib:%s, mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
                "pmx_model_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
-               "shared_secret:%s, sht_conf:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.hostname, self.git_pull, self.afe_baseline, self.afe_calib, self.aws_api_auth,
+               "shared_secret:%s, sht_conf:%s, networks:%s, modem:%s, modem_conn:%s, sim:%s, " \
+               "system_id:%s, timezone_conf:%s}" % \
+               (self.hostname, self.packs, self.afe_baseline, self.afe_calib, self.aws_api_auth,
                 self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
                 self.mpl115a2_calib, self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf,
                 self.pmx_model_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_conf, self.schedule,
-                self.shared_secret, self.sht_conf, self.sim, self.system_id, self.timezone_conf)
+                self.shared_secret, self.sht_conf, self.networks, self.modem, self.modem_conn, self.sim,
+                self.system_id, self.timezone_conf)

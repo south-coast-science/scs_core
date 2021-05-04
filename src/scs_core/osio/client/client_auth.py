@@ -21,7 +21,7 @@ class ClientAuth(PersistentJSONable):
 
     MQTT_HOST =        "mqtt.opensensors.io"          # hard-coded URL
 
-    MQTT_TIMEOUT =     20.0
+    MQTT_TIMEOUT =     20.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------

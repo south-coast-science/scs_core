@@ -9,10 +9,9 @@ https://pymotw.com/2/subprocess/
 import os
 
 from collections import OrderedDict
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, TimeoutExpired
 
-from scs_core.data.json import JSONable
-from scs_core.data.json import JSONify
+from scs_core.data.json import JSONable, JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -26,7 +25,7 @@ class Command(JSONable):
 
     __PROHIBITED_TOKENS = ('-i', '--interactive', '<', '>', ';', '|')
 
-    __TIMEOUT = 30.0
+    __DEFAULT_TIMEOUT = 30.0            # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,7 +42,7 @@ class Command(JSONable):
         stderr = jdict.get('stderr')
         return_code = jdict.get('ret')
 
-        datum = Command(cmd, params, stdout, stderr, return_code)
+        datum = cls(cmd, params, stdout=stdout, stderr=stderr, return_code=return_code)
 
         return datum
 
@@ -51,12 +50,12 @@ class Command(JSONable):
     @classmethod
     def construct_from_tokens(cls, tokens):
         if not tokens:
-            return Command(None, [])
+            return cls(None, [])
 
         cmd = tokens[0]
         params = tokens[1:]
 
-        return Command(cmd, params)
+        return cls(cmd, params)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -93,12 +92,12 @@ class Command(JSONable):
         return True
 
 
-    def execute(self, host):
+    def execute(self, host, timeout):
         if not self.cmd:
             return None
 
         if self.cmd == Command.__LIST_CMD:
-            result = self.__execute('ls', host)
+            result = self.__execute('ls', host, timeout)
 
             self.__stdout = [JSONify.dumps(self.__stdout)]
 
@@ -106,7 +105,7 @@ class Command(JSONable):
             statement = ['./' + self.cmd]
             statement.extend(self.params)
 
-            result = self.__execute(statement, host)
+            result = self.__execute(statement, host, timeout)
 
         return result
 
@@ -119,16 +118,21 @@ class Command(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __execute(self, statement, host):
+    def __execute(self, statement, host, timeout):
         p = Popen(statement, cwd=host.command_path(), stdout=PIPE, stderr=PIPE)
 
-        stdout_bytes, stderr_bytes = p.communicate(timeout=Command.__TIMEOUT)
+        try:
+            stdout_bytes, stderr_bytes = p.communicate(timeout=timeout)
 
-        self.__stdout = stdout_bytes.decode().strip().splitlines()
-        self.__stderr = stderr_bytes.decode().strip().splitlines()
-        self.__return_code = p.returncode
+            self.__stdout = stdout_bytes.decode().strip().splitlines()
+            self.__stderr = stderr_bytes.decode().strip().splitlines()
+            self.__return_code = p.returncode
 
-        return self.__return_code == 0
+            return self.__return_code == 0
+
+        except TimeoutExpired as ex:
+            self.error(repr(ex))
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

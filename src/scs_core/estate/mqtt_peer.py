@@ -16,126 +16,6 @@ from scs_core.data.str import Str
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MQTTPeerSet(PersistentJSONable):
-    """
-    classdocs
-    """
-
-    __FILENAME =    "mqtt_peers.json"
-
-    @classmethod
-    def persistence_location(cls):
-        return cls.conf_dir(), cls.__FILENAME
-
-
-    @classmethod
-    def load(cls, manager, encryption_key=None, default=True):
-        instance = super().load(manager, encryption_key=encryption_key, default=default)
-
-        if instance is None:
-            instance = cls(OrderedDict())
-
-        return instance
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
-        if not jdict:
-            return None
-
-        peers = OrderedDict()
-
-        for hostname, item in jdict.get('peers').items():
-            peer = MQTTPeer.construct_from_jdict(item)
-
-            peers[hostname] = peer
-
-        return cls(peers)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, peers):
-        """
-        Constructor
-        """
-        self.__peers = peers                                # OrderedDict of string: MQTTPeer
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['peers'] = self.__peers
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def insert(self, peer):
-        # add...
-        self.__peers[peer.hostname] = peer
-
-        # sort...
-        peers = OrderedDict()
-
-        for hostname in sorted(self.__peers.keys()):
-            peers[hostname] = self.__peers[hostname]
-
-        self.__peers = peers
-
-
-    def remove(self, hostname):
-        try:
-            del(self.__peers[hostname])
-            return True
-
-        except KeyError:
-            return False
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def peer(self, hostname):
-        try:
-            return self.__peers[hostname]
-
-        except KeyError:
-            return None
-
-
-    def subset(self, hostname_substring=None, topic_substring=None):
-        subset = []
-
-        for hostname, peer in self.__peers.items():
-            if hostname_substring is not None and hostname_substring not in hostname:
-                continue
-
-            if topic_substring is not None and topic_substring not in peer.topic:
-                continue
-
-            subset.append(peer)
-
-        return subset
-
-
-    @property
-    def peers(self):
-        return self.__peers.values()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "MQTTPeerSet:{peers:%s}" % Str.collection(self.__peers)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
 class MQTTPeer(JSONable):
     """
     classdocs
@@ -208,3 +88,123 @@ class MQTTPeer(JSONable):
     def __str__(self, *args, **kwargs):
         return "MQTTPeer:{hostname:%s, tag:%s, shared_secret:%s, topic:%s}" % \
                (self.hostname, self.tag, self.shared_secret, self.topic)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class MQTTPeerSet(PersistentJSONable):
+    """
+    classdocs
+    """
+
+    __FILENAME =    "mqtt_peers.json"
+
+    @classmethod
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
+
+
+    @classmethod
+    def load(cls, manager, encryption_key=None, default=True):
+        instance = super().load(manager, encryption_key=encryption_key, default=default)
+
+        if instance is None:
+            instance = cls(OrderedDict())
+
+        return instance
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, default=True):
+        if not jdict:
+            return None
+
+        peers = OrderedDict()
+
+        for hostname, item in jdict.get('peers').items():
+            peer = MQTTPeer.construct_from_jdict(item)
+
+            peers[hostname] = peer
+
+        return cls(peers)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, peers):
+        """
+        Constructor
+        """
+        self.__peers = peers                                # OrderedDict of string: MQTTPeer
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['peers'] = self.__peers
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def insert(self, peer: MQTTPeer):
+        # add...
+        self.__peers[peer.hostname] = peer
+
+        # sort...
+        peers = OrderedDict()
+
+        for hostname in sorted(self.__peers.keys()):
+            peers[hostname] = self.__peers[hostname]
+
+        self.__peers = peers
+
+
+    def remove(self, hostname):
+        try:
+            del(self.__peers[hostname])
+            return True
+
+        except KeyError:
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def peer(self, hostname):
+        try:
+            return self.__peers[hostname]
+
+        except KeyError:
+            return None
+
+
+    def subset(self, hostname_substring=None, topic_substring=None):
+        subset = []
+
+        for hostname, peer in self.__peers.items():
+            if hostname_substring is not None and hostname_substring not in hostname:
+                continue
+
+            if topic_substring is not None and topic_substring not in peer.topic:
+                continue
+
+            subset.append(peer)
+
+        return subset
+
+
+    @property
+    def peers(self):
+        return self.__peers.values()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "MQTTPeerSet:{peers:%s}" % Str.collection(self.__peers)
