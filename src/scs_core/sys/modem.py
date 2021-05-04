@@ -23,7 +23,7 @@ modem.generic.signal-quality.value          : 67
 modem.generic.signal-quality.recent         : yes
 
 example JSON:
-{"state": "connected", "failure": null, "signal": {"quality": 67, "recent": true}}
+{"state": "connected", "signal": {"quality": 67, "recent": true}}
 
 
 SIM (Subscriber Identity Module)
@@ -259,7 +259,8 @@ class ModemConnection(JSONable):
 
             match = re.match(r'modem.generic.state-failed-reason\s+:\s+(\S.*\S)', line)
             if match:
-                failure = None if match.groups()[0] == '--' else match.groups()[0]
+                reported_failure = match.groups()[0]
+                failure = None if reported_failure == '--' else reported_failure
                 continue
 
             match = re.match(r'modem.generic.signal-quality.value\s+:\s+([\d]+)', line)
@@ -317,7 +318,10 @@ class ModemConnection(JSONable):
         jdict = OrderedDict()
 
         jdict['state'] = self.state
-        jdict['failure'] = self.failure
+
+        if self.failure is not None:
+            jdict['failure'] = self.failure
+
         jdict['signal'] = self.signal
 
         return jdict
@@ -498,8 +502,8 @@ class SIM(JSONable):
 
             match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
             if match:
-                name = match.groups()[0].strip()
-                operator_name = None if name == '--' else name
+                reported_name = match.groups()[0].strip()
+                operator_name = None if reported_name == '--' else reported_name
 
         return cls(imsi, iccid, operator_code, operator_name)
 
