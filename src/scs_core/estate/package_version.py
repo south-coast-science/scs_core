@@ -3,7 +3,13 @@ Created on 3 May 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://stackoverflow.com/questions/6677424/how-do-i-import-variable-packages-in-python-like-using-variable-variables-i
+
 example JSON:
+{"scs_core": {"repo": "scs_core", "version": "1.0.5"}, "scs_dev": {"repo": "scs_dev", "version": "1.0.4"},
+"scs_dfe": {"repo": "scs_dfe_eng", "version": "1.0.2"}, "scs_host": {"repo": "scs_host_cpc", "version": "1.0.2"},
+"scs_inference": {"repo": "scs_inference", "version": null}, "scs_mfr": {"repo": "scs_mfr", "version": "1.0.2"},
+"scs_ndir": {"repo": "scs_ndir", "version": "0.9.1"}, "scs_psu": {"repo": "scs_psu", "version": "1.0.5"}}
 """
 
 import os
@@ -119,14 +125,14 @@ class PackageVersions(JSONable):
 
             for content in contents:
                 package = content.name
-                versions[package] = (PackageVersion.construct_from_installation(package, repository))
+                versions[package] = PackageVersion.construct_from_installation(package, repository)
 
         return cls(versions)
 
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        if not jdict:
+        if jdict is None:
             return None
 
         versions = OrderedDict()
