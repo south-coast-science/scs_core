@@ -135,6 +135,18 @@ class ConfigurationSampleHistory(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def diffs(self):
+        diff_history = ConfigurationSampleHistory()
+
+        for tag in self.tags():
+            prev = None
+            for item in self.items_for_tag(tag):
+                diff_history.insert(item if prev is None else item.diff(prev))
+                prev = item
+
+        return diff_history
+
+
     def tags(self):
         # remove duplicates
         return list(set(self.__items.keys()))
