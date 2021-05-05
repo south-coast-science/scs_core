@@ -77,7 +77,7 @@ class DynamoManager(object):
         return response
 
     def retrieve_all(self, table_name, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
@@ -90,7 +90,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -99,14 +99,12 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_all(table_name, lek)
-            datum.append(data)
-        # TODO datum += data (EVERYWHERE)
-        # TODO rename datum / read a dictionary ...
+            data_dict += data
 
-        return datum
+        return data_dict
 
     def retrieve_filtered(self, table_name, filter_key, filter_value, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
             response = table.scan(
@@ -123,7 +121,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -132,12 +130,12 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
-            datum.append(data)
+            data_dict += data
 
-        return datum
+        return data_dict
 
     def retrieve_all_pk(self, table_name, pk, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
@@ -155,7 +153,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -164,12 +162,12 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_all_pk(table_name, pk, lek)
-            datum.append(data)
+            data_dict += data
 
-        return datum
+        return data_dict
 
     def retrieve_filtered_pk(self, table_name, pk, tag_filter, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
@@ -189,7 +187,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -198,12 +196,12 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_all_pk(table_name, pk, lek)
-            datum.append(data)
+            data_dict += data
 
-        return datum
+        return data_dict
 
     def retrieve_double_filtered(self, table_name, first_key, first_value, second_key, second_value, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
             response = table.scan(
@@ -220,7 +218,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -229,12 +227,12 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            datum.append(data)
+            data_dict += data
 
-        return datum
+        return data_dict
 
     def retrieve_double_filtered_pk(self, table_name, first_key, first_value, second_key, second_value, lek=None):
-        datum = []
+        data_dict = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
             response = table.scan(
@@ -253,7 +251,7 @@ class DynamoManager(object):
 
         data = response['Items']
         for item in data:
-            datum.append(item)
+            data_dict.append(item)
 
         try:
             lek = response["LastEvaluatedKey"]
@@ -262,7 +260,7 @@ class DynamoManager(object):
 
         while lek is not None:
             data = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            datum.append(data)
+            data_dict += data
 
-        return datum
+        return data_dict
 

@@ -12,7 +12,6 @@ from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
 from scs_core.data.str import Str
-from scs_core.sample.configuration_sample import ConfigurationSample, ConfigurationSampleHistory
 from scs_core.sys.http_exception import HTTPException
 
 
@@ -40,7 +39,7 @@ class ConfigurationFinder(object):
         request = ConfigurationRequest(tag_filter, response_mode)
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        return ConfigurationResponse.construct_from_jdict(response.json(), tag_filter)
+        return ConfigurationResponse.construct_from_jdict(response.json())
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -136,7 +135,7 @@ class ConfigurationResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, tag=None):
+    def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
@@ -147,24 +146,8 @@ class ConfigurationResponse(HTTPResponse):
 
         mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
-        result = None
-        history = ConfigurationSampleHistory(False if mode == ConfigurationRequest.MODE.HISTORY else True)
         if jdict.get('Items'):
-            for item_jdict in jdict.get('Items'):
-                item = ConfigurationSample.construct_from_jdict(item_jdict)
-                history.insert(item)
-
-            # TODO move this into the lambda function
-
-            if mode == ConfigurationRequest.MODE.TAGS_ONLY:
-                result = history.tags()
-            elif mode == ConfigurationRequest.MODE.FULL:
-                result = history.as_json()
-            elif mode == ConfigurationRequest.MODE.HISTORY:
-                # check validity of request
-                if len(history.tags()) > 1:
-                    return None
-                result = history.items_for_tag(tag)
+            result = jdict.get('Items')
 
         else:
             return None
