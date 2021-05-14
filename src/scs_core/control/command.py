@@ -108,7 +108,7 @@ class Command(JSONable):
 
                 result = self.__execute(statement, host, timeout)
 
-        except RuntimeError as ex:
+        except OSError as ex:
             return self.error(repr(ex))
 
         return result
