@@ -96,16 +96,20 @@ class Command(JSONable):
         if not self.cmd:
             return None
 
-        if self.cmd == Command.__LIST_CMD:
-            result = self.__execute('ls', host, timeout)
+        try:
+            if self.cmd == Command.__LIST_CMD:
+                result = self.__execute('ls', host, timeout)
 
-            self.__stdout = [JSONify.dumps(self.__stdout)]
+                self.__stdout = [JSONify.dumps(self.__stdout)]
 
-        else:
-            statement = ['./' + self.cmd]
-            statement.extend(self.params)
+            else:
+                statement = ['./' + self.cmd]
+                statement.extend(self.params)
 
-            result = self.__execute(statement, host, timeout)
+                result = self.__execute(statement, host, timeout)
+
+        except RuntimeError as ex:
+            return self.error(repr(ex))
 
         return result
 
