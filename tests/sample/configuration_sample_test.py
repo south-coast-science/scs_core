@@ -53,3 +53,9 @@ print(JSONify.dumps(history.as_json(), indent=4))
 print("-")
 
 print("tags: %s" % history.tags())
+print("-")
+
+print("diffs...")
+diffs = history.diffs()
+print(JSONify.dumps(diffs.as_json(), indent=4))
+print("-")

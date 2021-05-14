@@ -30,6 +30,7 @@ class ConfigurationFinder(object):
         self.__http_client = http_client
         self.__auth = auth
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, tag_filter, response_mode):
@@ -40,6 +41,7 @@ class ConfigurationFinder(object):
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
         return ConfigurationResponse.construct_from_jdict(response.json())
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -54,7 +56,7 @@ class ConfigurationRequest(object):
     classdocs
     """
 
-    MODE = Enum('Mode', 'FULL TAGS_ONLY HISTORY')
+    MODE = Enum('Mode', 'LATEST HISTORY DIFF TAGS_ONLY')
 
     TAG_FILTER = 'tagFilter'
     RESPONSE_MODE = 'responseMode'
@@ -75,14 +77,16 @@ class ConfigurationRequest(object):
 
         return cls(tag_filter, response_mode)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag_filter, response_mode):
         """
         Constructor
         """
-        self.__tag_filter = tag_filter  # string
-        self.__response_mode = response_mode  # MODE enum
+        self.__tag_filter = tag_filter                          # string
+        self.__response_mode = response_mode                    # MODE enum
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -92,11 +96,22 @@ class ConfigurationRequest(object):
 
         return True
 
-    def tags_only(self):
-        return self.__response_mode == self.MODE.TAGS_ONLY
+
+    def latest(self):
+        return self.__response_mode == self.MODE.LATEST
+
 
     def history(self):
         return self.__response_mode == self.MODE.HISTORY
+
+
+    def diff(self):
+        return self.__response_mode == self.MODE.DIFF
+
+
+    def tags_only(self):
+        return self.__response_mode == self.MODE.TAGS_ONLY
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -114,9 +129,11 @@ class ConfigurationRequest(object):
     def tag_filter(self):
         return self.__tag_filter
 
+
     @property
     def response_mode(self):
         return self.__response_mode
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -156,6 +173,7 @@ class ConfigurationResponse(HTTPResponse):
 
         return cls(status, mode, result, next_url=next_url)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, status, mode, items, next_url=None):
@@ -164,12 +182,14 @@ class ConfigurationResponse(HTTPResponse):
         """
         super().__init__(status)
 
-        self.__mode = mode  # ConfigurationRequest.Mode member
-        self.__items = items  # list of ConfigurationSample or string
-        self.__next_url = next_url  # URL string
+        self.__mode = mode                                  # ConfigurationRequest.Mode member
+        self.__items = items                                # list of ConfigurationSample or string
+        self.__next_url = next_url                          # URL string
+
 
     def __len__(self):
         return len(self.items)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -190,19 +210,23 @@ class ConfigurationResponse(HTTPResponse):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def mode(self):
         return self.__mode
 
+
     @property
     def items(self):
         return self.__items
 
+
     @property
     def next_url(self):
         return self.__next_url
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
