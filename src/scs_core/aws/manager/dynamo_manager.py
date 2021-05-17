@@ -81,7 +81,7 @@ class DynamoManager(object):
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
-            response = table.scan(LastEvaluatedKey=lek)
+            response = table.scan(ExclusiveStartKey=lek)
         else:
             response = table.scan()
 
@@ -107,16 +107,24 @@ class DynamoManager(object):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
+            print("YES LEK")
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
+            print("NO LEK")
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value)
             )
 
         if "Items" not in response:
+            return None
+        print(response)
+        qty = response['Count']
+
+        if qty == 0:
+            print("RETURNING")
             return None
 
         data = response['Items']
@@ -128,9 +136,14 @@ class DynamoManager(object):
         except KeyError:
             lek = None
 
+        print("LEK:%s" % lek)
+
         while lek is not None:
             data = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
-            data_dict += data
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict
 
@@ -142,7 +155,7 @@ class DynamoManager(object):
             response = table.scan(
                 ProjectionExpression='#pk',
                 ExpressionAttributeNames={'#pk': pk},
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -176,7 +189,7 @@ class DynamoManager(object):
                 FilterExpression=Attr(pk).contains(tag_filter),
                 ProjectionExpression='#pk',
                 ExpressionAttributeNames={'#pk': pk},
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -209,7 +222,7 @@ class DynamoManager(object):
         if lek:
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -241,7 +254,7 @@ class DynamoManager(object):
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
                 ProjectionExpression=first_key,
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -275,7 +288,7 @@ class DynamoManager(object):
             response = table.scan(
                 FilterExpression=Attr(second_key).contains(second_value),
                 ProjectionExpression=pk,
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
