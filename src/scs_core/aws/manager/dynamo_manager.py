@@ -141,7 +141,7 @@ class DynamoManager(object):
         if lek:
             response = table.scan(
                 ProjectionExpression='#pk',
-                ExpressionAttributeNames={'#pk':pk},
+                ExpressionAttributeNames={'#pk': pk},
                 LastEvaluatedKey=lek
             )
         else:
@@ -175,14 +175,14 @@ class DynamoManager(object):
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
                 ProjectionExpression='#pk',
-                ExpressionAttributeNames={'#pk':pk},
+                ExpressionAttributeNames={'#pk': pk},
                 LastEvaluatedKey=lek
             )
         else:
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
                 ProjectionExpression='#pk',
-                ExpressionAttributeNames={'#pk':pk}
+                ExpressionAttributeNames={'#pk': pk}
             )
 
         if "Items" not in response:
@@ -267,3 +267,36 @@ class DynamoManager(object):
 
         return data_dict
 
+
+    def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None):
+        data_dict = []
+        table = self.__dynamo_resource.Table(table_name)
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk,
+                LastEvaluatedKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk
+            )
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        for item in data:
+            data_dict.append(item)
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            lek = None
+
+        while lek is not None:
+            data = self.filter_on_second_value(table_name, pk, second_key, second_value, lek)
+            data_dict += data
+
+        return data_dict
