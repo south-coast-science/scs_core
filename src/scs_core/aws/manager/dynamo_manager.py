@@ -81,7 +81,7 @@ class DynamoManager(object):
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
-            response = table.scan(LastEvaluatedKey=lek)
+            response = table.scan(ExclusiveStartKey=lek)
         else:
             response = table.scan()
 
@@ -107,16 +107,24 @@ class DynamoManager(object):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
         if lek:
+            print("YES LEK")
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
+            print("NO LEK")
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value)
             )
 
         if "Items" not in response:
+            return None
+        print(response)
+        qty = response['Count']
+
+        if qty == 0:
+            print("RETURNING")
             return None
 
         data = response['Items']
@@ -128,9 +136,14 @@ class DynamoManager(object):
         except KeyError:
             lek = None
 
+        print("LEK:%s" % lek)
+
         while lek is not None:
             data = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
-            data_dict += data
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict
 
@@ -140,8 +153,9 @@ class DynamoManager(object):
 
         if lek:
             response = table.scan(
-                ProjectionExpression=pk,
-                LastEvaluatedKey=lek
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk},
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -173,13 +187,15 @@ class DynamoManager(object):
         if lek:
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression=pk,
-                LastEvaluatedKey=lek
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk},
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression=pk
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk}
             )
 
         if "Items" not in response:
@@ -206,7 +222,7 @@ class DynamoManager(object):
         if lek:
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -238,7 +254,7 @@ class DynamoManager(object):
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
                 ProjectionExpression=first_key,
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -264,3 +280,36 @@ class DynamoManager(object):
 
         return data_dict
 
+
+    def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None):
+        data_dict = []
+        table = self.__dynamo_resource.Table(table_name)
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk,
+                ExclusiveStartKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk
+            )
+
+        if "Items" not in response:
+            return None
+
+        data = response['Items']
+        for item in data:
+            data_dict.append(item)
+
+        try:
+            lek = response["LastEvaluatedKey"]
+        except KeyError:
+            lek = None
+
+        while lek is not None:
+            data = self.filter_on_second_value(table_name, pk, second_key, second_value, lek)
+            data_dict += data
+
+        return data_dict
