@@ -81,35 +81,42 @@ class DynamoManager(object):
         table = self.__dynamo_resource.Table(table_name)
 
         if lek:
-            response = table.scan(LastEvaluatedKey=lek)
+            response = table.scan(ExclusiveStartKey=lek)
         else:
             response = table.scan()
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_all(table_name, lek)
-            data_dict += data
+            data, lek = self.retrieve_all(table_name, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
     def retrieve_filtered(self, table_name, filter_key, filter_value, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
+
         if lek:
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -117,22 +124,28 @@ class DynamoManager(object):
             )
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
-            data_dict += data
+            data, lek = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
     def retrieve_all_pk(self, table_name, pk, lek=None):
         data_dict = []
@@ -140,8 +153,9 @@ class DynamoManager(object):
 
         if lek:
             response = table.scan(
-                ProjectionExpression=pk,
-                LastEvaluatedKey=lek
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk},
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -149,56 +163,72 @@ class DynamoManager(object):
             )
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_all_pk(table_name, pk, lek)
-            data_dict += data
+            data, lek = self.retrieve_all_pk(table_name, pk, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
     def retrieve_filtered_pk(self, table_name, pk, tag_filter, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
+        print(tag_filter)
+
         if lek:
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression=pk,
-                LastEvaluatedKey=lek
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk},
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
                 FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression=pk
+                ProjectionExpression='#pk',
+                ExpressionAttributeNames={'#pk': pk}
             )
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_all_pk(table_name, pk, lek)
-            data_dict += data
+            data, lek = self.retrieve_filtered_pk(table_name, pk, tag_filter, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
     def retrieve_double_filtered(self, table_name, first_key, first_value, second_key, second_value, lek=None):
         data_dict = []
@@ -206,7 +236,7 @@ class DynamoManager(object):
         if lek:
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -214,22 +244,28 @@ class DynamoManager(object):
             )
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            data_dict += data
+            data, lek = self.retrieve_double_filtered(table_name, first_key, first_value, second_key, second_value, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
     def retrieve_double_filtered_pk(self, table_name, first_key, first_value, second_key, second_value, lek=None):
         data_dict = []
@@ -238,7 +274,7 @@ class DynamoManager(object):
             response = table.scan(
                 FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
                 ProjectionExpression=first_key,
-                LastEvaluatedKey=lek
+                ExclusiveStartKey=lek
             )
         else:
             response = table.scan(
@@ -247,20 +283,65 @@ class DynamoManager(object):
             )
 
         if "Items" not in response:
-            return None
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
 
         data = response['Items']
         for item in data:
             data_dict.append(item)
 
-        try:
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
             lek = response["LastEvaluatedKey"]
-        except KeyError:
-            lek = None
 
         while lek is not None:
-            data = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            data_dict += data
+            data, lek = self.retrieve_double_filtered_pk(table_name, first_key, first_value, second_key, second_value,
+                                                         lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
-        return data_dict
+        return data_dict, lek
 
+    def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None):
+        data_dict = []
+        table = self.__dynamo_resource.Table(table_name)
+        if lek:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk,
+                ExclusiveStartKey=lek
+            )
+        else:
+            response = table.scan(
+                FilterExpression=Attr(second_key).contains(second_value),
+                ProjectionExpression=pk
+            )
+
+        if "Items" not in response:
+            return None, None
+
+        if response['Count'] == 0:
+            return None, None
+
+        data = response['Items']
+        for item in data:
+            data_dict.append(item)
+
+        if "LastEvaluatedKey" not in response:
+            return data_dict, None
+        else:
+            lek = response["LastEvaluatedKey"]
+
+        while lek is not None:
+            data, lek = self.filter_on_second_value(table_name, pk, second_key, second_value, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
+
+        return data_dict, lek
