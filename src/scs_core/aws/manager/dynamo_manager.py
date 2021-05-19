@@ -112,6 +112,7 @@ class DynamoManager(object):
     def retrieve_filtered(self, table_name, filter_key, filter_value, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
+
         if lek:
             response = table.scan(
                 FilterExpression=Attr(filter_key).contains(filter_value),
@@ -178,13 +179,18 @@ class DynamoManager(object):
 
         while lek is not None:
             data, lek = self.retrieve_all_pk(table_name, pk, lek)
-            data_dict += data
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict, lek
 
     def retrieve_filtered_pk(self, table_name, pk, tag_filter, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
+
+        print(tag_filter)
 
         if lek:
             response = table.scan(
@@ -216,8 +222,11 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_all_pk(table_name, pk, lek)
-            data_dict += data
+            data, lek = self.retrieve_filtered_pk(table_name, pk, tag_filter, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict, lek
 
@@ -250,8 +259,11 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            data_dict += data
+            data, lek = self.retrieve_double_filtered(table_name, first_key, first_value, second_key, second_value, lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict, lek
 
@@ -286,8 +298,12 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_filtered(table_name, first_key, first_value, lek)
-            data_dict += data
+            data, lek = self.retrieve_double_filtered_pk(table_name, first_key, first_value, second_key, second_value,
+                                                         lek)
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict, lek
 
@@ -323,6 +339,9 @@ class DynamoManager(object):
 
         while lek is not None:
             data, lek = self.filter_on_second_value(table_name, pk, second_key, second_value, lek)
-            data_dict += data
+            try:
+                data_dict += data
+            except TypeError:
+                lek = None
 
         return data_dict, lek
