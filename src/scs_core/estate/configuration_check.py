@@ -84,6 +84,19 @@ class ConfigurationCheck(JSONable):
         self.__context = context                # string (only for MALFORMED or ERROR)
 
 
+    def __lt__(self, other):
+        if self.tag < other.tag:
+            return True
+
+        if self.tag > other.tag:
+            return False
+
+        if self.rec < other.rec:
+            return True
+
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
