@@ -157,6 +157,8 @@ class ConfigurationResponse(HTTPResponse):
         if not jdict:
             return None
 
+        # print("jdict: %s" % jdict)
+
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:
@@ -164,18 +166,12 @@ class ConfigurationResponse(HTTPResponse):
 
         mode = ConfigurationRequest.MODE[jdict.get('mode')]
 
-        # if jdict.get('Items'):
-        #     result = jdict.get('Items')
-
         items = []
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
                 item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
                     ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
-
-        else:
-            return None
 
         next_url = jdict.get('next')
 
