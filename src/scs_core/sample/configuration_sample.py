@@ -130,9 +130,12 @@ class ConfigurationSampleHistory(JSONable):
     def insert(self, sample: ConfigurationSample):
         if sample.tag not in self.__items:
             self.__items[sample.tag] = []
+            self.__items[sample.tag].append(sample)
+            return
 
         if not self.__items[sample.tag] or not self.__latest_only:
-            self.__items[sample.tag].append(sample)
+            if sample not in self.__items[sample.tag]:            # we might not be reading all the fields in the DB!
+                self.__items[sample.tag].append(sample)
             return
 
         for item in self.__items[sample.tag]:
@@ -156,15 +159,14 @@ class ConfigurationSampleHistory(JSONable):
 
 
     def tags(self):
-        # remove duplicates
-        return list(set(self.__items.keys()))
+        return set(self.__items.keys())
 
 
     def items_for_tag(self, tag):
         if tag not in self.__items:
             return None
 
-        return sorted(self.__items[tag])
+        return self.__items[tag]
 
 
     # ----------------------------------------------------------------------------------------------------------------
