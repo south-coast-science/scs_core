@@ -33,6 +33,7 @@ class PID(Sensor):
         cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
         cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
         cls.SENSORS[cls.CODE_VOC_PPB_T3] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T4] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
 
         # ppm sensitivity
         cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  'PID12', 4, 50.0, 0.040)     # was PIDN1

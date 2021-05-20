@@ -22,9 +22,11 @@ class ConfigurationCheck(JSONable):
 
     RESULT_NO_RESPONSE =                "NO RESPONSE"
     RESULT_ERROR =                      "ERROR"
+    RESULT_MALFORMED =                  "MALFORMED:"
     RESULT_MALFORMED_SAMPLE =           "MALFORMED:SAMPLE"
     RESULT_MALFORMED_CONFIG =           "MALFORMED:CONFIG"
-    RESULT_RECEIVED_NOT_SUPPORTED =     "RECEIVED:NOT SUPPORTED"
+    RESULT_NOT_SUPPORTED =              "NOT SUPPORTED"
+    RESULT_RECEIVED =                   "RECEIVED:"
     RESULT_RECEIVED_NEW =               "RECEIVED:NEW"
     RESULT_RECEIVED_UNCHANGED =         "RECEIVED:UNCHANGED"
     RESULT_RECEIVED_UPDATED =           "RECEIVED:UPDATED"
@@ -32,9 +34,11 @@ class ConfigurationCheck(JSONable):
     __RESULTS = {
         'NOR': RESULT_NO_RESPONSE,
         'ERR': RESULT_ERROR,
+        'M': RESULT_MALFORMED,
         'MSA': RESULT_MALFORMED_SAMPLE,
         'MCO': RESULT_MALFORMED_CONFIG,
-        'RNS': RESULT_RECEIVED_NOT_SUPPORTED,
+        'NSP': RESULT_NOT_SUPPORTED,
+        'R': RESULT_RECEIVED,
         'RNW': RESULT_RECEIVED_NEW,
         'RUN': RESULT_RECEIVED_UNCHANGED,
         'RUP': RESULT_RECEIVED_UPDATED
@@ -78,6 +82,19 @@ class ConfigurationCheck(JSONable):
         self.__rec = rec                        # LocalizedDatetime
         self.__result = result                  # string
         self.__context = context                # string (only for MALFORMED or ERROR)
+
+
+    def __lt__(self, other):
+        if self.tag < other.tag:
+            return True
+
+        if self.tag > other.tag:
+            return False
+
+        if self.rec < other.rec:
+            return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
