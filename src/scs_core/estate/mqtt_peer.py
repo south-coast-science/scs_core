@@ -78,9 +78,19 @@ class MQTTPeer(JSONable):
         return self.__shared_secret
 
 
+    @shared_secret.setter
+    def shared_secret(self, shared_secret):
+        self.__shared_secret = shared_secret
+
+
     @property
     def topic(self):
         return self.__topic
+
+
+    @topic.setter
+    def topic(self, topic):
+        self.__topic = topic
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -140,6 +150,10 @@ class MQTTPeerSet(PersistentJSONable):
         self.__peers = peers                                # OrderedDict of string: MQTTPeer
 
 
+    def __len__(self):
+        return len(self.__peers)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -180,12 +194,12 @@ class MQTTPeerSet(PersistentJSONable):
         try:
             return self.__peers[hostname]
 
-        except KeyError:
+        except IndexError:
             return None
 
 
     def subset(self, hostname_substring=None, topic_substring=None):
-        subset = []
+        subset = OrderedDict()
 
         for hostname, peer in self.__peers.items():
             if hostname_substring is not None and hostname_substring not in hostname:
@@ -194,14 +208,14 @@ class MQTTPeerSet(PersistentJSONable):
             if topic_substring is not None and topic_substring not in peer.topic:
                 continue
 
-            subset.append(peer)
+            subset[peer.hostname] = peer
 
-        return subset
+        return MQTTPeerSet(subset)
 
 
     @property
     def peers(self):
-        return self.__peers.values()
+        return list(self.__peers.values())
 
 
     # ----------------------------------------------------------------------------------------------------------------
