@@ -12,7 +12,7 @@ from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
 from scs_core.data.str import Str
-from scs_core.estate.configuration import Configuration
+from scs_core.sample.configuration_sample import ConfigurationSample
 from scs_core.sys.http_exception import HTTPException
 
 
@@ -171,7 +171,7 @@ class ConfigurationResponse(HTTPResponse):
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
                 item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
-                    Configuration.construct_from_jdict(item_jdict)
+                    ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
 
         else:

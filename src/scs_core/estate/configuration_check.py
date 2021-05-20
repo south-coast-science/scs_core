@@ -102,7 +102,6 @@ class ConfigurationCheck(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-
         jdict['tag'] = self.tag
         jdict['rec'] = self.rec.as_iso8601()
         jdict['result'] = self.result

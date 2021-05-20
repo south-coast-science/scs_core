@@ -32,7 +32,12 @@ class ConfigurationSample(Sample):
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
 
-        configuration = Configuration.construct_from_jdict(json.loads(jdict.get('val')))
+        try:
+            val_jdict = json.loads(jdict.get('val'))
+        except TypeError:
+            val_jdict = jdict.get('val')
+
+        configuration = Configuration.construct_from_jdict(val_jdict)
 
         return cls(tag, rec, configuration)
 
@@ -59,6 +64,9 @@ class ConfigurationSample(Sample):
     def __lt__(self, other):
         if self.tag < other.tag:
             return True
+
+        if self.tag > other.tag:
+            return False
 
         if self.rec < other.rec:
             return True
