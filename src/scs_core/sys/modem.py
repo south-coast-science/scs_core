@@ -230,6 +230,8 @@ class ModemConnection(JSONable):
     modem.generic.signal-quality.recent         : yes
     """
 
+    UNAVAILABLE_STATE = "unavailable"
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -276,6 +278,11 @@ class ModemConnection(JSONable):
         return cls(state, failure, Signal(quality, recent))
 
 
+    @classmethod
+    def null_datum(cls):
+        return cls(cls.UNAVAILABLE_STATE, None, Signal.null_datum())
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, state, failure, signal):
@@ -285,14 +292,6 @@ class ModemConnection(JSONable):
         self.__state = state                            # string
         self.__failure = failure                        # string
         self.__signal = signal                          # Signal
-
-
-    def __eq__(self, other):
-        try:
-            return self.state == other.state and self.failure == other.failure and self.signal == other.signal
-
-        except (TypeError, AttributeError):
-            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -356,6 +355,11 @@ class Signal(JSONable):
         return cls(quality, recent)
 
 
+    @classmethod
+    def null_datum(cls):
+        return cls(None, None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, quality, recent):
@@ -364,14 +368,6 @@ class Signal(JSONable):
         """
         self.__quality = Datum.int(quality)                 # int
         self.__recent = recent                              # bool
-
-
-    def __eq__(self, other):
-        try:
-            return abs(self.quality - other.quality) < self.__SIGNIFICANT_QUALITY_DIFFERENCE
-
-        except (TypeError, AttributeError):
-            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
