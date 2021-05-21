@@ -16,11 +16,18 @@ example document:
 from collections import OrderedDict
 
 from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
+
 from scs_core.data.datetime import LocalizedDatetime
+
 from scs_core.location.timezone import Timezone
+
 from scs_core.position.gps_datum import GPSDatum
+
 from scs_core.sample.sample import Sample
+
 from scs_core.sync.schedule import Schedule
+
+from scs_core.sys.modem import Signal
 from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
 
@@ -49,15 +56,16 @@ class StatusSample(Sample):
         temperature = SystemTemp.construct_from_jdict(val.get('tmp'))
         schedule = Schedule.construct_from_jdict(val.get('sch'))
         uptime = UptimeDatum.construct_from_jdict(val.get('up'))
+        modem_signal = Signal.construct_from_jdict(val.get('sig'))
 
         # PSUReport classes are not available to the scs_core package
 
-        return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, val.get('psu'))
+        return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, val.get('psu'), modem_signal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report):
+    def __init__(self, tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report, modem_signal):
         """
         Constructor
         """
@@ -70,6 +78,7 @@ class StatusSample(Sample):
         self.__schedule = schedule                                  # Schedule
         self.__uptime = uptime                                      # UptimeDatum
         self.__psu_report = psu_report                              # PSUReport
+        self.__modem_signal = modem_signal                          # Signal
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -101,6 +110,9 @@ class StatusSample(Sample):
 
         if self.psu_report is not None:
             jdict['psu'] = self.psu_report.as_json()
+
+        if self.modem_signal is not None:
+            jdict['sig'] = self.modem_signal.as_json()
 
         return jdict
 
@@ -142,10 +154,15 @@ class StatusSample(Sample):
         return self.__psu_report
 
 
+    @property
+    def modem_signal(self):
+        return self.__modem_signal
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "StatusSample:{tag:%s, rec:%s, airnow:%s, timezone:%s, position:%s, " \
-               "temperature:%s, schedule:%s, uptime:%s, psu_report:%s}" % \
+               "temperature:%s, schedule:%s, uptime:%s, psu_report:%s, modem_signal:%s}" % \
             (self.tag, self.rec, self.airnow, self.timezone, self.position,
-             self.temperature, self.schedule, self.uptime, self.psu_report)
+             self.temperature, self.schedule, self.uptime, self.psu_report, self.modem_signal)
