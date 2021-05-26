@@ -30,7 +30,7 @@ class GitPullCheck(JSONable):
         'ERR': RESULT_ERROR,
         'NSP': RESULT_NOT_SUPPORTED,
         'MGP': RESULT_MALFORMED_GIT_PULL,
-        'D': RESULT_DONE
+        'D':   RESULT_DONE
     }
 
     @classmethod
