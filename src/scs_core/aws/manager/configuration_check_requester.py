@@ -6,6 +6,11 @@ Created on 28 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+from http import HTTPStatus
+
+from scs_core.aws.data.http_response import HTTPResponse
+from scs_core.sys.http_exception import HTTPException
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -27,15 +32,74 @@ class ConfigurationCheckRequester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def request(self, tag):
-        params = {'tag': tag}
+        params = {'ta': tag}
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=params)
+        print("response: %s" % response.text)
 
-        return response
+        response.raise_for_status()
+
+        return ConfigurationCheckRequesterResponse.construct_from_jdict(response.text)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "ConfigurationCheckRequester:{auth:%s}" % self.__auth
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ConfigurationCheckRequesterResponse(HTTPResponse):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        print("jdict: % s" % jdict)
+
+        status = HTTPStatus(jdict.get('statusCode'))
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, status.phrase, status.description)
+
+        result = jdict.get('result')
+
+        return cls(status, result)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, result):
+        """
+        Constructor
+        """
+        super().__init__(status)
+
+        self.__result = result                              # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        return {'result': self.__result}
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def result(self):
+        return self.__result
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ConfigurationCheckResponse:{status:%s, result:%s}" %  (self.status, self.result)
