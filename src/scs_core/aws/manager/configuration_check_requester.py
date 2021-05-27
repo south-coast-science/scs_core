@@ -1,11 +1,12 @@
 """
-Created on 28 Apr 2021
+Created on 26 May 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+from collections import OrderedDict
 from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
@@ -36,9 +37,8 @@ class ConfigurationCheckRequester(object):
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=params)
-        print("response: %s" % response)
 
-        response.raise_for_status()
+        print("request - response: %s" % response)
 
         return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
 
@@ -63,7 +63,7 @@ class ConfigurationCheckRequesterResponse(HTTPResponse):
         if not jdict:
             return None
 
-        print("jdict: % s" % jdict)
+        print("ConfigurationCheckRequesterResponse - jdict: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
@@ -89,7 +89,12 @@ class ConfigurationCheckRequesterResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return {'result': self.__result}
+        jdict = OrderedDict()
+
+        jdict['statusCode'] = self.status.value
+        jdict['result'] = self.result
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

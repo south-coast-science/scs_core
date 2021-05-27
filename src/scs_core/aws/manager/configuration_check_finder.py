@@ -158,6 +158,8 @@ class ConfigurationCheckResponse(HTTPResponse):
         if not jdict:
             return None
 
+        print("ConfigurationCheckResponse - jdict: %s" % jdict)
+
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:
