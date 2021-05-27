@@ -41,8 +41,6 @@ class ConfigurationCheckFinder(object):
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        print("find - response: %s" % response)
-
         return ConfigurationCheckResponse.construct_from_jdict(response.json())
 
 
@@ -157,8 +155,6 @@ class ConfigurationCheckResponse(HTTPResponse):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
-
-        print("ConfigurationCheckResponse - jdict: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 

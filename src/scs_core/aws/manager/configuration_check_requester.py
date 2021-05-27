@@ -38,8 +38,6 @@ class ConfigurationCheckRequester(object):
 
         response = self.__http_client.get(self.__URL, headers=headers, params=params)
 
-        print("request - response: %s" % response)
-
         return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
 
 
@@ -62,8 +60,6 @@ class ConfigurationCheckRequesterResponse(HTTPResponse):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
-
-        print("ConfigurationCheckRequesterResponse - jdict: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
