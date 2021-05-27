@@ -25,7 +25,6 @@ class ConfigurationCheckFinder(object):
 
     __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):

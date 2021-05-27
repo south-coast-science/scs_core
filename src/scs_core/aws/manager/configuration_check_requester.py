@@ -22,7 +22,6 @@ class ConfigurationCheckRequester(object):
 
     __URL = "https://q272jk9le5.execute-api.us-west-2.amazonaws.com/default/MQTTConfigQueuer"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
