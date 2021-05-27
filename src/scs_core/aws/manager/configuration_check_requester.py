@@ -32,15 +32,15 @@ class ConfigurationCheckRequester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def request(self, tag):
-        params = {'ta': tag}
+        params = {'tag': tag}
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=params)
-        print("response: %s" % response.text)
+        print("response: %s" % response)
 
         response.raise_for_status()
 
-        return ConfigurationCheckRequesterResponse.construct_from_jdict(response.text)
+        return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
