@@ -193,8 +193,7 @@ class MQTTPeerSet(PersistentJSONable):
     def peer(self, hostname):
         try:
             return self.__peers[hostname]
-
-        except IndexError:
+        except KeyError:
             return None
 
 
