@@ -54,7 +54,8 @@ class GitPullCheck(JSONable):
         result = jdict.get('result')
         context = jdict.get('context')
 
-        return cls(tag, rec, result)
+        return cls(tag, rec, result, context=context)
+
 
     def __init__(self, tag, rec, result, context=''):
         """
