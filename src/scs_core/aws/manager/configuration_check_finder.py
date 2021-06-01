@@ -25,7 +25,6 @@ class ConfigurationCheckFinder(object):
 
     __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
@@ -36,10 +35,9 @@ class ConfigurationCheckFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, tag_filter, result_code, response_mode):
-        # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs123'}
-
         request = ConfigurationCheckRequest(tag_filter, result_code, response_mode)
+        headers = {'Authorization': self.__auth.email_address}
+
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
         return ConfigurationCheckResponse.construct_from_jdict(response.json())

@@ -51,7 +51,7 @@ class Datum(object):
     @classmethod
     def is_email_address(cls, value):
         try:
-            return bool(re.match(r'[^@\W]+@[^@\W]+\.[^@\W]+', value))
+            return bool(re.match(r'[^@\s]+@[^@\s]+\.[^@\s]+', value))
         except TypeError:
             return False
 

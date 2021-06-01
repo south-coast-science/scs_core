@@ -35,10 +35,9 @@ class ConfigurationFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, tag_filter, response_mode):
-        # TODO: This is a temporary basic auth, will be updated with cognito pools prob
-        headers = {'Authorization': 'scs123'}
-
         request = ConfigurationRequest(tag_filter, response_mode)
+        headers = {'Authorization': self.__auth.email_address}
+
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
         return ConfigurationResponse.construct_from_jdict(response.json())
