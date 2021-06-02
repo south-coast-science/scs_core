@@ -25,7 +25,6 @@ class ConfigurationCheckFinder(object):
 
     __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
@@ -40,8 +39,6 @@ class ConfigurationCheckFinder(object):
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
-
-        print("find - response: %s" % response)
 
         return ConfigurationCheckResponse.construct_from_jdict(response.json())
 
