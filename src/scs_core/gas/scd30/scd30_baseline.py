@@ -36,8 +36,8 @@ class SCD30Baseline(PersistentJSONable):
         if not jdict:
             return None if default is None else cls(SensorBaseline(None, 0, None))
 
-        baseline_jdict = jdict.get('baseline')
-        sensor_baseline = SensorBaseline.construct_from_jdict(baseline_jdict)
+        field = 'baseline' if 'baseline' in jdict else 'CO2'                        # TODO: deprecated field name
+        sensor_baseline = SensorBaseline.construct_from_jdict(jdict.get(field))
 
         return cls(sensor_baseline)
 
@@ -64,7 +64,7 @@ class SCD30Baseline(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['baseline'] = self.__sensor_baseline
+        jdict['CO2'] = self.__sensor_baseline
 
         return jdict
 
