@@ -34,7 +34,7 @@ class SCD30Baseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return None if default is None else cls([SensorBaseline(None, 0, None)])
+            return None if default is None else cls(SensorBaseline(None, 0, None))
 
         sensor_baseline = SensorBaseline.construct_from_jdict(jdict['sn'])
 
