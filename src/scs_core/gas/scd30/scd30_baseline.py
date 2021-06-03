@@ -43,7 +43,7 @@ class SCD30Baseline(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_baseline):
+    def __init__(self, sensor_baseline: SensorBaseline):
         """
         Constructor
         """
