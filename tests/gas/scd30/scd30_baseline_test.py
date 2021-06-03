@@ -9,11 +9,8 @@ example output:
 {"sn": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}}}
 """
 
-import json
-
 from scs_core.data.json import JSONify
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.path_dict import PathDict
 
 from scs_core.gas.scd30.scd30_baseline import SCD30Baseline
 from scs_core.gas.sensor_baseline import BaselineEnvironment, SensorBaseline
