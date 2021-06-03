@@ -4,7 +4,7 @@ Created on 2 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"sn": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}}}
+{"baseline": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}}}
 """
 
 from collections import OrderedDict
@@ -36,7 +36,8 @@ class SCD30Baseline(PersistentJSONable):
         if not jdict:
             return None if default is None else cls(SensorBaseline(None, 0, None))
 
-        sensor_baseline = SensorBaseline.construct_from_jdict(jdict['sn'])
+        baseline_jdict = jdict.get('baseline')
+        sensor_baseline = SensorBaseline.construct_from_jdict(baseline_jdict)
 
         return cls(sensor_baseline)
 
@@ -63,7 +64,7 @@ class SCD30Baseline(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['sn'] = self.__sensor_baseline
+        jdict['baseline'] = self.__sensor_baseline
 
         return jdict
 
