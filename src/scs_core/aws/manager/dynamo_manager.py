@@ -208,14 +208,14 @@ class DynamoManager(object):
             self.__logger.info("Doing exact")
             if lek:
                 response = table.scan(
-                    FilterExpression=Attr(pk).contains(tag_filter),
+                    FilterExpression=Attr(pk).eq(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk},
                     ExclusiveStartKey=lek
                 )
             else:
                 response = table.scan(
-                    FilterExpression=Attr(pk).contains(tag_filter),
+                    FilterExpression=Attr(pk).eq(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk}
             )
