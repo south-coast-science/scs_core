@@ -109,19 +109,31 @@ class DynamoManager(object):
 
         return data_dict, lek
 
-    def retrieve_filtered(self, table_name, filter_key, filter_value, lek=None):
+    def retrieve_filtered(self, table_name, filter_key, exact, filter_value, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
-        if lek:
-            response = table.scan(
-                FilterExpression=Attr(filter_key).contains(filter_value),
-                ExclusiveStartKey=lek
-            )
+        if exact is True:
+            self.__logger.info("Doing exact")
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(filter_key).eq(filter_value),
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(filter_key).eq(filter_value)
+                )
         else:
-            response = table.scan(
-                FilterExpression=Attr(filter_key).contains(filter_value)
-            )
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(filter_key).contains(filter_value),
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(filter_key).contains(filter_value)
+                )
 
         if "Items" not in response:
             return None, None
@@ -186,24 +198,40 @@ class DynamoManager(object):
 
         return data_dict, lek
 
-    def retrieve_filtered_pk(self, table_name, pk, tag_filter, lek=None):
+    def retrieve_filtered_pk(self, table_name, pk, exact, tag_filter, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
-        print(tag_filter)
+        print(table_name, pk, exact, tag_filter)
 
-        if lek:
-            response = table.scan(
-                FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression='#pk',
-                ExpressionAttributeNames={'#pk': pk},
-                ExclusiveStartKey=lek
+        if exact is True:
+            self.__logger.info("Doing exact")
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(pk).contains(tag_filter),
+                    ProjectionExpression='#pk',
+                    ExpressionAttributeNames={'#pk': pk},
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(pk).contains(tag_filter),
+                    ProjectionExpression='#pk',
+                    ExpressionAttributeNames={'#pk': pk}
             )
         else:
-            response = table.scan(
-                FilterExpression=Attr(pk).contains(tag_filter),
-                ProjectionExpression='#pk',
-                ExpressionAttributeNames={'#pk': pk}
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(pk).contains(tag_filter),
+                    ProjectionExpression='#pk',
+                    ExpressionAttributeNames={'#pk': pk},
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(pk).contains(tag_filter),
+                    ProjectionExpression='#pk',
+                    ExpressionAttributeNames={'#pk': pk}
             )
 
         if "Items" not in response:
