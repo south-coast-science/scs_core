@@ -17,7 +17,7 @@ print(MODE)
 mode = MODE['TAGS_ONLY']
 print(mode.name)
 
-request = ConfigurationRequest(None, mode)
+request = ConfigurationRequest(None, False, mode)
 print(request)
 
 print(request.tags_only())
