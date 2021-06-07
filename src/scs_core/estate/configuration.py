@@ -34,6 +34,7 @@ from scs_core.gas.afe_id import AFEId
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
 from scs_core.gas.ndir.ndir_conf import NDIRConf
 from scs_core.gas.scd30.scd30_conf import SCD30Conf
+from scs_core.gas.scd30.scd30_baseline import SCD30Baseline
 
 from scs_core.gps.gps_conf import GPSConf
 
@@ -105,6 +106,7 @@ class Configuration(JSONable):
         psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'), default=None)
         psu_version = PSUVersion.construct_from_jdict(jdict.get('psu-version'))
         pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'), default=None)
+        scd30_baseline = SCD30Baseline.construct_from_jdict(jdict.get('scd30-baseline'), default=None)
         scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'), default=None)
         schedule = Schedule.construct_from_jdict(jdict.get('schedule'), default=None)
         shared_secret = SharedSecret.construct_from_jdict(jdict.get('shared-secret'), default=None)
@@ -119,9 +121,9 @@ class Configuration(JSONable):
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, networks, modem, sim,
-                   system_id, timezone_conf)
+                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks, modem,
+                   sim, system_id, timezone_conf)
 
 
     @classmethod
@@ -151,6 +153,7 @@ class Configuration(JSONable):
         psu_conf = PSUConf.load(manager, default=None)
         psu_version = None if psu is None else psu.version()
         pt1000_calib = Pt1000Calib.load(manager, default=None)
+        scd30_baseline = SCD30Baseline.load(manager, default=None)
         scd30_conf = SCD30Conf.load(manager, default=None)
         schedule = Schedule.load(manager, default=None)
         shared_secret = SharedSecret.load(manager, default=None)
@@ -165,9 +168,9 @@ class Configuration(JSONable):
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                    mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                   shared_secret, sht_conf, networks, modem, sim,
-                   system_id, timezone_conf)
+                   pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks, modem,
+                   sim, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -176,9 +179,9 @@ class Configuration(JSONable):
                  aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                  gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
                  mpl115a2_calib, mpl115a2_conf, mqtt_conf, ndir_conf, opc_conf,
-                 pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_conf, schedule,
-                 shared_secret, sht_conf, networks, modem, sim,
-                 system_id, timezone_conf):
+                 pmx_model_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                 scd30_conf, schedule, shared_secret, sht_conf, networks, modem,
+                 sim, system_id, timezone_conf):
         """
         Constructor
         """
@@ -208,6 +211,7 @@ class Configuration(JSONable):
         self.__psu_conf = psu_conf                                  # PSUConf
         self.__psu_version = psu_version                            # PSUVersion
         self.__pt1000_calib = pt1000_calib                          # Pt1000Calib
+        self.__scd30_baseline = scd30_baseline                      # SCD30Baseline
         self.__scd30_conf = scd30_conf                              # SCD30Conf
         self.__schedule = schedule                                  # Schedule
         self.__shared_secret = shared_secret                        # SharedSecret
@@ -233,11 +237,11 @@ class Configuration(JSONable):
                    self.ndir_conf == other.ndir_conf and self.opc_conf == other.opc_conf and \
                    self.pmx_model_conf == other.pmx_model_conf and self.psu_conf == other.psu_conf and \
                    self.psu_version == other.psu_version and self.pt1000_calib == other.pt1000_calib and \
-                   self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
-                   self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
-                   self.networks == other.networks and self.modem == other.modem and \
-                   self.sim == other.sim and self.system_id == other.system_id and \
-                   self.timezone_conf == other.timezone_conf
+                   self.scd30_baseline == other.scd30_baseline and self.scd30_conf == other.scd30_conf and \
+                   self.schedule == other.schedule and self.shared_secret == other.shared_secret and \
+                   self.sht_conf == other.sht_conf and self.networks == other.networks and \
+                   self.modem == other.modem and self.sim == other.sim and \
+                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -250,7 +254,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None)
+                             None, None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -320,6 +324,9 @@ class Configuration(JSONable):
 
         if self.pt1000_calib != other.pt1000_calib:
             diff.__pt1000_calib = self.pt1000_calib
+
+        if self.scd30_baseline != other.scd30_baseline:
+            diff.__scd30_baseline = self.scd30_baseline
 
         if self.scd30_conf != other.scd30_conf:
             diff.__scd30_conf = self.scd30_conf
@@ -426,6 +433,9 @@ class Configuration(JSONable):
         if self.pt1000_calib:
             self.pt1000_calib.save(manager)
 
+        if self.scd30_baseline:
+            self.scd30_baseline.save(manager)
+
         if self.scd30_conf:
             self.scd30_conf.save(manager)
 
@@ -484,9 +494,11 @@ class Configuration(JSONable):
         jdict['psu-conf'] = self.psu_conf
         jdict['psu-version'] = self.psu_version
         jdict['pt1000-calib'] = self.pt1000_calib
+        jdict['scd30-baseline'] = self.scd30_baseline
         jdict['scd30-conf'] = self.scd30_conf
         jdict['schedule'] = self.schedule
         jdict['shared-secret'] = self.shared_secret
+        jdict['sht-conf'] = self.sht_conf
         jdict['sht-conf'] = self.sht_conf
         jdict['networks'] = self.networks
         jdict['modem'] = self.modem
@@ -620,6 +632,11 @@ class Configuration(JSONable):
 
 
     @property
+    def scd30_baseline(self):
+        return self.__scd30_baseline
+
+
+    @property
     def scd30_conf(self):
         return self.__scd30_conf
 
@@ -671,13 +688,13 @@ class Configuration(JSONable):
                "aws_client_auth:%s, aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
                "mpl115a2_calib:%s, mpl115a2_conf:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
-               "pmx_model_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_conf:%s, schedule:%s, " \
-               "shared_secret:%s, sht_conf:%s, networks:%s, modem:%s, sim:%s, " \
-               "system_id:%s, timezone_conf:%s}" % \
+               "pmx_model_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
+               "scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, networks:%s, modem:%s, " \
+               "sim:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_api_auth,
                 self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
                 self.mpl115a2_calib, self.mpl115a2_conf, self.mqtt_conf, self.ndir_conf, self.opc_conf,
-                self.pmx_model_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_conf, self.schedule,
-                self.shared_secret, self.sht_conf, self.networks, self.modem, self.sim,
-                self.system_id, self.timezone_conf)
+                self.pmx_model_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
+                self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks, self.modem,
+                self.sim, self.system_id, self.timezone_conf)
