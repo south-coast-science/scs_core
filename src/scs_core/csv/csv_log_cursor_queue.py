@@ -54,11 +54,11 @@ class CSVLogCursorQueue(JSONable):
         if root_directory is None:
             raise FileNotFoundError(log.root_path)
 
-        for directory in root_directory:
-            if directory.name < from_directory:
+        for item in root_directory:
+            if not item.is_directory or item.name < from_directory:
                 continue
 
-            yield directory.path()
+            yield item.path()
 
 
     @staticmethod
