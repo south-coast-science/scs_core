@@ -219,6 +219,9 @@ class MessageRequest(object):
         if self.rec_only and self.fetch_last_written:
             return False
 
+        if self.rec_only and self.path:
+            return False
+
         if self.rec_only and self.min_max:
             return False
 
