@@ -36,7 +36,7 @@ class Node(ABC):
         s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
         try:
-            s.connect(('192.168.0.1', 1))  # host does not need to be reachable
+            s.connect(('192.168.0.1', 1))           # host does not need to be reachable
             dot_decimal = s.getsockname()[0]
 
         except OSError:
