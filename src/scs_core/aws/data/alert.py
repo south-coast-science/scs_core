@@ -183,7 +183,7 @@ class Alert(JSONable):
 
         creator_email_address = jdict.get('creator-email-address')
         cc_list = jdict.get('cc-list')
-        suspended = jdict.get('is-suspended')
+        suspended = jdict.get('suspended')
 
         return cls(topic, field, id, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, creator_email_address, cc_list, suspended)
@@ -279,7 +279,7 @@ class Alert(JSONable):
 
         jdict['creator-email-address'] = self.creator_email_address
         jdict['cc-list'] = self.cc_list
-        jdict['is-suspended'] = self.suspended
+        jdict['suspended'] = self.suspended
 
         return jdict
 
