@@ -91,6 +91,7 @@ class AlertRequest(object):
 
     @classmethod
     def is_valid(cls):
+        # TODO: validation depends on whether the ID is universal, or dependent on topic / path
         return True
 
 

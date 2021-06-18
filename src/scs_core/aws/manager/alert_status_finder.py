@@ -180,7 +180,7 @@ class AlertStatusResponse(HTTPResponse):
 
         mode = AlertStatusRequest.MODE[jdict.get('mode')]
 
-        alert_statuses = []
+        alert_statuses = []             # TODO: if mode is LATEST, then there will be one or none items
         if jdict.get('Items'):
             for alert_jdict in jdict.get('Items'):
                 alert_statuses.append(AlertStatus.construct_from_jdict(alert_jdict))
