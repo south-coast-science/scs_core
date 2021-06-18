@@ -6,7 +6,7 @@ Created on 17 Jun 2021
 Alert example:
 {"topic": "my/topic", "field": "my.field", "id": 123, "lower-threshold": 10.0, "upper-threshold": 100.0,
 "alert-on-none": true, "aggregation-period": "00-01:00:00", "test-interval": "00-00:05:00",
-"creator-email-address": "bruno.beloff@southcoastscience.com", "cc-list": ["bbeloff@me.com"], "is-suspended": false}
+"creator-email-address": "bruno.beloff@southcoastscience.com", "cc-list": ["bbeloff@me.com"], "suspended": false}
 
 AlertStatus example:
 {"topic": "my/topic", "field": "my.field", "id": 123, "rec": "2021-06-17T15:58:23Z", "cause": ">U", "value": 101.5}
