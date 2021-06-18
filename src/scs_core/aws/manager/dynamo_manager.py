@@ -218,7 +218,7 @@ class DynamoManager(object):
                     FilterExpression=Attr(pk).eq(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk}
-            )
+                )
         else:
             if lek:
                 response = table.scan(
@@ -232,7 +232,7 @@ class DynamoManager(object):
                     FilterExpression=Attr(pk).contains(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk}
-            )
+                )
 
         if "Items" not in response:
             return None, None
