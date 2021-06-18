@@ -67,6 +67,34 @@ class AlertStatus(JSONable):
         self.__value = Datum.float(value)                           # float
 
 
+    def __lt__(self, other):
+        if self.topic < other.topic:
+            return True
+
+        if self.topic > other.topic:
+            return False
+
+        if self.field < other.field:
+            return True
+
+        if self.field > other.field:
+            return False
+
+        if self.id < other.id:
+            return True
+
+        if self.id > other.id:
+            return False
+
+        if self.rec < other.rec:
+            return True
+
+        if self.rec > other.rec:
+            return False
+
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_excursion(self):
@@ -184,6 +212,34 @@ class Alert(JSONable):
         self.__suspended = bool(suspended)                          # bool
 
 
+    def __lt__(self, other):
+        if self.topic < other.topic:
+            return True
+
+        if self.topic > other.topic:
+            return False
+
+        if self.field < other.field:
+            return True
+
+        if self.field > other.field:
+            return False
+
+        if self.id < other.id:
+            return True
+
+        if self.id > other.id:
+            return False
+
+        if self.creator_email_address < other.creator_email_address:
+            return True
+
+        if self.creator_email_address > other.creator_email_address:
+            return False
+
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self, value):
@@ -245,11 +301,6 @@ class Alert(JSONable):
         return self.__id
 
 
-    @id.setter
-    def id(self, id):
-        self.__id = id
-
-
     @property
     def lower_threshold(self):
         return self.__lower_threshold
@@ -288,6 +339,13 @@ class Alert(JSONable):
     @property
     def suspended(self):
         return self.__suspended
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @id.setter
+    def id(self, id):
+        self.__id = id
 
 
     # ----------------------------------------------------------------------------------------------------------------
