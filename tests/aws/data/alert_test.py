@@ -16,11 +16,12 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = Timedelta(hours=1)
+aggregation_period = Timedelta(days=1)
 test_interval = Timedelta(minutes=5)
 
-alert = Alert('my/topic', 'my.field', None, 10, 100, True,
-              aggregation_period, test_interval, 'bruno.beloff@southcoastscience.com', ["bbeloff@me.com"], False)
+alert = Alert('my/topic', 'my.field', None, None, 100, True,
+              aggregation_period, test_interval, 'bruno.beloff@southcoastscience.com',
+              ["bbeloff@me.com", "hhopton@me.com"], False)
 alert.id = 123
 print(alert)
 
@@ -49,3 +50,12 @@ print(jstr)
 
 status = AlertStatus.construct_from_jdict(json.loads(jstr))
 print(status)
+print("-")
+
+qsp = alert.params()
+print(qsp)
+print("-")
+
+alert = Alert.construct_from_qsp(qsp)
+print(alert)
+
