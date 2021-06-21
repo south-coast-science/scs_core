@@ -283,6 +283,10 @@ class Alert(JSONable):
         return True
 
 
+    def has_trigger(self):
+        return self.alert_on_none or self.lower_threshold is not None or self.upper_threshold is not None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self, value):
