@@ -382,3 +382,14 @@ class DynamoManager(object):
                 lek = None
 
         return data_dict, lek
+
+    def update_item(self, table_name, key, update_expression, eav):
+        table = self.__dynamo_resource.Table(table_name)
+        response = table.update_item(
+            Key=key,
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=eav,
+            ReturnValues="UPDATED_NEW"
+        )
+
+        return response
