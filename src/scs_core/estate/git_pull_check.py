@@ -7,12 +7,13 @@ document example:
 {"tag": "scs-bgx-003", "rec": "2021-04-14T08:49:22+01:00", "result": "PENDING"}
 """
 
-# --------------------------------------------------------------------------------------------------------------------
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class GitPullCheck(JSONable):
     """
@@ -33,9 +34,12 @@ class GitPullCheck(JSONable):
         'D':   RESULT_DONE
     }
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def result_codes(cls):
         return cls.__RESULTS.keys()
+
 
     @classmethod
     def result_string(cls, code):
@@ -43,6 +47,7 @@ class GitPullCheck(JSONable):
             return None
 
         return cls.__RESULTS[code]
+
 
     @classmethod
     def construct_from_jdict(cls, jdict):
@@ -57,6 +62,8 @@ class GitPullCheck(JSONable):
         return cls(tag, rec, result, context=context)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, tag, rec, result, context=''):
         """
         Constructor
@@ -67,6 +74,8 @@ class GitPullCheck(JSONable):
         self.__context = context                # string (only for ERROR)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -75,11 +84,10 @@ class GitPullCheck(JSONable):
         jdict['result'] = self.result
         jdict['context'] = self.context if self.context else ["-"]
 
-
         return jdict
 
-    # ----------------------------------------------------------------------------------------------------------------
 
+    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def tag(self):
@@ -99,6 +107,9 @@ class GitPullCheck(JSONable):
     def context(self):
         return self.__context
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "GitPullCheck:{tag:%s, rec:%s, result:%s}" % \
-               (self.tag, self.rec, self.result)
+        return "GitPullCheck:{tag:%s, rec:%s, result:%s, context:%s}" % \
+               (self.tag, self.rec, self.result, self.context)
