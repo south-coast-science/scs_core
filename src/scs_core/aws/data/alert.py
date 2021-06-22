@@ -4,12 +4,12 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Alert example:
-{"topic": "my/topic", "field": "my.field", "id": 123, "lower-threshold": 10.0, "upper-threshold": 100.0,
+{"id": 123, "topic": "my/topic", "field": "my.field", "lower-threshold": 10.0, "upper-threshold": 100.0,
 "alert-on-none": true, "aggregation-period": "00-01:00:00", "test-interval": "00-00:05:00",
 "creator-email-address": "bruno.beloff@southcoastscience.com", "cc-list": ["bbeloff@me.com"], "suspended": false}
 
 AlertStatus example:
-{"topic": "my/topic", "field": "my.field", "id": 123, "rec": "2021-06-17T15:58:23Z", "cause": ">U", "value": 101.5}
+{"id": 123, "rec": "2021-06-17T15:58:23Z", "cause": ">U", "value": 101.5}
 
 https://martinstapel.com/how-to-autoincrement-in-dynamo-db-if-you-really-need-to/
 https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-primary-key-id-in-dynamodb
@@ -41,25 +41,21 @@ class AlertStatus(JSONable):
         if not jdict:
             return None
 
-        topic = jdict.get('topic')
-        field = jdict.get('field')
         id = jdict.get('id')
 
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         cause = jdict.get('cause')
         value = jdict.get('value')
 
-        return cls(topic, field, id, rec, cause, value)
+        return cls(id, rec, cause, value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, field, id, rec, cause, value):
+    def __init__(self, id, rec, cause, value):
         """
         Constructor
         """
-        self.__topic = topic                                        # string topic
-        self.__field = field                                        # string path
         self.__id = Datum.int(id)                                   # int
 
         self.__rec = rec                                            # LocalizedDatetime
@@ -68,18 +64,6 @@ class AlertStatus(JSONable):
 
 
     def __lt__(self, other):
-        if self.topic < other.topic:
-            return True
-
-        if self.topic > other.topic:
-            return False
-
-        if self.field < other.field:
-            return True
-
-        if self.field > other.field:
-            return False
-
         if self.id < other.id:
             return True
 
@@ -106,8 +90,6 @@ class AlertStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['topic'] = self.topic
-        jdict['field'] = self.field
         jdict['id'] = self.id
 
         jdict['rec'] = self.rec.as_iso8601()
@@ -118,16 +100,6 @@ class AlertStatus(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def topic(self):
-        return self.__topic
-
-
-    @property
-    def field(self):
-        return self.__field
-
 
     @property
     def id(self):
@@ -152,8 +124,8 @@ class AlertStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatus:{topic:%s, field:%s, id:%s, rec:%s, cause:%s, value:%s}" %  \
-               (self.topic, self.field, self.id, self.rec, self.cause, self.value)
+        return "AlertStatus:{id:%s, rec:%s, cause:%s, value:%s}" %  \
+               (self.id, self.rec, self.cause, self.value)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -163,9 +135,10 @@ class Alert(JSONable):
     classdocs
     """
 
+    ID = 'id'
+
     TOPIC = 'topic'
     FIELD = 'field'
-    ID = 'id'
 
     LOWER_THRESHOLD = 'lowerThreshold'
     UPPER_THRESHOLD = 'upperThreshold'
@@ -185,9 +158,10 @@ class Alert(JSONable):
         if not qsp:
             return None
 
+        id = qsp.get(cls.ID)
+
         topic = qsp.get(cls.TOPIC)
         field = qsp.get(cls.FIELD)
-        id = qsp.get(cls.ID)
 
         lower_threshold = qsp.get(cls.LOWER_THRESHOLD)
         upper_threshold = qsp.get(cls.UPPER_THRESHOLD)
@@ -200,7 +174,7 @@ class Alert(JSONable):
         cc_list = [qsp[name] for name in sorted(qsp.keys()) if name.startswith(cls.CC_LIST)]
         suspended = qsp.get(cls.SUSPENDED, 'false').lower() == 'true'
 
-        return cls(topic, field, id, lower_threshold, upper_threshold, alert_on_none,
+        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, creator_email_address, cc_list, suspended)
 
 
@@ -209,9 +183,10 @@ class Alert(JSONable):
         if not jdict:
             return None
 
+        id = jdict.get('id')
+
         topic = jdict.get('topic')
         field = jdict.get('field')
-        id = jdict.get('id')
 
         lower_threshold = jdict.get('lower-threshold')
         upper_threshold = jdict.get('upper-threshold')
@@ -224,20 +199,21 @@ class Alert(JSONable):
         cc_list = jdict.get('cc-list')
         suspended = jdict.get('suspended')
 
-        return cls(topic, field, id, lower_threshold, upper_threshold, alert_on_none,
+        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, creator_email_address, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, field, id, lower_threshold, upper_threshold, alert_on_none,
+    def __init__(self, id, topic, field, lower_threshold, upper_threshold, alert_on_none,
                  aggregation_period, test_interval, creator_email_address, cc_list, suspended):
         """
         Constructor
         """
+        self.__id = Datum.int(id)                                   # int
+
         self.__topic = topic                                        # string topic
         self.__field = field                                        # string path
-        self.__id = Datum.int(id)                                   # int
 
         self.__lower_threshold = Datum.float(lower_threshold)       # float
         self.__upper_threshold = Datum.float(upper_threshold)       # float
@@ -280,11 +256,19 @@ class Alert(JSONable):
                 self.creator_email_address is None:
             return False
 
+        if not self.has_trigger():
+            return False
+
         return True
 
 
     def has_trigger(self):
         return self.alert_on_none or self.lower_threshold is not None or self.upper_threshold is not None
+
+
+    def may_update(self, other):
+        return self.id == other.id and self.topic == other.topic and self.field == other.field and \
+               self.creator_email_address == other.creator_email_address
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -305,21 +289,19 @@ class Alert(JSONable):
         else:
             cause = None
 
-        return AlertStatus(self.topic, self.field, self.id, LocalizedDatetime.now().utc(), cause, value)
+        return AlertStatus(self.id, LocalizedDatetime.now().utc(), cause, value)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def params(self):
         params = {
+            self.ID: 'null' if self.id is None else self.id,
             self.TOPIC: self.topic,
             self.FIELD: self.field,
             self.AGGREGATION_PERIOD: self.aggregation_period.as_json(),
             self.CREATOR_EMAIL_ADDRESS: self.creator_email_address
         }
-
-        if self.id is not None:
-            params[self.ID] = self.id
 
         if self.alert_on_none:
             params[self.ALERT_ON_NONE] = 'true'
@@ -345,9 +327,10 @@ class Alert(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['id'] = self.id
+
         jdict['topic'] = self.topic
         jdict['field'] = self.field
-        jdict['id'] = self.id
 
         jdict['lower-threshold'] = self.lower_threshold
         jdict['upper-threshold'] = self.upper_threshold
@@ -366,6 +349,11 @@ class Alert(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def id(self):
+        return self.__id
+
+
+    @property
     def topic(self):
         return self.__topic
 
@@ -373,11 +361,6 @@ class Alert(JSONable):
     @property
     def field(self):
         return self.__field
-
-
-    @property
-    def id(self):
-        return self.__id
 
 
     @property
@@ -430,7 +413,7 @@ class Alert(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Alert:{topic:%s, field:%s, id:%s, lower_threshold:%s, upper_threshold:%s, alert_on_none:%s, " \
+        return "Alert:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, alert_on_none:%s, " \
                "aggregation_period:%s, test_interval:%s, creator_email_address:%s, cc_list:%s, suspended:%s}" %  \
-               (self.topic, self.field, self.id, self.lower_threshold, self.upper_threshold, self.alert_on_none,
+               (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold, self.alert_on_none,
                 self.aggregation_period, self.test_interval, self.creator_email_address, self.cc_list, self.suspended)
