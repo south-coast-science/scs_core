@@ -215,16 +215,16 @@ class Alert(JSONable):
         self.__topic = topic                                        # string topic
         self.__field = field                                        # string path
 
-        self.__lower_threshold = Datum.float(lower_threshold)       # float
-        self.__upper_threshold = Datum.float(upper_threshold)       # float
-        self.__alert_on_none = bool(alert_on_none)                  # bool
+        self.__lower_threshold = Datum.float(lower_threshold)       # float                 updatable
+        self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
+        self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # Timedelta
-        self.__test_interval = test_interval                        # Timedelta
+        self.__aggregation_period = aggregation_period              # Timedelta             updatable
+        self.__test_interval = test_interval                        # Timedelta             updatable
 
         self.__creator_email_address = creator_email_address        # string
-        self.__cc_list = cc_list                                    # array of string
-        self.__suspended = bool(suspended)                          # bool
+        self.__cc_list = cc_list                                    # array of string       updatable
+        self.__suspended = bool(suspended)                          # bool                  updatable
 
 
     def __lt__(self, other):
