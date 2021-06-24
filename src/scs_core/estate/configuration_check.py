@@ -3,6 +3,8 @@ Created on 14 Apr 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://aws.amazon.com/premiumsupport/knowledge-center/lambda-function-idempotent/
+
 document example:
 {"tag": "scs-bgx-003", "rec": "2021-04-14T08:49:22+01:00", "message-rec": "2021-04-14T08:49:20+01:00",
 "result": "ERROR", "context": "stderr output"}
@@ -82,7 +84,7 @@ class ConfigurationCheck(JSONable):
         """
         self.__tag = tag                        # string
         self.__rec = rec                        # LocalizedDatetime - when this record was created
-        self.__message_rec = message_rec        # LocalizedDatetime - the rec of the configuration message
+        self.__message_rec = message_rec        # LocalizedDatetime - the rec of the ControlReceipt
         self.__result = result                  # string
         self.__context = context                # string
 
