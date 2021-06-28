@@ -35,13 +35,13 @@ class AlertStatusFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, topic_filter, path_filter, id_filter, cause_filter, response_mode):
-        request = AlertStatusRequest(topic_filter, path_filter, id_filter, cause_filter, response_mode)
+    def find(self, id_filter, cause_filter, response_mode):
+        request = AlertStatusFinderRequest(id_filter, cause_filter, response_mode)
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        return AlertStatusResponse.construct_from_jdict(response.json())
+        return AlertStatusFinderResponse.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -52,15 +52,13 @@ class AlertStatusFinder(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusRequest(object):
+class AlertStatusFinderRequest(object):
     """
     classdocs
     """
 
     MODE = Enum('Mode', 'HISTORY LATEST')
 
-    TOPIC_FILTER = 'tag'
-    PATH_FILTER = 'path'
     ID_FILTER = 'id'
     CAUSE_FILTER = 'cause'
     RESPONSE_MODE = 'responseMode'
@@ -72,8 +70,6 @@ class AlertStatusRequest(object):
         if not qsp:
             return None
 
-        topic_filter = qsp.get(cls.TOPIC_FILTER)
-        path_filter = qsp.get(cls.PATH_FILTER)
         id_filter = qsp.get(cls.ID_FILTER)
         cause_filter = qsp.get(cls.CAUSE_FILTER)
 
@@ -82,17 +78,15 @@ class AlertStatusRequest(object):
         except KeyError:
             response_mode = None
 
-        return cls(topic_filter, path_filter, id_filter, cause_filter, response_mode)
+        return cls(id_filter, cause_filter, response_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic_filter, path_filter, id_filter, cause_filter, response_mode):
+    def __init__(self, id_filter, cause_filter, response_mode):
         """
         Constructor
         """
-        self.__topic_filter = topic_filter                          # string
-        self.__path_filter = path_filter                            # string
         self.__id_filter = Datum.int(id_filter)                     # int
         self.__cause_filter = cause_filter                          # string
         self.__response_mode = response_mode                        # enum
@@ -101,6 +95,9 @@ class AlertStatusRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.id_filter is None and self.cause_filter is None:
+            return False
+
         if self.response_mode is None:
             return False
 
@@ -111,8 +108,6 @@ class AlertStatusRequest(object):
 
     def params(self):
         params = {
-            self.TOPIC_FILTER: self.topic_filter,
-            self.PATH_FILTER: self.path_filter,
             self.ID_FILTER: self.id_filter,
             self.CAUSE_FILTER: self.cause_filter,
             self.RESPONSE_MODE: self.response_mode.name
@@ -122,16 +117,6 @@ class AlertStatusRequest(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def topic_filter(self):
-        return self.__topic_filter
-
-
-    @property
-    def path_filter(self):
-        return self.__path_filter
-
 
     @property
     def id_filter(self):
@@ -151,15 +136,13 @@ class AlertStatusRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusRequest:{topic_filter:%s, path_filter:%s, id_filter:%s, cause_filter:%s, " \
-               "response_mode:%s}" % \
-               (self.topic_filter, self.path_filter, self.id_filter, self.cause_filter,
-                self.response_mode)
+        return "AlertStatusFinderRequest:{id_filter:%s, cause_filter:%s, response_mode:%s}" % \
+               (self.id_filter, self.cause_filter, self.response_mode)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusResponse(HTTPResponse):
+class AlertStatusFinderResponse(HTTPResponse):
     """
     classdocs
     """
@@ -178,7 +161,7 @@ class AlertStatusResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException(status.value, status.phrase, status.description)
 
-        mode = AlertStatusRequest.MODE[jdict.get('mode')]
+        mode = AlertStatusFinderRequest.MODE[jdict.get('mode')]
 
         alert_statuses = []
         if jdict.get('Items'):
@@ -246,5 +229,5 @@ class AlertStatusResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusResponse:{status:%s, mode:%s, alert_statuses:%s, next_url:%s}" % \
+        return "AlertStatusFinderResponse:{status:%s, mode:%s, alert_statuses:%s, next_url:%s}" % \
                (self.status, self.mode, Str.collection(self.alert_statuses), self.next_url)

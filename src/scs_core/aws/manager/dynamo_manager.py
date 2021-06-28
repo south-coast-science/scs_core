@@ -383,6 +383,7 @@ class DynamoManager(object):
 
         return data_dict, lek
 
+
     def update_item(self, table_name, key, update_expression, eav):
         table = self.__dynamo_resource.Table(table_name)
         response = table.update_item(

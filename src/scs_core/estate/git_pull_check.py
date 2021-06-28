@@ -56,20 +56,22 @@ class GitPullCheck(JSONable):
 
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
+        message_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('message-rec'))
         result = jdict.get('result')
         context = jdict.get('context')
 
-        return cls(tag, rec, result, context=context)
+        return cls(tag, rec, message_rec, result, context=context)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, result, context=''):
+    def __init__(self, tag, rec, message_rec, result, context=''):
         """
         Constructor
         """
         self.__tag = tag                        # string
-        self.__rec = rec                        # LocalizedDatetime
+        self.__rec = rec                        # LocalizedDatetime - when this record was created
+        self.__message_rec = message_rec        # LocalizedDatetime - the rec of the ControlReceipt
         self.__result = result                  # string
         self.__context = context                # string (only for ERROR)
 
@@ -81,6 +83,7 @@ class GitPullCheck(JSONable):
 
         jdict['tag'] = self.tag
         jdict['rec'] = self.rec.as_iso8601()
+        jdict['message-rec'] = None if self.message_rec is None else self.message_rec.as_iso8601()
         jdict['result'] = self.result
         jdict['context'] = self.context if self.context else ["-"]
 
@@ -100,6 +103,11 @@ class GitPullCheck(JSONable):
 
 
     @property
+    def message_rec(self):
+        return self.__message_rec
+
+
+    @property
     def result(self):
         return self.__result
 
@@ -111,5 +119,5 @@ class GitPullCheck(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GitPullCheck:{tag:%s, rec:%s, result:%s, context:%s}" % \
-               (self.tag, self.rec, self.result, self.context)
+        return "GitPullCheck:{tag:%s, rec:%s, message_rec:%s, result:%s, context:%s}" % \
+               (self.tag, self.rec, self.message_rec, self.result, self.context)

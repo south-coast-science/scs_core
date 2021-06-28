@@ -190,6 +190,8 @@ class PersistentJSONable(AbstractPersistentJSONable):
     classdocs
     """
 
+    __SECURITY_DELAY = 3.0            # seconds
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -212,7 +214,12 @@ class PersistentJSONable(AbstractPersistentJSONable):
         if not manager.exists(dirname, filename):
             return cls.construct_from_jdict(None, default=default)
 
-        jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+        try:
+            jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+
+        except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
+            time.sleep(cls.__SECURITY_DELAY)
+            raise ex
 
         return cls.construct_from_jdict(cls.loads(jstr), default=default)
 
