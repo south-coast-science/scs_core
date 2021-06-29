@@ -34,6 +34,11 @@ class AlertStatus(JSONable):
     ABOVE_UPPER_THRESHOLD =     '>U'
     NULL_VALUE =                'NV'
 
+    @classmethod
+    def causes(cls):
+        return [cls.BELOW_LOWER_THRESHOLD, cls.ABOVE_UPPER_THRESHOLD, cls.NULL_VALUE]
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -259,11 +264,21 @@ class Alert(JSONable):
         if not self.has_trigger():
             return False
 
+        if not self.has_valid_thresholds():
+            return False
+
         return True
 
 
     def has_trigger(self):
         return self.alert_on_none or self.lower_threshold is not None or self.upper_threshold is not None
+
+
+    def has_valid_thresholds(self):
+        if self.lower_threshold is None or self.upper_threshold is None:
+            return True
+
+        return self.lower_threshold < self.upper_threshold
 
 
     def may_update(self, other):
@@ -408,6 +423,20 @@ class Alert(JSONable):
     @id.setter
     def id(self, id):
         self.__id = id
+
+
+    def append_to_cc_list(self, cc):
+        if cc in self.__cc_list:
+            return
+
+        self.__cc_list.append(cc)
+
+
+    def remove_from_cc_list(self, cc):
+        if cc not in self.__cc_list:
+            return
+
+        self.__cc_list.remove(cc)
 
 
     # ----------------------------------------------------------------------------------------------------------------

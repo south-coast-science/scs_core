@@ -19,12 +19,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationAuth(PersistentJSONable):
+class MonitorAuth(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "configuration_auth.json"
+    __FILENAME = "monitor_auth.json"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -116,4 +116,4 @@ class ConfigurationAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationAuth:{email_address:%s, password:%s}" % (self.email_address, self.password)
+        return "MonitorAuth:{email_address:%s, password:%s}" % (self.email_address, self.password)

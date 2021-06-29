@@ -34,8 +34,17 @@ class AlertFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, topic_filter, path_filter, id_filter, creator_filter):
-        request = AlertFinderRequest(topic_filter, path_filter, id_filter, creator_filter)
+    def find(self, topic_filter, path_filter, creator_filter):
+        request = AlertFinderRequest(None, topic_filter, path_filter, creator_filter)
+        headers = {'Authorization': self.__auth.email_address}
+
+        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+
+        return AlertFinderResponse.construct_from_jdict(response.json())
+
+
+    def retrieve(self, id_filter, creator_filter):
+        request = AlertFinderRequest(id_filter, None, None, creator_filter)
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
