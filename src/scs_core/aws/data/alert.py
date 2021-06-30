@@ -347,8 +347,9 @@ class Alert(JSONable):
         jdict['topic'] = self.topic
         jdict['field'] = self.field
 
-        jdict['lower-threshold'] = self.lower_threshold
-        jdict['upper-threshold'] = self.upper_threshold
+        # note that dynamoDB does not support float - str to keep precision
+        jdict['lower-threshold'] = str(self.lower_threshold)
+        jdict['upper-threshold'] = str(self.upper_threshold)
         jdict['alert-on-none'] = self.alert_on_none
 
         jdict['aggregation-period'] = self.aggregation_period
