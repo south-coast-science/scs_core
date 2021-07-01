@@ -99,6 +99,10 @@ class JSONable(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_dynamo_json(self):
+        return JSONify.as_dynamo_json(self)
+
+
     @abstractmethod
     def as_json(self, *args, **kwargs):
         pass

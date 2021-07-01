@@ -24,8 +24,8 @@ alert = Alert(None, 'my/topic', 'my.field', None, 100, True, aggregation_period,
 print(alert)
 print("-")
 
-print("as_dynamo_db...")
-jdict = JSONify.as_dynamo_json(alert)
+print("as_dynamo_json...")
+jdict = alert.as_dynamo_json()
 print(jdict)
 print("-")
 
