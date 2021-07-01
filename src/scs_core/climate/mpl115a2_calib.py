@@ -39,7 +39,7 @@ class MPL115A2Calib(PersistentJSONable):
         if not jdict:
             return None
 
-        calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+        calibrated_on = LocalizedDatetime.construct_from_iso8601(jdict.get('calibrated-on'))
         c25 = jdict.get('c25')
 
         return MPL115A2Calib(calibrated_on, c25)

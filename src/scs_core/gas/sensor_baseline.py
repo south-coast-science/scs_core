@@ -33,7 +33,7 @@ class SensorBaseline(JSONable):
             calibrated_on = LocalizedDatetime.construct_from_date(date)
 
         else:
-            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+            calibrated_on = LocalizedDatetime.construct_from_iso8601(jdict.get('calibrated-on'))
 
         offset = jdict.get('offset')
         environment = BaselineEnvironment.construct_from_jdict(jdict.get('env'))

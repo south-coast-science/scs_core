@@ -44,7 +44,7 @@ class Pt1000Calib(PersistentJSONable):
             calibrated_on = LocalizedDatetime.construct_from_date(date)
 
         else:
-            calibrated_on = Datum.datetime(jdict.get('calibrated-on'))
+            calibrated_on = LocalizedDatetime.construct_from_iso8601(jdict.get('calibrated-on'))
 
         v20 = jdict.get('v20')
 

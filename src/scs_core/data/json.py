@@ -11,6 +11,9 @@ import os
 import time
 
 from abc import abstractmethod
+from decimal import Decimal
+
+from scs_core.data.datum import Datum
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -37,6 +40,9 @@ class JSONify(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, JSONable):
             return obj.as_json()
+
+        if isinstance(obj, Decimal):
+            return float(obj) if Datum.is_float(str(obj)) else int(obj)
 
         return json.JSONEncoder.default(self, obj)
 

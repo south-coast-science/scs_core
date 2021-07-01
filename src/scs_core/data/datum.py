@@ -13,8 +13,6 @@ import struct
 
 from datetime import date
 
-from scs_core.data.datetime import LocalizedDatetime
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -161,19 +159,6 @@ class Datum(object):
             return None
 
         return date(year, month, day)
-
-
-    @staticmethod
-    def datetime(iso_datetime):
-        if iso_datetime is None:
-            return None
-
-        try:
-            value = LocalizedDatetime.construct_from_iso8601(iso_datetime)
-        except (TypeError, ValueError):
-            return None
-
-        return value
 
 
 # --------------------------------------------------------------------------------------------------------------------
