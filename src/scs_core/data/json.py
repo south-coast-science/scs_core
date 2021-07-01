@@ -23,6 +23,23 @@ class JSONify(json.JSONEncoder):
     classdocs
     """
 
+    @classmethod
+    def as_dynamo_json(cls, obj):
+        if isinstance(obj, JSONable):
+            return cls.as_dynamo_json(obj.as_json())
+
+        if isinstance(obj, dict):
+            return {key: cls.as_dynamo_json(value) for key, value in obj.items()}
+
+        if isinstance(obj, list):
+            return [cls.as_dynamo_json(value) for value in obj]
+
+        if Datum.is_numeric(obj):
+            return Decimal(str(obj))
+
+        return obj
+
+
     @staticmethod
     def dumps(obj, skipkeys=False, ensure_ascii=False, check_circular=True,
               allow_nan=True, cls=None, indent=None, separators=None,

@@ -84,6 +84,9 @@ class Datum(object):
         if value is None:
             return None
 
+        if isinstance(value, bool):
+            return None
+
         try:
             float(value)
         except ValueError:
