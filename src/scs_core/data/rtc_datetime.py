@@ -51,7 +51,7 @@ class RTCDatetime(JSONable):
         minute = int(fields[5])
         second = int(fields[6])
 
-        return RTCDatetime(year, month, day, weekday, hour, minute, second)
+        return cls(year, month, day, weekday, hour, minute, second)
 
 
     @classmethod
@@ -75,7 +75,7 @@ class RTCDatetime(JSONable):
         minute = rtc.minute
         second = rtc.second
 
-        return RTCDatetime(year, month, day, weekday, hour, minute, second)
+        return cls(year, month, day, weekday, hour, minute, second)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -105,7 +105,8 @@ class RTCDatetime(JSONable):
         # localized...
         year = RTCDatetime.CENTURY + self.year
 
-        rtc = datetime(year, self.month, self.day, self.hour, self.minute, self.second, 0, tzinfo=utc_zone)
+        rtc = datetime(year, month=self.month, day=self.day, hour=self.hour, minute=self.minute, second=self.second,
+                       tzinfo=utc_zone)
         utc = LocalizedDatetime(rtc)
 
         # ...to host zone...

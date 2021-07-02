@@ -150,7 +150,8 @@ class LocalizedDatetime(JSONable):
         zone_offset = timedelta(hours=0, minutes=0)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
+        localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=micros,
+                             tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -184,7 +185,8 @@ class LocalizedDatetime(JSONable):
         zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
+        localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=micros,
+                             tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
