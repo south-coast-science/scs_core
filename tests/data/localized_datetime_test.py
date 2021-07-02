@@ -6,6 +6,7 @@ Created on 13 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from datetime import date
 from datetime import timedelta
 from datetime import timezone
 
@@ -96,3 +97,11 @@ am_pm_time = '01:00 AM'
 print("am/pm: %s %s" % (am_pm_date, am_pm_time))
 loc = LocalizedDatetime.construct_from_date_time(parser, am_pm_date, am_pm_time)
 print(loc)
+
+print("construct_from_date...")
+my_date = date(2021, month=1, day=1)
+print(my_date)
+
+loc = LocalizedDatetime.construct_from_date(my_date)
+print(loc)
+
