@@ -99,7 +99,7 @@ loc = LocalizedDatetime.construct_from_date_time(parser, am_pm_date, am_pm_time)
 print(loc)
 
 print("construct_from_date...")
-my_date = date(2021, month=1, day=1)
+my_date = date(2021, month=1, day=2)
 print(my_date)
 
 loc = LocalizedDatetime.construct_from_date(my_date)

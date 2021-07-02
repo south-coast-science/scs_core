@@ -46,9 +46,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date(cls, date):
         zone = tzlocal.get_localzone()
-        print(zone)
-        localized = datetime(date.year, month=date.month, day=date.day, tzinfo=zone)
-        # localized = zone.localize(datetime(date.year, month=date.month, day=date.day, tzinfo=zone))
+        localized = zone.localize(datetime(date.year, month=date.month, day=date.day))
 
         return LocalizedDatetime(localized)
 
