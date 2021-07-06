@@ -46,7 +46,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date(cls, date):
         zone = tzlocal.get_localzone()
-        localized = zone.localize(datetime(date.year, date.month, date.day))
+        localized = zone.localize(datetime(date.year, month=date.month, day=date.day))
 
         return LocalizedDatetime(localized)
 
@@ -150,7 +150,8 @@ class LocalizedDatetime(JSONable):
         zone_offset = timedelta(hours=0, minutes=0)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
+        localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=micros,
+                             tzinfo=zone)
 
         return LocalizedDatetime(localized)
 
@@ -184,7 +185,8 @@ class LocalizedDatetime(JSONable):
         zone_offset = zone_sign * timedelta(hours=zone_hours, minutes=zone_mins)
         zone = timezone(zone_offset)
 
-        localized = datetime(year, month, day, hour, minute, second, micros, tzinfo=zone)
+        localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=micros,
+                             tzinfo=zone)
 
         return LocalizedDatetime(localized)
 

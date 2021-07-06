@@ -17,7 +17,6 @@ from collections import OrderedDict
 from tzlocal import get_localzone
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 from scs_core.location.timezone import Timezone
@@ -49,7 +48,7 @@ class TimezoneConf(PersistentJSONable):
         if not jdict:
             return None if default is None else cls(None, None)
 
-        set_on = Datum.datetime(jdict.get('set-on'))
+        set_on = LocalizedDatetime.construct_from_iso8601(jdict.get('set-on'))
         name = jdict.get('name')
 
         return cls(set_on, name)
