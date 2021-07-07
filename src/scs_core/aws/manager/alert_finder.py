@@ -193,7 +193,7 @@ class AlertFinderResponse(HTTPResponse):
         jdict['statusCode'] = self.status.value
 
         if self.alerts is not None:
-            jdict['alerts'] = self.alerts
+            jdict['Items'] = self.alerts
 
         if self.next_url is not None:
             jdict['next'] = self.next_url
