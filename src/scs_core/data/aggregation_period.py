@@ -75,7 +75,7 @@ class AggregationPeriod(JSONable):
 
 
     @abstractmethod
-    def cron(self, offset):
+    def cron(self, minutes_offset):
         pass
 
 
@@ -145,8 +145,8 @@ class DayAggregationPeriod(AggregationPeriod):
         return '00:00:00'
 
 
-    def cron(self, offset):
-        return '%d 0 * * *' % offset
+    def cron(self, minutes_offset):
+        return '%d 0 * * *' % minutes_offset
 
 
     def timedelta(self):
@@ -191,11 +191,11 @@ class HoursAggregationPeriod(AggregationPeriod):
 
 
     def checkpoint(self):
-        return '**:/%d:00' % self.interval
+        return '/%d:00:00' % self.interval
 
 
-    def cron(self, offset):
-        return '%d */%d * * *' % (offset, self.interval)
+    def cron(self, minutes_offset):
+        return '%d */%d * * *' % (minutes_offset, self.interval)
 
 
     def timedelta(self):
@@ -241,11 +241,11 @@ class MinutesAggregationPeriod(AggregationPeriod):
 
 
     def checkpoint(self):
-        return '**:**:/%d' % self.interval
+        return '**:/%d:00' % self.interval
 
 
-    def cron(self, offset):
-        minutes = [str(minute + offset) for minute in range(0, 60, self.interval)]
+    def cron(self, minutes_offset):
+        minutes = [str(minute + minutes_offset) for minute in range(0, 60, self.interval)]
 
         return '%s * * * *' % ','.join(minutes)
 
