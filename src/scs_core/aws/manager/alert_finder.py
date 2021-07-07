@@ -7,7 +7,7 @@ Created on 17 Jun 2021
 from collections import OrderedDict
 from http import HTTPStatus
 
-from scs_core.aws.data.alert import Alert
+from scs_core.aws.data.alert import AlertSpecification
 from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.data.datum import Datum
@@ -176,7 +176,7 @@ class AlertFinderResponse(HTTPResponse):
         alerts = []
         if jdict.get('Items'):
             for alert_jdict in jdict.get('Items'):
-                alerts.append(Alert.construct_from_jdict(alert_jdict))
+                alerts.append(AlertSpecification.construct_from_jdict(alert_jdict))
 
         next_url = jdict.get('next')
 

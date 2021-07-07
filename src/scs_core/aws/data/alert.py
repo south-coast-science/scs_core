@@ -17,6 +17,7 @@ https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-prima
 
 from collections import OrderedDict
 
+from scs_core.data.aggregation_period import AggregationPeriod
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -135,7 +136,7 @@ class AlertStatus(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Alert(JSONable):
+class AlertSpecification(JSONable):
     """
     classdocs
     """
@@ -172,7 +173,7 @@ class Alert(JSONable):
         upper_threshold = qsp.get(cls.UPPER_THRESHOLD)
         alert_on_none = qsp.get(cls.ALERT_ON_NONE, 'false').lower() == 'true'
 
-        aggregation_period = Timedelta.construct_from_jdict(qsp.get(cls.AGGREGATION_PERIOD))
+        aggregation_period = AggregationPeriod.construct_from_jdict(qsp.get(cls.AGGREGATION_PERIOD))    # TODO: fix!
         test_interval = Timedelta.construct_from_jdict(qsp.get(cls.TEST_INTERVAL))
 
         creator_email_address = qsp.get(cls.CREATOR_EMAIL_ADDRESS)
@@ -197,7 +198,7 @@ class Alert(JSONable):
         upper_threshold = jdict.get('upper-threshold')
         alert_on_none = jdict.get('alert-on-none')
 
-        aggregation_period = Timedelta.construct_from_jdict(jdict.get('aggregation-period'))
+        aggregation_period = AggregationPeriod.construct_from_jdict(jdict.get('aggregation-period'))
         test_interval = Timedelta.construct_from_jdict(jdict.get('test-interval'))
 
         creator_email_address = jdict.get('creator-email-address')
@@ -224,7 +225,7 @@ class Alert(JSONable):
         self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
         self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # Timedelta             updatable
+        self.__aggregation_period = aggregation_period              # AggregationPeriod     updatable
         self.__test_interval = test_interval                        # Timedelta             updatable
 
         self.__creator_email_address = creator_email_address        # string
@@ -281,9 +282,8 @@ class Alert(JSONable):
         return self.lower_threshold < self.upper_threshold
 
 
-    def may_update(self, other):
-        return self.id == other.id and self.topic == other.topic and self.field == other.field and \
-               self.creator_email_address == other.creator_email_address
+    def has_valid_aggregation_period(self):
+        return self.aggregation_period is not None and self.aggregation_period.is_valid()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -442,7 +442,9 @@ class Alert(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Alert:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, alert_on_none:%s, " \
-               "aggregation_period:%s, test_interval:%s, creator_email_address:%s, cc_list:%s, suspended:%s}" %  \
-               (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold, self.alert_on_none,
-                self.aggregation_period, self.test_interval, self.creator_email_address, self.cc_list, self.suspended)
+        return "AlertSpecification:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, " \
+               "alert_on_none:%s, aggregation_period:%s, test_interval:%s, creator_email_address:%s, " \
+               "cc_list:%s, suspended:%s}" %  \
+               (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold,
+                self.alert_on_none, self.aggregation_period, self.test_interval, self.creator_email_address,
+                self.cc_list, self.suspended)

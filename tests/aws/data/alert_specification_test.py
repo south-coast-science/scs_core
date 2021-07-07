@@ -8,22 +8,22 @@ Created on 17 Jun 2021
 
 import json
 
-from scs_core.aws.data.alert import Alert, AlertStatus
+from scs_core.aws.data.alert import AlertSpecification, AlertStatus
 
+from scs_core.data.aggregation_period import AggregationPeriod
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = Timedelta(days=1)
+aggregation_period = AggregationPeriod.construct(5, 'M')
 test_interval = Timedelta(minutes=5)
 
 print("1...")
 
-alert = Alert(None, 'my/topic', 'my.field', None, 100, True,
-              aggregation_period, test_interval, 'bruno.beloff@southcoastscience.com',
-              ["bbeloff@me.com", "hhopton@me.com"], False)
+alert = AlertSpecification(None, 'my/topic', 'my.field', None, 100, True, aggregation_period, test_interval,
+                           'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 
 jstr = JSONify.dumps(alert)
@@ -32,7 +32,7 @@ print(jstr)
 print("-")
 print("2...")
 
-alert = Alert.construct_from_jdict(json.loads(jstr))
+alert = AlertSpecification.construct_from_jdict(json.loads(jstr))
 alert.id = 123
 print(alert)
 
@@ -67,6 +67,6 @@ qsp = alert.params()
 print(qsp)
 print("-")
 
-alert = Alert.construct_from_qsp(qsp)
+alert = AlertSpecification.construct_from_qsp(qsp)
 print(alert)
 
