@@ -10,7 +10,6 @@ from http import HTTPStatus
 from scs_core.aws.data.alert import AlertSpecification
 from scs_core.aws.data.http_response import HTTPResponse
 
-from scs_core.data.datum import Datum
 from scs_core.data.str import Str
 
 from scs_core.sys.http_exception import HTTPException
@@ -23,7 +22,7 @@ class AlertFinder(object):
     classdocs
     """
 
-    __URL = ""
+    __URL = "https://a066wbide8.execute-api.us-west-2.amazonaws.com/default/AlertSpecification"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +34,7 @@ class AlertFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, topic_filter, path_filter, creator_filter):
-        request = AlertFinderRequest(None, topic_filter, path_filter, creator_filter)
+        request = AlertFinderRequest(topic_filter, path_filter, creator_filter)
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
@@ -43,11 +42,11 @@ class AlertFinder(object):
         return AlertFinderResponse.construct_from_jdict(response.json())
 
 
-    def retrieve(self, id_filter, creator_filter):
-        request = AlertFinderRequest(id_filter, None, None, creator_filter)
+    def retrieve(self, id):
+        path = '/'.join((self.__URL, str(id)))
         headers = {'Authorization': self.__auth.email_address}
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self.__http_client.get(path, headers=headers)
 
         return AlertFinderResponse.construct_from_jdict(response.json())
 
@@ -65,7 +64,6 @@ class AlertFinderRequest(object):
     classdocs
     """
 
-    ID_FILTER = 'id'
     TOPIC_FILTER = 'tag'
     PATH_FILTER = 'path'
     CREATOR_FILTER = 'creator'
@@ -77,21 +75,19 @@ class AlertFinderRequest(object):
         if not qsp:
             return None
 
-        id_filter = qsp.get(cls.ID_FILTER)
         topic_filter = qsp.get(cls.TOPIC_FILTER)
         path_filter = qsp.get(cls.PATH_FILTER)
         creator_filter = qsp.get(cls.CREATOR_FILTER)
 
-        return cls(id_filter, topic_filter, path_filter, creator_filter)
+        return cls(topic_filter, path_filter, creator_filter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id_filter, topic_filter, path_filter, creator_filter):
+    def __init__(self, topic_filter, path_filter, creator_filter):
         """
         Constructor
         """
-        self.__id_filter = Datum.int(id_filter)                     # int
         self.__topic_filter = topic_filter                          # string
         self.__path_filter = path_filter                            # string
         self.__creator_filter = creator_filter                      # string
@@ -100,11 +96,7 @@ class AlertFinderRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.id_filter is None and self.topic_filter is None and self.path_filter is None and \
-                self.creator_filter is None:
-            return False
-
-        if self.id_filter is not None and (self.topic_filter is not None or self.path_filter is not None):
+        if self.topic_filter is None and self.path_filter is None and self.creator_filter is None:
             return False
 
         return True
@@ -114,7 +106,6 @@ class AlertFinderRequest(object):
 
     def params(self):
         params = {
-            self.ID_FILTER: self.id_filter,
             self.TOPIC_FILTER: self.topic_filter,
             self.PATH_FILTER: self.path_filter,
             self.CREATOR_FILTER: self.creator_filter
@@ -124,11 +115,6 @@ class AlertFinderRequest(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def id_filter(self):
-        return self.__id_filter
-
 
     @property
     def topic_filter(self):
@@ -148,8 +134,8 @@ class AlertFinderRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertFinderRequest:{id_filter:%s, topic_filter:%s, path_filter:%s, creator_filter:%s}" % \
-               (self.id_filter, self.topic_filter, self.path_filter, self.creator_filter)
+        return "AlertFinderRequest:{topic_filter:%s, path_filter:%s, creator_filter:%s}" % \
+               (self.topic_filter, self.path_filter, self.creator_filter)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -166,7 +152,7 @@ class AlertFinderResponse(HTTPResponse):
         if not jdict:
             return None
 
-        # print("jdict: %s" % jdict)
+        print("AlertFinderResponse: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
