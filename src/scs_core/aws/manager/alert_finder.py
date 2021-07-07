@@ -152,7 +152,7 @@ class AlertFinderResponse(HTTPResponse):
         if not jdict:
             return None
 
-        print("AlertFinderResponse: %s" % jdict)
+        # print("AlertFinderResponse: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
