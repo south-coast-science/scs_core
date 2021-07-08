@@ -3,7 +3,7 @@ Created on 7 Jul 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Document example:
+document example:
 {"interval": 1, "units": "D"}
 """
 
@@ -267,5 +267,3 @@ class MinutesAggregationPeriod(AggregationPeriod):
     @property
     def units(self):
         return 'M'
-
-
