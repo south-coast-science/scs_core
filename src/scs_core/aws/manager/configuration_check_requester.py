@@ -20,7 +20,7 @@ class ConfigurationCheckRequester(object):
     classdocs
     """
 
-    __URL = "https://q272jk9le5.execute-api.us-west-2.amazonaws.com/default/MQTTConfigQueuer"
+    __URL = "https://5nkrlhaq69.execute-api.us-west-2.amazonaws.com/default/MQTTConfigQueuer"
 
     # ----------------------------------------------------------------------------------------------------------------
 

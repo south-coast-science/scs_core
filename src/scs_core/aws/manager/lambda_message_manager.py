@@ -45,10 +45,10 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, end, include_wrapper, rec_only):
+    def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only):
         for back_off in (1, 10, 30, 60):
             start = end - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start, end, False, None, include_wrapper, rec_only,
+            documents = list(self.find_for_topic(topic, start, end, path, False, None, include_wrapper, rec_only,
                                                  False, False))
 
             if documents:
@@ -59,11 +59,11 @@ class MessageManager(object):
         return None
 
 
-    def find_for_topic(self, topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
+    def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder):
         request_path = '/topicMessages'
 
-        request = MessageRequest(topic, start, end, fetch_last, checkpoint, include_wrapper, rec_only,
+        request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                  min_max, exclude_remainder)
         self.__logger.debug(request)
 
@@ -117,6 +117,7 @@ class MessageRequest(object):
     TOPIC = 'topic'
     START = 'startTime'
     END = 'endTime'
+    PATH = 'path'
     FETCH_LAST_WRITTEN = 'fetchLastWrittenData'
     CHECKPOINT = 'checkpoint'
     INCLUDE_WRAPPER = 'includeWrapper'
@@ -163,6 +164,7 @@ class MessageRequest(object):
         end = LocalizedDatetime.construct_from_iso8601(qsp.get(cls.END))
 
         # optional...
+        path = qsp.get(cls.PATH)
         fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false').lower() == 'true'
         checkpoint = qsp.get(cls.CHECKPOINT)
         include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false').lower() == 'true'
@@ -173,13 +175,13 @@ class MessageRequest(object):
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
-        return cls(topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only,
+        return cls(topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
                    min_max, exclude_remainder)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, start, end, fetch_last_written, checkpoint, include_wrapper, rec_only,
+    def __init__(self, topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
                  min_max, exclude_remainder):
         """
         Constructor
@@ -188,6 +190,7 @@ class MessageRequest(object):
         self.__start = start                                        # LocalizedDatetime
         self.__end = end                                            # LocalizedDatetime
 
+        self.__path = path                                          # string
         self.__fetch_last_written = bool(fetch_last_written)        # bool
         self.__checkpoint = checkpoint                              # string
         self.__include_wrapper = bool(include_wrapper)              # bool
@@ -216,6 +219,9 @@ class MessageRequest(object):
         if self.rec_only and self.fetch_last_written:
             return False
 
+        if self.rec_only and self.path:
+            return False
+
         if self.rec_only and self.min_max:
             return False
 
@@ -231,12 +237,12 @@ class MessageRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, start):
-        return MessageRequest(self.topic, start, self.end, self.fetch_last_written, self.checkpoint,
+        return MessageRequest(self.topic, start, self.end, self.path, self.fetch_last_written, self.checkpoint,
                               self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder).params()
 
 
     def change_params(self, start, end):
-        return MessageRequest(self.topic, start, end, self.fetch_last_written, self.checkpoint,
+        return MessageRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
                               self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
 
 
@@ -246,6 +252,9 @@ class MessageRequest(object):
             self.START: self.start.utc().as_iso8601(include_millis=True),
             self.END: self.end.utc().as_iso8601(include_millis=True)
         }
+
+        if self.path is not None:
+            params[self.PATH] = self.path
 
         if self.fetch_last_written:
             params[self.FETCH_LAST_WRITTEN] = 'true'
@@ -299,6 +308,11 @@ class MessageRequest(object):
 
 
     @property
+    def path(self):
+        return self.__path
+
+
+    @property
     def fetch_last_written(self):
         return self.__fetch_last_written
 
@@ -326,9 +340,9 @@ class MessageRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageRequest:{topic:%s, start:%s, end:%s, fetch_last_written:%s, checkpoint:%s, " \
+        return "MessageRequest:{topic:%s, start:%s, end:%s, path:%s, fetch_last_written:%s, checkpoint:%s, " \
                "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s}" % \
-               (self.topic, self.start, self.end, self.fetch_last_written, self.__checkpoint,
+               (self.topic, self.start, self.end, self.path, self.fetch_last_written, self.__checkpoint,
                 self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
 
 

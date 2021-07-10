@@ -54,6 +54,16 @@ class PIDCalib(SensorCalib):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def set_defaults(self):
+        pass                                # PID may have null values
+
+
+    def set_sens_mv_from_sens_na(self):
+        pass                                # sensitivity nA data is not available
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 

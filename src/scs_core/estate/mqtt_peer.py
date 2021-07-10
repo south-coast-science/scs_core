@@ -190,13 +190,6 @@ class MQTTPeerSet(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def peer(self, hostname):
-        try:
-            return self.__peers[hostname]
-        except KeyError:
-            return None
-
-
     def subset(self, hostname_substring=None, topic_substring=None):
         subset = OrderedDict()
 
@@ -210,6 +203,21 @@ class MQTTPeerSet(PersistentJSONable):
             subset[peer.hostname] = peer
 
         return MQTTPeerSet(subset)
+
+
+    def peer(self, hostname):
+        try:
+            return self.__peers[hostname]
+        except KeyError:
+            return None
+
+
+    def peer_by_tag(self, tag):
+        for peer in self.__peers.values():
+            if peer.tag == tag:
+                return peer
+
+        return None
 
 
     @property
