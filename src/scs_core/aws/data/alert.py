@@ -314,7 +314,7 @@ class AlertSpecification(JSONable):
             self.ID: 'null' if self.id is None else self.id,
             self.TOPIC: self.topic,
             self.FIELD: self.field,
-            self.AGGREGATION_PERIOD: self.aggregation_period.as_json(),
+            self.AGGREGATION_PERIOD: self.aggregation_period.as_json(),     # TODO: fix aggregation_period!
             self.CREATOR_EMAIL_ADDRESS: self.creator_email_address
         }
 
