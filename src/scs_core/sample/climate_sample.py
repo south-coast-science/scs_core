@@ -9,7 +9,7 @@ example document:
 
 from collections import OrderedDict
 
-from scs_core.climate.mpl115a2_datum import MPL115A2Datum
+from scs_core.climate.pressure_datum import PressureDatum
 from scs_core.climate.sht_datum import SHTDatum
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -26,7 +26,7 @@ class ClimateSample(Sample):
     """
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         if not jdict:
             return None
 
@@ -40,7 +40,7 @@ class ClimateSample(Sample):
         sht_datum = SHTDatum(val.get('hmd'), val.get('tmp'))
 
         node = val.get('bar')
-        barometer_datum = None if node is None else MPL115A2Datum(node.get('pA'), node.get('p0'), None, None)
+        barometer_datum = None if node is None else PressureDatum(node.get('pA'), node.get('p0'), None)
 
         return cls(tag, rec, sht_datum, barometer_datum, exegeses=exegeses)
 
@@ -54,7 +54,7 @@ class ClimateSample(Sample):
         super().__init__(tag, rec, exegeses=exegeses)
 
         self.__sht_datum = sht_datum                                # SHT31Datum
-        self.__barometer_datum = barometer_datum                    # MPL115A2Datum
+        self.__barometer_datum = barometer_datum                    # PressureDatum
 
 
     # ----------------------------------------------------------------------------------------------------------------

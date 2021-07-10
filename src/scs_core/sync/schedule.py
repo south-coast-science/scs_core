@@ -45,16 +45,16 @@ class Schedule(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         if not jdict:
-            return None if default is None else Schedule(OrderedDict())
+            return cls(OrderedDict()) if shell else None
 
         items = OrderedDict()
 
         for name, value_jdict in jdict.items():
             items[name] = ScheduleItem.construct_from_jdict(name, value_jdict)
 
-        return Schedule(cls.__sorted(items))
+        return cls(cls.__sorted(items))
 
 
     # ----------------------------------------------------------------------------------------------------------------
