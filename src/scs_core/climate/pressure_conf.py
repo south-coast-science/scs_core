@@ -1,12 +1,10 @@
 """
-Created on 21 Jun 2018
+Created on 9 Jul 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies fixed altitude or "auto" (altitude provided by GPS receiver), or None
-
 example JSON:
-{"altitude": "auto"}
+{"model": "ICP", "altitude": 100}
 """
 
 from collections import OrderedDict
@@ -14,15 +12,14 @@ from collections import OrderedDict
 from scs_core.data.json import PersistentJSONable
 
 
-# TODO: delete this class
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPL115A2Conf(PersistentJSONable):
+class PressureConf(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "mpl115a2_conf.json"
+    __FILENAME = "pressure_conf.json"
 
     @classmethod
     def persistence_location(cls):
@@ -34,31 +31,38 @@ class MPL115A2Conf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return None
+            return cls(None, None) if default else None
 
+        model = jdict.get('model')
         altitude = jdict.get('altitude')
 
-        return cls(altitude)
+        return cls(model, altitude)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, altitude):
+    def __init__(self, model, altitude):
         """
         Constructor
         """
-        self.__altitude = altitude              # int, "auto" or None
+        self.__model = model                    # string
+        self.__altitude = altitude              # int, 'GPS' or None
 
 
     def __eq__(self, other):
         try:
-            return self.altitude == other.altitude
+            return self.model == other.model or self.altitude == other.altitude
 
         except (TypeError, AttributeError):
             return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def model(self):
+        return self.__model
+
 
     @property
     def altitude(self):
@@ -70,6 +74,7 @@ class MPL115A2Conf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['model'] = self.__model
         jdict['altitude'] = self.__altitude
 
         return jdict
@@ -78,4 +83,4 @@ class MPL115A2Conf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MPL115A2Conf:{altitude:%s}" % self.altitude
+        return "PressureConf(core):{model:%s, altitude:%s}" % (self.model, self.altitude)
