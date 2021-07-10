@@ -33,10 +33,10 @@ class Node(ABC):
 
     @staticmethod
     def ipv4_address():
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
         try:
-            s.connect(('192.168.0.1', 1))  # host does not need to be reachable
+            s.connect(('192.168.0.1', 1))           # host does not need to be reachable
             dot_decimal = s.getsockname()[0]
 
         except OSError:

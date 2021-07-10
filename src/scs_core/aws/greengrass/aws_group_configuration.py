@@ -18,7 +18,6 @@ from scs_core.aws.greengrass.aws_group import AWSGroup
 from scs_core.aws.greengrass.gg_errors import ProjectMissingError
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
 
@@ -46,7 +45,7 @@ class AWSGroupConfiguration(PersistentJSONable):
             return None
 
         group_name = jdict.get('group-name')
-        init_time = Datum.datetime(jdict.get('time-initiated'))
+        init_time = LocalizedDatetime.construct_from_iso8601(jdict.get('time-initiated'))
         ml = jdict.get('ml')
         unix_group = jdict.get('unix-group')
 

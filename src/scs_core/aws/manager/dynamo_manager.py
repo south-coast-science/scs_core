@@ -12,8 +12,6 @@ from botocore.exceptions import ClientError
 from scs_core.sys.logging import Logging
 
 
-# TODO: where does sorting happen?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class DynamoManager(object):
@@ -29,6 +27,7 @@ class DynamoManager(object):
 
         self.__logger = Logging.getLogger()
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, table_name, primary_key):
@@ -41,6 +40,7 @@ class DynamoManager(object):
         else:
             return response['Item'] if 'Item' in response else None
 
+
     def exists(self, table_name, primary_key_name, primary_key):
         table = self.__dynamo_resource.Table(table_name)
         try:
@@ -52,6 +52,7 @@ class DynamoManager(object):
         else:
             return response['Items'] if 'Items' in response else None
 
+
     def add(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -59,6 +60,7 @@ class DynamoManager(object):
             Item=item
         )
         self.__logger.info(response)
+
 
     def delete(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
@@ -75,6 +77,7 @@ class DynamoManager(object):
                 raise
 
         return response
+
 
     def retrieve_all(self, table_name, lek=None):
         data_dict = []
@@ -109,7 +112,8 @@ class DynamoManager(object):
 
         return data_dict, lek
 
-    def retrieve_filtered(self, table_name, filter_key, exact, filter_value, lek=None):
+
+    def retrieve_filtered(self, table_name, filter_key, filter_value, exact=False, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
@@ -159,6 +163,7 @@ class DynamoManager(object):
 
         return data_dict, lek
 
+
     def retrieve_all_pk(self, table_name, pk, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
@@ -198,7 +203,8 @@ class DynamoManager(object):
 
         return data_dict, lek
 
-    def retrieve_filtered_pk(self, table_name, pk, exact, tag_filter, lek=None):
+
+    def retrieve_filtered_pk(self, table_name, pk, tag_filter, exact=False, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
 
@@ -218,7 +224,7 @@ class DynamoManager(object):
                     FilterExpression=Attr(pk).eq(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk}
-            )
+                )
         else:
             if lek:
                 response = table.scan(
@@ -232,7 +238,7 @@ class DynamoManager(object):
                     FilterExpression=Attr(pk).contains(tag_filter),
                     ProjectionExpression='#pk',
                     ExpressionAttributeNames={'#pk': pk}
-            )
+                )
 
         if "Items" not in response:
             return None, None
@@ -257,6 +263,7 @@ class DynamoManager(object):
                 lek = None
 
         return data_dict, lek
+
 
     def retrieve_double_filtered(self, table_name, first_key, first_value, second_key, second_value, lek=None):
         data_dict = []
@@ -294,6 +301,7 @@ class DynamoManager(object):
                 lek = None
 
         return data_dict, lek
+
 
     def retrieve_double_filtered_pk(self, table_name, first_key, first_value, second_key, second_value, lek=None):
         data_dict = []
@@ -335,6 +343,7 @@ class DynamoManager(object):
 
         return data_dict, lek
 
+
     def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
@@ -373,3 +382,15 @@ class DynamoManager(object):
                 lek = None
 
         return data_dict, lek
+
+
+    def update_item(self, table_name, key, update_expression, eav):
+        table = self.__dynamo_resource.Table(table_name)
+        response = table.update_item(
+            Key=key,
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=eav,
+            ReturnValues="UPDATED_NEW"
+        )
+
+        return response

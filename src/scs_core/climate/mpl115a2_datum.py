@@ -8,17 +8,13 @@ https://github.com/hackscribble/microbit-MPL115A1-barometer/blob/master/microbit
 https://gist.github.com/cubapp/23dd4e91814a995b8ff06f406679abcf
 """
 
-from collections import OrderedDict
-
+from scs_core.climate.pressure_datum import PressureDatum
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
-
-from scs_core.sample.sample import Sample
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MPL115A2Datum(JSONable):
+class MPL115A2Datum(PressureDatum):
     """
     NXP MPL115A2 digital barometer - data interpretation
     """
@@ -36,14 +32,6 @@ class MPL115A2Datum(JSONable):
     @classmethod
     def __actual_press(cls, p_comp):
         return p_comp * cls.__PRESSURE_CONV + 50.0
-
-
-    @classmethod
-    def __sl_press(cls, actual_press, temp, altitude):
-        if temp is None or altitude is None:
-            return None
-
-        return (actual_press * 9.80665 * altitude) / (287 * (273 + temp + (altitude / 400))) + actual_press
 
 
     @classmethod
@@ -69,7 +57,7 @@ class MPL115A2Datum(JSONable):
         temp = cls.__temp(c25, t_adc)
 
         actual_press = cls.__actual_press(p_comp)
-        sl_press = cls.__sl_press(actual_press, temp, altitude)
+        sl_press = cls._sl_press(actual_press, temp, altitude)
 
         reported_temp = temp if include_temp else None
 
@@ -82,54 +70,15 @@ class MPL115A2Datum(JSONable):
         """
         Constructor
         """
-        self.__actual_press = Datum.float(actual_press, 1)      # kPa
-        self.__sl_press = Datum.float(sl_press, 1)              # kPa
+        super().__init__(actual_press, sl_press, temp)
 
         self.__t_adc = Datum.int(t_adc)                         # T adc count
-        self.__temp = Datum.float(temp, 1)                      # °C
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_sample(self, tag, rec):                          # TODO: remove as_sample(..)
-        return Sample(tag, rec, values=self.as_json())
-
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['pA'] = self.actual_press
-
-        if self.sl_press is not None:
-            jdict['p0'] = self.sl_press
-
-        if self.temp is not None:
-            jdict['tmp'] = self.temp
-
-        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def c25(self, ref_temp):
         return MPL115A2Datum.__c25(ref_temp, self.__t_adc)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def actual_press(self):
-        return self.__actual_press
-
-
-    @property
-    def sl_press(self):
-        return self.__sl_press
-
-
-    @property
-    def temp(self):
-        return self.__temp
 
 
     # ----------------------------------------------------------------------------------------------------------------
