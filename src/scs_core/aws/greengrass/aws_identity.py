@@ -38,7 +38,7 @@ class AWSIdentity(PersistentJSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         if jdict is None:
             return None
 

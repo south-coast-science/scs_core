@@ -18,7 +18,7 @@ class PIDCalib(SensorCalib):
     """
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         if not jdict:
             return None
 

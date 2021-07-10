@@ -31,8 +31,8 @@ class ClientAuth(PersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, encryption_key=None, default=True):
-        auth = super().load(manager, encryption_key=encryption_key, default=default)
+    def load(cls, manager, encryption_key=None, shell=False):
+        auth = super().load(manager, encryption_key=encryption_key, shell=shell)
 
         if auth is None:
             return None
@@ -56,7 +56,7 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         if not jdict:
             return None
 

@@ -25,7 +25,7 @@ class SensorCalib(ABC, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         from scs_core.gas.a4.a4_calib import A4Calib            # late import
         from scs_core.gas.pid.pid_calib import PIDCalib         # late import
 
