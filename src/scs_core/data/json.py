@@ -118,17 +118,17 @@ class JSONReport(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load(cls, filename, default=True):
+    def load(cls, filename, shell=False):
         if filename is None:
             return None
 
         if not os.path.isfile(filename):
-            return cls.construct_from_jdict(None, default=default)
+            return cls.construct_from_jdict(None, shell=shell)
 
         with open(filename, 'r') as f:
             jstr = f.read()
 
-        return cls.construct_from_jdict(cls.loads(jstr), default=default)
+        return cls.construct_from_jdict(cls.loads(jstr), shell=shell)
 
 
     @classmethod
@@ -141,7 +141,7 @@ class JSONReport(JSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         return JSONReport()
 
 
@@ -232,14 +232,14 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, encryption_key=None, default=True):
+    def load(cls, manager, encryption_key=None, shell=False):
         try:
             dirname, filename = cls.persistence_location()
         except NotImplementedError:
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, default=default)
+            return cls.construct_from_jdict(None, shell=shell)
 
         try:
             jstr = manager.load(dirname, filename, encryption_key=encryption_key)
@@ -248,7 +248,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
             time.sleep(cls.__SECURITY_DELAY)
             raise ex
 
-        return cls.construct_from_jdict(cls.loads(jstr), default=default)
+        return cls.construct_from_jdict(cls.loads(jstr), shell=shell)
 
 
     @classmethod
@@ -265,7 +265,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict, default=True):
+    def construct_from_jdict(cls, jdict, shell=False):
         return PersistentJSONable()
 
 
@@ -304,18 +304,18 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, name=None, encryption_key=None, default=True):
+    def load(cls, manager, name=None, encryption_key=None, shell=False):
         try:
             dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, name=name, default=default)
+            return cls.construct_from_jdict(None, name=name, shell=shell)
 
         jstr = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(cls.loads(jstr), name=name, default=default)
+        return cls.construct_from_jdict(cls.loads(jstr), name=name, shell=shell)
 
 
     @classmethod
@@ -332,7 +332,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     @abstractmethod
-    def construct_from_jdict(cls, jdict, name=None, default=True):
+    def construct_from_jdict(cls, jdict, name=None, shell=False):
         return PersistentJSONable()
 
 
