@@ -31,7 +31,7 @@ class PressureConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None) if shell else None
+            return cls(None, None) if skeleton else None
 
         model = jdict.get('model')
         altitude = jdict.get('altitude')

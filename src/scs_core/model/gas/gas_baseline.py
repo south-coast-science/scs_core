@@ -37,7 +37,7 @@ class GasBaseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls({}) if shell else None
+            return cls({}) if skeleton else None
 
         sensor_baselines = {}
 

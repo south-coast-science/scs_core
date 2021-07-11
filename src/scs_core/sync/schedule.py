@@ -47,7 +47,7 @@ class Schedule(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(OrderedDict()) if shell else None
+            return cls(OrderedDict()) if skeleton else None
 
         items = OrderedDict()
 
