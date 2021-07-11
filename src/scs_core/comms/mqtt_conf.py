@@ -33,7 +33,7 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return MQTTConf(False, None, False) if shell else None
+            return MQTTConf(False, None, False) if skeleton else None
 
         inhibit_publishing = jdict.get('inhibit-publishing', False)
         report_file = jdict.get('report-file', None)

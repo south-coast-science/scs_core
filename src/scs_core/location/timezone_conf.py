@@ -46,7 +46,7 @@ class TimezoneConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None) if shell else None
+            return cls(None, None) if skeleton else None
 
         set_on = LocalizedDatetime.construct_from_iso8601(jdict.get('set-on'))
         name = jdict.get('name')
