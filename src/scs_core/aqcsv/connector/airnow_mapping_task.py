@@ -44,7 +44,7 @@ class AirNowMappingTaskList(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return AirNowMappingTaskList({}) if shell else None
+            return AirNowMappingTaskList({}) if skeleton else None
 
         tasks = {literal_eval(key): MappingTask.construct_from_jdict(task) for key, task in jdict.get('tasks').items()}
 

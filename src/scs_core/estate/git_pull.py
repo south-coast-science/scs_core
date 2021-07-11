@@ -84,7 +84,7 @@ class GitPull(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, False, [], [], []) if shell else None
+            return cls(None, False, [], [], []) if skeleton else None
 
         pulled_on = LocalizedDatetime.construct_from_jdict(jdict.get('pulled-on'))
         success = jdict.get('success')

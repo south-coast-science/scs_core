@@ -34,7 +34,7 @@ class SCD30Baseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(SensorBaseline(None, 0, None)) if shell else None
+            return cls(SensorBaseline(None, 0, None)) if skeleton else None
 
         field = 'baseline' if 'baseline' in jdict else 'CO2'                        # TODO: deprecated field name
         sensor_baseline = SensorBaseline.construct_from_jdict(jdict.get(field))
