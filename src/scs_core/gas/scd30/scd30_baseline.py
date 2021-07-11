@@ -32,7 +32,7 @@ class SCD30Baseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, shell=False):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(SensorBaseline(None, 0, None)) if shell else None
 

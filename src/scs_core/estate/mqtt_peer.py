@@ -115,8 +115,8 @@ class MQTTPeerSet(PersistentJSONable):
 
 
     @classmethod
-    def load(cls, manager, encryption_key=None, shell=False):
-        instance = super().load(manager, encryption_key=encryption_key, shell=shell)
+    def load(cls, manager, encryption_key=None, skeleton=False):
+        instance = super().load(manager, encryption_key=encryption_key, skeleton=skeleton)
 
         if instance is None:
             instance = cls(OrderedDict())
@@ -127,7 +127,7 @@ class MQTTPeerSet(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, shell=False):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return None
 
