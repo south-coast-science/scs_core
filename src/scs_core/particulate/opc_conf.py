@@ -33,7 +33,7 @@ class OPCConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, name=None, shell=False):
+    def construct_from_jdict(cls, jdict, name=None, skeleton=False):
         if not jdict:
             return None
 
