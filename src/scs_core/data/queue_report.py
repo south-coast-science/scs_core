@@ -20,7 +20,7 @@ class QueueReport(JSONReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, shell=False):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return QueueReport(0, ClientStatus.WAITING, False)
 
