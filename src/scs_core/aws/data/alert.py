@@ -160,31 +160,6 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_qsp(cls, qsp):
-        if not qsp:
-            return None
-
-        id = qsp.get(cls.ID)
-
-        topic = qsp.get(cls.TOPIC)
-        field = qsp.get(cls.FIELD)
-
-        lower_threshold = qsp.get(cls.LOWER_THRESHOLD)
-        upper_threshold = qsp.get(cls.UPPER_THRESHOLD)
-        alert_on_none = qsp.get(cls.ALERT_ON_NONE, 'false').lower() == 'true'
-
-        aggregation_period = AggregationPeriod.construct_from_jdict(qsp.get(cls.AGGREGATION_PERIOD))    # TODO: fix!
-        test_interval = Timedelta.construct_from_jdict(qsp.get(cls.TEST_INTERVAL))
-
-        creator_email_address = qsp.get(cls.CREATOR_EMAIL_ADDRESS)
-        cc_list = [qsp[name] for name in sorted(qsp.keys()) if name.startswith(cls.CC_LIST)]
-        suspended = qsp.get(cls.SUSPENDED, 'false').lower() == 'true'
-
-        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, creator_email_address, cc_list, suspended)
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -309,36 +284,6 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def params(self):
-        params = {
-            self.ID: 'null' if self.id is None else self.id,
-            self.TOPIC: self.topic,
-            self.FIELD: self.field,
-            self.AGGREGATION_PERIOD: self.aggregation_period.as_json(),     # TODO: fix aggregation_period!
-            self.CREATOR_EMAIL_ADDRESS: self.creator_email_address
-        }
-
-        if self.alert_on_none:
-            params[self.ALERT_ON_NONE] = 'true'
-
-        if self.lower_threshold is not None:
-            params[self.LOWER_THRESHOLD] = self.lower_threshold
-
-        if self.upper_threshold is not None:
-            params[self.UPPER_THRESHOLD] = self.upper_threshold
-
-        if self.test_interval is not None:
-            params[self.TEST_INTERVAL] = self.test_interval.as_json()
-
-        for i in range(len(self.cc_list)):
-            params[self.CC_LIST + str(i)] = self.cc_list[i]
-
-        if self.suspended:
-            params[self.SUSPENDED] = 'true'
-
-        return params
-
-
     def as_json(self):
         jdict = OrderedDict()
 
@@ -351,7 +296,7 @@ class AlertSpecification(JSONable):
         jdict['upper-threshold'] = self.upper_threshold
         jdict['alert-on-none'] = self.alert_on_none
 
-        jdict['aggregation-period'] = self.aggregation_period
+        jdict['aggregation-period'] = self.aggregation_period.as_json()
         jdict['test-interval'] = self.test_interval
 
         jdict['creator-email-address'] = self.creator_email_address

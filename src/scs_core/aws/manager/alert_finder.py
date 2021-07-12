@@ -43,12 +43,29 @@ class AlertFinder(object):
 
 
     def retrieve(self, id):
-        path = '/'.join((self.__URL, str(id)))
+        url = '/'.join((self.__URL, str(id)))
         headers = {'Authorization': self.__auth.email_address}
 
-        response = self.__http_client.get(path, headers=headers)
+        http_response = self.__http_client.get(url, headers=headers)
+        response = AlertFinderResponse.construct_from_jdict(http_response.json())
 
-        return AlertFinderResponse.construct_from_jdict(response.json())
+        return response.alerts[0] if response.alerts else None
+
+
+    def create(self, alert):
+        headers = {'Authorization': self.__auth.email_address}
+
+        http_response = self.__http_client.post(self.__URL, headers=headers, json=alert.as_json())
+        response = AlertFinderResponse.construct_from_jdict(http_response.json())
+
+        return response.alerts[0] if response.alerts else None
+
+
+    def delete(self, id):
+        url = '/'.join((self.__URL, str(id)))
+        headers = {'Authorization': self.__auth.email_address}
+
+        self.__http_client.delete(url, headers=headers)
 
 
     # ----------------------------------------------------------------------------------------------------------------
