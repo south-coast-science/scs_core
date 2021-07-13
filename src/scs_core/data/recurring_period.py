@@ -20,7 +20,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AggregationPeriod(JSONable):
+class RecurringPeriod(JSONable):
     """
     classdocs
     """
@@ -42,13 +42,13 @@ class AggregationPeriod(JSONable):
     @classmethod
     def construct(cls, interval, units):
         if units == 'D':
-            return DayAggregationPeriod(interval)
+            return RecurringDay(interval)
 
         if units == 'H':
-            return HoursAggregationPeriod(interval)
+            return RecurringHours(interval)
 
         if units == 'M':
-            return MinutesAggregationPeriod(interval)
+            return RecurringMinutes(interval)
 
         raise ValueError(units)
 
@@ -60,6 +60,11 @@ class AggregationPeriod(JSONable):
         Constructor
         """
         self.__interval = int(interval)                     # int
+
+
+    @abstractmethod
+    def __lt__(self, other):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -121,7 +126,7 @@ class AggregationPeriod(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DayAggregationPeriod(AggregationPeriod):
+class RecurringDay(RecurringPeriod):
     """
     classdocs
     """
@@ -133,6 +138,13 @@ class DayAggregationPeriod(AggregationPeriod):
         Constructor
         """
         super().__init__(interval)
+
+
+    def __lt__(self, other):
+        if isinstance(other, RecurringHours) or isinstance(other, RecurringMinutes):
+            return False
+
+        return self.interval < other.interval
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -168,7 +180,7 @@ class DayAggregationPeriod(AggregationPeriod):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class HoursAggregationPeriod(AggregationPeriod):
+class RecurringHours(RecurringPeriod):
     """
     classdocs
     """
@@ -182,6 +194,16 @@ class HoursAggregationPeriod(AggregationPeriod):
         Constructor
         """
         super().__init__(interval)
+
+
+    def __lt__(self, other):
+        if isinstance(other, RecurringDay):
+            return True
+
+        if isinstance(other, RecurringMinutes):
+            return False
+
+        return self.interval < other.interval
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -218,7 +240,7 @@ class HoursAggregationPeriod(AggregationPeriod):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MinutesAggregationPeriod(AggregationPeriod):
+class RecurringMinutes(RecurringPeriod):
     """
     classdocs
     """
@@ -232,6 +254,13 @@ class MinutesAggregationPeriod(AggregationPeriod):
         Constructor
         """
         super().__init__(interval)
+
+
+    def __lt__(self, other):
+        if isinstance(other, RecurringDay) or isinstance(other, RecurringHours):
+            return True
+
+        return self.interval < other.interval
 
 
     # ----------------------------------------------------------------------------------------------------------------

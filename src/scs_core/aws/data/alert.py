@@ -17,11 +17,10 @@ https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-prima
 
 from collections import OrderedDict
 
-from scs_core.data.aggregation_period import AggregationPeriod
+from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
-from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -173,8 +172,8 @@ class AlertSpecification(JSONable):
         upper_threshold = jdict.get('upper-threshold')
         alert_on_none = jdict.get('alert-on-none')
 
-        aggregation_period = AggregationPeriod.construct_from_jdict(jdict.get('aggregation-period'))
-        test_interval = Timedelta.construct_from_jdict(jdict.get('test-interval'))
+        aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
+        test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
         creator_email_address = jdict.get('creator-email-address')
         cc_list = jdict.get('cc-list')
@@ -200,8 +199,8 @@ class AlertSpecification(JSONable):
         self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
         self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # AggregationPeriod     updatable
-        self.__test_interval = test_interval                        # Timedelta             updatable
+        self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
+        self.__test_interval = test_interval                        # RecurringPeriod       updatable
 
         self.__creator_email_address = creator_email_address        # string
         self.__cc_list = cc_list                                    # array of string       updatable
@@ -241,6 +240,9 @@ class AlertSpecification(JSONable):
             return False
 
         if not self.has_valid_thresholds():
+            return False
+
+        if self.test_interval is not None and not self.test_interval < self.aggregation_period:
             return False
 
         return True
@@ -284,6 +286,26 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def checkpoint(self):     # TODO: needs an offset
+        return self.aggregation_period.checkpoint()
+
+
+    def cron(self, minutes_offset):
+        return self.test_interval.cron(minutes_offset) if self.test_interval else \
+            self.aggregation_period.cron(minutes_offset)
+
+
+    def timedelta(self):
+        return self.aggregation_period.timedelta()
+
+
+    def end_datetime(self, origin: LocalizedDatetime):
+        return self.test_interval.end_datetime(origin) if self.test_interval else \
+            self.aggregation_period.end_datetime(origin)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -297,7 +319,7 @@ class AlertSpecification(JSONable):
         jdict['alert-on-none'] = self.alert_on_none
 
         jdict['aggregation-period'] = self.aggregation_period.as_json()
-        jdict['test-interval'] = self.test_interval
+        jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
         jdict['creator-email-address'] = self.creator_email_address
         jdict['cc-list'] = self.cc_list
