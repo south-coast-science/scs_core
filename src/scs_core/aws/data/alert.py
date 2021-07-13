@@ -140,22 +140,6 @@ class AlertSpecification(JSONable):
     classdocs
     """
 
-    ID = 'id'
-
-    TOPIC = 'topic'
-    FIELD = 'field'
-
-    LOWER_THRESHOLD = 'lowerThreshold'
-    UPPER_THRESHOLD = 'upperThreshold'
-    ALERT_ON_NONE = 'alertOnNone'
-
-    AGGREGATION_PERIOD = 'aggregationPeriod'
-    TEST_INTERVAL = 'testInterval'
-
-    CREATOR_EMAIL_ADDRESS = 'creatorEmailAddress'
-    CC_LIST = 'ccList.'
-    SUSPENDED = 'suspended'
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -242,8 +226,8 @@ class AlertSpecification(JSONable):
         if not self.has_valid_thresholds():
             return False
 
-        if self.test_interval is not None and not self.test_interval < self.aggregation_period:
-            return False
+        # if self.test_interval is not None and not self.test_interval < self.aggregation_period:
+        #     return False
 
         return True
 
@@ -261,6 +245,14 @@ class AlertSpecification(JSONable):
 
     def has_valid_aggregation_period(self):
         return self.aggregation_period is not None and self.aggregation_period.is_valid()
+
+
+    def may_update(self, other):
+        if self.id != other.id or self.topic != other.topic or self.field != other.field or \
+                self.creator_email_address != other.creator_email_address:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -286,13 +278,14 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def checkpoint(self):     # TODO: needs an offset
+    def checkpoint(self):     # TODO: needs an offset if test_interval is used
         return self.aggregation_period.checkpoint()
 
 
     def cron(self, minutes_offset):
-        return self.test_interval.cron(minutes_offset) if self.test_interval else \
-            self.aggregation_period.cron(minutes_offset)
+        return self.aggregation_period.cron(minutes_offset)
+        # return self.test_interval.cron(minutes_offset) if self.test_interval else \
+        #     self.aggregation_period.cron(minutes_offset)
 
 
     def timedelta(self):
@@ -300,8 +293,9 @@ class AlertSpecification(JSONable):
 
 
     def end_datetime(self, origin: LocalizedDatetime):
-        return self.test_interval.end_datetime(origin) if self.test_interval else \
-            self.aggregation_period.end_datetime(origin)
+        return self.aggregation_period.end_datetime(origin)
+        # return self.test_interval.end_datetime(origin) if self.test_interval else \
+        #     self.aggregation_period.end_datetime(origin)
 
 
     # ----------------------------------------------------------------------------------------------------------------
