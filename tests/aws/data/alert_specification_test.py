@@ -10,14 +10,14 @@ import json
 
 from scs_core.aws.data.alert import AlertSpecification, AlertStatus
 
-from scs_core.data.aggregation_period import AggregationPeriod
+from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = AggregationPeriod.construct(5, 'M')
+aggregation_period = RecurringPeriod.construct(5, 'M')
 test_interval = Timedelta(minutes=5)
 
 print("1...")
@@ -59,14 +59,3 @@ print(jstr)
 
 status = AlertStatus.construct_from_jdict(json.loads(jstr))
 print(status)
-
-print("-")
-print("5...")
-alert.id = None
-qsp = alert.params()
-print(qsp)
-print("-")
-
-alert = AlertSpecification.construct_from_qsp(qsp)
-print(alert)
-
