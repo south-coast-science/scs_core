@@ -169,7 +169,7 @@ class RecurringDay(RecurringPeriod):
 
 
     def aws_cron(self, minutes_offset):
-        return 'cron("%d 0 * * ? *")' % minutes_offset
+        return 'cron(%d 0 * * ? *)' % minutes_offset
 
 
     def timedelta(self):
@@ -232,7 +232,7 @@ class RecurringHours(RecurringPeriod):
 
 
     def aws_cron(self, minutes_offset):
-        return 'cron("%d 0/%d * * ? *")' % (minutes_offset, self.interval)
+        return 'cron(%d 0/%d * * ? *)' % (minutes_offset, self.interval)
 
 
     def timedelta(self):
@@ -297,7 +297,7 @@ class RecurringMinutes(RecurringPeriod):
     def aws_cron(self, minutes_offset):
         minutes = '/'.join((str(minutes_offset), str(self.interval)))
 
-        return 'cron("%s * * * ? *")' % minutes
+        return 'cron(%s * * * ? *)' % minutes
 
 
     def timedelta(self):
