@@ -11,7 +11,6 @@ https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-ti
 https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tooadate?view=netframework-4.8
 http://code.activestate.com/recipes/496683-converting-ole-datetime-values-into-python-datetim/
 """
-
 import pytz
 import re
 import tzlocal
@@ -83,7 +82,7 @@ class LocalizedDatetime(JSONable):
             return None
 
         # time (rightmost time in string)...
-        match = re.match(r'(\d{2}):(\d{2})(:(\d{2}))? *([APap][Mm])? *$', time_str)       # e.g. 24:00:00
+        match = re.match(r'(\d{1,2}):(\d{2})(:(\d{2}))? *([APap][Mm])? *$', time_str)       # e.g. 24:00:00
 
         if match is None:
             return None
