@@ -17,11 +17,10 @@ https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-prima
 
 from collections import OrderedDict
 
-from scs_core.data.aggregation_period import AggregationPeriod
+from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
-from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -141,48 +140,7 @@ class AlertSpecification(JSONable):
     classdocs
     """
 
-    ID = 'id'
-
-    TOPIC = 'topic'
-    FIELD = 'field'
-
-    LOWER_THRESHOLD = 'lowerThreshold'
-    UPPER_THRESHOLD = 'upperThreshold'
-    ALERT_ON_NONE = 'alertOnNone'
-
-    AGGREGATION_PERIOD = 'aggregationPeriod'
-    TEST_INTERVAL = 'testInterval'
-
-    CREATOR_EMAIL_ADDRESS = 'creatorEmailAddress'
-    CC_LIST = 'ccList.'
-    SUSPENDED = 'suspended'
-
     # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_qsp(cls, qsp):
-        if not qsp:
-            return None
-
-        id = qsp.get(cls.ID)
-
-        topic = qsp.get(cls.TOPIC)
-        field = qsp.get(cls.FIELD)
-
-        lower_threshold = qsp.get(cls.LOWER_THRESHOLD)
-        upper_threshold = qsp.get(cls.UPPER_THRESHOLD)
-        alert_on_none = qsp.get(cls.ALERT_ON_NONE, 'false').lower() == 'true'
-
-        aggregation_period = AggregationPeriod.construct_from_jdict(qsp.get(cls.AGGREGATION_PERIOD))    # TODO: fix!
-        test_interval = Timedelta.construct_from_jdict(qsp.get(cls.TEST_INTERVAL))
-
-        creator_email_address = qsp.get(cls.CREATOR_EMAIL_ADDRESS)
-        cc_list = [qsp[name] for name in sorted(qsp.keys()) if name.startswith(cls.CC_LIST)]
-        suspended = qsp.get(cls.SUSPENDED, 'false').lower() == 'true'
-
-        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, creator_email_address, cc_list, suspended)
-
 
     @classmethod
     def construct_from_jdict(cls, jdict):
@@ -198,8 +156,8 @@ class AlertSpecification(JSONable):
         upper_threshold = jdict.get('upper-threshold')
         alert_on_none = jdict.get('alert-on-none')
 
-        aggregation_period = AggregationPeriod.construct_from_jdict(jdict.get('aggregation-period'))
-        test_interval = Timedelta.construct_from_jdict(jdict.get('test-interval'))
+        aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
+        test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
         creator_email_address = jdict.get('creator-email-address')
         cc_list = jdict.get('cc-list')
@@ -225,8 +183,8 @@ class AlertSpecification(JSONable):
         self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
         self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # AggregationPeriod     updatable
-        self.__test_interval = test_interval                        # Timedelta             updatable
+        self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
+        self.__test_interval = test_interval                        # RecurringPeriod       updatable
 
         self.__creator_email_address = creator_email_address        # string
         self.__cc_list = cc_list                                    # array of string       updatable
@@ -268,6 +226,9 @@ class AlertSpecification(JSONable):
         if not self.has_valid_thresholds():
             return False
 
+        # if self.test_interval is not None and not self.test_interval < self.aggregation_period:
+        #     return False
+
         return True
 
 
@@ -284,6 +245,14 @@ class AlertSpecification(JSONable):
 
     def has_valid_aggregation_period(self):
         return self.aggregation_period is not None and self.aggregation_period.is_valid()
+
+
+    def may_update(self, other):
+        if self.id != other.id or self.topic != other.topic or self.field != other.field or \
+                self.creator_email_address != other.creator_email_address:
+            return False
+
+        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -309,35 +278,31 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def params(self):
-        params = {
-            self.ID: 'null' if self.id is None else self.id,
-            self.TOPIC: self.topic,
-            self.FIELD: self.field,
-            self.AGGREGATION_PERIOD: self.aggregation_period.as_json(),     # TODO: fix aggregation_period!
-            self.CREATOR_EMAIL_ADDRESS: self.creator_email_address
-        }
+    def checkpoint(self):     # TODO: needs an offset if test_interval is used
+        return self.aggregation_period.checkpoint()
 
-        if self.alert_on_none:
-            params[self.ALERT_ON_NONE] = 'true'
 
-        if self.lower_threshold is not None:
-            params[self.LOWER_THRESHOLD] = self.lower_threshold
+    def cron(self, minutes_offset):
+        return self.aggregation_period.cron(minutes_offset)
 
-        if self.upper_threshold is not None:
-            params[self.UPPER_THRESHOLD] = self.upper_threshold
 
-        if self.test_interval is not None:
-            params[self.TEST_INTERVAL] = self.test_interval.as_json()
+    def aws_cron(self, minutes_offset):
+        return self.aggregation_period.aws_cron(minutes_offset)
+        # return self.test_interval.cron(minutes_offset) if self.test_interval else \
+        #     self.aggregation_period.cron(minutes_offset)
 
-        for i in range(len(self.cc_list)):
-            params[self.CC_LIST + str(i)] = self.cc_list[i]
 
-        if self.suspended:
-            params[self.SUSPENDED] = 'true'
+    def timedelta(self):
+        return self.aggregation_period.timedelta()
 
-        return params
 
+    def end_datetime(self, origin: LocalizedDatetime):
+        return self.aggregation_period.end_datetime(origin)
+        # return self.test_interval.end_datetime(origin) if self.test_interval else \
+        #     self.aggregation_period.end_datetime(origin)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
@@ -351,8 +316,8 @@ class AlertSpecification(JSONable):
         jdict['upper-threshold'] = self.upper_threshold
         jdict['alert-on-none'] = self.alert_on_none
 
-        jdict['aggregation-period'] = self.aggregation_period
-        jdict['test-interval'] = self.test_interval
+        jdict['aggregation-period'] = self.aggregation_period.as_json()
+        jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
         jdict['creator-email-address'] = self.creator_email_address
         jdict['cc-list'] = self.cc_list

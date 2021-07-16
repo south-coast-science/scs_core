@@ -10,14 +10,14 @@ import json
 
 from scs_core.aws.data.alert import AlertSpecification
 
-from scs_core.data.aggregation_period import AggregationPeriod
+from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = AggregationPeriod.construct(4, 'H')
+aggregation_period = RecurringPeriod.construct(4, 'H')
 test_interval = Timedelta(minutes=5)
 
 alert = AlertSpecification(None, 'my/topic', 'my.field', None, 100, True, aggregation_period, test_interval,

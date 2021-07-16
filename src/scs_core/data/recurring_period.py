@@ -3,6 +3,8 @@ Created on 7 Jul 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+
 document example:
 {"interval": 1, "units": "D"}
 """
@@ -20,7 +22,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AggregationPeriod(JSONable):
+class RecurringPeriod(JSONable):
     """
     classdocs
     """
@@ -42,13 +44,13 @@ class AggregationPeriod(JSONable):
     @classmethod
     def construct(cls, interval, units):
         if units == 'D':
-            return DayAggregationPeriod(interval)
+            return RecurringDay(interval)
 
         if units == 'H':
-            return HoursAggregationPeriod(interval)
+            return RecurringHours(interval)
 
         if units == 'M':
-            return MinutesAggregationPeriod(interval)
+            return RecurringMinutes(interval)
 
         raise ValueError(units)
 
@@ -60,6 +62,11 @@ class AggregationPeriod(JSONable):
         Constructor
         """
         self.__interval = int(interval)                     # int
+
+
+    @abstractmethod
+    def __lt__(self, other):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -76,6 +83,11 @@ class AggregationPeriod(JSONable):
 
     @abstractmethod
     def cron(self, minutes_offset):
+        pass
+
+
+    @abstractmethod
+    def aws_cron(self, minutes_offset):
         pass
 
 
@@ -121,7 +133,7 @@ class AggregationPeriod(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DayAggregationPeriod(AggregationPeriod):
+class RecurringDay(RecurringPeriod):
     """
     classdocs
     """
@@ -133,6 +145,13 @@ class DayAggregationPeriod(AggregationPeriod):
         Constructor
         """
         super().__init__(interval)
+
+
+    def __lt__(self, other):
+        if isinstance(other, RecurringHours) or isinstance(other, RecurringMinutes):
+            return False
+
+        return self.interval < other.interval
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -147,6 +166,10 @@ class DayAggregationPeriod(AggregationPeriod):
 
     def cron(self, minutes_offset):
         return '%d 0 * * *' % minutes_offset
+
+
+    def aws_cron(self, minutes_offset):
+        return 'cron(%d 0 * * ? *)' % minutes_offset
 
 
     def timedelta(self):
@@ -168,7 +191,7 @@ class DayAggregationPeriod(AggregationPeriod):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class HoursAggregationPeriod(AggregationPeriod):
+class RecurringHours(RecurringPeriod):
     """
     classdocs
     """
@@ -184,6 +207,16 @@ class HoursAggregationPeriod(AggregationPeriod):
         super().__init__(interval)
 
 
+    def __lt__(self, other):
+        if isinstance(other, RecurringDay):
+            return True
+
+        if isinstance(other, RecurringMinutes):
+            return False
+
+        return self.interval < other.interval
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
@@ -196,6 +229,10 @@ class HoursAggregationPeriod(AggregationPeriod):
 
     def cron(self, minutes_offset):
         return '%d */%d * * *' % (minutes_offset, self.interval)
+
+
+    def aws_cron(self, minutes_offset):
+        return 'cron(%d 0/%d * * ? *)' % (minutes_offset, self.interval)
 
 
     def timedelta(self):
@@ -218,7 +255,7 @@ class HoursAggregationPeriod(AggregationPeriod):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MinutesAggregationPeriod(AggregationPeriod):
+class RecurringMinutes(RecurringPeriod):
     """
     classdocs
     """
@@ -232,6 +269,13 @@ class MinutesAggregationPeriod(AggregationPeriod):
         Constructor
         """
         super().__init__(interval)
+
+
+    def __lt__(self, other):
+        if isinstance(other, RecurringDay) or isinstance(other, RecurringHours):
+            return True
+
+        return self.interval < other.interval
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -248,6 +292,12 @@ class MinutesAggregationPeriod(AggregationPeriod):
         minutes = [str(minute + minutes_offset) for minute in range(0, 60, self.interval)]
 
         return '%s * * * *' % ','.join(minutes)
+
+
+    def aws_cron(self, minutes_offset):
+        minutes = '/'.join((str(minutes_offset), str(self.interval)))
+
+        return 'cron(%s * * * ? *)' % minutes
 
 
     def timedelta(self):

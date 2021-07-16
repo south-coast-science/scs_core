@@ -8,7 +8,7 @@ Created on 7 Jul 2021
 
 import json
 
-from scs_core.data.aggregation_period import AggregationPeriod
+from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
@@ -18,7 +18,7 @@ from scs_core.data.json import JSONify
 now = LocalizedDatetime.now()
 
 print("json...")
-period = AggregationPeriod.construct(1, 'D')
+period = RecurringPeriod.construct(1, 'D')
 print(period)
 
 jstr = JSONify.dumps(period)
@@ -26,7 +26,7 @@ print(jstr)
 print("-")
 
 print("day...")
-period = AggregationPeriod.construct_from_jdict(json.loads(jstr))
+period = RecurringPeriod.construct_from_jdict(json.loads(jstr))
 print(period)
 
 print("is valid: %s" % period.is_valid())
@@ -42,7 +42,7 @@ print("-")
 
 
 print("hours...")
-period = AggregationPeriod.construct(4, 'H')
+period = RecurringPeriod.construct(4, 'H')
 print(period)
 
 print("is valid: %s" % period.is_valid())
@@ -57,7 +57,7 @@ print("-")
 
 
 print("minutes...")
-period = AggregationPeriod.construct(5, 'M')
+period = RecurringPeriod.construct(5, 'M')
 print(period)
 
 print("is valid: %s" % period.is_valid())
