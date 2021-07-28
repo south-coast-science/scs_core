@@ -127,6 +127,25 @@ class IoTNode(Node):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+    # identity...
+
+    @classmethod
+    def numeric_component_of_name(cls):
+        hostname = socket.gethostname()
+        pieces = hostname.split('-')
+
+        if len(pieces) != 3:
+            raise ValueError(hostname)
+
+        try:
+            numeric_component = int(pieces[2])
+        except ValueError:
+            raise ValueError(hostname)
+
+        return numeric_component
+
+
+    # ----------------------------------------------------------------------------------------------------------------
     # status...
 
     @abstractmethod
