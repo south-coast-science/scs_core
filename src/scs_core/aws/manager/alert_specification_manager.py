@@ -17,7 +17,7 @@ from scs_core.sys.http_exception import HTTPException
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertFinder(object):
+class AlertSpecificationManager(object):
     """
     classdocs
     """
@@ -34,12 +34,12 @@ class AlertFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, topic_filter, path_filter, creator_filter):
-        request = AlertFinderRequest(topic_filter, path_filter, creator_filter)
+        request = AlertSpecificationManagerRequest(topic_filter, path_filter, creator_filter)
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
 
-        return AlertFinderResponse.construct_from_jdict(response.json())
+        return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
 
     def retrieve(self, id):
@@ -47,7 +47,7 @@ class AlertFinder(object):
         headers = {'Authorization': self.__auth.email_address}
 
         http_response = self.__http_client.get(url, headers=headers)
-        response = AlertFinderResponse.construct_from_jdict(http_response.json())
+        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
@@ -56,7 +56,17 @@ class AlertFinder(object):
         headers = {'Authorization': self.__auth.email_address}
 
         http_response = self.__http_client.post(self.__URL, headers=headers, json=alert.as_json())
-        response = AlertFinderResponse.construct_from_jdict(http_response.json())
+        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
+
+        return response.alerts[0] if response.alerts else None
+
+
+    def update(self, alert):
+        url = '/'.join((self.__URL, str(alert.id)))
+        headers = {'Authorization': self.__auth.email_address}
+
+        http_response = self.__http_client.post(url, headers=headers, json=alert.as_json())
+        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
@@ -71,12 +81,12 @@ class AlertFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertFinder:{auth:%s}" % self.__auth
+        return "AlertSpecificationManager:{auth:%s}" % self.__auth
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertFinderRequest(object):
+class AlertSpecificationManagerRequest(object):
     """
     classdocs
     """
@@ -151,13 +161,13 @@ class AlertFinderRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertFinderRequest:{topic_filter:%s, path_filter:%s, creator_filter:%s}" % \
+        return "AlertSpecificationManagerRequest:{topic_filter:%s, path_filter:%s, creator_filter:%s}" % \
                (self.topic_filter, self.path_filter, self.creator_filter)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertFinderResponse(HTTPResponse):
+class AlertSpecificationManagerResponse(HTTPResponse):
     """
     classdocs
     """
@@ -169,7 +179,7 @@ class AlertFinderResponse(HTTPResponse):
         if not jdict:
             return None
 
-        # print("AlertFinderResponse: %s" % jdict)
+        # print("AlertSpecificationManagerResponse: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
@@ -233,5 +243,5 @@ class AlertFinderResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertFinderResponse:{status:%s, alerts:%s, next_url:%s}" % \
+        return "AlertSpecificationManagerResponse:{status:%s, alerts:%s, next_url:%s}" % \
                (self.status, Str.collection(self.alerts), self.next_url)

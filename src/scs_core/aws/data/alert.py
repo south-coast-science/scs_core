@@ -284,6 +284,10 @@ class AlertSpecification(JSONable):
 
     def cron(self, minutes_offset):
         return self.aggregation_period.cron(minutes_offset)
+
+
+    def aws_cron(self, minutes_offset):
+        return self.aggregation_period.aws_cron(minutes_offset)
         # return self.test_interval.cron(minutes_offset) if self.test_interval else \
         #     self.aggregation_period.cron(minutes_offset)
 

@@ -3,6 +3,8 @@ Created on 7 Jul 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+
 document example:
 {"interval": 1, "units": "D"}
 """
@@ -85,6 +87,11 @@ class RecurringPeriod(JSONable):
 
 
     @abstractmethod
+    def aws_cron(self, minutes_offset):
+        pass
+
+
+    @abstractmethod
     def timedelta(self):
         pass
 
@@ -161,6 +168,10 @@ class RecurringDay(RecurringPeriod):
         return '%d 0 * * *' % minutes_offset
 
 
+    def aws_cron(self, minutes_offset):
+        return 'cron(%d 0 * * ? *)' % minutes_offset
+
+
     def timedelta(self):
         return Timedelta(weeks=0, days=self.interval)
 
@@ -220,6 +231,10 @@ class RecurringHours(RecurringPeriod):
         return '%d */%d * * *' % (minutes_offset, self.interval)
 
 
+    def aws_cron(self, minutes_offset):
+        return 'cron(%d 0/%d * * ? *)' % (minutes_offset, self.interval)
+
+
     def timedelta(self):
         return Timedelta(weeks=0, days=0, hours=self.interval)
 
@@ -277,6 +292,12 @@ class RecurringMinutes(RecurringPeriod):
         minutes = [str(minute + minutes_offset) for minute in range(0, 60, self.interval)]
 
         return '%s * * * *' % ','.join(minutes)
+
+
+    def aws_cron(self, minutes_offset):
+        minutes = '/'.join((str(minutes_offset), str(self.interval)))
+
+        return 'cron(%s * * * ? *)' % minutes
 
 
     def timedelta(self):
