@@ -59,7 +59,6 @@ from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
 
 
-# TODO: greengrass-identity on scs-bbe-003??
 # --------------------------------------------------------------------------------------------------------------------
 
 class Configuration(JSONable):

@@ -173,7 +173,7 @@ class RecurringDay(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=self.interval)
+        return Timedelta(days=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):
@@ -236,7 +236,7 @@ class RecurringHours(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=0, hours=self.interval)
+        return Timedelta(hours=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):
@@ -301,7 +301,7 @@ class RecurringMinutes(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=0, hours=0, minutes=self.interval)
+        return Timedelta(minutes=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):

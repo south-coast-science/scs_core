@@ -43,7 +43,7 @@ class AQCSVDatetime(JSONable):
 
         # no zone...
         if fields[5] is None:
-            datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=pytz.timezone('Etc/UTC'))
+            datetime = dt(year, month=month, day=day, hour=hour, minute=minute, tzinfo=pytz.timezone('Etc/UTC'))
 
             return AQCSVDatetime(datetime)
 
@@ -55,7 +55,7 @@ class AQCSVDatetime(JSONable):
         zone_offset = zone_sign * td(hours=zone_hours, minutes=zone_mins)
         reporting_zone = tz(zone_offset)
 
-        datetime = dt(year, month, day, hour, minute, 0, 0, tzinfo=reporting_zone)
+        datetime = dt(year, month=month, day=day, hour=hour, minute=minute, tzinfo=reporting_zone)
 
         return AQCSVDatetime(datetime, reporting_zone)
 

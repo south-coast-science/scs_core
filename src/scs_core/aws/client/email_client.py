@@ -72,7 +72,7 @@ class EmailClient(object):
         msg['To'] = self.__sender_email
         # TODO: Add extra recipients somewhere for each device
         msg['Subject'] = "SCS Device: %s" % device
-        msg.attach(MIMEText(message, 'plain'))
+        msg.attach(MIMEText(message))
 
         try:
             self.__server.sendmail(msg['From'], msg['To'], msg.as_string())
