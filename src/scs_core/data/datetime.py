@@ -30,7 +30,7 @@ class LocalizedDatetime(JSONable):
     classdocs
     """
 
-    OLE_TIME_ZERO = datetime(1899, 12, 30, 0, 0, 0)
+    OLE_TIME_ZERO = datetime(1899, month=12, day=30)
 
     # ----------------------------------------------------------------------------------------------------------------
 

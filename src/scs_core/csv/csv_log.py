@@ -152,7 +152,8 @@ class CSVLogFile(object):
         minute = int(fields[6])
         second = int(fields[7])
 
-        created_datetime = dt(year, month, day, hour, minute, second, 0, pytz.UTC)
+        created_datetime = dt(year, month=month, day=day, hour=hour, minute=minute, second=second,
+                              tzinfo=pytz.UTC)
 
         return cls(created_datetime, topic_subject, tag, file)
 

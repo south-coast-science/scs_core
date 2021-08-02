@@ -11,7 +11,7 @@ from scs_core.data.precision import Precision
 
 # --------------------------------------------------------------------------------------------------------------------
 
-precision = Precision(None)
+precision = Precision()
 print(precision)
 
 precision.widen(0.123)

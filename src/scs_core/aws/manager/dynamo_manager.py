@@ -155,7 +155,7 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_filtered(table_name, filter_key, filter_value, lek)
+            data, lek = self.retrieve_filtered(table_name, filter_key, filter_value, exact, lek)
             try:
                 data_dict += data
             except TypeError:
@@ -256,7 +256,7 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_filtered_pk(table_name, pk, tag_filter, lek)
+            data, lek = self.retrieve_filtered_pk(table_name, pk, tag_filter, exact, lek)
             try:
                 data_dict += data
             except TypeError:

@@ -27,7 +27,7 @@ class SHTDatum(JSONable):
         humid = jdict.get('hmd')
         temp = jdict.get('tmp')
 
-        return SHTDatum(humid, temp)
+        return cls(humid, temp)
 
 
     # ----------------------------------------------------------------------------------------------------------------

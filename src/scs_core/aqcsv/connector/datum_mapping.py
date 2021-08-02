@@ -145,10 +145,7 @@ class DatumMapping(JSONable):
 
             method_code=mapping.method_code,
             mpc_code=mapping.mpc_code,
-            mpc_value=mapping.mpc_value,
-
-            uncertainty=None,
-            qualifiers=None)
+            mpc_value=mapping.mpc_value)
 
         return record
 

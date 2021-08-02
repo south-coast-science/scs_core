@@ -192,6 +192,18 @@ class BylineGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def latest_topic(self, suffix):
+        latest_rec = None
+        topic = None
+
+        for byline in self.bylines:
+            if byline.topic.endswith(suffix) and (latest_rec is None or byline.rec > latest_rec):
+                latest_rec = byline.rec
+                topic = byline.topic
+
+        return topic
+
+
     def latest_pub(self):
         if not self.bylines:
             return None
