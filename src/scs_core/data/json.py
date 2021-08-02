@@ -294,6 +294,19 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def list(cls, manager):
+        try:
+            dirname, filename = cls.persistence_location(None)
+        except NotImplementedError:
+            return None
+
+        abs_dirname = os.path.join(manager.scs_path(), dirname)
+        suffix_len = len(filename) + 1
+
+        return [item[:-suffix_len] for item in sorted(os.listdir(abs_dirname)) if item.endswith(filename)]
+
+
+    @classmethod
     def exists(cls, manager, name=None):
         try:
             dirname, filename = cls.persistence_location(name)

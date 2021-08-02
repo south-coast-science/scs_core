@@ -31,6 +31,14 @@ class RecurringPeriod(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    @abstractmethod
+    def valid_intervals(cls):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -138,6 +146,11 @@ class RecurringDay(RecurringPeriod):
     classdocs
     """
 
+    @classmethod
+    def valid_intervals(cls):
+        return (1, )
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, interval):
@@ -173,7 +186,7 @@ class RecurringDay(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=self.interval)
+        return Timedelta(days=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):
@@ -197,6 +210,11 @@ class RecurringHours(RecurringPeriod):
     """
 
     __DIVISORS = (1, 2, 3, 4, 6, 8, 12)
+
+    @classmethod
+    def valid_intervals(cls):
+        return cls.__DIVISORS
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -236,7 +254,7 @@ class RecurringHours(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=0, hours=self.interval)
+        return Timedelta(hours=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):
@@ -261,6 +279,11 @@ class RecurringMinutes(RecurringPeriod):
     """
 
     __DIVISORS = (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30)
+
+    @classmethod
+    def valid_intervals(cls):
+        return cls.__DIVISORS
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -301,7 +324,7 @@ class RecurringMinutes(RecurringPeriod):
 
 
     def timedelta(self):
-        return Timedelta(weeks=0, days=0, hours=0, minutes=self.interval)
+        return Timedelta(minutes=self.interval)
 
 
     def end_datetime(self, origin: LocalizedDatetime):
