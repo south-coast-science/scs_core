@@ -6,8 +6,8 @@ Created on 25 Jul 2021
 https://howchoo.com/g/ywi5m2vkodk/working-with-datetime-objects-and-timezones-in-python
 
 example JSON:
-{"lab-timezone": "Europe/London", "start-hour": 23, "end-hour": 8, "aggregation-period": {"interval": 5, "units": "M"},
-"gas-offsets": {"CO": 300, "NO": 10}}
+{"lab-timezone": "Europe/London", "start-hour": 17, "end-hour": 8, "aggregation-period": {"interval": 5, "units": "M"},
+"gas-minimums": {"CO": 200, "CO2": 420, "H2S": 5, "NO": 10, "NO2": 10, "SO2": 5}}
 """
 
 import pytz
@@ -15,33 +15,45 @@ import pytz
 from collections import OrderedDict
 from datetime import datetime
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import MultiPersistentJSONable
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.recurring_period import RecurringPeriod
+from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BaselineConf(PersistentJSONable):
+class BaselineConf(MultiPersistentJSONable):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
-    __FILENAME = "calibration_conf.json"
+    __SUPPORTED_GASES = ('CO', 'CO2', 'H2S', 'NO', 'NO2', 'Ox', 'SO2')
 
     @classmethod
-    def persistence_location(cls):
-        return cls.conf_dir(), cls.__FILENAME
+    def supported_gases(cls):
+        return cls.__SUPPORTED_GASES
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+
+    __FILENAME = "baseline_conf.json"
+
+    @classmethod
+    def persistence_location(cls, name):
+        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
+
+        return cls.conf_dir(), filename
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, skeleton=False):
+    def construct_from_jdict(cls, jdict, name=None, skeleton=False):
         if not jdict:
             return None
 
@@ -49,22 +61,24 @@ class BaselineConf(PersistentJSONable):
         start_hour = jdict.get('start-hour')
         end_hour = jdict.get('end-hour')
         aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
-        gas_offsets = jdict.get('gas-offsets')
+        minimums = jdict.get('minimums')
 
-        return cls(lab_timezone, start_hour, end_hour, aggregation_period, gas_offsets)
+        return cls(name, lab_timezone, start_hour, end_hour, aggregation_period, minimums)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lab_timezone, start_hour, end_hour, aggregation_period, gas_offsets):
+    def __init__(self, name, lab_timezone, start_hour, end_hour, aggregation_period, minimums):
         """
         Constructor
         """
+        super().__init__(name)
+
         self.__lab_timezone = lab_timezone                      # string
         self.__start_hour = int(start_hour)                     # int
         self.__end_hour = int(end_hour)                         # int
         self.__aggregation_period = aggregation_period          # RecurringMinutes
-        self.__gas_offsets = gas_offsets                        # dict of string: int
+        self.__minimums = minimums                              # dict of string: int
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -89,23 +103,29 @@ class BaselineConf(PersistentJSONable):
         end_dt = datetime(dt.year, month=dt.month, day=dt.day, hour=self.end_hour)
         end = LocalizedDatetime(tz.localize(end_dt))
 
-        if end > origin:
-            raise ValueError("the end datetime is in the future")
-
         return end.utc()
+
+
+    def expected_data_points(self, start, end):
+        points_per_hour = 60 / self.aggregation_period.interval
+        period = end - start
+
+        return int(points_per_hour * period.hours)
 
 
     def checkpoint(self):
         return self.aggregation_period.checkpoint()
 
 
-    def add_gas(self, gas, offset):
-        self.__gas_offsets[gas] = offset
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def set_minimum(self, gas, value):
+        self.__minimums[gas] = value
 
 
-    def remove_gas(self, gas):
+    def remove_minimum(self, gas):
         try:
-            del self.__gas_offsets[gas]
+            del self.__minimums[gas]
         except KeyError:
             pass
 
@@ -132,9 +152,13 @@ class BaselineConf(PersistentJSONable):
         return self.__aggregation_period
 
 
+    def minimum(self, gas):
+        return self.__minimums[gas]
+
+
     @property
-    def gas_offsets(self):
-        return OrderedDict(sorted(self.__gas_offsets.items()))
+    def minimums(self):
+        return OrderedDict(sorted(self.__minimums.items()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -146,7 +170,7 @@ class BaselineConf(PersistentJSONable):
         jdict['start-hour'] = self.start_hour
         jdict['end-hour'] = self.end_hour
         jdict['aggregation-period'] = self.aggregation_period.as_json()
-        jdict['gas-offsets'] = self.gas_offsets
+        jdict['minimums'] = self.minimums
 
         return jdict
 
@@ -154,7 +178,9 @@ class BaselineConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BaselineConf:{lab_timezone:%s, start_hour:%s, end_hour:%s, " \
-               "aggregation_period:%s, gas_offsets:%s}" %  \
-               (self.lab_timezone, self.start_hour, self.end_hour,
-                self.aggregation_period, self.gas_offsets)
+        minimums = Str.collection(self.minimums)
+
+        return "BaselineConf:{name:%s, lab_timezone:%s, start_hour:%s, end_hour:%s, aggregation_period:%s, " \
+               "minimums:%s}" %  \
+               (self.name, self.lab_timezone, self.start_hour, self.end_hour, self.aggregation_period,
+                minimums)

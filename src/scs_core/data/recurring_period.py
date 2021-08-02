@@ -31,6 +31,14 @@ class RecurringPeriod(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    @abstractmethod
+    def valid_intervals(cls):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -138,6 +146,11 @@ class RecurringDay(RecurringPeriod):
     classdocs
     """
 
+    @classmethod
+    def valid_intervals(cls):
+        return (1, )
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, interval):
@@ -197,6 +210,11 @@ class RecurringHours(RecurringPeriod):
     """
 
     __DIVISORS = (1, 2, 3, 4, 6, 8, 12)
+
+    @classmethod
+    def valid_intervals(cls):
+        return cls.__DIVISORS
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -261,6 +279,11 @@ class RecurringMinutes(RecurringPeriod):
     """
 
     __DIVISORS = (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30)
+
+    @classmethod
+    def valid_intervals(cls):
+        return cls.__DIVISORS
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
