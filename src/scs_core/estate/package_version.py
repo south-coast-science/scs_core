@@ -79,6 +79,7 @@ class PackageVersion(MultiPersistentJSONable):
         Constructor
         """
         super().__init__(name)
+
         self.__repository = repository              # string
         self.__version = version                    # string
 
@@ -116,7 +117,7 @@ class PackageVersion(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PackageVersion:{repository:%s, version:%s}" %  (self.repository, self.version)
+        return "PackageVersion:{name:%s, repository:%s, version:%s}" %  (self.name, self.repository, self.version)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -150,7 +151,7 @@ class PackageVersions(JSONable):
         versions = OrderedDict()
 
         for package, version in jdict.items():
-            versions[package] = PackageVersion.construct_from_jdict(version)
+            versions[package] = PackageVersion.construct_from_jdict(version, name=package)
 
         return cls(versions)
 
@@ -184,6 +185,14 @@ class PackageVersions(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def version(self, package):
+        try:
+            return self.__versions[package]
+
+        except KeyError:
+            return None
+
 
     @property
     def versions(self):

@@ -16,8 +16,8 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-root = Host.scs_path()
-# root = '/Users/bruno/Python/MacProject'
+# root = Host.scs_path()
+root = '/Users/bruno/Python/MacProject'
 
 
 pvs1 = PackageVersions.construct_from_installation(root)
@@ -31,3 +31,9 @@ pvs2 = PackageVersions.construct_from_jdict(json.loads(jstr))
 print(pvs2)
 
 print(pvs2 == pvs1)
+print("-")
+
+version = pvs1.version('scs_core')
+print(version)
+
+version.save(Host)
