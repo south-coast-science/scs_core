@@ -40,7 +40,6 @@ class BaselineConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
     __FILENAME = "baseline_conf.json"
 
     @classmethod
