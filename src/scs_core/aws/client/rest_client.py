@@ -64,6 +64,9 @@ class RESTClient(object):
             # print("-", file=sys.stderr)
 
         except HTTPException as exc:
+            # print("exc: %s" % exc, file=sys.stderr)
+            # print("-", file=sys.stderr)
+
             if exc.status == HTTPStatus.NOT_FOUND:
                 return None
 
