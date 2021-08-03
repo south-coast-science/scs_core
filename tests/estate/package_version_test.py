@@ -16,11 +16,11 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# root = Host.scs_path()
-root = '/Users/bruno/Python/MacProject'
+root = Host.scs_path()
+# root = '/Users/bruno/Python/MacProject'
 
 
-pvs1 = PackageVersions.construct_from_installation(root)
+pvs1 = PackageVersions.construct_from_installation(root, Host)
 print(pvs1)
 
 jstr = JSONify.dumps(pvs1, indent=4)      # , indent=4

@@ -127,18 +127,27 @@ class PackageVersions(JSONable):
     classdocs
     """
 
+    __GREENGRASS_PACKAGE = 'scs_greengrass'
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_installation(cls, root):
-        versions = OrderedDict()
+    def construct_from_installation(cls, root, manager):
+        versions = {}
 
+        # local...
         for repository in GitPull.dirs(root):
             contents = Filesystem.ls(os.path.join(root, repository, 'src'))
 
             for content in contents:
                 package = content.name
                 versions[package] = PackageVersion.construct_from_installation(package, repository)
+
+        # greengrass...
+        greengrass_version = PackageVersion.load(manager, name=cls.__GREENGRASS_PACKAGE)
+
+        if greengrass_version is not None:
+            versions[cls.__GREENGRASS_PACKAGE] = greengrass_version
 
         return cls(versions)
 
@@ -148,7 +157,7 @@ class PackageVersions(JSONable):
         if jdict is None:
             return None
 
-        versions = OrderedDict()
+        versions = {}
 
         for package, version in jdict.items():
             versions[package] = PackageVersion.construct_from_jdict(version, name=package)
@@ -162,7 +171,7 @@ class PackageVersions(JSONable):
         """
         Constructor
         """
-        self.__versions = versions                  # OrderedDict of package: PackageVersion
+        self.__versions = versions                  # dict of package: PackageVersion
 
 
     def __len__(self):
@@ -196,7 +205,7 @@ class PackageVersions(JSONable):
 
     @property
     def versions(self):
-        return self.__versions
+        return [self.__versions[package] for package in sorted(self.__versions.keys())]
 
 
     # ----------------------------------------------------------------------------------------------------------------
