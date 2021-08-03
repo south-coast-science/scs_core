@@ -128,7 +128,7 @@ class Configuration(JSONable):
     @classmethod
     def load(cls, manager, psu=None):
         hostname = socket.gethostname()
-        packs = PackageVersions.construct_from_installation(manager.scs_path())
+        packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
         afe_baseline = AFEBaseline.load(manager)
         afe_id = AFEId.load(manager)
