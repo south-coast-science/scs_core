@@ -17,7 +17,7 @@ import os
 from collections import OrderedDict
 from importlib import import_module
 
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, MultiPersistentJSONable
 from scs_core.data.str import Str
 
 from scs_core.estate.git_pull import GitPull
@@ -27,10 +27,21 @@ from scs_core.sys.filesystem import Filesystem
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PackageVersion(JSONable):
+class PackageVersion(MultiPersistentJSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __FILENAME = "package_version.json"
+
+    @classmethod
+    def persistence_location(cls, name):
+        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
+
+        return cls.conf_dir(), filename
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +50,7 @@ class PackageVersion(JSONable):
         try:
             module = import_module(package)
         except ModuleNotFoundError:
-            return cls(repository, None)
+            return cls(package, repository, None)
 
         try:
             # noinspection PyUnresolvedReferences
@@ -47,26 +58,27 @@ class PackageVersion(JSONable):
         except AttributeError:
             version = None
 
-        return cls(repository, version)
+        return cls(package, repository, version)
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, name=None, skeleton=False):
         if not jdict:
             return None
 
         repository = jdict.get('repo')
         version = jdict.get('version')
 
-        return cls(repository, version)
+        return cls(name, repository, version)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, repository, version):
+    def __init__(self, name, repository, version):
         """
         Constructor
         """
+        super().__init__(name)
         self.__repository = repository              # string
         self.__version = version                    # string
 
