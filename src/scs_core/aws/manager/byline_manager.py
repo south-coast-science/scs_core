@@ -75,7 +75,7 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded)
+            return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
 
         finally:
             self.__rest_client.close()
@@ -93,7 +93,7 @@ class BylineManager(object):
             jdict = self.__rest_client.get(request_path, params)
 
             # bylines...
-            return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded)
+            return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
 
         finally:
             self.__rest_client.close()
