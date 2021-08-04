@@ -205,7 +205,7 @@ class PackageVersions(JSONable):
 
     @property
     def versions(self):
-        return [self.__versions[package] for package in sorted(self.__versions.keys())]
+        return {package: self.__versions[package] for package in sorted(self.__versions.keys())}
 
 
     # ----------------------------------------------------------------------------------------------------------------
