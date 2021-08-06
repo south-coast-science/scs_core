@@ -77,9 +77,18 @@ class Configuration(JSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return None
+            if skeleton:
+                return cls(None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None)
+            else:
+                return None
 
         hostname = jdict.get('hostname')
         packs = PackageVersions.construct_from_jdict(jdict.get('packs'))
