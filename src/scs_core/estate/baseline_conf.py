@@ -6,7 +6,7 @@ Created on 25 Jul 2021
 https://howchoo.com/g/ywi5m2vkodk/working-with-datetime-objects-and-timezones-in-python
 
 example JSON:
-{"lab-timezone": "Europe/London", "start-hour": 17, "end-hour": 8, "aggregation-period": {"interval": 5, "units": "M"},
+{"timezone": "Europe/London", "start-hour": 17, "end-hour": 8, "aggregation-period": {"interval": 5, "units": "M"},
 "gas-minimums": {"CO": 200, "CO2": 420, "H2S": 5, "NO": 10, "NO2": 10, "SO2": 5}}
 """
 
@@ -56,24 +56,24 @@ class BaselineConf(MultiPersistentJSONable):
         if not jdict:
             return None
 
-        lab_timezone = jdict.get('lab-timezone')
+        timezone = jdict.get('timezone')
         start_hour = jdict.get('start-hour')
         end_hour = jdict.get('end-hour')
         aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
         minimums = jdict.get('minimums')
 
-        return cls(name, lab_timezone, start_hour, end_hour, aggregation_period, minimums)
+        return cls(name, timezone, start_hour, end_hour, aggregation_period, minimums)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, lab_timezone, start_hour, end_hour, aggregation_period, minimums):
+    def __init__(self, name, timezone, start_hour, end_hour, aggregation_period, minimums):
         """
         Constructor
         """
         super().__init__(name)
 
-        self.__lab_timezone = lab_timezone                      # string
+        self.__timezone = timezone                              # string
         self.__start_hour = int(start_hour)                     # int
         self.__end_hour = int(end_hour)                         # int
         self.__aggregation_period = aggregation_period          # RecurringMinutes
@@ -84,7 +84,7 @@ class BaselineConf(MultiPersistentJSONable):
 
     def start_datetime(self, origin: LocalizedDatetime):
         dt = origin.datetime
-        tz = pytz.timezone(self.lab_timezone)
+        tz = pytz.timezone(self.timezone)
 
         start_dt = datetime(dt.year, month=dt.month, day=dt.day, hour=self.start_hour)
         start = LocalizedDatetime(tz.localize(start_dt))
@@ -97,7 +97,7 @@ class BaselineConf(MultiPersistentJSONable):
 
     def end_datetime(self, origin: LocalizedDatetime):
         dt = origin.datetime
-        tz = pytz.timezone(self.lab_timezone)
+        tz = pytz.timezone(self.timezone)
 
         end_dt = datetime(dt.year, month=dt.month, day=dt.day, hour=self.end_hour)
         end = LocalizedDatetime(tz.localize(end_dt))
@@ -132,8 +132,8 @@ class BaselineConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def lab_timezone(self):
-        return self.__lab_timezone
+    def timezone(self):
+        return self.__timezone
 
 
     @property
@@ -165,7 +165,7 @@ class BaselineConf(MultiPersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['lab-timezone'] = self.lab_timezone
+        jdict['timezone'] = self.timezone
         jdict['start-hour'] = self.start_hour
         jdict['end-hour'] = self.end_hour
         jdict['aggregation-period'] = self.aggregation_period.as_json()
@@ -179,7 +179,7 @@ class BaselineConf(MultiPersistentJSONable):
     def __str__(self, *args, **kwargs):
         minimums = Str.collection(self.minimums)
 
-        return "BaselineConf:{name:%s, lab_timezone:%s, start_hour:%s, end_hour:%s, aggregation_period:%s, " \
+        return "BaselineConf:{name:%s, timezone:%s, start_hour:%s, end_hour:%s, aggregation_period:%s, " \
                "minimums:%s}" %  \
-               (self.name, self.lab_timezone, self.start_hour, self.end_hour, self.aggregation_period,
+               (self.name, self.timezone, self.start_hour, self.end_hour, self.aggregation_period,
                 minimums)
