@@ -46,7 +46,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint, timeout=None)
+        self.__http_client.connect(self.__auth.endpoint)
 
 
     def close(self):
@@ -64,6 +64,9 @@ class RESTClient(object):
             # print("-", file=sys.stderr)
 
         except HTTPException as exc:
+            # print("exc: %s" % exc, file=sys.stderr)
+            # print("-", file=sys.stderr)
+
             if exc.status == HTTPStatus.NOT_FOUND:
                 return None
 

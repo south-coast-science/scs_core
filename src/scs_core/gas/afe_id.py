@@ -18,6 +18,7 @@ from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.str import Str
 
 from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.sensor import Sensor
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -89,6 +90,26 @@ class AFEId(PersistentJSONable):
 
     def __len__(self):
         return len(self.__sensor_ids)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def sensor_index(self, gas_name):
+        for i in range(len(self.__sensor_ids)):
+            sensor_id = self.__sensor_ids[i]
+
+            if sensor_id is None:
+                continue
+
+            sensor = Sensor.find(sensor_id.serial_number)
+
+            if sensor is None:
+                raise ValueError(sensor_id.serial_number)
+
+            if sensor.gas_name == gas_name:
+                return i
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------

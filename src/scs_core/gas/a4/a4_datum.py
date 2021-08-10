@@ -100,7 +100,7 @@ class A4Datum(JSONable):
         """
         we_c = (cnc * sens_mv) / 1000.0
 
-        # print("__reverse_we_c: we_c:%s cnc:%f" % (we_c, cnc), file=sys.stderr)
+        # print("__reverse_we_c: sens_mv:%s cnc:%f we_c:%s" % (sens_mv, cnc, we_c), file=sys.stderr)
 
         return we_c
 

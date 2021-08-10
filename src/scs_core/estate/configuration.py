@@ -59,7 +59,6 @@ from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
 
 
-# TODO: greengrass-identity on scs-bbe-003??
 # --------------------------------------------------------------------------------------------------------------------
 
 class Configuration(JSONable):
@@ -78,9 +77,18 @@ class Configuration(JSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return None
+            if skeleton:
+                return cls(None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None, None,
+                           None, None, None, None)
+            else:
+                return None
 
         hostname = jdict.get('hostname')
         packs = PackageVersions.construct_from_jdict(jdict.get('packs'))
@@ -129,7 +137,7 @@ class Configuration(JSONable):
     @classmethod
     def load(cls, manager, psu=None):
         hostname = socket.gethostname()
-        packs = PackageVersions.construct_from_installation(manager.scs_path())
+        packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
         afe_baseline = AFEBaseline.load(manager)
         afe_id = AFEId.load(manager)

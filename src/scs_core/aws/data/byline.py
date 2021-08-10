@@ -94,7 +94,7 @@ class Byline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, include_message=True):
         jdict = OrderedDict()
 
         jdict['device'] = self.device
@@ -103,7 +103,8 @@ class Byline(JSONable):
         jdict['lastSeenTime'] = None if self.pub is None else self.pub.as_iso8601()
         jdict['last_write'] = None if self.rec is None else self.rec.as_iso8601()
 
-        jdict['message'] = self.message
+        if include_message:
+            jdict['message'] = self.message
 
         return jdict
 
@@ -152,9 +153,9 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, excluded=None):
+    def construct_from_jdict(cls, jdict, excluded=None, skeleton=False):
         if not jdict:
-            return None
+            return cls({}) if skeleton else None
 
         # bylines...
         bylines = []
@@ -191,6 +192,18 @@ class BylineGroup(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def latest_topic(self, suffix):
+        latest_rec = None
+        topic = None
+
+        for byline in self.bylines:
+            if byline.topic.endswith(suffix) and (latest_rec is None or byline.rec > latest_rec):
+                latest_rec = byline.rec
+                topic = byline.topic
+
+        return topic
+
 
     def latest_pub(self):
         if not self.bylines:

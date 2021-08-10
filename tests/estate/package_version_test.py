@@ -20,7 +20,7 @@ root = Host.scs_path()
 # root = '/Users/bruno/Python/MacProject'
 
 
-pvs1 = PackageVersions.construct_from_installation(root)
+pvs1 = PackageVersions.construct_from_installation(root, Host)
 print(pvs1)
 
 jstr = JSONify.dumps(pvs1, indent=4)      # , indent=4
@@ -31,3 +31,9 @@ pvs2 = PackageVersions.construct_from_jdict(json.loads(jstr))
 print(pvs2)
 
 print(pvs2 == pvs1)
+print("-")
+
+version = pvs1.version('scs_core')
+print(version)
+
+version.save(Host)
