@@ -179,8 +179,6 @@ class AlertSpecificationManagerResponse(HTTPResponse):
         if not jdict:
             return None
 
-        # print("AlertSpecificationManagerResponse: %s" % jdict)
-
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:

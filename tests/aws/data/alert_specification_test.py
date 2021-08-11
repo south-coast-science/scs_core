@@ -18,12 +18,13 @@ from scs_core.data.timedelta import Timedelta
 # --------------------------------------------------------------------------------------------------------------------
 
 aggregation_period = RecurringPeriod.construct(5, 'M')
-test_interval = Timedelta(minutes=5)
+test_interval = RecurringPeriod.construct(1, 'M')
 
 print("1...")
 
 alert = AlertSpecification(None, 'my/topic', 'my.field', None, 100, True, aggregation_period, test_interval,
-                           'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
+                           'bruno.beloff@southcoastscience.com', 'bruno.beloff@southcoastscience.com',
+                           ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 
 jstr = JSONify.dumps(alert)
