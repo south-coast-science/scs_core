@@ -91,7 +91,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -142,7 +142,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -182,7 +182,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -243,7 +243,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -281,7 +281,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -321,7 +321,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -362,7 +362,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
