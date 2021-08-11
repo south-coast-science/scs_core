@@ -160,17 +160,19 @@ class AlertSpecification(JSONable):
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
         creator_email_address = jdict.get('creator-email-address')
+
+        to = jdict.get('to')
         cc_list = jdict.get('cc-list')
         suspended = jdict.get('suspended')
 
         return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, creator_email_address, cc_list, suspended)
+                   aggregation_period, test_interval, creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, id, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                 aggregation_period, test_interval, creator_email_address, cc_list, suspended):
+                 aggregation_period, test_interval, creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
@@ -187,6 +189,8 @@ class AlertSpecification(JSONable):
         self.__test_interval = test_interval                        # RecurringPeriod       updatable
 
         self.__creator_email_address = creator_email_address        # string
+
+        self.__to = to                                              # string                updatable
         self.__cc_list = cc_list                                    # array of string       updatable
         self.__suspended = bool(suspended)                          # bool                  updatable
 
@@ -210,6 +214,12 @@ class AlertSpecification(JSONable):
         if self.creator_email_address > other.creator_email_address:
             return False
 
+        if self.to < other.to:
+            return True
+
+        if self.to > other.to:
+            return False
+
         return False
 
 
@@ -217,7 +227,7 @@ class AlertSpecification(JSONable):
 
     def is_valid(self):
         if self.topic is None or self.field is None or self.aggregation_period is None or \
-                self.creator_email_address is None:
+                self.creator_email_address is None or self.to is None:
             return False
 
         if not self.has_trigger():
@@ -320,6 +330,8 @@ class AlertSpecification(JSONable):
         jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
         jdict['creator-email-address'] = self.creator_email_address
+
+        jdict['to'] = self.to
         jdict['cc-list'] = self.cc_list
         jdict['suspended'] = self.suspended
 
@@ -374,6 +386,11 @@ class AlertSpecification(JSONable):
 
 
     @property
+    def to(self):
+        return self.__to
+
+
+    @property
     def cc_list(self):
         return self.__cc_list
 
@@ -409,7 +426,7 @@ class AlertSpecification(JSONable):
     def __str__(self, *args, **kwargs):
         return "AlertSpecification:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, " \
                "alert_on_none:%s, aggregation_period:%s, test_interval:%s, creator_email_address:%s, " \
-               "cc_list:%s, suspended:%s}" %  \
+               "to:%s, cc_list:%s, suspended:%s}" %  \
                (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold,
                 self.alert_on_none, self.aggregation_period, self.test_interval, self.creator_email_address,
-                self.cc_list, self.suspended)
+                self.to, self.cc_list, self.suspended)
