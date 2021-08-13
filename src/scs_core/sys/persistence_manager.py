@@ -22,6 +22,11 @@ class PersistenceManager(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
+    def list(self, container, dirname):
+        pass
+
+
+    @abstractmethod
     def exists(self, dirname, filename):
         pass
 
@@ -41,14 +46,29 @@ class PersistenceManager(ABC):
         pass
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    @abstractmethod
+    def scs_path(cls):
+        pass
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
-class FilesystemPersistenceManager(PersistenceManager):
+class FilesystemPersistenceManager(PersistenceManager, ABC):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def list(cls, container, dirname):
+        abs_dirname = os.path.join(container, dirname)
+
+        return sorted(os.listdir(abs_dirname))
+
 
     @classmethod
     def exists(cls, dirname, filename):
@@ -121,11 +141,3 @@ class FilesystemPersistenceManager(PersistenceManager):
     @classmethod
     def __abs_dirname(cls, dirname):
         return os.path.join(cls.scs_path(), dirname)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def scs_path(cls):
-        pass

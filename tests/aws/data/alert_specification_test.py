@@ -12,7 +12,6 @@ from scs_core.aws.data.alert import AlertSpecification, AlertStatus
 
 from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.json import JSONify
-from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
