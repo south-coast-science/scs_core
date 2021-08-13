@@ -56,7 +56,6 @@ class PersistenceManager(ABC):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-
 class FilesystemPersistenceManager(PersistenceManager, ABC):
     """
     classdocs
