@@ -91,7 +91,7 @@ class AlertSpecificationManagerRequest(object):
     classdocs
     """
 
-    TOPIC_FILTER = 'tag'
+    TOPIC_FILTER = 'topic'
     PATH_FILTER = 'path'
     CREATOR_FILTER = 'creator'
 

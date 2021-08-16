@@ -300,10 +300,10 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
         except NotImplementedError:
             return None
 
-        abs_dirname = os.path.join(manager.scs_path(), dirname)
         suffix_len = len(filename) + 1
+        items = manager.list(manager.scs_path(), dirname)
 
-        return [item[:-suffix_len] for item in sorted(os.listdir(abs_dirname)) if item.endswith(filename)]
+        return [item[:-suffix_len] for item in items if item.endswith(filename)]
 
 
     @classmethod
