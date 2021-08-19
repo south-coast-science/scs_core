@@ -24,7 +24,7 @@ class AlertStatusFinder(object):
     classdocs
     """
 
-    __URL = ""
+    __URL = "https://nssnahspkj.execute-api.us-west-2.amazonaws.com/default/AlertHistoryLatestFinder"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -164,8 +164,8 @@ class AlertStatusFinderResponse(HTTPResponse):
         mode = AlertStatusFinderRequest.MODE[jdict.get('mode')]
 
         alert_statuses = []
-        if jdict.get('Items'):
-            for alert_jdict in jdict.get('Items'):
+        if jdict.get('alert-statuses'):
+            for alert_jdict in jdict.get('alert-statuses'):
                 alert_statuses.append(AlertStatus.construct_from_jdict(alert_jdict))
 
         next_url = jdict.get('next')
