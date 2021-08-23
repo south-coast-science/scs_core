@@ -43,7 +43,7 @@ class AFEBaseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls([SensorBaseline(None, 0, None)] * cls.__SENSORS) if skeleton else None
+            return cls.null_datum() if skeleton else None
 
         sensor_baselines = []
 
@@ -54,6 +54,11 @@ class AFEBaseline(PersistentJSONable):
             sensor_baselines.append(base)
 
         return cls(sensor_baselines)
+
+
+    @classmethod
+    def null_datum(cls):
+        return cls([SensorBaseline(None, 0, None)] * cls.__SENSORS)
 
 
     # ----------------------------------------------------------------------------------------------------------------
