@@ -135,6 +135,11 @@ class RecurringPeriod(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @abstractmethod
+    def __repr__(self):
+        pass
+
+
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__ + ":{interval:%s}" %  self.interval
 
@@ -200,6 +205,14 @@ class RecurringDay(RecurringPeriod):
     @property
     def units(self):
         return 'D'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __repr__(self):
+        unit = 'day' if self.interval == 1 else 'days'
+
+        return ' '.join((str(self.interval), unit))
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -271,6 +284,14 @@ class RecurringHours(RecurringPeriod):
         return 'H'
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __repr__(self):
+        unit = 'hour' if self.interval == 1 else 'hours'
+
+        return ' '.join((str(self.interval), unit))
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class RecurringMinutes(RecurringPeriod):
@@ -340,3 +361,11 @@ class RecurringMinutes(RecurringPeriod):
     @property
     def units(self):
         return 'M'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __repr__(self):
+        unit = 'minute' if self.interval == 1 else 'minutes'
+
+        return ' '.join((str(self.interval), unit))
