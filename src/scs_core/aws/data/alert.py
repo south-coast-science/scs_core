@@ -100,7 +100,7 @@ class AlertStatus(JSONable):
 
         jdict['rec'] = self.rec
         jdict['cause'] = self.cause
-        jdict['value'] = self.value
+        jdict['val'] = self.value
 
         return jdict
 
@@ -311,7 +311,6 @@ class AlertSpecification(JSONable):
         return self.aggregation_period.end_datetime(origin)
         # return self.test_interval.end_datetime(origin) if self.test_interval else \
         #     self.aggregation_period.end_datetime(origin)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
