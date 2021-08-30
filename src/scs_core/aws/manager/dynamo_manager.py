@@ -91,7 +91,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -142,7 +142,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -182,7 +182,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -243,7 +243,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -265,23 +265,37 @@ class DynamoManager(object):
         return data_dict, lek
 
 
-    def retrieve_double_filtered(self, table_name, first_key, first_value, second_key, second_value, lek=None):
+    def retrieve_double_filtered(self, table_name, first_key, first_value, second_key, second_value, exact=False,
+                                 lek=None):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
-        if lek:
-            response = table.scan(
-                FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                ExclusiveStartKey=lek
-            )
+
+        if exact is True:
+            self.__logger.info("Doing exact double filtered")
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).eq(first_value) & Attr(second_key).eq(second_value),
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).eq(first_value) & Attr(second_key).eq(second_value)
+                )
         else:
-            response = table.scan(
-                FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value)
-            )
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value)
+                )
 
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -294,7 +308,8 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
-            data, lek = self.retrieve_double_filtered(table_name, first_key, first_value, second_key, second_value, lek)
+            data, lek = self.retrieve_double_filtered(table_name, first_key, first_value, second_key, second_value,
+                                                      exact, lek)
             try:
                 data_dict += data
             except TypeError:
@@ -321,7 +336,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']
@@ -362,7 +377,7 @@ class DynamoManager(object):
         if "Items" not in response:
             return None, None
 
-        if response['Count'] == 0:
+        if response['ScannedCount'] == 0:
             return None, None
 
         data = response['Items']

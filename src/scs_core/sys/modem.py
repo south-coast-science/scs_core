@@ -9,9 +9,11 @@ modem.generic.device-identifier                 : 3f07553c31ce11715037ac16c24ced
 modem.generic.manufacturer                      : QUALCOMM INCORPORATED
 modem.generic.model                             : QUECTEL Mobile Broadband Module
 modem.generic.revision                          : EC21EFAR06A01M4G
+...
+modem.3gpp.imei                                 : 867962041294151
 
 example JSON:
-{"id": "3f07553c31ce11715037ac16c24ceddcfb6f7a0b", "mfr": "QUALCOMM INCORPORATED",
+{"id": "3f07553c31ce11715037ac16c24ceddcfb6f7a0b", "imei": "867962041294151", "mfr": "QUALCOMM INCORPORATED",
 "model": "QUECTEL Mobile Broadband Module", "rev": "EC21EFAR06A01M4G"}
 
 
@@ -109,6 +111,8 @@ class Modem(JSONable):
     modem.generic.manufacturer                      : QUALCOMM INCORPORATED
     modem.generic.model                             : QUECTEL Mobile Broadband Module
     modem.generic.revision                          : EC21EFAR06A01M4G
+    ...
+    modem.3gpp.imei                                 : 867962041294151
     """
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -119,51 +123,59 @@ class Modem(JSONable):
             return None
 
         id = jdict.get('id')
+        imei = jdict.get('imei')
         mfr = jdict.get('mfr')
         model = jdict.get('model')
         rev = jdict.get('rev')
 
-        return cls(id, mfr, model, rev)
+        return cls(id, imei, mfr, model, rev)
 
 
     @classmethod
     def construct_from_mmcli(cls, lines):
         id = None
+        imei = None
         mfr = None
         model = None
         rev = None
 
         for line in lines:
-            match = re.match(r'modem.generic.device-identifier\s+:\s+(\S+)', line)
+            match = re.match(r'modem\.generic\.device-identifier\s+:\s+(\S+)', line)
             if match:
                 id = match.groups()[0]
                 continue
 
-            match = re.match(r'modem.generic.manufacturer\s+:\s+(\S.*\S)', line)
+            match = re.match(r'.*\.imei\s+:\s+(\d+)', line)
+            if match:
+                imei = match.groups()[0]
+                continue
+
+            match = re.match(r'modem\.generic\.manufacturer\s+:\s+(\S.*\S)', line)
             if match:
                 mfr = match.groups()[0]
                 continue
 
-            match = re.match(r'modem.generic.model\s+:\s+(\S.*\S)', line)
+            match = re.match(r'modem\.generic\.model\s+:\s+(\S.*\S)', line)
             if match:
                 model = match.groups()[0]
                 continue
 
-            match = re.match(r'modem.generic.revision\s+:\s+(\S+)', line)
+            match = re.match(r'modem\.generic\.revision\s+:\s+(\S+)', line)
             if match:
                 rev = match.groups()[0]
                 continue
 
-        return cls(id, mfr, model, rev)
+        return cls(id, imei, mfr, model, rev)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id, mfr, model, rev):
+    def __init__(self, id, imei, mfr, model, rev):
         """
         Constructor
         """
         self.__id = id                              # string
+        self.__imei = imei                          # string
         self.__mfr = mfr                            # string
         self.__model = model                        # string
         self.__rev = rev                            # string
@@ -171,7 +183,7 @@ class Modem(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.id == other.id and self.mfr == other.mfr and \
+            return self.id == other.id and self.imei == other.imei and self.mfr == other.mfr and \
                    self.model == other.model and self.rev == other.rev
 
         except (TypeError, AttributeError):
@@ -183,6 +195,11 @@ class Modem(JSONable):
     @property
     def id(self):
         return self.__id
+
+
+    @property
+    def imei(self):
+        return self.__imei
 
 
     @property
@@ -206,6 +223,7 @@ class Modem(JSONable):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
+        jdict['imei'] = self.imei
         jdict['mfr'] = self.mfr
         jdict['model'] = self.model
         jdict['rev'] = self.rev
@@ -216,8 +234,8 @@ class Modem(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Modem:{id:%s, mfr:%s, model:%s, rev:%s}" %  \
-               (self.id, self.mfr, self.model, self.rev)
+        return "Modem:{id:%s, imei:%s, mfr:%s, model:%s, rev:%s}" %  \
+               (self.id, self.imei, self.mfr, self.model, self.rev)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -254,23 +272,23 @@ class ModemConnection(JSONable):
         recent = None
 
         for line in lines:
-            match = re.match(r'modem.generic.state\s+:\s+([a-z]+)', line)
+            match = re.match(r'modem\.generic\.state\s+:\s+([a-z]+)', line)
             if match:
                 state = match.groups()[0]
                 continue
 
-            match = re.match(r'modem.generic.state-failed-reason\s+:\s+(\S.*\S)', line)
+            match = re.match(r'modem\.generic\.state-failed-reason\s+:\s+(\S.*\S)', line)
             if match:
                 reported_failure = match.groups()[0]
                 failure = None if reported_failure == '--' else reported_failure
                 continue
 
-            match = re.match(r'modem.generic.signal-quality.value\s+:\s+([\d]+)', line)
+            match = re.match(r'modem\.generic\.signal-quality\.value\s+:\s+([\d]+)', line)
             if match:
                 quality = match.groups()[0]
                 continue
 
-            match = re.match(r'modem.generic.signal-quality.recent\s+:\s+([a-z]+)', line)
+            match = re.match(r'modem\.generic\.signal-quality\.recent\s+:\s+([a-z]+)', line)
             if match:
                 recent = match.groups()[0] == 'yes'
                 continue
@@ -413,7 +431,7 @@ class SIMList(object):
         sims = []
 
         for line in lines:
-            match = re.match(r'modem.generic.sim\s+:\s+([\S]+)', line)
+            match = re.match(r'modem\.generic\.sim\s+:\s+([\S]+)', line)
             if match:
                 sims.append(match.groups()[0])
 
@@ -481,22 +499,22 @@ class SIM(JSONable):
         operator_name = None
 
         for line in lines:
-            match = re.match(r'sim.properties.imsi\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.imsi\s+:\s+([\d]+)', line)
             if match:
                 imsi = match.groups()[0]
                 continue
 
-            match = re.match(r'sim.properties.iccid\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.iccid\s+:\s+([\d]+)', line)
             if match:
                 iccid = match.groups()[0]
                 continue
 
-            match = re.match(r'sim.properties.operator-code\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.operator-code\s+:\s+([\d]+)', line)
             if match:
                 operator_code = match.groups()[0]
                 continue
 
-            match = re.match(r'sim.properties.operator-name\s+:\s+(\S.*)', line)
+            match = re.match(r'sim\.properties\.operator-name\s+:\s+(\S.*)', line)
             if match:
                 reported_name = match.groups()[0].strip()
                 operator_name = None if reported_name == '--' else reported_name

@@ -91,7 +91,7 @@ class AlertSpecificationManagerRequest(object):
     classdocs
     """
 
-    TOPIC_FILTER = 'tag'
+    TOPIC_FILTER = 'topic'
     PATH_FILTER = 'path'
     CREATOR_FILTER = 'creator'
 
@@ -178,8 +178,6 @@ class AlertSpecificationManagerResponse(HTTPResponse):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
-
-        # print("AlertSpecificationManagerResponse: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
