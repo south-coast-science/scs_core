@@ -205,6 +205,13 @@ class Timedelta(JSONable):
         return Timedelta(seconds=seconds)
 
 
+    def __mul__(self, other):
+        seconds = self.total_seconds() * other
+        return Timedelta(seconds=seconds)
+
+
+    __rmul__ = __mul__
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
