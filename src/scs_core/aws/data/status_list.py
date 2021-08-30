@@ -5,8 +5,6 @@ Created on 06 Nov 2020
 
 """
 
-# Called activity_list because when it's renamed to status_list pycharm doesn't recognise it as a .py..
-
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable

@@ -224,6 +224,13 @@ class S3PersistenceManager(PersistenceManager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def list(self, container, dirname):
+        prefix_len = len(dirname) + 1
+        objects = self.__manager.list_objects(container, 1, True, prefix=dirname)
+
+        return [obj.key[prefix_len:] for obj in objects]
+
+
     def exists(self, dirname, filename):
         key = self.__key(dirname, filename)
 
@@ -260,6 +267,13 @@ class S3PersistenceManager(PersistenceManager):
         key = self.__key(dirname, filename)
 
         self.__manager.delete_object(self.__BUCKET, key)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def scs_path(cls):
+        return cls.__BUCKET
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -22,6 +22,7 @@ from scs_core.data.json import JSONable
 from scs_core.data.path_dict import PathDict
 
 from scs_core.gas.a4.a4 import A4
+from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.sensor_baseline import SensorBaseline
 
 
@@ -93,7 +94,7 @@ class Minimum(JSONable):
             sensor_baseline = SensorBaseline(None, 0, None) if baseline is None else baseline.sensor_baseline
 
         elif cmd == 'afe_baseline':
-            baseline = configuration.afe_baseline
+            baseline = AFEBaseline.null_datum() if configuration.afe_baseline is None else configuration.afe_baseline
             sensor_baseline = baseline.sensor_baseline(configuration.afe_id.sensor_index(self.gas))
 
         elif cmd == 'gas_baseline':
