@@ -51,7 +51,7 @@ class AlertStatus(JSONable):
 
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         cause = jdict.get('cause')
-        value = jdict.get('value')
+        value = jdict.get('val')
 
         return cls(id, rec, cause, value)
 
