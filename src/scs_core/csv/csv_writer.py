@@ -21,22 +21,22 @@ class CSVWriter(object):
     classdocs
     """
 
-    QUOTING = csv.QUOTE_MINIMAL
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, filename=None, append=False, exclude_header=False, header_scan=False):
+    def __init__(self, filename=None, append=False, exclude_header=False, header_scan=False, quote_all=False):
         """
         Constructor
         """
         self.__filename = filename
         self.__paths = []
 
+        quoting = csv.QUOTE_ALL if quote_all else csv.QUOTE_MINIMAL
+
         if self.__filename is None:
             self.__append = append
 
             self.__file = sys.stdout
-            self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
+            self.__writer = csv.writer(self.__file, quoting=quoting)
         else:
             self.__append = append and os.path.exists(self.__filename)
 
@@ -44,7 +44,7 @@ class CSVWriter(object):
                 self.__paths = self.__build_paths()
 
             self.__file = open(self.__filename, "a" if self.__append else "w", newline='')
-            self.__writer = csv.writer(self.__file, quoting=self.QUOTING)
+            self.__writer = csv.writer(self.__file, quoting=quoting)
 
         self.__exclude_header = exclude_header
         self.__header_scan = header_scan
