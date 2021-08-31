@@ -8,7 +8,6 @@ Created on 3 Jan 2018
 Timedelta objects may or may not have a milliseconds component...
 """
 
-
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
