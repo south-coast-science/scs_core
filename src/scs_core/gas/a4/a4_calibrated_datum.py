@@ -35,10 +35,10 @@ class A4Calibrator(object):
         """
         self.__calib = calib                                                # A4Calib
 
-        self.__we_elc_v = calib.we_elc_mv / 1000.0
-        self.__ae_elc_v = calib.ae_elc_mv / 1000.0
+        self.__we_elc_v = calib.we_elc_mv / 1000.0                          # we_electronic_zero_mv
+        self.__ae_elc_v = calib.ae_elc_mv / 1000.0                          # ae_electronic_zero_mv
 
-        self.__we_sens_v = calib.we_sens_mv / 1000.0
+        self.__we_sens_v = calib.we_sens_mv / 1000.0                        # we_sensitivity_mv_ppb
 
         self.__we_no2_x_sens_v = None if calib.we_no2_x_sens_mv is None else calib.we_no2_x_sens_mv / 1000.0
 
