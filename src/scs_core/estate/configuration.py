@@ -47,6 +47,7 @@ from scs_core.model.gas.gas_model_conf import GasModelConf
 from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
 from scs_core.particulate.opc_conf import OPCConf
+from scs_core.particulate.opc_version import OPCVersion
 
 from scs_core.psu.psu_conf import PSUConf
 from scs_core.psu.psu_version import PSUVersion
@@ -86,7 +87,7 @@ class Configuration(JSONable):
                            None, None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
-                           None, None, None, None)
+                           None, None, None, None, None)
             else:
                 return None
 
@@ -110,6 +111,7 @@ class Configuration(JSONable):
         mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'))
         ndir_conf = NDIRConf.construct_from_jdict(jdict.get('ndir-conf'))
         opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'))
+        opc_version = OPCVersion.construct_from_jdict(jdict.get('opc-version'))
         pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'))
         pressure_conf = PressureConf.construct_from_jdict(jdict.get('pressure-conf'))
         psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'))
@@ -129,9 +131,10 @@ class Configuration(JSONable):
         return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
-                   mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, pressure_conf,
-                   psu_conf, psu_version, pt1000_calib, scd30_baseline, scd30_conf, schedule,
-                   shared_secret, sht_conf, networks, modem, sim, system_id, timezone_conf)
+                   mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
+                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
+                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+                   modem, sim, system_id, timezone_conf)
 
 
     @classmethod
@@ -156,6 +159,7 @@ class Configuration(JSONable):
         mqtt_conf = MQTTConf.load(manager)
         ndir_conf = NDIRConf.load(manager)
         opc_conf = OPCConf.load(manager)
+        opc_version = OPCVersion.load(manager)
         pmx_model_conf = PMxModelConf.load(manager)
         pressure_conf = PressureConf.load(manager)
         psu_conf = PSUConf.load(manager)
@@ -175,9 +179,10 @@ class Configuration(JSONable):
         return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
                    aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                    gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
-                   mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, pressure_conf,
-                   psu_conf, psu_version, pt1000_calib, scd30_baseline, scd30_conf, schedule,
-                   shared_secret, sht_conf, networks, modem, sim, system_id, timezone_conf)
+                   mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
+                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
+                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+                   modem, sim, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -185,9 +190,10 @@ class Configuration(JSONable):
     def __init__(self, hostname, packs, afe_baseline, afe_id, aws_api_auth,
                  aws_client_auth, aws_group_config, aws_project, csv_logger_conf, display_conf,
                  gas_baseline, gas_model_conf, gps_conf, greengrass_identity, interface_conf,
-                 mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, pmx_model_conf, pressure_conf,
-                 psu_conf, psu_version, pt1000_calib, scd30_baseline, scd30_conf, schedule,
-                 shared_secret, sht_conf, networks, modem, sim, system_id, timezone_conf):
+                 mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
+                 pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
+                 scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+                 modem, sim, system_id, timezone_conf):
         """
         Constructor
         """
@@ -212,6 +218,7 @@ class Configuration(JSONable):
         self.__mqtt_conf = mqtt_conf                                # MQTTConf
         self.__ndir_conf = ndir_conf                                # NDIRConf
         self.__opc_conf = opc_conf                                  # OPCConf
+        self.__opc_version = opc_version                            # OPCVersion
         self.__pmx_model_conf = pmx_model_conf                      # PMxModelConf
         self.__pressure_conf = pressure_conf                        # PressureConf
         self.__psu_conf = psu_conf                                  # PSUConf
@@ -241,13 +248,14 @@ class Configuration(JSONable):
                    self.interface_conf == other.interface_conf and self.mpl115a2_calib == other.mpl115a2_calib and \
                    self.mqtt_conf == other.mqtt_conf and self.ndir_conf == other.ndir_conf and \
                    self.opc_conf == other.opc_conf and self.pmx_model_conf == other.pmx_model_conf and \
-                   self.pressure_conf == other.pressure_conf and self.psu_conf == other.psu_conf and \
-                   self.psu_version == other.psu_version and self.pt1000_calib == other.pt1000_calib and \
-                   self.scd30_baseline == other.scd30_baseline and self.scd30_conf == other.scd30_conf and \
-                   self.schedule == other.schedule and self.shared_secret == other.shared_secret and \
-                   self.sht_conf == other.sht_conf and self.networks == other.networks and \
-                   self.modem == other.modem and self.sim == other.sim and \
-                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
+                   self.pmx_model_conf == other.pmx_model_conf and self.pressure_conf == other.pressure_conf and \
+                   self.psu_conf == other.psu_conf and self.psu_version == other.psu_version and \
+                   self.pt1000_calib == other.pt1000_calib and self.scd30_baseline == other.scd30_baseline and \
+                   self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
+                   self.shared_secret == other.shared_secret and self.sht_conf == other.sht_conf and \
+                   self.networks == other.networks and self.modem == other.modem and \
+                   self.sim == other.sim and self.system_id == other.system_id and \
+                   self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -260,7 +268,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None, None)
+                             None, None, None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -315,6 +323,9 @@ class Configuration(JSONable):
 
         if self.opc_conf != other.opc_conf:
             diff.__opc_conf = self.opc_conf
+
+        if self.opc_version != other.opc_version:
+            diff.__opc_version = self.opc_version
 
         if self.pmx_model_conf != other.pmx_model_conf:
             diff.__pmx_model_conf = self.pmx_model_conf
@@ -424,6 +435,9 @@ class Configuration(JSONable):
         if self.opc_conf:
             self.opc_conf.save(manager)
 
+        if self.opc_version:
+            raise ValueError('opc_version may not be set')
+
         if self.pmx_model_conf:
             self.pmx_model_conf.save(manager)
 
@@ -495,6 +509,7 @@ class Configuration(JSONable):
         jdict['mqtt-conf'] = self.mqtt_conf
         jdict['ndir-conf'] = self.ndir_conf
         jdict['opc-conf'] = self.opc_conf
+        jdict['opc-version'] = self.opc_version
         jdict['pmx-model-conf'] = self.pmx_model_conf
         jdict['pressure-conf'] = self.pressure_conf
         jdict['psu-conf'] = self.psu_conf
@@ -613,6 +628,11 @@ class Configuration(JSONable):
 
 
     @property
+    def opc_version(self):
+        return self.__opc_version
+
+
+    @property
     def pmx_model_conf(self):
         return self.__pmx_model_conf
 
@@ -693,14 +713,14 @@ class Configuration(JSONable):
         return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_api_auth:%s, " \
                "aws_client_auth:%s, aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, " \
-               "mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, pmx_model_conf:%s, " \
-               "pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
-               "scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, networks:%s, modem:%s, " \
-               "sim:%s, system_id:%s, timezone_conf:%s}" % \
+               "mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, opc_version:%s, " \
+               "pmx_model_conf:%s, pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, " \
+               "scd30_baseline:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, networks:%s, " \
+               "modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_api_auth,
                 self.aws_client_auth, self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf,
-                self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.pmx_model_conf,
-                self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
-                self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks, self.modem,
-                self.sim, self.system_id, self.timezone_conf)
+                self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf, self.opc_version,
+                self.pmx_model_conf, self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib,
+                self.scd30_baseline, self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks,
+                self.modem, self.sim, self.system_id, self.timezone_conf)
