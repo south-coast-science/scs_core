@@ -318,20 +318,34 @@ class DynamoManager(object):
         return data_dict, lek
 
 
-    def retrieve_double_filtered_pk(self, table_name, first_key, first_value, second_key, second_value, lek=None):
+    def retrieve_double_filtered_pk(self, table_name, first_key, first_value, second_key, second_value, lek=None,
+                                    exact=False):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
-        if lek:
-            response = table.scan(
-                FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                ProjectionExpression=first_key,
-                ExclusiveStartKey=lek
-            )
+        if exact is True:
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).eq(first_value) & Attr(second_key).eq(second_value),
+                    ProjectionExpression=first_key,
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).eq(first_value) & Attr(second_key).eq(second_value),
+                    ProjectionExpression=first_key
+                )
         else:
-            response = table.scan(
-                FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
-                ProjectionExpression=first_key
-            )
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
+                    ProjectionExpression=first_key,
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(first_key).contains(first_value) & Attr(second_key).contains(second_value),
+                    ProjectionExpression=first_key
+                )
 
         if "Items" not in response:
             return None, None
@@ -359,20 +373,33 @@ class DynamoManager(object):
         return data_dict, lek
 
 
-    def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None):
+    def filter_on_second_value(self, table_name, pk, second_key, second_value, lek=None, exact=False):
         data_dict = []
         table = self.__dynamo_resource.Table(table_name)
-        if lek:
-            response = table.scan(
-                FilterExpression=Attr(second_key).contains(second_value),
-                ProjectionExpression=pk,
-                ExclusiveStartKey=lek
-            )
+        if exact:
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(second_key).eq(second_value),
+                    ProjectionExpression=pk,
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(second_key).eq(second_value),
+                    ProjectionExpression=pk
+                )
         else:
-            response = table.scan(
-                FilterExpression=Attr(second_key).contains(second_value),
-                ProjectionExpression=pk
-            )
+            if lek:
+                response = table.scan(
+                    FilterExpression=Attr(second_key).contains(second_value),
+                    ProjectionExpression=pk,
+                    ExclusiveStartKey=lek
+                )
+            else:
+                response = table.scan(
+                    FilterExpression=Attr(second_key).contains(second_value),
+                    ProjectionExpression=pk
+                )
 
         if "Items" not in response:
             return None, None
