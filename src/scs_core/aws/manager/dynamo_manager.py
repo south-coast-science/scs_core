@@ -7,6 +7,7 @@ https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto
 """
 
 from boto3.dynamodb.conditions import Key, Attr
+
 from botocore.exceptions import ClientError
 
 from scs_core.sys.logging import Logging
