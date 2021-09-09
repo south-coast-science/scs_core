@@ -437,3 +437,18 @@ class DynamoManager(object):
         )
 
         return response
+
+    def batch_delete_on_pk(self, table_name, pk, pk_val):
+        table = self.__dynamo_resource.Table(table_name)
+        to_delete = self.retrieve_filtered(table_name, pk, pk_val, exact=True)
+        items = to_delete[0]
+
+        for item in items:
+            with table.batch_writer() as batch:
+                batch.delete_item(item)
+
+
+
+
+
+
