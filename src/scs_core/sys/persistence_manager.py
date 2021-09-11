@@ -94,6 +94,9 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
         except FileNotFoundError:
             return None
 
+        updated = os.path.getmtime(abs_filename)
+        print("updated: %s" % updated)
+
         return jstr
 
 
