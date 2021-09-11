@@ -94,7 +94,7 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
         except FileNotFoundError:
             return None
 
-        updated = os.path.getmtime(abs_filename)
+        updated = int(os.path.getmtime(abs_filename))
         print("updated: %s" % updated)
 
         return jstr
@@ -122,6 +122,9 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
+
+        updated = int(os.path.getmtime(abs_filename))
+        print("updated: %s" % updated)
 
 
     @classmethod

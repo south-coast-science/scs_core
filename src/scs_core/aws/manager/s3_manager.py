@@ -92,6 +92,9 @@ class S3Manager(object):
 
     def retrieve_from_bucket(self, bucket, key):
         response = self.__client.get_object(Bucket=bucket, Key=key)
+
+        print("response: %s" % response)
+
         content_body = response.get("Body")
         data = content_body.read()
 
