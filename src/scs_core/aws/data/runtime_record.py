@@ -43,7 +43,10 @@ class RuntimeRecord(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__last_runtime = last_runtime
+
 
     # ----------------------------------------------------------------------------------------------------------------
 

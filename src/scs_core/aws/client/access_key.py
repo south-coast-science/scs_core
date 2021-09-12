@@ -100,6 +100,8 @@ class AccessKey(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__id = id                              # string
         self.__secret = secret                      # string
 

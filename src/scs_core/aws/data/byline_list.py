@@ -42,6 +42,8 @@ class BylineList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__byline_list = byline_list
 
     # ----------------------------------------------------------------------------------------------------------------

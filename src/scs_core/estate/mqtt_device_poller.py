@@ -76,7 +76,8 @@ class MQTTDevicePoller(object):
 
 
     def known_devices(self, with_info=False):
-        res = self.__s3_manager.retrieve_from_bucket(self.__BUCKET, self.__KEY)
+        # TODO: replace the below with load(..) method
+        res, _ = self.__s3_manager.retrieve_from_bucket(self.__BUCKET, self.__KEY)
         json_data = json.loads(res)
         data = json_data["peers"]
 

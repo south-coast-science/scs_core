@@ -80,6 +80,8 @@ class MonitorAuth(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__email_address = email_address                # String
         self.__password = password                          # String
 

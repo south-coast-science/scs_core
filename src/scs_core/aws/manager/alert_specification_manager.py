@@ -122,10 +122,8 @@ class AlertSpecificationManagerRequest(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):
-        if self.topic_filter is None and self.path_filter is None and self.creator_filter is None:
-            return False
-
+    @classmethod
+    def is_valid(cls):
         return True
 
 

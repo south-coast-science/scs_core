@@ -34,8 +34,8 @@ class ConfigurationCheckFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, tag_filter, result_code, response_mode):
-        request = ConfigurationCheckRequest(tag_filter, result_code, response_mode)
+    def find(self, tag_filter, exact_match, result_code, response_mode):
+        request = ConfigurationCheckRequest(tag_filter, exact_match, result_code, response_mode)
         headers = {'Authorization': self.__auth.email_address}
 
         response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
@@ -59,6 +59,7 @@ class ConfigurationCheckRequest(object):
     MODE = Enum('Mode', 'FULL TAGS_ONLY')
 
     TAG_FILTER = 'tagFilter'
+    EXACT_MATCH = 'exactMatch'
     RESULT_CODE = 'resultCode'
     RESPONSE_MODE = 'responseMode'
 
@@ -71,6 +72,7 @@ class ConfigurationCheckRequest(object):
             return None
 
         tag_filter = qsp.get(cls.TAG_FILTER)
+        exact_match = qsp.get(cls.EXACT_MATCH, 'false').lower() == 'true'
         result_code = qsp.get(cls.RESULT_CODE)
 
         try:
@@ -78,16 +80,17 @@ class ConfigurationCheckRequest(object):
         except KeyError:
             response_mode = None
 
-        return cls(tag_filter, result_code, response_mode)
+        return cls(tag_filter, exact_match, result_code, response_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag_filter, result_code, response_mode):
+    def __init__(self, tag_filter, exact_match, result_code, response_mode):
         """
         Constructor
         """
         self.__tag_filter = tag_filter                          # string
+        self.__exact_match = bool(exact_match)                  # bool
         self.__result_code = result_code                        # string
         self.__response_mode = response_mode                    # MODE enum
 
@@ -110,6 +113,7 @@ class ConfigurationCheckRequest(object):
     def params(self):
         params = {
             self.TAG_FILTER: self.tag_filter,
+            self.EXACT_MATCH: self.exact_match,
             self.RESULT_CODE: self.result_code,
             self.RESPONSE_MODE: self.response_mode.name
         }
@@ -125,6 +129,11 @@ class ConfigurationCheckRequest(object):
 
 
     @property
+    def exact_match(self):
+        return self.__exact_match
+
+
+    @property
     def result_code(self):
         return self.__result_code
 
@@ -137,8 +146,8 @@ class ConfigurationCheckRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationCheckRequest:{tag_filter:%s, result_code:%s, response_mode:%s}" % \
-               (self.tag_filter, self.result_code, self.response_mode)
+        return "ConfigurationCheckRequest:{tag_filter:%s, exact_match:%s, result_code:%s, response_mode:%s}" % \
+               (self.tag_filter, self.exact_match, self.result_code, self.response_mode)
 
 
 # --------------------------------------------------------------------------------------------------------------------

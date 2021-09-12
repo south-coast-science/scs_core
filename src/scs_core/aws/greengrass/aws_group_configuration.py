@@ -58,6 +58,8 @@ class AWSGroupConfiguration(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         if unix_group is None:
             try:
                 group_info = grp.getgrnam('ggc_user')

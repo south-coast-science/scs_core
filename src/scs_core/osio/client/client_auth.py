@@ -54,6 +54,8 @@ class ClientAuth(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__user_id = user_id                        # string
 
         self.__client_id = client_id                    # string
