@@ -147,6 +147,8 @@ class MQTTPeerSet(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__peers = peers                                # OrderedDict of string: MQTTPeer
 
 

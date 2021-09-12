@@ -125,9 +125,6 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
 
-        updated = int(os.path.getmtime(abs_filename))
-        print("updated: %s" % updated)
-
 
     @classmethod
     def remove(cls, dirname, filename):

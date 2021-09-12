@@ -45,6 +45,8 @@ class PressureConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__model = model                    # string
         self.__altitude = altitude              # int, 'GPS' or None
 

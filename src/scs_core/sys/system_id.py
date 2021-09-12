@@ -54,6 +54,8 @@ class SystemID(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__vendor_id = vendor_id                # string (3 chars)
         self.__model_id = model_id                  # string (3 chars)
 
@@ -115,6 +117,8 @@ class SystemID(PersistentJSONable):
 
     def as_json(self):
         jdict = OrderedDict()
+
+        jdict['set-on'] = None if self.last_modified is None else self.last_modified.as_iso8601()
 
         jdict['vendor-id'] = self.vendor_id
         jdict['model-id'] = self.model_id

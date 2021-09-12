@@ -43,7 +43,10 @@ class UptimeList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__uptime_list = uptime_list
+
 
     # ----------------------------------------------------------------------------------------------------------------
 

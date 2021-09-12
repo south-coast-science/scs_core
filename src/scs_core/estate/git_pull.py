@@ -102,6 +102,8 @@ class GitPull(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__pulled_on = pulled_on                    # LocalizedDatetime
         self.__success = success                        # bool
 

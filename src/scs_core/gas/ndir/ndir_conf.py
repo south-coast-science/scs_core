@@ -45,6 +45,8 @@ class NDIRConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__model = model
         self.__tally = tally
         self.__raw = raw

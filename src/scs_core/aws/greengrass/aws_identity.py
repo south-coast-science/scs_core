@@ -86,6 +86,8 @@ class AWSIdentity(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__logger = Logging.getLogger()
 
         self.__iot_client = iot_client

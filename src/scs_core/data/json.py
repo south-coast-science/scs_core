@@ -203,6 +203,13 @@ class AbstractPersistentJSONable(JSONable):
     def osio_dir(cls):
         return cls.__OSIO_DIR
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
+        self._last_modified = None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
@@ -214,7 +221,7 @@ class AbstractPersistentJSONable(JSONable):
 
     @property
     def last_modified(self):
-        return self.__last_modified
+        return self._last_modified
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -257,7 +264,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
         try:
             obj = cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
-            obj.__last_modified = last_modified
+            obj._last_modified = last_modified
 
             return obj
 
@@ -344,7 +351,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
         try:
             obj = cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
-            obj.__last_modified = last_modified
+            obj._last_modified = last_modified
 
             return obj
 
@@ -379,6 +386,8 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, name):
+        super().__init__()
+
         self.__name = name                                          # string
 
 

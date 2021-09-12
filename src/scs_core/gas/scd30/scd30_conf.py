@@ -46,6 +46,8 @@ class SCD30Conf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__sample_interval = Datum.int(sample_interval)                     # int       seconds
         self.__temperature_offset = Datum.float(temperature_offset, 1)          # float     °C
 

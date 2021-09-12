@@ -43,6 +43,8 @@ class PowerList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__power_list = power_list
 
     # ----------------------------------------------------------------------------------------------------------------
