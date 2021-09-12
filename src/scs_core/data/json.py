@@ -265,10 +265,9 @@ class PersistentJSONable(AbstractPersistentJSONable):
         try:
             obj = cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
             obj._last_modified = last_modified
-
             return obj
 
-        except AttributeError:
+        except (AttributeError, TypeError):
             return None
 
 
@@ -352,10 +351,9 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
         try:
             obj = cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
             obj._last_modified = last_modified
-
             return obj
 
-        except AttributeError:
+        except (AttributeError, TypeError):
             return None
 
 
