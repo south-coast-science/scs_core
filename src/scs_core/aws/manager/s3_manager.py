@@ -93,12 +93,16 @@ class S3Manager(object):
     def retrieve_from_bucket(self, bucket, key):
         response = self.__client.get_object(Bucket=bucket, Key=key)
 
-        print("response: %s" % response)
+        meta = response.get('ResponseMetadata')
+        header = meta.get('HTTPHeaders')
+        last_modified = LocalizedDatetime.construct_from_s3(header.get('last-modified'))
+        print("last_modified: %s" % last_modified)
+        print("-")
 
         content_body = response.get("Body")
-        data = content_body.read()
+        data = content_body.read().decode()
 
-        return data.decode()
+        return data, last_modified
 
 
     def upload_file_to_bucket(self, filepath, bucket, key):
@@ -243,7 +247,7 @@ class S3PersistenceManager(PersistenceManager):
     def load(self, dirname, filename, encryption_key=None):
         key = self.__key(dirname, filename)
 
-        text = self.__manager.retrieve_from_bucket(self.__BUCKET, key)
+        text, last_modified = self.__manager.retrieve_from_bucket(self.__BUCKET, key)
 
         if encryption_key:
             from scs_core.data.crypt import Crypt               # late import
@@ -251,7 +255,7 @@ class S3PersistenceManager(PersistenceManager):
         else:
             jstr = text
 
-        return jstr
+        return jstr, last_modified
 
 
     def save(self, jstr, dirname, filename, encryption_key=None):

@@ -205,12 +205,6 @@ class AbstractPersistentJSONable(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
-        self.__updated = None               # int timestamp to be set on load and save
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @abstractmethod
     def save(self, manager):
         pass
@@ -219,8 +213,8 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def updated(self):
-        return self.__updated
+    def last_modified(self):
+        return self.__last_modified
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -255,13 +249,20 @@ class PersistentJSONable(AbstractPersistentJSONable):
             return cls.construct_from_jdict(None, skeleton=skeleton)
 
         try:
-            jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+            jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
 
         except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
             time.sleep(cls.__SECURITY_DELAY)
             raise ex
 
-        return cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
+        try:
+            obj = cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
+            obj.__last_modified = last_modified
+
+            return obj
+
+        except AttributeError:
+            return None
 
 
     @classmethod
@@ -337,11 +338,18 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
             return None
 
         if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
+            cls.construct_from_jdict(None, name=name, skeleton=skeleton)
 
-        jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+        jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
+        try:
+            obj = cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
+            obj.__last_modified = last_modified
+
+            return obj
+
+        except AttributeError:
+            return None
 
 
     @classmethod
