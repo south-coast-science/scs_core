@@ -37,6 +37,8 @@ class SystemID(PersistentJSONable):
         if not jdict:
             return None
 
+        last_modified = jdict.get('set-on')
+
         vendor_id = jdict.get('vendor-id')
         model_id = jdict.get('model-id')
 
@@ -45,16 +47,18 @@ class SystemID(PersistentJSONable):
 
         system_serial_number = jdict.get('system-sn')
 
-        return SystemID(vendor_id, model_id, model_name, configuration, system_serial_number)
+        return SystemID(vendor_id, model_id, model_name, configuration, system_serial_number,
+                        last_modified=last_modified)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, vendor_id, model_id, model_name, configuration, system_serial_number):
+    def __init__(self, vendor_id, model_id, model_name, configuration, system_serial_number,
+                 last_modified=None):
         """
         Constructor
         """
-        super().__init__()
+        super().__init__(last_modified=last_modified)
 
         self.__vendor_id = vendor_id                # string (3 chars)
         self.__model_id = model_id                  # string (3 chars)
