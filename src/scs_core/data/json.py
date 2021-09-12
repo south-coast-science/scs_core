@@ -207,7 +207,7 @@ class AbstractPersistentJSONable(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
-        self._last_modified = None
+        self._last_modified = None                              # LocalizedDatetime
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -388,7 +388,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     def __init__(self, name):
         super().__init__()
 
-        self.__name = name                                          # string
+        self.__name = name                                  # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
