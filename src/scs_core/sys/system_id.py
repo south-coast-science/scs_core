@@ -67,7 +67,8 @@ class SystemID(PersistentJSONable):
 
     def __eq__(self, other):
         try:
-            return self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
+            return bool(self.last_modified) == bool(other.last_modified) and \
+                   self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
                    self.model_name == other.model_name and self.configuration == other.configuration and \
                    self.system_serial_number == other.system_serial_number
 
