@@ -298,7 +298,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        self._last_modified = None                  # last_modified will be restored by load(..)
+        self._last_modified = None                          # last_modified field shall be restored by load(..)
 
         dirname, filename = self.persistence_location()
         jstr = JSONify.dumps(self, indent=self._INDENT)
@@ -394,7 +394,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        self._last_modified = None                  # last_modified will be restored by load(..)
+        self._last_modified = None                          # last_modified field shall be restored by load(..)
 
         dirname, filename = self.persistence_location(self.name)
         jstr = JSONify.dumps(self, indent=self._INDENT)
