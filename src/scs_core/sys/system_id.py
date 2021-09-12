@@ -13,8 +13,8 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ class SystemID(PersistentJSONable):
         if not jdict:
             return None
 
-        last_modified = jdict.get('set-on')
+        last_modified = LocalizedDatetime.construct_from_jdict(jdict.get('set-on'))
 
         vendor_id = jdict.get('vendor-id')
         model_id = jdict.get('model-id')
