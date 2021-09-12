@@ -5,6 +5,7 @@ Created on 08 Mar 2021
 
 https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
 """
+import logging
 
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -156,6 +157,7 @@ class DynamoManager(object):
             lek = response["LastEvaluatedKey"]
 
         while lek is not None:
+            logging.info("Continuing with LEK %s" % lek)
             data, lek = self.retrieve_filtered(table_name, filter_key, filter_value, exact, lek)
             try:
                 data_dict += data
@@ -437,3 +439,26 @@ class DynamoManager(object):
         )
 
         return response
+
+    def batch_delete_on_pk(self, table_name, pk, pk_val, sk):
+        table = self.__dynamo_resource.Table(table_name)
+        to_delete, _lek = self.retrieve_filtered(table_name, pk, pk_val, exact=True)
+        item_count = 0
+        if to_delete:
+            for item in to_delete:
+                logging.info("Deleting item %d" % item_count)
+                for key, value in list(item.items()):
+                    # pop items that aren't key or sort key
+                    if key != pk and key != sk:
+                        del item[key]
+
+                with table.batch_writer() as batch:
+                    res = batch.delete_item(item)
+                    logging.info(res)
+                    item_count += 1
+
+
+
+
+
+
