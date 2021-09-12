@@ -53,6 +53,8 @@ class ModelConf(ABC, PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__uds_path = uds_path                                  # string
         self.__model_interface = model_interface                    # string
 

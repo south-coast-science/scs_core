@@ -13,6 +13,7 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
 
 
@@ -37,6 +38,8 @@ class SystemID(PersistentJSONable):
         if not jdict:
             return None
 
+        last_modified = LocalizedDatetime.construct_from_jdict(jdict.get('set-on'))
+
         vendor_id = jdict.get('vendor-id')
         model_id = jdict.get('model-id')
 
@@ -45,15 +48,19 @@ class SystemID(PersistentJSONable):
 
         system_serial_number = jdict.get('system-sn')
 
-        return SystemID(vendor_id, model_id, model_name, configuration, system_serial_number)
+        return SystemID(vendor_id, model_id, model_name, configuration, system_serial_number,
+                        last_modified=last_modified)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, vendor_id, model_id, model_name, configuration, system_serial_number):
+    def __init__(self, vendor_id, model_id, model_name, configuration, system_serial_number,
+                 last_modified=None):
         """
         Constructor
         """
+        super().__init__(last_modified=last_modified)
+
         self.__vendor_id = vendor_id                # string (3 chars)
         self.__model_id = model_id                  # string (3 chars)
 
@@ -65,7 +72,8 @@ class SystemID(PersistentJSONable):
 
     def __eq__(self, other):
         try:
-            return self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
+            return bool(self.last_modified) == bool(other.last_modified) and \
+                   self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
                    self.model_name == other.model_name and self.configuration == other.configuration and \
                    self.system_serial_number == other.system_serial_number
 
@@ -115,6 +123,8 @@ class SystemID(PersistentJSONable):
 
     def as_json(self):
         jdict = OrderedDict()
+
+        jdict['set-on'] = None if self.last_modified is None else self.last_modified.as_iso8601()
 
         jdict['vendor-id'] = self.vendor_id
         jdict['model-id'] = self.model_id

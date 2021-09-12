@@ -56,6 +56,8 @@ class GPSConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__model = model                                        # string
 
         self.__sample_interval = int(sample_interval)               # int seconds

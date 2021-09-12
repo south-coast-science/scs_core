@@ -54,6 +54,8 @@ class PSUConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__psu_model = psu_model                                        # string
         self.__batt_model = batt_model                                      # string
         self.__ignore_threshold = ignore_threshold                          # bool

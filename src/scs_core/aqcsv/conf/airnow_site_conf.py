@@ -54,6 +54,8 @@ class AirNowSiteConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__site = site                                  # AQCSVSite
         self.__pocs = pocs                                  # dictionary of parameter: code
 

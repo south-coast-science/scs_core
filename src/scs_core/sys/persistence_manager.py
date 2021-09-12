@@ -6,9 +6,11 @@ Created on 20 Oct 2020
 
 import os
 import time
+import tzlocal
 
 from abc import ABC, abstractmethod
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.sys.filesystem import Filesystem
 
 
@@ -92,9 +94,12 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
                 jstr = text
 
         except FileNotFoundError:
-            return None
+            return None, None
 
-        return jstr
+        timestamp = int(os.path.getmtime(abs_filename))
+        last_modified = LocalizedDatetime.construct_from_timestamp(timestamp, tz=tzlocal.get_localzone()).utc()
+
+        return jstr, last_modified
 
 
     @classmethod

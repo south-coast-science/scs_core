@@ -4,12 +4,13 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Alert example:
-{"id": 123, "topic": "my/topic", "field": "my.field", "lower-threshold": 10.0, "upper-threshold": 100.0,
-"alert-on-none": true, "aggregation-period": "00-01:00:00", "test-interval": "00-00:05:00",
-"creator-email-address": "bruno.beloff@southcoastscience.com", "cc-list": ["bbeloff@me.com"], "suspended": false}
+{"id": 77, "topic": "south-coast-science-dev/development/loc/1/gases", "field": "val.CO.cnc", "lower-threshold": null,
+"upper-threshold": 1000.0, "alert-on-none": true, "aggregation-period": {"interval": 1, "units": "M"},
+"test-interval": null, "creator-email-address": "authorization@southcoastscience.com",
+"to": "someone@me.com", "cc-list": [], "suspended": false}
 
 AlertStatus example:
-{"id": 123, "rec": "2021-06-17T15:58:23Z", "cause": ">U", "value": 101.5}
+{"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": null, "val": 589.6}
 
 https://martinstapel.com/how-to-autoincrement-in-dynamo-db-if-you-really-need-to/
 https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-primary-key-id-in-dynamodb
@@ -33,7 +34,6 @@ class AlertStatus(JSONable):
     BELOW_LOWER_THRESHOLD =     '<L'
     ABOVE_UPPER_THRESHOLD =     '>U'
     NULL_VALUE =                'NV'
-    OKAY =                      'OK'
 
     @classmethod
     def causes(cls):

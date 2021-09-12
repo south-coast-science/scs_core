@@ -11,6 +11,7 @@ https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-ti
 https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tooadate?view=netframework-4.8
 http://code.activestate.com/recipes/496683-converting-ole-datetime-values-into-python-datetim/
 """
+
 import pytz
 import re
 import tzlocal
@@ -31,6 +32,29 @@ class LocalizedDatetime(JSONable):
     """
 
     OLE_TIME_ZERO = datetime(1899, month=12, day=30)
+
+    MONTH_NAMES = {
+        'jan': 1,
+        'feb': 2,
+        'mar': 3,
+        'apr': 4,
+        'may': 5,
+        'jun': 6,
+        'jul': 7,
+        'aug': 8,
+        'sep': 9,
+        'oct': 10,
+        'nov': 11,
+        'dec': 12
+    }
+
+    @classmethod
+    def month(cls, name):
+        try:
+            return cls.MONTH_NAMES[name.lower()]
+        except KeyError:
+            raise ValueError(name)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -105,6 +129,34 @@ class LocalizedDatetime(JSONable):
         corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
 
         return corrected
+
+
+    @classmethod
+    def construct_from_s3(cls, datetime_str):       # Sat, 11 Sep 2021 08:47:47 GMT
+        # match...
+        match = re.match(r'\S{3}, (\d{1,2}) (\S{3}) (\d{4}) (\d{2}):(\d{2}):(\d{2}) GMT', datetime_str)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        # fields...
+        year = int(fields[2])
+        month = cls.month(fields[1])
+        day = int(fields[0])
+
+        hour = int(fields[3])
+        minute = int(fields[4])
+        second = int(fields[5])
+
+        # construct...
+        zone_offset = timedelta(hours=0, minutes=0)
+        zone = timezone(zone_offset)
+
+        localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, tzinfo=zone)
+
+        return LocalizedDatetime(localized)
 
 
     @classmethod

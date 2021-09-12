@@ -43,7 +43,10 @@ class StatusList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__status_list = status_list
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
