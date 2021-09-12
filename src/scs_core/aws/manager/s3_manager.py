@@ -96,8 +96,6 @@ class S3Manager(object):
         meta = response.get('ResponseMetadata')
         header = meta.get('HTTPHeaders')
         last_modified = LocalizedDatetime.construct_from_s3(header.get('last-modified'))
-        print("last_modified: %s" % last_modified)
-        print("-")
 
         content_body = response.get("Body")
         data = content_body.read().decode()
