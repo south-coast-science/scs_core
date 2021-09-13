@@ -45,6 +45,8 @@ class APIAuth(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__org_id = org_id                  # String
         self.__api_key = api_key                # String
 

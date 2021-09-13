@@ -57,6 +57,8 @@ class AirNowMappingTaskList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__tasks = tasks                                        # dictionary of task.pk: task
 
 

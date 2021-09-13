@@ -53,6 +53,8 @@ class GasBaseline(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__sensor_baselines = sensor_baselines          # dict of gas: SensorBaseline
 
 

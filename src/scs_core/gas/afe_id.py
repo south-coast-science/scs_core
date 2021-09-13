@@ -65,6 +65,8 @@ class AFEId(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__serial_number = serial_number            # string
         self.__afe_type = afe_type                      # string
         self.__calibrated_on = calibrated_on            # date

@@ -61,12 +61,7 @@ class Filesystem(object):
         if not path or not os.path.exists(path):
             return None
 
-        items = []
-
-        for name in sorted(os.listdir(path)):
-            items.append(File(path, name, os.path.isdir(os.path.join(path, name))))
-
-        return items
+        return [File.construct(path, name) for name in sorted(os.listdir(path))]
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -78,12 +73,22 @@ class File(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, container, name, is_directory):
+    @classmethod
+    def construct(cls, container, name):
+        abs_filename = os.path.join(container, name)
+
+        return File(container, name, os.path.getmtime(abs_filename), os.path.isdir(abs_filename))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, container, name, updated, is_directory):
         """
         Constructor
         """
         self.__container = container                            # string
         self.__name = name                                      # string
+        self.__updated = int(updated)                           # int timestamp
         self.__is_directory = bool(is_directory)                # bool
 
 
@@ -114,6 +119,11 @@ class File(object):
 
 
     @property
+    def updated(self):
+        return self.__updated
+
+
+    @property
     def is_directory(self):
         return self.__is_directory
 
@@ -121,4 +131,5 @@ class File(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "File:{container:%s, name:%s, is_directory:%s}" %  (self.container, self.name, self.is_directory)
+        return "File:{container:%s, name:%s, updated:%s, is_directory:%s}" %  \
+               (self.container, self.name, self.updated, self.is_directory)

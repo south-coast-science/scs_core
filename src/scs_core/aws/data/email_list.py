@@ -47,6 +47,8 @@ class EmailList(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__email_list = email_list
 
 

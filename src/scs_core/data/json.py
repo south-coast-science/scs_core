@@ -177,16 +177,12 @@ class AbstractPersistentJSONable(JSONable):
     classdocs
     """
 
+    _SECURITY_DELAY =       3.0                                 # seconds
+
     __AWS_DIR =             "aws"                               # hard-coded rel path
     __CONF_DIR =            "conf"                              # hard-coded rel path
     __HUE_DIR =             "hue"                               # hard-coded rel path
     __OSIO_DIR =            "osio"                              # hard-coded rel path
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @abstractmethod
-    def save(self, manager):
-        pass
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -210,14 +206,32 @@ class AbstractPersistentJSONable(JSONable):
         return cls.__OSIO_DIR
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, last_modified=None):
+        self._last_modified = last_modified                     # LocalizedDatetime
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def save(self, manager):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def last_modified(self):
+        return self._last_modified
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PersistentJSONable(AbstractPersistentJSONable):
     """
     classdocs
     """
-
-    __SECURITY_DELAY = 3.0            # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -242,13 +256,19 @@ class PersistentJSONable(AbstractPersistentJSONable):
             return cls.construct_from_jdict(None, skeleton=skeleton)
 
         try:
-            jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+            jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
 
         except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
-            time.sleep(cls.__SECURITY_DELAY)
+            time.sleep(cls._SECURITY_DELAY)
             raise ex
 
-        return cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
+        try:
+            obj = cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
+            obj._last_modified = last_modified
+            return obj
+
+        except (AttributeError, TypeError):
+            return None
 
 
     @classmethod
@@ -278,6 +298,8 @@ class PersistentJSONable(AbstractPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
+        self._last_modified = None                          # last_modified field shall be restored by load(..)
+
         dirname, filename = self.persistence_location()
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
@@ -326,9 +348,20 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
         if not manager.exists(dirname, filename):
             return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
 
-        jstr = manager.load(dirname, filename, encryption_key=encryption_key)
+        try:
+            jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
 
-        return cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
+        except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
+            time.sleep(cls._SECURITY_DELAY)
+            raise ex
+
+        try:
+            obj = cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
+            obj._last_modified = last_modified
+            return obj
+
+        except (AttributeError, TypeError):
+            return None
 
 
     @classmethod
@@ -357,13 +390,17 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name):
-        self.__name = name                                          # string
+    def __init__(self, name, last_modified=None):
+        super().__init__(last_modified=last_modified)
+
+        self.__name = name                                  # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
+        self._last_modified = None                          # last_modified field shall be restored by load(..)
+
         dirname, filename = self.persistence_location(self.name)
         jstr = JSONify.dumps(self, indent=self._INDENT)
 
