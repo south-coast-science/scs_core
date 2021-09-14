@@ -177,6 +177,8 @@ class AbstractPersistentJSONable(JSONable):
     classdocs
     """
 
+    _SECURITY_DELAY =       3.0                                 # seconds
+
     __AWS_DIR =             "aws"                               # hard-coded rel path
     __CONF_DIR =            "conf"                              # hard-coded rel path
     __HUE_DIR =             "hue"                               # hard-coded rel path
@@ -231,8 +233,6 @@ class PersistentJSONable(AbstractPersistentJSONable):
     classdocs
     """
 
-    __SECURITY_DELAY = 3.0            # seconds
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -259,7 +259,7 @@ class PersistentJSONable(AbstractPersistentJSONable):
             jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
 
         except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
-            time.sleep(cls.__SECURITY_DELAY)
+            time.sleep(cls._SECURITY_DELAY)
             raise ex
 
         try:
@@ -346,9 +346,14 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
             return None
 
         if not manager.exists(dirname, filename):
-            cls.construct_from_jdict(None, name=name, skeleton=skeleton)
+            return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
 
-        jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
+        try:
+            jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
+
+        except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
+            time.sleep(cls._SECURITY_DELAY)
+            raise ex
 
         try:
             obj = cls.construct_from_jdict(cls.loads(jstr), name=name, skeleton=skeleton)
