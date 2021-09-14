@@ -124,7 +124,8 @@ class SystemID(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['set-on'] = None if self.last_modified is None else self.last_modified.as_iso8601()
+        if self.last_modified:
+            jdict['set-on'] = None if self.last_modified is None else self.last_modified.as_iso8601()
 
         jdict['vendor-id'] = self.vendor_id
         jdict['model-id'] = self.model_id
