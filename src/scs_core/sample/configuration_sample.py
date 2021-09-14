@@ -13,6 +13,7 @@ from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
+
 from scs_core.sample.sample import Sample
 
 
@@ -185,3 +186,54 @@ class ConfigurationSampleHistory(JSONable):
     def __str__(self, *args, **kwargs):
         return "ConfigurationSampleHistory:{latest_only:%s, items:%s}" % \
                (self.__latest_only, Str.collection(self.__items))
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ConfigurationReport(ConfigurationSample):
+    """
+    classdocs
+    """
+
+    @classmethod
+    def construct(cls, sample: ConfigurationSample, report: LocalizedDatetime):
+        return cls(sample.tag, sample.rec, sample.configuration, report)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, tag, rec, configuration, report):
+        """
+        Constructor
+        """
+        super().__init__(tag, rec, configuration)
+
+        self.__report = report                          # LocalizedDatetime
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['tag'] = self.tag
+        jdict['rec'] = {'report': self.report.as_iso8601(), 'update': self.rec.as_iso8601()}
+        jdict['val'] = self.values
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def report(self):
+        return self.__report
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ConfigurationReport:{tag:%s, rec:%s, configuration:%s, report:%s}" % \
+               (self.tag, self.rec, self.configuration, self.report)
+
+
