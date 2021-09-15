@@ -59,7 +59,7 @@ setuptools.setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX",
     ],
-    python_requires='>3.5',
+    python_requires='>3.6',
     install_requires=required,
     platforms=['any'],
 )
