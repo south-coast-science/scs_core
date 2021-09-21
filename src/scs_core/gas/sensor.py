@@ -23,6 +23,8 @@ class Sensor(ABC):
     CODE_OX =           '214'           # OXGA4
     CODE_SO2 =          '134'           # SO2A4
 
+    CODE_VOCe =         '217'           # VOCA4
+
     CODE_VOC_PPM =      '142'           # PID12
     CODE_VOC_PPB_T1 =   '143'           # PIDH2
     CODE_VOC_PPB_T2 =   '354'           # PID-AH (since June 2019)
