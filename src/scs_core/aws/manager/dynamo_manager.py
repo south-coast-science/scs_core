@@ -82,12 +82,21 @@ class DynamoManager(object):
 
     def delete(self, table_name, pk, pk_val, sk=None, sk_val=None):
         table = self.__dynamo_resource.Table(table_name)
-        if sk and sk_val:
+        if pk and pk_val and sk and sk_val:
             item = {pk: pk_val, sk: sk_val}
-        elif pk and pk_val and not sk and sk_val:
+        elif pk and pk_val and not sk and not sk_val:
             item = {pk: pk_val}
         else:
             return None
+
+        response = table.delete_item(
+            Key=item
+        )
+
+        return response
+
+    def delete_item(self, table_name, item):
+        table = self.__dynamo_resource.Table(table_name)
 
         response = table.delete_item(
             Key=item
@@ -120,7 +129,7 @@ class DynamoManager(object):
             return kwargs
 
         # retrieve all - retrieve all batched - retrieve all keys only
-        if not pk_val and not sk and not sk_val:
+        if pk_val is None and sk is None and sk_val is None:
             if keys_only:
                 kwargs['ProjectionExpression'] = '#pk'
                 kwargs['ExpressionAttributeNames'] = {'#pk': pk}
@@ -129,7 +138,7 @@ class DynamoManager(object):
             return kwargs
 
         # retrieve filtered on pk - retrieve filtered on pk keys only - retrieve filtered on pk batched
-        if pk and pk_val and not sk and not sk_val and not fosk:
+        if pk and pk_val and sk is None and sk_val is None and not fosk:
             if exact:
                 kwargs['FilterExpression'] = (Attr(pk).eq(pk_val))
             else:
