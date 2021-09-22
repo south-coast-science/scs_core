@@ -48,23 +48,26 @@ class AWSGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get_group_info_from_name(self):
-        response = self.__client.list_groups(MaxResults='1000')     # NextToken='string'
+        groups = []
+
+        res = self.__client.list_groups(MaxResults='1000')
+        groups.extend(res["Groups"])
+        while "NextToken" in res:
+            res = self.__client.list_groups(MaxResults='1000', NextToken=res["NextToken"])
+            groups.extend(res["Groups"])
 
         # print("response...", file=sys.stderr)
         # print(response, file=sys.stderr)
 
-        d_groups = PathDict(response)
-        g_node = d_groups.node("Groups")
-
-        for sub_node in g_node:
-            this_name = sub_node["Name"]
+        for group in groups:
+            this_name = group["Name"]
 
             if this_name != self.__group_info.node("GroupName")[0]:
                 continue
 
-            self.__group_info.append("GroupID", sub_node["Id"])
-            self.__group_info.append("GroupLatestVersionID", sub_node["LatestVersion"])
-            self.__group_info.append("LastUpdated", sub_node["LastUpdatedTimestamp"])
+            self.__group_info.append("GroupID", group["Id"])
+            self.__group_info.append("GroupLatestVersionID", group["LatestVersion"])
+            self.__group_info.append("LastUpdated", group["LastUpdatedTimestamp"])
             return self.__group_info
 
         return None
