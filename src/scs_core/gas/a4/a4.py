@@ -30,6 +30,8 @@ class A4(Sensor):
         cls.SENSORS[cls.CODE_OX] =      A4(cls.CODE_OX,     'OXA431',   'Ox',   3)      # was OXGA4
         cls.SENSORS[cls.CODE_SO2] =     A4(cls.CODE_SO2,    'SO2A4',    'SO2',  3)
 
+        cls.SENSORS[cls.CODE_VOCe] =    A4(cls.CODE_VOCe,   'VOCA4',    'VOCe', 3)
+
         cls.SENSORS[cls.CODE_TEST_1] =  A4(cls.CODE_TEST_1, 'TEST',     'SN1',  3)
         cls.SENSORS[cls.CODE_TEST_2] =  A4(cls.CODE_TEST_2, 'TEST',     'SN2',  3)
         cls.SENSORS[cls.CODE_TEST_3] =  A4(cls.CODE_TEST_3, 'TEST',     'SN3',  3)

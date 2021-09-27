@@ -40,8 +40,8 @@ class GasesSample(Sample):
     classdocs
     """
 
-    __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC']
-    __VOC_FIELDS = ['VOC']
+    __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC', 'VOCe']
+    __VOC_FIELDS = ['VOC', 'VOCe']
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):

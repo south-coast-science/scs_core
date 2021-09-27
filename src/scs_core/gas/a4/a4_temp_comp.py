@@ -40,6 +40,8 @@ class A4TempComp(object):
             Sensor.CODE_OX:     A4TempComp(3, 'kp_t', [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0]),
             Sensor.CODE_SO2:    A4TempComp(1, 'kpp_t', [1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.9, 3.0, 5.8]),
 
+            Sensor.CODE_VOCe:   A4TempComp(1, 'n_t', [1.0, 1.0, 1.0, 1.0, -0.2, -0.9, -1.5, -1.5, -1.5]),
+
             Sensor.CODE_TEST_1: None,
             Sensor.CODE_TEST_2: None,
             Sensor.CODE_TEST_3: None,
