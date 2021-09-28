@@ -35,7 +35,7 @@ class MessageManager(object):
     classdocs AWSAggregateTest
     """
 
-    # __REQUEST_PATH = 'topicMessages'
+    # __REQUEST_PATH = '/topicMessages'
     __REQUEST_PATH = '/default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -52,24 +52,19 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only):
-        for back_off in (1, 10, 30, 60):
-            start = end - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start, end, path, False, None, include_wrapper, rec_only,
-                                                 False, False))
-
-            if documents:
-                return documents[-1]
-
-            end = start
+    def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only, backoff_limit):
+        documents = list(self.find_for_topic(topic, None, end, path, False, None, include_wrapper, rec_only, False,
+                                             False, True, backoff_limit))
+        if documents:
+            return documents[-1]
 
         return None
 
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                       min_max, exclude_remainder):
+                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                                 min_max, exclude_remainder, None, None)
+                                 min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self.__logger.debug(request)
 
         params = request.params()
@@ -123,13 +118,13 @@ class MessageRequest(object):
     START = 'startTime'
     END = 'endTime'
     PATH = 'path'
-    FETCH_LAST_WRITTEN = 'fetchLastWrittenData'
+    FETCH_LAST_WRITTEN = 'fetchLastWritten'
     CHECKPOINT = 'checkpoint'
     INCLUDE_WRAPPER = 'includeWrapper'
     REC_ONLY = 'recOnly'
     MIN_MAX = 'minMax'
     EXCLUDE_REMAINDER = 'excludeRemainder'
-    FETCH_LAST_WRITTEN_BEFORE = 'fetchLastWrittenDataBefore'
+    FETCH_LAST_WRITTEN_BEFORE = 'fetchLastWrittenBefore'
     BACKOFF_LIMIT = "backoffLimit"
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -262,7 +257,7 @@ class MessageRequest(object):
     def params(self):
         params = {
             self.TOPIC: self.topic,
-            self.START: self.start.utc().as_iso8601(include_millis=True),
+            self.START: None if self.start is None else self.start.utc().as_iso8601(include_millis=True),
             self.END: self.end.utc().as_iso8601(include_millis=True)
         }
 
@@ -286,6 +281,12 @@ class MessageRequest(object):
 
         if self.exclude_remainder:
             params[self.EXCLUDE_REMAINDER] = 'true'
+
+        if self.fetch_last_written_before:
+            params[self.FETCH_LAST_WRITTEN_BEFORE] = 'true'
+
+        if self.backoff_limit:
+            params[self.BACKOFF_LIMIT] = self.backoff_limit
 
         return params
 
