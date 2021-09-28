@@ -56,7 +56,7 @@ class MessageManager(object):
         documents = list(self.find_for_topic(topic, None, end, path, False, None, include_wrapper, rec_only, False,
                                              False, True, backoff_limit))
         if documents:
-            return documents[-1]
+            return documents[0]
 
         return None
 
