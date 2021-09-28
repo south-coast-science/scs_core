@@ -40,7 +40,7 @@ print("-")
 end = LocalizedDatetime.construct_from_iso8601('2020-01-08T00:00:00Z')
 print(end)
 
-request = MessageRequest('topic', start, end, None, False, 'auto', False, False, False, False)
+request = MessageRequest('topic', start, end, None, False, 'auto', False, False, False, False, False, None)
 print(request)
 
 print('checkpoint: %s' % request.checkpoint)
