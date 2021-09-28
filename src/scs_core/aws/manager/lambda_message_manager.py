@@ -36,7 +36,7 @@ class MessageManager(object):
     """
 
     # __REQUEST_PATH = 'topicMessages'
-    __REQUEST_PATH = 'default/AWSAggregateTest'
+    __REQUEST_PATH = '/default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
 
