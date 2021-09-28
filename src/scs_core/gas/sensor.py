@@ -30,7 +30,7 @@ class Sensor(ABC):
     CODE_VOC_PPB_T2 =   '354'           # PID-AH (since June 2019)
     CODE_VOC_PPB_T3 =   '401'           # PID-AH (since April 2020)
     CODE_VOC_PPB_T4 =   '452'           # PID-AH (since May 2021)
-    CODE_VOC_PPB_T5 =   '507'           # PID-AH (since May 2021)
+    CODE_VOC_PPB_T5 =   '507'           # PID-AH Rev. 2 (since May 2021)
 
     CODE_TEST_1 =       '01'            # test load
     CODE_TEST_2 =       '02'            # test load

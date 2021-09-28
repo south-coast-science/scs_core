@@ -5,7 +5,7 @@ Created on 9 Nov 2016
 """
 
 import ssl
-import sys
+# import sys
 
 import http.client
 
@@ -71,7 +71,7 @@ class HTTPClient(object):
         params = urllib.parse.urlencode(payload) if payload else None
         query = path + '?' + params if params else path
 
-        print("get: query: {}".format(query), file=sys.stderr)
+        # print("get: query: {}".format(query), file=sys.stderr)
         # print("headers: %s " % headers)
 
         # request...
