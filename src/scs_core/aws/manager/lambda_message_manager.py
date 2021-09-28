@@ -64,7 +64,7 @@ class MessageManager(object):
         request_path = '/topicMessages'
 
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                                 min_max, exclude_remainder)
+                                 min_max, exclude_remainder, None, None)
         self.__logger.debug(request)
 
         params = request.params()
@@ -124,6 +124,8 @@ class MessageRequest(object):
     REC_ONLY = 'recOnly'
     MIN_MAX = 'minMax'
     EXCLUDE_REMAINDER = 'excludeRemainder'
+    FETCH_LAST_WRITTEN_BEFORE = 'fetchLastWrittenDataBefore'
+    BACKOFF_LIMIT = "backoffLimit"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -171,18 +173,20 @@ class MessageRequest(object):
         rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
         exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
+        fetch_last_written_before = qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE, 'false').lower() == 'true'
+        backoff_limit = qsp.get(cls.PATH)
 
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
         return cls(topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
-                   min_max, exclude_remainder)
+                   min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
-                 min_max, exclude_remainder):
+                 min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
         """
         Constructor
         """
@@ -196,7 +200,9 @@ class MessageRequest(object):
         self.__include_wrapper = bool(include_wrapper)              # bool
         self.__rec_only = bool(rec_only)                            # bool
         self.__min_max = bool(min_max)                              # bool
-        self.__exclude_remainder = bool(exclude_remainder)          # bool
+        self.__exclude_remainder = bool(exclude_remainder)          #
+        self.__fetch_last_written_before = bool(fetch_last_written_before)
+        self.__backoff_limit = backoff_limit                        # int s
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -238,12 +244,14 @@ class MessageRequest(object):
 
     def next_params(self, start):
         return MessageRequest(self.topic, start, self.end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder).params()
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                              self.backoff_limit, self.fetch_last_written_before).params()
 
 
     def change_params(self, start, end):
         return MessageRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                              self.backoff_limit, self.fetch_last_written_before)
 
 
     def params(self):
@@ -321,6 +329,9 @@ class MessageRequest(object):
     def include_wrapper(self):
         return self.__include_wrapper
 
+    @property
+    def fetch_last_written_before(self):
+        return self.__fetch_last_written_before
 
     @property
     def rec_only(self):
@@ -330,6 +341,10 @@ class MessageRequest(object):
     @property
     def min_max(self):
         return self.__min_max
+
+    @property
+    def backoff_limit(self):
+        return self.__backoff_limit
 
 
     @property
