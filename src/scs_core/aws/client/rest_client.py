@@ -13,7 +13,7 @@ CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key 
 """
 
 import json
-# import sys
+import sys
 
 from scs_core.data.json import JSONify
 
@@ -56,7 +56,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, path, params=None):
-        # print("RESTClient.get: path: %s params: %s headers:%s" % (path, params, self.__headers), file=sys.stderr)
+        print("RESTClient.get: path: %s params: %s headers:%s" % (path, params, self.__headers), file=sys.stderr)
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)

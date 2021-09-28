@@ -8,6 +8,10 @@ This version of MessageManager for AWS lambda function with multi-part response.
 Equivalent to cURL:
 curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
+
+Test endpoint:
+curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregateTest?topic=unep/ethiopia/loc/1/climate
+&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from collections import OrderedDict
@@ -28,8 +32,11 @@ from scs_core.sys.logging import Logging
 
 class MessageManager(object):
     """
-    classdocs
+    classdocs AWSAggregateTest
     """
+
+    # __REQUEST_PATH = 'topicMessages'
+    __REQUEST_PATH = 'default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -61,8 +68,6 @@ class MessageManager(object):
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder):
-        request_path = '/topicMessages'
-
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                  min_max, exclude_remainder, None, None)
         self.__logger.debug(request)
@@ -74,7 +79,7 @@ class MessageManager(object):
 
         try:
             while True:
-                jdict = self.__rest_client.get(request_path, params)
+                jdict = self.__rest_client.get(self.__REQUEST_PATH, params)
 
                 # messages...
                 block = MessageResponse.construct_from_jdict(jdict)
@@ -190,19 +195,19 @@ class MessageRequest(object):
         """
         Constructor
         """
-        self.__topic = topic                                        # string
-        self.__start = start                                        # LocalizedDatetime
-        self.__end = end                                            # LocalizedDatetime
+        self.__topic = topic                                                    # string
+        self.__start = start                                                    # LocalizedDatetime
+        self.__end = end                                                        # LocalizedDatetime
 
-        self.__path = path                                          # string
-        self.__fetch_last_written = bool(fetch_last_written)        # bool
-        self.__checkpoint = checkpoint                              # string
-        self.__include_wrapper = bool(include_wrapper)              # bool
-        self.__rec_only = bool(rec_only)                            # bool
-        self.__min_max = bool(min_max)                              # bool
-        self.__exclude_remainder = bool(exclude_remainder)          #
-        self.__fetch_last_written_before = bool(fetch_last_written_before)
-        self.__backoff_limit = backoff_limit                        # int s
+        self.__path = path                                                      # string
+        self.__fetch_last_written = bool(fetch_last_written)                    # bool
+        self.__checkpoint = checkpoint                                          # string
+        self.__include_wrapper = bool(include_wrapper)                          # bool
+        self.__rec_only = bool(rec_only)                                        # bool
+        self.__min_max = bool(min_max)                                          # bool
+        self.__exclude_remainder = bool(exclude_remainder)                      # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)      # bool
+        self.__backoff_limit = backoff_limit                                    # int seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
