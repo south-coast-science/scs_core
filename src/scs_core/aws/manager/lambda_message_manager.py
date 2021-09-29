@@ -56,7 +56,7 @@ class MessageManager(object):
         documents = list(self.find_for_topic(topic, None, end, path, False, None, include_wrapper, rec_only, False,
                                              False, True, backoff_limit))
         if documents:
-            return documents[-1]
+            return documents[0]
 
         return None
 
@@ -335,9 +335,6 @@ class MessageRequest(object):
     def include_wrapper(self):
         return self.__include_wrapper
 
-    @property
-    def fetch_last_written_before(self):
-        return self.__fetch_last_written_before
 
     @property
     def rec_only(self):
@@ -348,23 +345,31 @@ class MessageRequest(object):
     def min_max(self):
         return self.__min_max
 
-    @property
-    def backoff_limit(self):
-        return self.__backoff_limit
-
 
     @property
     def exclude_remainder(self):
         return self.__exclude_remainder
 
 
+    @property
+    def fetch_last_written_before(self):
+        return self.__fetch_last_written_before
+
+
+    @property
+    def backoff_limit(self):
+        return self.__backoff_limit
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "MessageRequest:{topic:%s, start:%s, end:%s, path:%s, fetch_last_written:%s, checkpoint:%s, " \
-               "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s}" % \
+               "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s, " \
+               "fetch_last_written_before:%s, backoff_limit:%s}" % \
                (self.topic, self.start, self.end, self.path, self.fetch_last_written, self.__checkpoint,
-                self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
+                self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                self.fetch_last_written_before, self.backoff_limit)
 
 
 # --------------------------------------------------------------------------------------------------------------------
