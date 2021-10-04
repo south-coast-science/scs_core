@@ -78,7 +78,6 @@ class CSVWriter(object):
 
         # write row...
         self.__writer.writerow(datum.row(self.__paths))
-        self.__file.flush()
 
         return True
 
