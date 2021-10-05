@@ -67,11 +67,13 @@ class SensorCalib(ABC, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def sensor(self, baseline):
+    def sensor(self, baseline):         # TODO: do this on the subclass?
         sensor = Sensor.find(self.__serial_number)
 
         sensor.calib = self
         sensor.baseline = baseline
+
+        # TODO: set the calibrator - if it is an electrochem! (vCal baseline belongs to the inference system?)
 
         return sensor
 

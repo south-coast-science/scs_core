@@ -22,7 +22,7 @@ from scs_core.climate.sht_datum import SHTDatum
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.str import Str
 
-from scs_core.gas.a4.a4_datum import A4Datum
+from scs_core.gas.a4.a4_calibrated_datum import A4CalibratedDatum
 from scs_core.gas.afe.afe_datum import AFEDatum
 from scs_core.gas.afe.pt1000_datum import Pt1000Datum
 from scs_core.gas.pid.pid import PIDDatum
@@ -68,7 +68,7 @@ class GasesSample(Sample):
 
         for field, node in val.items():
             if field not in cls.__NON_ELECTROCHEM_FIELDS:
-                sns[field] = A4Datum.construct_from_jdict(node)
+                sns[field] = A4CalibratedDatum.construct_from_jdict(node)
 
             if field in cls.__VOC_FIELDS:
                 sns[field] = PIDDatum.construct_from_jdict(node)

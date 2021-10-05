@@ -6,10 +6,11 @@ Created on 30 Sep 2016
 Alphasense A4 electrochemical sensor
 """
 
+from scs_core.gas.sensor import Sensor
+
+from scs_core.gas.a4.a4_calibrated_datum_vB import A4Calibrator
 from scs_core.gas.a4.a4_datum import A4Datum
 from scs_core.gas.a4.a4_temp_comp import A4TempComp
-
-from scs_core.gas.sensor import Sensor
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -47,6 +48,7 @@ class A4(Sensor):
         Sensor.__init__(self, sensor_code, sensor_type, gas_name, adc_gain_index)
 
         self.__tc = A4TempComp.find(sensor_code)
+        self.__calibrator = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,7 +66,14 @@ class A4(Sensor):
 
 
     def datum(self, temp, we_v, ae_v, no2_cnc=None):
-        return A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
+        datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
+
+        # return datum
+        #
+        if self.calibrator is None:
+            return datum
+
+        return self.calibrator.calibrate(datum)
 
 
     def null_datum(self):
@@ -78,8 +87,24 @@ class A4(Sensor):
         return self.__tc
 
 
+    @property
+    def calibrator(self):
+        return self.__calibrator
+
+
+    @property
+    def calib(self):
+        return self._calib
+
+
+    @calib.setter
+    def calib(self, calib):
+        self._calib = calib
+        self.__calibrator = A4Calibrator(calib)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4:{sensor_code:%s, sensor_type:%s, gas_name:%s, calib:%s, baseline:%s}" %  \
-               (self.sensor_code, self.sensor_type, self.gas_name, self.calib, self.baseline)
+        return "A4:{sensor_code:%s, sensor_type:%s, gas_name:%s, calib:%s, baseline:%s, tc:%s, calibrator:%s}" %  \
+               (self.sensor_code, self.sensor_type, self.gas_name, self.calib, self.baseline, self.tc, self.calibrator)
