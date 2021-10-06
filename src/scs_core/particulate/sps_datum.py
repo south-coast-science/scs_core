@@ -21,6 +21,8 @@ class SPSDatum(PMxDatum):
     classdocs
     """
 
+    VERSION = 1.0
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -75,7 +77,7 @@ class SPSDatum(PMxDatum):
         jdict['counts'] = self.counts
         jdict['tps'] = self.tps
 
-        return Sample(tag, self.rec, src=self.source, values=jdict)
+        return Sample(tag, self.rec, self.VERSION, src=self.source, values=jdict)
 
 
     def as_json(self):

@@ -26,7 +26,7 @@ class A4Calib(SensorCalib):
     DEFAULT_AE_SENSOR_ZERO_MV =           0
     DEFAULT_AE_TOTAL_ZERO_MV =          300
 
-    DEFAULT_PCB_GAIN =                  -0.7
+    DEFAULT_PCB_GAIN =                 -0.7
 
 
     # ----------------------------------------------------------------------------------------------------------------
