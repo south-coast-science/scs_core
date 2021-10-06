@@ -55,6 +55,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
 
@@ -224,9 +225,9 @@ class ConfigurationSampleHistory(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # def __str__(self, *args, **kwargs):
-    #     return "ConfigurationSampleHistory:{latest_only:%s, items:%s}" % \
-    #            (self.__latest_only, Str.collection(self.__items))
+    def __str__(self, *args, **kwargs):
+        return "ConfigurationSampleHistory:{latest_only:%s, items:%s}" % \
+               (self.__latest_only, Str.collection(self.__items))
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -259,6 +260,8 @@ class ConfigurationReport(ConfigurationSample):
 
         jdict['tag'] = self.tag
         jdict['rec'] = {'report': self.report.as_iso8601(), 'update': self.rec.as_iso8601()}
+        jdict['ver'] = self.version
+
         jdict['val'] = self.values
 
         return jdict
