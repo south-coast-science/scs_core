@@ -8,6 +8,10 @@ This version of MessageManager for AWS lambda function with multi-part response.
 Equivalent to cURL:
 curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
 &startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
+
+Test endpoint:
+curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregateTest?topic=unep/ethiopia/loc/1/climate
+&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from collections import OrderedDict
@@ -28,8 +32,11 @@ from scs_core.sys.logging import Logging
 
 class MessageManager(object):
     """
-    classdocs
+    classdocs AWSAggregateTest
     """
+
+    __REQUEST_PATH = '/topicMessages'
+    # __REQUEST_PATH = '/default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -45,26 +52,19 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only):
-        for back_off in (1, 10, 30, 60):
-            start = end - Timedelta(seconds=back_off)
-            documents = list(self.find_for_topic(topic, start, end, path, False, None, include_wrapper, rec_only,
-                                                 False, False))
-
-            if documents:
-                return documents[-1]
-
-            end = start
+    def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only, backoff_limit):
+        documents = list(self.find_for_topic(topic, None, end, path, False, None, include_wrapper, rec_only, False,
+                                             False, True, backoff_limit))
+        if documents:
+            return documents[0]
 
         return None
 
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                       min_max, exclude_remainder):
-        request_path = '/topicMessages'
-
+                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                                 min_max, exclude_remainder)
+                                 min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self.__logger.debug(request)
 
         params = request.params()
@@ -74,7 +74,7 @@ class MessageManager(object):
 
         try:
             while True:
-                jdict = self.__rest_client.get(request_path, params)
+                jdict = self.__rest_client.get(self.__REQUEST_PATH, params)
 
                 # messages...
                 block = MessageResponse.construct_from_jdict(jdict)
@@ -118,12 +118,14 @@ class MessageRequest(object):
     START = 'startTime'
     END = 'endTime'
     PATH = 'path'
-    FETCH_LAST_WRITTEN = 'fetchLastWrittenData'
+    FETCH_LAST_WRITTEN = 'fetchLastWritten'
     CHECKPOINT = 'checkpoint'
     INCLUDE_WRAPPER = 'includeWrapper'
     REC_ONLY = 'recOnly'
     MIN_MAX = 'minMax'
     EXCLUDE_REMAINDER = 'excludeRemainder'
+    FETCH_LAST_WRITTEN_BEFORE = 'fetchLastWrittenBefore'
+    BACKOFF_LIMIT = "backoffLimit"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -171,32 +173,36 @@ class MessageRequest(object):
         rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
         exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
+        fetch_last_written_before = qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE, 'false').lower() == 'true'
+        backoff_limit = qsp.get(cls.PATH)
 
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
         return cls(topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
-                   min_max, exclude_remainder)
+                   min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
-                 min_max, exclude_remainder):
+                 min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
         """
         Constructor
         """
-        self.__topic = topic                                        # string
-        self.__start = start                                        # LocalizedDatetime
-        self.__end = end                                            # LocalizedDatetime
+        self.__topic = topic                                                    # string
+        self.__start = start                                                    # LocalizedDatetime
+        self.__end = end                                                        # LocalizedDatetime
 
-        self.__path = path                                          # string
-        self.__fetch_last_written = bool(fetch_last_written)        # bool
-        self.__checkpoint = checkpoint                              # string
-        self.__include_wrapper = bool(include_wrapper)              # bool
-        self.__rec_only = bool(rec_only)                            # bool
-        self.__min_max = bool(min_max)                              # bool
-        self.__exclude_remainder = bool(exclude_remainder)          # bool
+        self.__path = path                                                      # string
+        self.__fetch_last_written = bool(fetch_last_written)                    # bool
+        self.__checkpoint = checkpoint                                          # string
+        self.__include_wrapper = bool(include_wrapper)                          # bool
+        self.__rec_only = bool(rec_only)                                        # bool
+        self.__min_max = bool(min_max)                                          # bool
+        self.__exclude_remainder = bool(exclude_remainder)                      # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)      # bool
+        self.__backoff_limit = backoff_limit                                    # int seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -238,18 +244,20 @@ class MessageRequest(object):
 
     def next_params(self, start):
         return MessageRequest(self.topic, start, self.end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder).params()
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                              self.backoff_limit, self.fetch_last_written_before).params()
 
 
     def change_params(self, start, end):
         return MessageRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
+                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                              self.backoff_limit, self.fetch_last_written_before)
 
 
     def params(self):
         params = {
             self.TOPIC: self.topic,
-            self.START: self.start.utc().as_iso8601(include_millis=True),
+            self.START: None if self.start is None else self.start.utc().as_iso8601(include_millis=True),
             self.END: self.end.utc().as_iso8601(include_millis=True)
         }
 
@@ -273,6 +281,12 @@ class MessageRequest(object):
 
         if self.exclude_remainder:
             params[self.EXCLUDE_REMAINDER] = 'true'
+
+        if self.fetch_last_written_before:
+            params[self.FETCH_LAST_WRITTEN_BEFORE] = 'true'
+
+        if self.backoff_limit:
+            params[self.BACKOFF_LIMIT] = self.backoff_limit
 
         return params
 
@@ -337,13 +351,25 @@ class MessageRequest(object):
         return self.__exclude_remainder
 
 
+    @property
+    def fetch_last_written_before(self):
+        return self.__fetch_last_written_before
+
+
+    @property
+    def backoff_limit(self):
+        return self.__backoff_limit
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "MessageRequest:{topic:%s, start:%s, end:%s, path:%s, fetch_last_written:%s, checkpoint:%s, " \
-               "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s}" % \
+               "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s, " \
+               "fetch_last_written_before:%s, backoff_limit:%s}" % \
                (self.topic, self.start, self.end, self.path, self.fetch_last_written, self.__checkpoint,
-                self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder)
+                self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                self.fetch_last_written_before, self.backoff_limit)
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -200,7 +200,7 @@ class MQTTDevicePoller(object):
                     'datetime': current[0]['datetime']
                 }
 
-                self.__dynamo_manager.delete(self.__TABLE, key)
+                self.__dynamo_manager.delete_item(self.__TABLE, key)
 
         # add to db
         item = {

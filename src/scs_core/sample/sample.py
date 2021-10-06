@@ -18,6 +18,8 @@ class Sample(JSONable):
     classdocs
     """
 
+    ABSENT_VERSION = 0.0
+
     EXEGESIS_TAG =              "exg"
     INCLUDE_MILLIS =            False
 
@@ -29,33 +31,37 @@ class Sample(JSONable):
             return None
 
         tag = jdict.get('tag')
-        src = jdict.get('src')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver', cls.ABSENT_VERSION)
+
+        src = jdict.get('src')
         values = jdict.get('val')
         exegeses = jdict.get('exg')
 
-        return cls(tag, rec, src=src, values=values, exegeses=exegeses)
+        return cls(tag, rec, version, src=src, values=values, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, src=None, values=None, exegeses=None):
+    def __init__(self, tag, rec, version, src=None, values=None, exegeses=None):
         """
         Constructor
         """
-        self.__tag = tag                        # string
-        self.__rec = rec                        # LocalizedDatetime
+        self.__tag = tag                                # string
+        self.__rec = rec                                # LocalizedDatetime
 
-        self.__src = src                        # string
-        self.__values = values                  # OrderedDict
-        self.__exegeses = exegeses              # OrderedDict
+        self.__version = float(version)                 # float
+        self.__src = src                                # string
+
+        self.__values = values                          # OrderedDict
+        self.__exegeses = exegeses                      # OrderedDict
 
 
     def __eq__(self, other):
         try:
             return self.tag == other.tag and self.rec == other.rec and \
-                   self.src == other.src and self.values == other.values and \
-                   self.exegeses == other.exegeses
+                   self.version == other.version and self.src == other.src and \
+                   self.values == other.values and self.exegeses == other.exegeses
 
         except (TypeError, AttributeError):
             return False
@@ -70,6 +76,8 @@ class Sample(JSONable):
 
         if self.tag is not None:
             jdict['tag'] = self.tag
+
+        jdict['ver'] = round(self.version, 1)
 
         if self.src is not None:
             jdict['src'] = self.src
@@ -92,6 +100,11 @@ class Sample(JSONable):
     @property
     def rec(self):
         return self.__rec
+
+
+    @property
+    def version(self):
+        return self.__version
 
 
     @rec.setter
@@ -125,5 +138,5 @@ class Sample(JSONable):
         values = Str.collection(self.values)
         exegeses = Str.collection(self.exegeses)
 
-        return self.__class__.__name__ + ":{tag:%s, rec:%s, src:%s, values:%s, exegeses:%s}" % \
-            (self.tag, self.rec, self.src, values, exegeses)
+        return self.__class__.__name__ + ":{tag:%s, rec:%s, version:%s, src:%s, values:%s, exegeses:%s}" % \
+            (self.tag, self.rec, self.version, self.src, values, exegeses)
