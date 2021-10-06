@@ -4,7 +4,7 @@ Created on 17 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"tag": "scs-ap1-6", "rec": "2019-01-22T13:55:54Z", "val": {"hmd": 49.3, "tmp": 21.5, "bar": {"pA": 99.8}}}
+{"rec": "2021-10-06T11:34:18Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"bar": {"pA": 102.3, "p0": 103.5, "tmp": 24.0}}}
 """
 
 from collections import OrderedDict

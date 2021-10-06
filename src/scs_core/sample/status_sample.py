@@ -4,13 +4,11 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"tag": "scs-ap1-6", "rec": "2019-03-09T12:05:10Z", "val":
-{"airnow": {"site": "850MM123456789", "pocs": {"88102": 2, "88103": 3}},
-"tz": {"name": "Europe/London", "utc-offset": "+00:00"},
+{"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"tz": {"name": "Europe/London",
+"utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
-"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
-"tmp": {"brd": 30.2, "hst": 47.8},
-"up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
+"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
+"load": {"av1": 0.02, "av5": 0.34, "av15": 0.67}}, "sig": {"quality": null, "recent": null}}}
 """
 
 from collections import OrderedDict

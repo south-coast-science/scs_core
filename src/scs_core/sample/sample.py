@@ -31,6 +31,7 @@ class Sample(JSONable):
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         version = jdict.get('ver')
+
         src = jdict.get('src')
         values = jdict.get('val')
         exegeses = jdict.get('exg')
