@@ -114,13 +114,15 @@ class Sensor(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    @abstractmethod
     def calib(self):
-        return self._calib
+        pass
 
 
     @calib.setter
-    def calib(self, calib):             # TODO: override this in PID, to use defaults
-        self._calib = calib
+    @abstractmethod
+    def calib(self, calib):
+        pass
 
 
     @property

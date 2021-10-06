@@ -4,7 +4,7 @@ Created on 17 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"tag": "scs-ap1-6", "rec": "2019-01-22T13:55:54Z", "val": {"hmd": 49.3, "tmp": 21.5, "bar": {"pA": 99.8}}}
+{"rec": "2021-10-06T11:34:18Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"bar": {"pA": 102.3, "p0": 103.5, "tmp": 24.0}}}
 """
 
 from collections import OrderedDict
@@ -24,26 +24,35 @@ class PressureSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return None
 
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver')
+
         barometer_datum = PressureDatum.construct_from_jdict(jdict.get('val'))
         exegeses = jdict.get('exg')
 
-        return cls(tag, rec, barometer_datum, exegeses=exegeses)
+        return cls(tag, rec, barometer_datum, version=version, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, barometer_datum, exegeses=None):
+    def __init__(self, tag, rec, barometer_datum, version=None, exegeses=None):
         """
         Constructor
         """
-        super().__init__(tag, rec, exegeses=exegeses)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, rec, version, exegeses=exegeses)
 
         self.__barometer_datum = barometer_datum                    # PressureDatum
 

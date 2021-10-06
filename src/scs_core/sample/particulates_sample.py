@@ -27,6 +27,10 @@ class ParticulatesSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
@@ -34,6 +38,8 @@ class ParticulatesSample(Sample):
 
         # Sample...
         tag = jdict.get('tag')
+        version = jdict.get('ver')
+
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
@@ -43,16 +49,19 @@ class ParticulatesSample(Sample):
 
         opc_datum = OPCDatum.construct_from_jdict(val)
 
-        return cls(tag, opc_datum, exegeses=exegeses)
+        return cls(tag, opc_datum, version=version, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, opc_datum, exegeses=None):
+    def __init__(self, tag, opc_datum, version=None, exegeses=None):
         """
         Constructor
         """
-        super().__init__(tag, opc_datum.rec, src=opc_datum.source, exegeses=exegeses)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, opc_datum.rec, version, src=opc_datum.source, exegeses=exegeses)
 
         self.__opc_datum = opc_datum                                # OPCDatum
 
