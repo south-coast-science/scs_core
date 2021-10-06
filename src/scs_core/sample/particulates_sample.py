@@ -38,7 +38,7 @@ class ParticulatesSample(Sample):
 
         # Sample...
         tag = jdict.get('tag')
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.ABSENT_VERSION)
 
         val = jdict.get('val')
         exegeses = jdict.get('exg')

@@ -4,7 +4,7 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:07:54Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"NO2": {"weV": 0.3165, "aeV": 0.31107,
+{"rec": "2021-10-06T11:07:54Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"NO2": {"weV": 0.3165, "aeV": 0.31107,
 "weC": 0.00188, "cnc": 22.8, "vCal": 23.073}, "CO": {"weV": 0.32163, "aeV": 0.25675, "weC": 0.07677, "cnc": 314.2,
 "vCal": 288.201}, "SO2": {"weV": 0.26788, "aeV": 0.26538, "weC": -0.00217, "cnc": 17.9, "vCal": -1.408},
 "H2S": {"weV": 0.20525, "aeV": 0.26, "weC": -0.02327, "cnc": -7.3, "vCal": -34.211},
@@ -51,7 +51,7 @@ class GasesSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.ABSENT_VERSION)
 
         val = jdict.get('val')
         exegeses = jdict.get('exg')

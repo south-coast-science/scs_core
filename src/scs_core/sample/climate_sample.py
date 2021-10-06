@@ -4,7 +4,7 @@ Created on 17 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:06:38Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"hmd": 45.1, "tmp": 23.4,
+{"rec": "2021-10-06T11:06:38Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"hmd": 45.1, "tmp": 23.4,
 "bar": {"pA": 102.3, "p0": 103.5}}}
 """
 
@@ -38,7 +38,7 @@ class ClimateSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.ABSENT_VERSION)
 
         val = jdict.get('val')
         exegeses = jdict.get('exg')
