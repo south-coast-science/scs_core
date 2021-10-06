@@ -40,8 +40,12 @@ class GasesSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
     __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC', 'VOCe']
     __VOC_FIELDS = ['VOC', 'VOCe']
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
@@ -49,8 +53,10 @@ class GasesSample(Sample):
             return None
 
         # Sample...
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver')
+
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
@@ -75,16 +81,19 @@ class GasesSample(Sample):
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 
-        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, exegeses=exegeses)
+        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, exegeses=None):
+    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, exegeses=None):
         """
         Constructor
         """
-        super().__init__(tag, rec, exegeses=exegeses)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, rec, version, exegeses=exegeses)
 
         self.__scd30_datum = scd30_datum                            # SCD30Datum
         self.__electrochem_datum = electrochem_datum                # AFEDatum or ISIDatum

@@ -24,14 +24,19 @@ class ConfigurationSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return None
 
         # Sample...
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver')
 
         try:
             val_jdict = json.loads(jdict.get('val'))
@@ -40,16 +45,19 @@ class ConfigurationSample(Sample):
 
         configuration = Configuration.construct_from_jdict(val_jdict)
 
-        return cls(tag, rec, configuration)
+        return cls(tag, rec, configuration, version=version)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, configuration):
+    def __init__(self, tag, rec, configuration, version=None):
         """
         Constructor
         """
-        super().__init__(tag, rec)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, rec, version)
 
         self.__configuration = configuration                # Configuration
 

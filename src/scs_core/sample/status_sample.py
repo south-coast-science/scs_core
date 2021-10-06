@@ -39,14 +39,20 @@ class StatusSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return None
 
         # Sample...
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver')
+
         val = jdict.get('val')
 
         # StatusSample...
@@ -60,16 +66,21 @@ class StatusSample(Sample):
 
         # PSUReport classes are not available to the scs_core package
 
-        return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, val.get('psu'), modem_signal)
+        return cls(tag, rec, airnow, timezone, position, temperature, schedule, uptime, val.get('psu'), modem_signal,
+                   version=version)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report, modem_signal):
+    def __init__(self, tag, rec, airnow, timezone, position, temperature, schedule, uptime, psu_report, modem_signal,
+                 version=None):
         """
         Constructor
         """
-        super().__init__(tag, rec)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, rec, version)
 
         self.__airnow = airnow                                      # AirNowSiteConf
         self.__timezone = timezone                                  # Timezone

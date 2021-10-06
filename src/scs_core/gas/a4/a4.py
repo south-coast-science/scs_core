@@ -8,7 +8,7 @@ Alphasense A4 electrochemical sensor
 
 from scs_core.gas.sensor import Sensor
 
-from scs_core.gas.a4.a4_calibrated_datum_vB import A4Calibrator
+from scs_core.gas.a4.a4_calibrated_datum import A4Calibrator
 from scs_core.gas.a4.a4_datum import A4Datum
 from scs_core.gas.a4.a4_temp_comp import A4TempComp
 
@@ -68,12 +68,7 @@ class A4(Sensor):
     def datum(self, temp, we_v, ae_v, no2_cnc=None):
         datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
 
-        # return datum
-        #
-        if self.calibrator is None:
-            return datum
-
-        return self.calibrator.calibrate(datum)
+        return datum if self.calibrator is None else self.calibrator.calibrate(datum)
 
 
     def null_datum(self):

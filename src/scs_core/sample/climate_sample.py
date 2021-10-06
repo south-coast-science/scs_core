@@ -25,14 +25,20 @@ class ClimateSample(Sample):
     classdocs
     """
 
+    VERSION = 1.0
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return None
 
         # Sample...
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         tag = jdict.get('tag')
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        version = jdict.get('ver')
+
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
@@ -42,16 +48,19 @@ class ClimateSample(Sample):
         node = val.get('bar')
         barometer_datum = None if node is None else PressureDatum(node.get('pA'), node.get('p0'), None)
 
-        return cls(tag, rec, sht_datum, barometer_datum, exegeses=exegeses)
+        return cls(tag, rec, sht_datum, barometer_datum, version=version, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, sht_datum, barometer_datum, exegeses=None):
+    def __init__(self, tag, rec, sht_datum, barometer_datum, version=None, exegeses=None):
         """
         Constructor
         """
-        super().__init__(tag, rec, exegeses=exegeses)
+        if version is None:
+            version = self.VERSION
+
+        super().__init__(tag, rec, version, exegeses=exegeses)
 
         self.__sht_datum = sht_datum                                # SHT31Datum
         self.__barometer_datum = barometer_datum                    # PressureDatum
