@@ -27,8 +27,6 @@ from scs_core.gas.scd30.scd30_datum import SCD30Datum
 from scs_core.sample.sample import Sample
 
 
-# TODO: get src from AFE / ISI datum?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class GasesSample(Sample):
@@ -53,6 +51,7 @@ class GasesSample(Sample):
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
         version = jdict.get('ver', cls.ABSENT_VERSION)
 
+        src = jdict.get('src')
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
@@ -77,19 +76,19 @@ class GasesSample(Sample):
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 
-        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, exegeses=exegeses)
+        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, src=src, exegeses=exegeses)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, exegeses=None):
+    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, src=None, exegeses=None):
         """
         Constructor
         """
         if version is None:
             version = self.VERSION
 
-        super().__init__(tag, rec, version, exegeses=exegeses)
+        super().__init__(tag, rec, version, src=src, exegeses=exegeses)
 
         self.__scd30_datum = scd30_datum                            # SCD30Datum
         self.__electrochem_datum = electrochem_datum                # AFEDatum or ISIDatum
@@ -151,5 +150,7 @@ class GasesSample(Sample):
     def __str__(self, *args, **kwargs):
         exegeses = Str.collection(self.exegeses)
 
-        return "GasesSample:{tag:%s, rec:%s, exegeses:%s, scd30_datum:%s, electrochem_datum:%s, sht_datum:%s}" % \
-            (self.tag, self.rec, exegeses, self.scd30_datum, self.electrochem_datum, self.sht_datum)
+        return "GasesSample:{tag:%s, rec:%s, src:%s, exegeses:%s, " \
+               "scd30_datum:%s, electrochem_datum:%s, sht_datum:%s}" % \
+            (self.tag, self.rec, self.src, exegeses,
+             self.scd30_datum, self.electrochem_datum, self.sht_datum)

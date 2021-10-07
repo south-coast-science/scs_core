@@ -23,7 +23,7 @@ from scs_core.gas.afe_calib import AFECalib
 
 # --------------------------------------------------------------------------------------------------------------------
 
-with open('/Users/bruno/SCS/conf/afe_calib_508.json', 'r') as f:
+with open('/Users/bruno/SCS/conf/afe_calib-bgx-508-26-000208.json', 'r') as f:
     calib_jstr = f.read()
 
 calib = AFECalib.construct_from_jdict(json.loads(calib_jstr))
@@ -100,6 +100,6 @@ print(JSONify.dumps(calibrated_datum))
 print("-")
 
 print("O3...")
-calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_cnc=10)
+calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_v_cal=0.00283)
 print(calibrated_datum)
 print(JSONify.dumps(calibrated_datum))
