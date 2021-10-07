@@ -68,7 +68,10 @@ class A4(Sensor):
     def datum(self, temp, we_v, ae_v, no2_cnc=None):
         datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
 
-        return datum if self.calibrator is None else self.calibrator.calibrate(datum)
+        if self.calibrator is None:
+            return datum
+
+        return self.calibrator.calibrate(datum, no2_cnc=no2_cnc)
 
 
     def null_datum(self):
