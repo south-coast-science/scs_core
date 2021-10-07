@@ -100,6 +100,6 @@ print(JSONify.dumps(calibrated_datum))
 print("-")
 
 print("O3...")
-calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_v_cal=0.00283)
+calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_cnc=None)
 print(calibrated_datum)
 print(JSONify.dumps(calibrated_datum))
