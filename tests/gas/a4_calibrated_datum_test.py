@@ -23,23 +23,23 @@ from scs_core.gas.afe_calib import AFECalib
 
 # --------------------------------------------------------------------------------------------------------------------
 
-with open('/Users/bruno/SCS/conf/afe_calib_508.json', 'r') as f:
+with open('/Users/bruno/SCS/conf/afe_calib-bgx-508-26-000208.json', 'r') as f:
     calib_jstr = f.read()
 
 calib = AFECalib.construct_from_jdict(json.loads(calib_jstr))
-print(calib)
+print("calib: %s" % calib)
 print("-")
 
 sensor_calibs = calib.sensor_calibs()
-print(sensor_calibs)
+print("sensor_calibs: %s" % sensor_calibs)
 print("-")
 
 no2_calib = sensor_calibs['NO2']
-print(no2_calib)
+print("no2_calib: %s" % no2_calib)
 print("-")
 
 ox_calib = sensor_calibs['Ox']
-print(ox_calib)
+print("ox_calib: %s" % ox_calib)
 print("=")
 
 
@@ -70,7 +70,7 @@ no2_datum = A4Datum.construct_from_jdict(sample_datum.node('val.NO2'))
 print("NO2: %s" % no2_datum)
 
 ox_datum = A4Datum.construct_from_jdict(sample_datum.node('val.Ox'))
-print("Ox: %s" % no2_datum)
+print("Ox: %s" % ox_datum)
 print("=")
 
 
@@ -78,11 +78,11 @@ print("=")
 
 no2_calibrator = A4Calibrator(no2_calib)
 # no2_calibrator = A4Calibrator.construct(no2_calib, era_start, era_end)
-print(no2_calibrator)
+print("no2_calibrator: %s" % no2_calibrator)
 
 ox_calibrator = A4Calibrator(ox_calib)
 # ox_calibrator = A4Calibrator.construct(ox_calib, era_start, era_end)
-print(no2_calibrator)
+print("ox_calibrator: %s" % ox_calibrator)
 print("=")
 
 # print("Training...")
@@ -94,12 +94,12 @@ print("=")
 # print("-")
 
 print("NO2...")
-calibrated_datum = no2_calibrator.calibrate(no2_datum)
-print(calibrated_datum)
-print(JSONify.dumps(calibrated_datum))
+no2_calibrated_datum = no2_calibrator.calibrate(no2_datum)
+print("no2_calibrated_datum: %s" % no2_calibrated_datum)
+print(JSONify.dumps(no2_calibrated_datum))
 print("-")
 
 print("O3...")
-calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_cnc=10)
-print(calibrated_datum)
-print(JSONify.dumps(calibrated_datum))
+o3_calibrated_datum = ox_calibrator.calibrate(ox_datum, no2_cnc=27.0)
+print("o3_calibrated_datum: %s" % o3_calibrated_datum)
+print(JSONify.dumps(o3_calibrated_datum))

@@ -6,6 +6,9 @@ Created on 9 Dec 2020
 The A4CalibratedDatum is a normalised electrochem output voltage. Its vCal field represents the calibrated weV
 minus the calibrated aeV.
 
+The vXCal field should only be computed when the NO2 concentration is known precisely - so this should be done
+in the preprocessing phase for the O3 model.
+
 example document:
 {"weV": 0.41138, "aeV": 0.40257, "weC": 0.02671, "cnc": 116.5, "vCal": 17.292, "vXCal": 0.00212}
 """
@@ -41,7 +44,7 @@ class A4Calibrator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def calibrate(self, datum, no2_v_cal=None):
+    def calibrate(self, datum, no2_cnc=None):
         # zero offset...
         we_v_zero_cal = datum.we_v - self.__we_elc_v
         ae_v_zero_cal = datum.ae_v - self.__ae_elc_v
@@ -53,7 +56,7 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_zero_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
+        v_x_zero_cal = None if no2_cnc is None else no2_cnc * self.__we_no2_x_sens_v
 
         return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_zero_cal)
 
@@ -121,8 +124,8 @@ class A4CalibratedDatum(A4Datum):
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__v_cal = Datum.float(v_cal, 3)                        # calibrated voltage
-        self.__v_x_zero_cal = Datum.float(v_x_zero_cal, 5)          # v_zero_cal component from cross-sensitivity
+        self.__v_cal = Datum.float(v_cal, 3)                    # calibrated voltage
+        self.__v_x_zero_cal = Datum.float(v_x_zero_cal, 5)      # v_zero_cal component from NO2 cross-sensitivity
 
 
     # ----------------------------------------------------------------------------------------------------------------
