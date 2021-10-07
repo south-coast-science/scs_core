@@ -43,7 +43,7 @@ class A4Calibrator(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def calibrate(self, datum, no2_cnc=None):
+    def calibrate(self, datum, no2_v_cal=None):
         # zero offset...
         we_v_zero_cal = datum.we_v - self.__we_elc_v
         ae_v_zero_cal = datum.ae_v - self.__ae_elc_v
@@ -55,7 +55,7 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_cal = None if no2_cnc is None else no2_cnc * self.__we_no2_x_sens_v
+        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
 
         return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_cal)
 
