@@ -36,7 +36,7 @@ class A4Calibrator(object):
 
         self.__we_sens_v = calib.we_sens_mv / 1000.0                        # we_sensitivity_mv_ppb
 
-        self.__we_no2_x_sens_mv = calib.we_no2_x_sens_mv                    # we_cross_sensitivity_no2_mv_ppb
+        self.__we_no2_x_sens_v = None if calib.we_no2_x_sens_mv is None else calib.we_no2_x_sens_mv / 1000.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_mv
+        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
 
         return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_cal)
 
@@ -76,15 +76,15 @@ class A4Calibrator(object):
 
 
     @property
-    def we_no2_x_sens_mv(self):
-        return self.__we_no2_x_sens_mv
+    def we_no2_x_sens_v(self):
+        return self.__we_no2_x_sens_v
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4Calibrator:{we_elc_v:%s, ae_elc_v:%s, we_sens_v:%s, we_no2_x_sens_mv:%s}" % \
-               (self.we_elc_v, self.ae_elc_v, self.we_sens_v, self.we_no2_x_sens_mv)
+        return "A4Calibrator:{we_elc_v:%s, ae_elc_v:%s, we_sens_v:%s, we_no2_x_sens_v:%s}" % \
+               (self.we_elc_v, self.ae_elc_v, self.we_sens_v, self.we_no2_x_sens_v)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ class A4CalibratedDatum(A4Datum):
         super().__init__(we_v, ae_v, we_c, cnc)
 
         self.__v_cal = Datum.float(v_cal, 3)                        # calibrated voltage
-        self.__v_x_cal = Datum.float(v_x_cal, 3)                    # calibrated cross-sensitivity voltage
+        self.__v_x_cal = Datum.float(v_x_cal, 6)                    # calibrated cross-sensitivity voltage
 
 
     # ----------------------------------------------------------------------------------------------------------------
