@@ -31,14 +31,12 @@ class A4Calibrator(object):
         """
         Constructor
         """
-        self.__calib = calib                                                # A4Calib
-
         self.__we_elc_v = calib.we_elc_mv / 1000.0                          # we_electronic_zero_mv
         self.__ae_elc_v = calib.ae_elc_mv / 1000.0                          # ae_electronic_zero_mv
 
         self.__we_sens_v = calib.we_sens_mv / 1000.0                        # we_sensitivity_mv_ppb
 
-        self.__we_no2_x_sens_v = None if calib.we_no2_x_sens_mv is None else calib.we_no2_x_sens_mv / 1000.0
+        self.__we_no2_x_sens_mv = calib.we_no2_x_sens_mv                    # we_cross_sensitivity_no2_mv_ppb
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -55,15 +53,38 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
+        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_mv
 
         return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_cal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def we_elc_v(self):
+        return self.__we_elc_v
+
+
+    @property
+    def ae_elc_v(self):
+        return self.__ae_elc_v
+
+
+    @property
+    def we_sens_v(self):
+        return self.__we_sens_v
+
+
+    @property
+    def we_no2_x_sens_mv(self):
+        return self.__we_no2_x_sens_mv
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "A4Calibrator:{calib:%s}" % self.__calib
+        return "A4Calibrator:{we_elc_v:%s, ae_elc_v:%s, we_sens_v:%s, we_no2_x_sens_mv:%s}" % \
+               (self.we_elc_v, self.ae_elc_v, self.we_sens_v, self.we_no2_x_sens_mv)
 
 
 # --------------------------------------------------------------------------------------------------------------------
