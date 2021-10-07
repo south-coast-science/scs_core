@@ -6,7 +6,7 @@ Created on 9 Dec 2020
 The A4CalibratedDatum is a normalised electrochem output voltage. Its vCal field represents the calibrated weV
 minus the calibrated aeV.
 
-The vXCal field should only be computed when the NO2 concentration is known prceisely, so this should be done
+The vXCal field should only be computed when the NO2 concentration is known precisely, so this should be done
 in the preprocessing phase for the O3 model.
 
 example document:
