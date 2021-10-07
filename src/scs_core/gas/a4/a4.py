@@ -60,18 +60,18 @@ class A4(Sensor):
             if no2_sample is None:
                 raise ValueError("A4.sample: NO2 sample required, but none given.")
 
-            return self.datum(temp, we_v, ae_v, no2_cnc=no2_sample.cnc)
+            return self.datum(temp, we_v, ae_v, no2_datum=no2_sample)
 
         return self.datum(temp, we_v, ae_v)
 
 
-    def datum(self, temp, we_v, ae_v, no2_cnc=None):
-        datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
+    def datum(self, temp, we_v, ae_v, no2_datum=None):
+        datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_datum.cnc)
 
         if self.calibrator is None:
             return datum
 
-        return self.calibrator.calibrate(datum, no2_cnc=no2_cnc)
+        return self.calibrator.calibrate(datum, no2_v_cal=no2_datum.v_cal)
 
 
     def null_datum(self):
