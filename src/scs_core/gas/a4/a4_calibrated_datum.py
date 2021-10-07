@@ -7,7 +7,7 @@ The A4CalibratedDatum is a normalised electrochem output voltage. Its vCal field
 minus the calibrated aeV.
 
 example document:
-{"weV": 0.30338, "aeV": 0.27969, "weC": 2e-05, "cnc": 0.1, "vCal": 9.087838}
+{"weV": 0.41138, "aeV": 0.40257, "weC": 0.02671, "cnc": 116.5, "vCal": 17.292, "vXCal": 0.00212}
 """
 
 from collections import OrderedDict
@@ -53,9 +53,9 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
+        v_x_zero_cal = None if no2_v_cal is None else no2_v_cal * self.__we_no2_x_sens_v
 
-        return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_cal)
+        return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_zero_cal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -108,21 +108,21 @@ class A4CalibratedDatum(A4Datum):
         cnc = jdict.get('cnc')
 
         v_cal = jdict.get('vCal')
-        v_x_cal = jdict.get('vXCal')
+        v_x_zero_cal = jdict.get('vXCal')
 
-        return cls(we_v, ae_v, we_c, cnc, v_cal, v_x_cal)
+        return cls(we_v, ae_v, we_c, cnc, v_cal, v_x_zero_cal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, we_v, ae_v, we_c, cnc, v_cal, v_x_cal):
+    def __init__(self, we_v, ae_v, we_c, cnc, v_cal, v_x_zero_cal):
         """
         Constructor
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
         self.__v_cal = Datum.float(v_cal, 3)                        # calibrated voltage
-        self.__v_x_cal = Datum.float(v_x_cal, 5)                    # calibrated cross-sensitivity voltage
+        self.__v_x_zero_cal = Datum.float(v_x_zero_cal, 5)          # v_zero_cal component from cross-sensitivity
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -139,8 +139,8 @@ class A4CalibratedDatum(A4Datum):
         if self.v_cal is not None:
             jdict['vCal'] = self.v_cal
 
-        if self.v_x_cal is not None:
-            jdict['vXCal'] = self.v_x_cal
+        if self.v_x_zero_cal is not None:
+            jdict['vXCal'] = self.v_x_zero_cal
 
         return jdict
 
@@ -153,12 +153,12 @@ class A4CalibratedDatum(A4Datum):
 
 
     @property
-    def v_x_cal(self):
-        return self.__v_x_cal
+    def v_x_zero_cal(self):
+        return self.__v_x_zero_cal
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, v_cal:%s, v_x_cal:%s}" % \
-               (self.we_v, self.ae_v, self.we_c, self.cnc, self.v_cal, self.v_x_cal)
+        return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, v_cal:%s, v_x_zero_cal:%s}" % \
+               (self.we_v, self.ae_v, self.we_c, self.cnc, self.v_cal, self.v_x_zero_cal)
