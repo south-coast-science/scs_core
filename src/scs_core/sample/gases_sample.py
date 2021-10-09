@@ -79,6 +79,12 @@ class GasesSample(Sample):
         return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, src=src, exegeses=exegeses)
 
 
+    @classmethod
+    def has_invalid_value(cls):
+        # TODO: implement has_invalid_value
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, src=None, exegeses=None):
@@ -97,10 +103,17 @@ class GasesSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def has_invalid_value(cls):
-        # TODO: implement has_invalid_value
-        return False
+    def set_ox_v_x_zero_cal(self, calibrator):
+        if calibrator is None:
+            return
+
+        try:
+            ox_datum = self.electrochem_datum.sns['Ox']
+            no2_cnc = self.exegeses['val']['NO2']['cnc']
+        except KeyError:
+            return
+
+        calibrator.set_v_x_zero_cal(ox_datum, no2_cnc)
 
 
     # ----------------------------------------------------------------------------------------------------------------
