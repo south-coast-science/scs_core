@@ -62,7 +62,7 @@ class A4Calibrator(object):
 
 
     def set_we_v_zero_x_cal(self, datum, no2_cnc):
-        we_v_x = no2_cnc * self.__we_no2_x_sens_v
+        we_v_x = no2_cnc * self.we_no2_x_sens_v
         datum.we_v_zero_x_cal = we_v_x - self.we_elc_v
 
 
@@ -130,7 +130,7 @@ class A4CalibratedDatum(A4Datum):
         super().__init__(we_v, ae_v, we_c, cnc)
 
         self.__v_cal = Datum.float(v_cal, 3)                            # calibrated voltage (ppb)
-        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 9)        # response to NO2 cross-sensitivity (Volts)
+        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 6)        # response to NO2 cross-sensitivity (Volts)
 
 
     # ----------------------------------------------------------------------------------------------------------------

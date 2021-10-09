@@ -109,8 +109,8 @@ class A4CalibratedDatum(A4Datum):
         self.__we_v_zero_cal = Datum.float(we_v_zero_cal, 6)            # zero-offset-corrected WE voltage
         self.__ae_v_zero_cal = Datum.float(ae_v_zero_cal, 6)            # zero-offset-corrected AE voltage
 
-        self.__v_cal = Datum.float(v_cal, 6)                            # calibrated voltage (ppb)
-        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 9)        # response to NO2 cross-sensitivity (Volts)
+        self.__v_cal = Datum.float(v_cal, 3)                            # calibrated voltage (ppb)
+        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 6)        # response to NO2 cross-sensitivity (Volts)
 
 
     # ----------------------------------------------------------------------------------------------------------------
