@@ -4,7 +4,7 @@ Created on 9 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 The A4CalibratedDatum is designed to provide a model training data set that encapsulates the calibration of the
-electrochemical sensor - v_x_cal is only relevant to sensors with NO2 cross-sensitivity.
+electrochemical sensor - v_x_zero_cal is only relevant to sensors with NO2 cross-sensitivity.
 
 example document:
 {"weV": 0.30338, "aeV": 0.27969, "weC": 2e-05, "cnc": 0.1, "weVz": 0.00738, "aeVz": 0.00469, "vCal": 9.087838}
@@ -55,10 +55,14 @@ class A4Calibrator(object):
         v_cal = v_zero_cal / self.__we_sens_v
 
         # cross sensitivity...
-        v_x_cal = None if no2_cnc is None else no2_cnc * self.__we_no2_x_sens_v
+        v_x_zero_cal = None if no2_cnc is None else no2_cnc * self.__we_no2_x_sens_v
 
         return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc,
-                                 we_v_zero_cal, ae_v_zero_cal, v_cal, v_x_cal)
+                                 we_v_zero_cal, ae_v_zero_cal, v_cal, v_x_zero_cal)
+
+
+    def set_v_x_zero_cal(self, datum, no2_cnc):
+        datum.v_x_zero_cal = no2_cnc * self.__we_no2_x_sens_v
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -76,7 +80,7 @@ class A4CalibratedDatum(A4Datum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, we_v, ae_v, we_c, cnc, we_v_zero_cal, ae_v_zero_cal, v_cal, v_x_cal):
+    def __init__(self, we_v, ae_v, we_c, cnc, we_v_zero_cal, ae_v_zero_cal, v_cal, v_x_zero_cal):
         """
         Constructor
         """
@@ -86,7 +90,7 @@ class A4CalibratedDatum(A4Datum):
         self.__ae_v_zero_cal = Datum.float(ae_v_zero_cal, 6)        # zero-offset-corrected AE voltage
 
         self.__v_cal = Datum.float(v_cal, 6)                        # calibrated voltage
-        self.__v_x_cal = Datum.float(v_x_cal, 9)                    # calibrated cross-sensitivity voltage
+        self.__v_x_zero_cal = Datum.float(v_x_zero_cal, 9)          # v_zero_cal from NO2 cross-sensitivity
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -105,8 +109,8 @@ class A4CalibratedDatum(A4Datum):
 
         jdict['vCal'] = self.v_cal
 
-        if self.v_x_cal is not None:
-            jdict['vXCal'] = self.v_x_cal
+        if self.v_x_zero_cal is not None:
+            jdict['zXCal'] = self.v_x_zero_cal
 
         return jdict
 
@@ -129,14 +133,14 @@ class A4CalibratedDatum(A4Datum):
 
 
     @property
-    def v_x_cal(self):
-        return self.__v_x_cal
+    def v_x_zero_cal(self):
+        return self.__v_x_zero_cal
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, " \
-               "we_v_zero_cal:%s, ae_v_zero_cal:%s, v_cal:%s, v_x_cal:%s}" % \
+               "we_v_zero_cal:%s, ae_v_zero_cal:%s, v_cal:%s, v_x_zero_cal:%s}" % \
                (self.we_v, self.ae_v, self.we_c, self.cnc,
-                self.we_v_zero_cal, self.ae_v_zero_cal, self.v_cal, self.v_x_cal)
+                self.we_v_zero_cal, self.ae_v_zero_cal, self.v_cal, self.v_x_zero_cal)
