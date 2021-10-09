@@ -140,7 +140,7 @@ class A4CalibratedDatum(A4Datum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, " \
+        return "A4CalibratedDatum(vB):{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, " \
                "we_v_zero_cal:%s, ae_v_zero_cal:%s, v_cal:%s, v_x_zero_cal:%s}" % \
                (self.we_v, self.ae_v, self.we_c, self.cnc,
                 self.we_v_zero_cal, self.ae_v_zero_cal, self.v_cal, self.v_x_zero_cal)
