@@ -103,21 +103,6 @@ class GasesSample(Sample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set_ox_v_x_zero_cal(self, calibrator):
-        if calibrator is None:
-            return
-
-        try:
-            ox_datum = self.electrochem_datum.sns['Ox']
-            no2_cnc = self.exegeses['val']['NO2']['cnc']
-        except KeyError:
-            return
-
-        calibrator.set_v_x_zero_cal(ox_datum, no2_cnc)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @property
     def values(self):
         jdict = OrderedDict()

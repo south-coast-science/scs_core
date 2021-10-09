@@ -106,11 +106,11 @@ class A4CalibratedDatum(A4Datum):
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__we_v_zero_cal = Datum.float(we_v_zero_cal, 6)        # zero-offset-corrected WE voltage
-        self.__ae_v_zero_cal = Datum.float(ae_v_zero_cal, 6)        # zero-offset-corrected AE voltage
+        self.__we_v_zero_cal = Datum.float(we_v_zero_cal, 6)            # zero-offset-corrected WE voltage
+        self.__ae_v_zero_cal = Datum.float(ae_v_zero_cal, 6)            # zero-offset-corrected AE voltage
 
-        self.__v_cal = Datum.float(v_cal, 6)                        # calibrated voltage
-        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 9)          # v_zero_cal from NO2 cross-sensitivity
+        self.__v_cal = Datum.float(v_cal, 6)                            # calibrated voltage (ppb)
+        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 9)        # response to NO2 cross-sensitivity (Volts)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ class A4CalibratedDatum(A4Datum):
         jdict['vCal'] = self.v_cal
 
         if self.we_v_zero_x_cal is not None:
-            jdict['zXCal'] = self.we_v_zero_x_cal
+            jdict['xCal'] = self.we_v_zero_x_cal
 
         return jdict
 

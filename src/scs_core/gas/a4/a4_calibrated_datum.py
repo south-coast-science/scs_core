@@ -116,7 +116,7 @@ class A4CalibratedDatum(A4Datum):
         cnc = jdict.get('cnc')
 
         v_cal = jdict.get('vCal')
-        we_v_zero_x_cal = jdict.get('vXCal')
+        we_v_zero_x_cal = jdict.get('xCal')
 
         return cls(we_v, ae_v, we_c, cnc, v_cal, we_v_zero_x_cal)
 
