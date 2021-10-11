@@ -79,6 +79,12 @@ class GasesSample(Sample):
         return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, src=src, exegeses=exegeses)
 
 
+    @classmethod
+    def has_invalid_value(cls):
+        # TODO: implement has_invalid_value
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, src=None, exegeses=None):
@@ -93,14 +99,6 @@ class GasesSample(Sample):
         self.__scd30_datum = scd30_datum                            # SCD30Datum
         self.__electrochem_datum = electrochem_datum                # AFEDatum or ISIDatum
         self.__sht_datum = sht_datum                                # SHT31Datum
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def has_invalid_value(cls):
-        # TODO: implement has_invalid_value
-        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

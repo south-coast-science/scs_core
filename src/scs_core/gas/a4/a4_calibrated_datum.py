@@ -34,31 +34,36 @@ class A4Calibrator(object):
         """
         Constructor
         """
-        self.__we_elc_v = calib.we_elc_mv / 1000.0                          # we_electronic_zero_mv
-        self.__ae_elc_v = calib.ae_elc_mv / 1000.0                          # ae_electronic_zero_mv
+        self.__we_elc_v = round(calib.we_elc_mv / 1000.0, 3)                        # we_electronic_zero_mv
+        self.__ae_elc_v = round(calib.ae_elc_mv / 1000.0, 3)                        # ae_electronic_zero_mv
 
-        self.__we_sens_v = calib.we_sens_mv / 1000.0                        # we_sensitivity_mv_ppb
+        self.__we_sens_v = round(calib.we_sens_mv / 1000.0, 6)                      # we_sensitivity_mv_ppb
 
-        self.__we_no2_x_sens_v = None if calib.we_no2_x_sens_mv is None else calib.we_no2_x_sens_mv / 1000.0
+        if calib.we_no2_x_sens_mv is None:
+            self.__we_no2_x_sens_v = None
+        else:
+            self.__we_no2_x_sens_v = round(calib.we_no2_x_sens_mv / 1000.0, 6)      # we_cross_sensitivity_no2_mv_ppb
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def calibrate(self, datum, no2_cnc=None):
+    def calibrate(self, datum):
         # zero offset...
-        we_v_zero_cal = datum.we_v - self.__we_elc_v
-        ae_v_zero_cal = datum.ae_v - self.__ae_elc_v
+        we_v_zero_cal = datum.we_v - self.we_elc_v
+        ae_v_zero_cal = datum.ae_v - self.ae_elc_v
 
         # remove noise...
         v_zero_cal = we_v_zero_cal - ae_v_zero_cal
 
         # gain...
-        v_cal = v_zero_cal / self.__we_sens_v
+        v_cal = v_zero_cal / self.we_sens_v
 
-        # cross sensitivity...
-        v_x_zero_cal = None if no2_cnc is None else no2_cnc * self.__we_no2_x_sens_v
+        return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal)
 
-        return A4CalibratedDatum(datum.we_v, datum.ae_v, datum.we_c, datum.cnc, v_cal, v_x_zero_cal)
+
+    def set_we_v_zero_x_cal(self, datum, no2_cnc):
+        we_v_x = no2_cnc * self.we_no2_x_sens_v
+        datum.we_v_zero_x_cal = we_v_x - self.we_elc_v
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -111,21 +116,21 @@ class A4CalibratedDatum(A4Datum):
         cnc = jdict.get('cnc')
 
         v_cal = jdict.get('vCal')
-        v_x_zero_cal = jdict.get('vXCal')
+        we_v_zero_x_cal = jdict.get('xCal')
 
-        return cls(we_v, ae_v, we_c, cnc, v_cal, v_x_zero_cal)
+        return cls(we_v, ae_v, we_c, cnc, v_cal, we_v_zero_x_cal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, we_v, ae_v, we_c, cnc, v_cal, v_x_zero_cal):
+    def __init__(self, we_v, ae_v, we_c, cnc, v_cal, we_v_zero_x_cal=None):
         """
         Constructor
         """
         super().__init__(we_v, ae_v, we_c, cnc)
 
-        self.__v_cal = Datum.float(v_cal, 3)                    # calibrated voltage
-        self.__v_x_zero_cal = Datum.float(v_x_zero_cal, 3)      # calibrated voltage from NO2 cross-sensitivity
+        self.__v_cal = Datum.float(v_cal, 3)                            # calibrated voltage (ppb)
+        self.__we_v_zero_x_cal = Datum.float(we_v_zero_x_cal, 6)        # response to NO2 cross-sensitivity (Volts)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -142,8 +147,8 @@ class A4CalibratedDatum(A4Datum):
         if self.v_cal is not None:
             jdict['vCal'] = self.v_cal
 
-        if self.v_x_zero_cal is not None:
-            jdict['vXCal'] = self.v_x_zero_cal
+        if self.we_v_zero_x_cal is not None:
+            jdict['xCal'] = self.we_v_zero_x_cal
 
         return jdict
 
@@ -156,12 +161,17 @@ class A4CalibratedDatum(A4Datum):
 
 
     @property
-    def v_x_zero_cal(self):
-        return self.__v_x_zero_cal
+    def we_v_zero_x_cal(self):
+        return self.__we_v_zero_x_cal
+
+
+    @we_v_zero_x_cal.setter
+    def we_v_zero_x_cal(self, we_v_zero_x_cal):
+        self.__we_v_zero_x_cal = round(we_v_zero_x_cal, 9)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, v_cal:%s, v_x_zero_cal:%s}" % \
-               (self.we_v, self.ae_v, self.we_c, self.cnc, self.v_cal, self.v_x_zero_cal)
+        return "A4CalibratedDatum:{we_v:%s, ae_v:%s, we_c:%s, cnc:%s, v_cal:%s, we_v_zero_x_cal:%s}" % \
+               (self.we_v, self.ae_v, self.we_c, self.cnc, self.v_cal, self.we_v_zero_x_cal)
