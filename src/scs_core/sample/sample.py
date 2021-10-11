@@ -102,6 +102,11 @@ class Sample(JSONable):
         return self.__rec
 
 
+    @rec.setter
+    def rec(self, rec):
+        self.__rec = rec
+
+
     @property
     def version(self):
         return self.__version
@@ -110,11 +115,6 @@ class Sample(JSONable):
     @version.setter
     def version(self, version):
         self.__version = version
-
-
-    @rec.setter
-    def rec(self, rec):
-        self.__rec = rec
 
 
     @property
