@@ -18,7 +18,7 @@ class Sample(JSONable):
     classdocs
     """
 
-    ABSENT_VERSION = 0.0
+    DEFAULT_VERSION = 1.0
 
     EXEGESIS_TAG =              "exg"
     INCLUDE_MILLIS =            False
@@ -32,7 +32,7 @@ class Sample(JSONable):
 
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         src = jdict.get('src')
         values = jdict.get('val')
@@ -105,6 +105,11 @@ class Sample(JSONable):
     @property
     def version(self):
         return self.__version
+
+
+    @version.setter
+    def version(self, version):
+        self.__version = version
 
 
     @rec.setter

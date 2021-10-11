@@ -81,7 +81,7 @@ class ConfigurationSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         try:
             val_jdict = json.loads(jdict.get('val'))
