@@ -43,8 +43,6 @@ class GasesSample(Sample):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        print("jdict: %s" % jdict)
-
         if not jdict:
             return None
 
