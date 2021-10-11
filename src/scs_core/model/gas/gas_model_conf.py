@@ -6,7 +6,7 @@ Created on 22 Dec 2020
 an ML model group configuration for gases inference
 
 example JSON:
-{"uds-path": "pipes/lambda-model-gas-s1.uds", "model-interface": "s1"}
+{"uds-path": "pipes/lambda-model-gas-s1.uds", "model-interface": "vB2"}
 """
 
 from scs_core.gas.afe_calib import AFECalib
@@ -31,7 +31,7 @@ class GasModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 'vB']
+    __INTERFACES = ['s1', 'vB', 'vB2']
 
     @classmethod
     def interfaces(cls):
@@ -55,7 +55,7 @@ class GasModelConf(ModelConf):
 
             return S1GasInferenceClient.construct(socket, self.abs_uds_path(host), gas_schedule_item, afe_calib)
 
-        if self.model_interface == 'vB':
+        if self.model_interface == 'vB' or self.model_interface == 'vB2':
             from scs_core.model.gas.vB.vb_gas_inference_client import VBGasInferenceClient
 
             return VBGasInferenceClient.construct(socket, self.abs_uds_path(host), gas_schedule_item)
