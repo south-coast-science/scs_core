@@ -58,7 +58,7 @@ class A4(Sensor):
 
         if self.has_no2_cross_sensitivity():
             if no2_sample is None:
-                raise ValueError("A4.sample: NO2 sample required, but none given.")
+                raise ValueError("NO2 sample required, but none given.")
 
             return self.datum(temp, we_v, ae_v, no2_cnc=no2_sample.cnc)
 
@@ -68,7 +68,10 @@ class A4(Sensor):
     def datum(self, temp, we_v, ae_v, no2_cnc=None):
         datum = A4Datum.construct(self.calib, self.baseline, self.__tc, temp, we_v, ae_v, no2_cnc=no2_cnc)
 
-        return datum if self.calibrator is None else self.calibrator.calibrate(datum)
+        if self.calibrator is None:
+            return datum
+
+        return self.calibrator.calibrate(datum)     # no2_cnc is not supplied here - wait for the exegesis NO2 value
 
 
     def null_datum(self):

@@ -4,7 +4,7 @@ Created on 23 Apr 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:27:48Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"hostname": "scs-bbe-003",
+{"rec": "2021-10-06T11:27:48Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"hostname": "scs-bbe-003",
 "packs": {"scs_comms": {"repo": "scs_comms_ge910", "version": null}, "scs_core": {"repo": "scs_core",
 "version": "1.0.32"}, "scs_dev": {"repo": "scs_dev", "version": "1.0.11"}, "scs_dfe": {"repo": "scs_dfe_eng",
 "version": "1.0.10"}, "scs_exegesis": {"repo": "scs_exegesis", "version": null},
@@ -81,7 +81,7 @@ class ConfigurationSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         try:
             val_jdict = json.loads(jdict.get('val'))
@@ -260,7 +260,7 @@ class ConfigurationReport(ConfigurationSample):
 
         jdict['tag'] = self.tag
         jdict['rec'] = {'report': self.report.as_iso8601(), 'update': self.rec.as_iso8601()}
-        jdict['ver'] = self.version
+        jdict['ver'] = round(self.version, 1)
 
         jdict['val'] = self.values
 

@@ -4,11 +4,11 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:07:54Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"NO2": {"weV": 0.3165, "aeV": 0.31107,
-"weC": 0.00188, "cnc": 22.8, "vCal": 23.073}, "CO": {"weV": 0.32163, "aeV": 0.25675, "weC": 0.07677, "cnc": 314.2,
-"vCal": 288.201}, "SO2": {"weV": 0.26788, "aeV": 0.26538, "weC": -0.00217, "cnc": 17.9, "vCal": -1.408},
-"H2S": {"weV": 0.20525, "aeV": 0.26, "weC": -0.02327, "cnc": -7.3, "vCal": -34.211},
-"sht": {"hmd": 45.3, "tmp": 23.4}}, "exg": {"vB20": {"NO2": {"cnc": 13.7}}}}
+{"rec": "2021-10-11T10:59:40Z", "tag": "scs-be2-3", "ver": 2.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.29057, "aeV": 0.29544, "weC": 0.00131, "cnc": 20.9, "vCal": 15.41},
+"Ox": {"weV": 0.40101, "aeV": 0.39969, "weC": 0.00235, "cnc": 55.7, "vCal": 6.61, "xCal": -0.390731},
+"CO": {"weV": 0.44069, "aeV": 0.30213, "weC": 0.16795, "cnc": 685.4, "vCal": 562.256},
+"sht": {"hmd": 52.9, "tmp": 21.9}}, "exg": {"src": "vB20", "val": {"NO2": {"cnc": 19.3}}}}
 """
 
 from collections import OrderedDict
@@ -26,8 +26,6 @@ from scs_core.gas.scd30.scd30_datum import SCD30Datum
 
 from scs_core.sample.sample import Sample
 
-
-# TODO: get src from AFE / ISI datum?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -51,8 +49,9 @@ class GasesSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
+        src = jdict.get('src')
         val = jdict.get('val')
         exegeses = jdict.get('exg')
 
@@ -77,31 +76,29 @@ class GasesSample(Sample):
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 
-        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, exegeses=exegeses)
+        return cls(tag, rec, scd30_datum, electrochem_datum, sht_datum, version=version, src=src, exegeses=exegeses)
+
+
+    @classmethod
+    def has_invalid_value(cls):
+        # TODO: implement has_invalid_value
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, exegeses=None):
+    def __init__(self, tag, rec, scd30_datum, electrochem_datum, sht_datum, version=None, src=None, exegeses=None):
         """
         Constructor
         """
         if version is None:
             version = self.VERSION
 
-        super().__init__(tag, rec, version, exegeses=exegeses)
+        super().__init__(tag, rec, version, src=src, exegeses=exegeses)
 
         self.__scd30_datum = scd30_datum                            # SCD30Datum
         self.__electrochem_datum = electrochem_datum                # AFEDatum or ISIDatum
         self.__sht_datum = sht_datum                                # SHT31Datum
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def has_invalid_value(cls):
-        # TODO: implement has_invalid_value
-        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -151,5 +148,7 @@ class GasesSample(Sample):
     def __str__(self, *args, **kwargs):
         exegeses = Str.collection(self.exegeses)
 
-        return "GasesSample:{tag:%s, rec:%s, exegeses:%s, scd30_datum:%s, electrochem_datum:%s, sht_datum:%s}" % \
-            (self.tag, self.rec, exegeses, self.scd30_datum, self.electrochem_datum, self.sht_datum)
+        return "GasesSample:{tag:%s, rec:%s, src:%s, exegeses:%s, " \
+               "scd30_datum:%s, electrochem_datum:%s, sht_datum:%s}" % \
+            (self.tag, self.rec, self.src, exegeses,
+             self.scd30_datum, self.electrochem_datum, self.sht_datum)

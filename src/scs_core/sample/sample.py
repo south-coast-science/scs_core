@@ -18,6 +18,8 @@ class Sample(JSONable):
     classdocs
     """
 
+    DEFAULT_VERSION = 1.0
+
     EXEGESIS_TAG =              "exg"
     INCLUDE_MILLIS =            False
 
@@ -30,7 +32,7 @@ class Sample(JSONable):
 
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver')
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         src = jdict.get('src')
         values = jdict.get('val')
@@ -45,14 +47,14 @@ class Sample(JSONable):
         """
         Constructor
         """
-        self.__tag = tag                        # string
-        self.__rec = rec                        # LocalizedDatetime
+        self.__tag = tag                                # string
+        self.__rec = rec                                # LocalizedDatetime
 
-        self.__version = float(version)         # float
-        self.__src = src                        # string
+        self.__version = float(version)                 # float
+        self.__src = src                                # string
 
-        self.__values = values                  # OrderedDict
-        self.__exegeses = exegeses              # OrderedDict
+        self.__values = values                          # OrderedDict
+        self.__exegeses = exegeses                      # OrderedDict
 
 
     def __eq__(self, other):
@@ -75,11 +77,10 @@ class Sample(JSONable):
         if self.tag is not None:
             jdict['tag'] = self.tag
 
+        jdict['ver'] = round(self.version, 1)
+
         if self.src is not None:
             jdict['src'] = self.src
-
-        if self.version is not None:
-            jdict['ver'] = round(self.version, 1)
 
         jdict['val'] = self.values
 
@@ -101,14 +102,19 @@ class Sample(JSONable):
         return self.__rec
 
 
+    @rec.setter
+    def rec(self, rec):
+        self.__rec = rec
+
+
     @property
     def version(self):
         return self.__version
 
 
-    @rec.setter
-    def rec(self, rec):
-        self.__rec = rec
+    @version.setter
+    def version(self, version):
+        self.__version = version
 
 
     @property
