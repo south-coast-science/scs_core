@@ -4,8 +4,8 @@ Created on 17 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:34:18Z", "tag": "scs-be2-3", "ver": 1.00,
-"val": {"bar": {"pA": 102.3, "p0": 103.5, "tmp": 24.0}}}
+{"rec": "2021-10-11T11:08:24Z", "tag": "scs-be2-3", "ver": 2.0,
+"val": {"bar": {"pA": 103.5, "p0": 104.7, "tmp": 22.6}}}
 """
 
 from collections import OrderedDict
@@ -25,7 +25,7 @@ class PressureSample(Sample):
     classdocs
     """
 
-    VERSION = 2.0
+    VERSION = 1.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ class PressureSample(Sample):
 
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         barometer_datum = PressureDatum.construct_from_jdict(jdict.get('val'))
         exegeses = jdict.get('exg')
