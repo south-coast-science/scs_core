@@ -257,7 +257,6 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
         try:
             jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
-
         except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
             time.sleep(cls._SECURITY_DELAY)
             raise ex
