@@ -4,11 +4,12 @@ Created on 14 Nov 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"tag": "scs-be2-3", "src": "N3", "rec": "2019-12-10T15:24:04Z",
-"val": {"per": 4.9, "pm1": 5.6, "pm2p5": 6.7, "pm10": 6.8,
-"bin": [338, 42, 4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-"mtf1": 83, "mtf3": 101, "mtf5": 0, "mtf7": 0, "sfr": 0.61,
-"sht": {"hmd": 32.1, "tmp": 30.7}}}
+{"rec": "2021-10-11T11:11:14Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
+"val": {"per": 4.1, "pm1": 0.7, "pm2p5": 3.2, "pm10": 33.3,
+"bin": [50, 24, 6, 2, 4, 2, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+"mtf1": 29, "mtf3": 32, "mtf5": 19, "mtf7": 54, "sfr": 3.73,
+"sht": {"hmd": 43.6, "tmp": 25.6}},
+"exg": {"src": "rn20", "val": {"pm1": 1.5, "pm2p5": 6.4, "pm10": 58.7}}}
 """
 
 from collections import OrderedDict
@@ -27,7 +28,7 @@ class ParticulatesSample(Sample):
     classdocs
     """
 
-    VERSION = 2.0
+    VERSION = 1.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +39,7 @@ class ParticulatesSample(Sample):
 
         # Sample...
         tag = jdict.get('tag')
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         val = jdict.get('val')
         exegeses = jdict.get('exg')

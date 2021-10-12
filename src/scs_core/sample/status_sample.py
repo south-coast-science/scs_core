@@ -37,7 +37,7 @@ class StatusSample(Sample):
     classdocs
     """
 
-    VERSION = 2.0
+    VERSION = 1.0
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ class StatusSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         val = jdict.get('val')
 

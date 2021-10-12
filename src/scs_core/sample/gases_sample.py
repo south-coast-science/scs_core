@@ -4,11 +4,11 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"rec": "2021-10-06T11:07:54Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"NO2": {"weV": 0.3165, "aeV": 0.31107,
-"weC": 0.00188, "cnc": 22.8, "vCal": 23.073}, "CO": {"weV": 0.32163, "aeV": 0.25675, "weC": 0.07677, "cnc": 314.2,
-"vCal": 288.201}, "SO2": {"weV": 0.26788, "aeV": 0.26538, "weC": -0.00217, "cnc": 17.9, "vCal": -1.408},
-"H2S": {"weV": 0.20525, "aeV": 0.26, "weC": -0.02327, "cnc": -7.3, "vCal": -34.211},
-"sht": {"hmd": 45.3, "tmp": 23.4}}, "exg": {"vB20": {"NO2": {"cnc": 13.7}}}}
+{"rec": "2021-10-11T10:59:40Z", "tag": "scs-be2-3", "ver": 2.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.29057, "aeV": 0.29544, "weC": 0.00131, "cnc": 20.9, "vCal": 15.41},
+"Ox": {"weV": 0.40101, "aeV": 0.39969, "weC": 0.00235, "cnc": 55.7, "vCal": 6.61, "xCal": -0.390731},
+"CO": {"weV": 0.44069, "aeV": 0.30213, "weC": 0.16795, "cnc": 685.4, "vCal": 562.256},
+"sht": {"hmd": 52.9, "tmp": 21.9}}, "exg": {"src": "vB20", "val": {"NO2": {"cnc": 19.3}}}}
 """
 
 from collections import OrderedDict
@@ -34,7 +34,7 @@ class GasesSample(Sample):
     classdocs
     """
 
-    VERSION = 2.0
+    VERSION = 1.0
 
     __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC', 'VOCe']
     __VOC_FIELDS = ['VOC', 'VOCe']
@@ -49,7 +49,7 @@ class GasesSample(Sample):
         # Sample...
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.ABSENT_VERSION)
+        version = jdict.get('ver', cls.DEFAULT_VERSION)
 
         src = jdict.get('src')
         val = jdict.get('val')
