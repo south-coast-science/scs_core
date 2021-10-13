@@ -103,7 +103,7 @@ class DeviceManager(object):
 
         while True:
             # request...
-            response_jdict = self.__rest_client.get(request_path, params)
+            response_jdict = self.__rest_client.get(request_path, params=params)
 
             devices = [DeviceSummary.construct_from_jdict(jdict) for jdict in response_jdict] if response_jdict else []
 
