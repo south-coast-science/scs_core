@@ -40,4 +40,4 @@ class GasBaseline(Baseline):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasBaseline:{sensor_baselines:%s}" % Str.collection(self.__sensor_baselines)
+        return "GasBaseline:{sensor_baselines:%s}" % Str.collection(self.sensor_baselines)

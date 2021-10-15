@@ -103,3 +103,10 @@ class Baseline(PersistentJSONable, ABC):
 
     def set_sensor_baseline(self, gas, sensor_baseline):
         self.__sensor_baselines[gas] = sensor_baseline
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def sensor_baselines(self):
+        return self.__sensor_baselines

@@ -40,4 +40,4 @@ class VCalBaseline(Baseline):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "VCalBaseline:{sensor_baselines:%s}" % Str.collection(self.__sensor_baselines)
+        return "VCalBaseline:{sensor_baselines:%s}" % Str.collection(self.sensor_baselines)
