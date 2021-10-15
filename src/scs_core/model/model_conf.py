@@ -43,28 +43,28 @@ class ModelConf(ABC, PersistentJSONable):
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
-        model_compendium = jdict.get('model-compendium')
+        model_compendium_group = jdict.get('model-compendium-group')
 
-        return cls(uds_path, model_interface, model_compendium)
+        return cls(uds_path, model_interface, model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium):
+    def __init__(self, uds_path, model_interface, model_compendium_group):
         """
         Constructor
         """
         super().__init__()
 
-        self.__uds_path = uds_path                                  # string
-        self.__model_interface = model_interface                    # string
-        self.__model_compendium = model_compendium                  # string
+        self.__uds_path = uds_path                                      # string
+        self.__model_interface = model_interface                        # string
+        self.__model_compendium_group = model_compendium_group          # string
 
 
     def __eq__(self, other):
         try:
             return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
-                   self.model_compendium == other.model_compendium
+                   self.model_compendium_group == other.model_compendium_group
         except (TypeError, AttributeError):
             return False
 
@@ -76,7 +76,9 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
-        jdict['model-compendium'] = self.model_compendium
+
+        if self.model_compendium_group is not None:
+            jdict['model-compendium-group'] = self.model_compendium_group
 
         return jdict
 
@@ -98,12 +100,12 @@ class ModelConf(ABC, PersistentJSONable):
 
 
     @property
-    def model_compendium(self):
-        return self.__model_compendium
+    def model_compendium_group(self):
+        return self.__model_compendium_group
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_compendium:%s}" %  \
-               (self.uds_path, self.model_interface, self.model_compendium)
+        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_compendium_group:%s}" %  \
+               (self.uds_path, self.model_interface, self.model_compendium_group)

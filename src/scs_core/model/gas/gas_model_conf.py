@@ -40,11 +40,11 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium):
+    def __init__(self, uds_path, model_interface, model_compendium_group):
         """
         Constructor
         """
-        super().__init__(uds_path, model_interface, model_compendium)
+        super().__init__(uds_path, model_interface, model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,9 @@ class GasModelConf(ModelConf):
         if self.model_interface == 'vE':
             from scs_core.model.gas.vE.ve_gas_inference_client import VEGasInferenceClient
 
+            # TODO: retrieve the model_compendium_group here
+
             return VEGasInferenceClient.construct(socket, self.abs_uds_path(host), gas_schedule_item,
-                                                  self.model_compendium)
+                                                  self.model_compendium_group)
 
         raise ValueError(self.model_interface)

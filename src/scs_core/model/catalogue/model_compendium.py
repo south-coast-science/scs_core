@@ -11,13 +11,12 @@ import os
 from collections import OrderedDict
 
 from scs_core.data.json import JSONReport
+from scs_core.data.lin_regress import LinRegress
 from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.model.catalogue.term import Term, PrimaryTerm, SecondaryTerm
 from scs_core.model.catalogue.training_period import TrainingPeriod
-
-from scs_inference.data.lin_regress import LinRegress
 
 
 # --------------------------------------------------------------------------------------------------------------------
