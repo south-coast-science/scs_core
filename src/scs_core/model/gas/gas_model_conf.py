@@ -41,11 +41,11 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium_group):
+    def __init__(self, uds_path, model_interface, model_compendium_group=None):
         """
         Constructor
         """
-        super().__init__(uds_path, model_interface, model_compendium_group)
+        super().__init__(uds_path, model_interface, model_compendium_group=model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -45,12 +45,12 @@ class ModelConf(ABC, PersistentJSONable):
         model_interface = jdict.get('model-interface')
         model_compendium_group = jdict.get('model-compendium-group')
 
-        return cls(uds_path, model_interface, model_compendium_group)
+        return cls(uds_path, model_interface, model_compendium_group=model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium_group):
+    def __init__(self, uds_path, model_interface, model_compendium_group=None):
         """
         Constructor
         """
