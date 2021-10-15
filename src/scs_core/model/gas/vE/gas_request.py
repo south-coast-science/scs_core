@@ -4,14 +4,11 @@ Created on 2 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"sample": {"tag": "test", "rec": "2020-11-11T16:16:34Z",
-"val": {"NO2": {"weV": 0.31569, "aeV": 0.3095, "weC": 0.00395, "cnc": 11.6},
-"CO": {"weV": 0.34176, "aeV": 0.25519, "weC": 0.09502, "cnc": 397.6},
-"SO2": {"weV": 0.26657, "aeV": 0.26494, "weC": -0.00267, "cnc": 20.5},
-"H2S": {"weV": 0.18319, "aeV": 0.26013, "weC": -0.04456, "cnc": 36.7},
-"sht": {"hmd": 66.1, "tmp": 22.2}}},
-"t-slope": 0.0, "rh-slope": 0.1,
-"brd-tmp": 30.3}
+{"sample": {"rec": "2021-10-15T09:14:38Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.29, "aeV": 0.29557, "weC": 0.0005, "cnc": 17.9, "vCal": 12.799},
+"Ox": {"weV": 0.39951, "aeV": 0.39988, "weC": 0.00196, "cnc": 54.6, "vCal": 1.795, "xCal": -0.392451},
+"CO": {"weV": 0.37994, "aeV": 0.28975, "weC": 0.09457, "cnc": 409.5, "vCal": 380.414},
+"sht": {"hmd": 58.6, "tmp": 22.3}}}, "t-slope": -0.1, "rh-slope": 0.2, "brd-tmp": 32.5}
 """
 
 from collections import OrderedDict

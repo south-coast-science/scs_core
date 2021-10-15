@@ -36,11 +36,11 @@ class PMxModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface):
+    def __init__(self, uds_path, model_interface, model_compendium):
         """
         Constructor
         """
-        super().__init__(uds_path, model_interface)
+        super().__init__(uds_path, model_interface, model_compendium)
 
 
     # ----------------------------------------------------------------------------------------------------------------
