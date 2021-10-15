@@ -87,5 +87,5 @@ class VEGasInferenceClient(GasInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "VEGasInferenceClient:{uds_client:%s, t_regression:%s, rh_regression:%s}" %  \
-               (self._uds_client, self.__t_regression, self.__rh_regression)
+        return "VEGasInferenceClient:{uds_client:%s, t_regression:%s, rh_regression:%s, model_compendium_group:%s}" %  \
+               (self._uds_client, self.__t_regression, self.__rh_regression, self.__model_compendium_group)

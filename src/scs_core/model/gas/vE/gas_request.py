@@ -39,7 +39,7 @@ class GasRequest(JSONable):
         """
         Constructor
         """
-        self.__sample = sample                              # GasesSample (must contain EXT SHTDatum and vCal)
+        self.__sample = sample                              # GasesSample (must contain EXT SHTDatum and vCal(s))
 
         self.__t_slope = float(t_slope)                     # float
         self.__rh_slope = float(rh_slope)                   # float
