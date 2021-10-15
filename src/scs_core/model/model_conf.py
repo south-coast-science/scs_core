@@ -6,6 +6,7 @@ Created on 22 Dec 2020
 an abstract ML model group configuration
 """
 
+import logging
 import os
 
 from abc import ABC, abstractmethod
@@ -38,6 +39,10 @@ class ModelConf(ABC, PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
+        logger = logging.getLogger()
+
+        logger.error("jdict: %s" % jdict)
+
         if not jdict:
             return None
 
