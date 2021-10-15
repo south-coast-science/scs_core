@@ -32,7 +32,7 @@ class VEGasInferenceClient(GasInferenceClient):
     """
 
     @classmethod
-    def construct(cls, socket, inference_uds_path, gas_schedule_item: ScheduleItem, model_compendium_name):
+    def construct(cls, socket, inference_uds_path, gas_schedule_item: ScheduleItem, model_compendium_group):
         # UDS...
         uds_client = UDSClient(socket, inference_uds_path)
 
@@ -42,20 +42,20 @@ class VEGasInferenceClient(GasInferenceClient):
         t_regression = LinearRegression(tally=slope_tally)
         rh_regression = LinearRegression(tally=slope_tally)
 
-        return cls(uds_client, t_regression, rh_regression, model_compendium)
+        return cls(uds_client, t_regression, rh_regression, model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_client, t_regression, rh_regression, model_compendium):
+    def __init__(self, uds_client, t_regression, rh_regression, model_compendium_group):
         """
         Constructor
         """
         super().__init__(uds_client)
 
-        self.__t_regression = t_regression                  # LinearRegression
-        self.__rh_regression = rh_regression                # LinearRegression
-        self.__model_compendium = model_compendium          # ModelCompendium
+        self.__t_regression = t_regression                              # LinearRegression
+        self.__rh_regression = rh_regression                            # LinearRegression
+        self.__model_compendium_group = model_compendium_group          # ModelCompendiumGroup
 
 
     # ----------------------------------------------------------------------------------------------------------------

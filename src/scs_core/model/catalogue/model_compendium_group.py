@@ -71,7 +71,9 @@ class ModelCompendiumGroup(JSONReport):
             return cls(None, {}) if skeleton else None
 
         name = jdict.get('name')
-        compendia = {gas: ModelCompendium.retrieve(compendium_name) for gas, compendium_name in jdict.items()}
+        compendia_jdict = jdict.get('compendia')
+
+        compendia = {gas: ModelCompendium.retrieve(compendium_name) for gas, compendium_name in compendia_jdict.items()}
 
         return cls(name, compendia)
 
@@ -92,9 +94,13 @@ class ModelCompendiumGroup(JSONReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def filename(self):
-        return self.catalogue_entry_location(self.name)
+    def add(self, gas, compendium):
+        self.__compendia[gas] = compendium
+
+
+    def exclude(self, gas):
+        if gas in self.compendia:
+            del self.__compendia[gas]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -102,6 +108,11 @@ class ModelCompendiumGroup(JSONReport):
     @property
     def name(self):
         return self.__name
+
+
+    @property
+    def filename(self):
+        return self.catalogue_entry_location(self.name)
 
 
     def compendium(self, gas):
