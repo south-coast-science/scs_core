@@ -4,6 +4,9 @@ Created on 15 Oct 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 A catalogue entry for a group of machine learning model compendia, one for each gas
+
+document example:
+{"name": "OE.g1", "compendia": {"NO2": "NO2.vE.OPCube.21HA"}}
 """
 
 import os
