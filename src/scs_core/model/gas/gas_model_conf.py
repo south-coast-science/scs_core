@@ -50,20 +50,21 @@ class GasModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # TODO: needs GasBaseline (for vE client)
     def client(self, host, socket, gas_schedule_item: ScheduleItem, afe_calib: AFECalib) -> GasInferenceClient:
-        # s1...
+        # s1 (obsolete)...
         if self.model_interface == 's1':
             from scs_core.model.gas.s1.s1_gas_inference_client import S1GasInferenceClient
 
             return S1GasInferenceClient.construct(socket, self.abs_uds_path(host), gas_schedule_item, afe_calib)
 
-        # vB...
+        # vB (document v1.0 and v2.0)...
         if self.model_interface == 'vB' or self.model_interface == 'vB2':
             from scs_core.model.gas.vB.vb_gas_inference_client import VBGasInferenceClient
 
             return VBGasInferenceClient.construct(socket, self.abs_uds_path(host), gas_schedule_item)
 
-        # vE...
+        # vE (document v2.0)...
         if self.model_interface == 'vE':
             from scs_core.model.gas.vE.ve_gas_inference_client import VEGasInferenceClient
 

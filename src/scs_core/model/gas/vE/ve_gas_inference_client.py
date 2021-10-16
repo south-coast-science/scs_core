@@ -81,6 +81,8 @@ class VEGasInferenceClient(GasInferenceClient):
 
         # TODO: postprocess
 
+        # TODO: apply gas baseline
+
         return json.loads(response)
 
 
