@@ -26,11 +26,11 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
     classdocs
     """
 
-    __CATLOGUE_NAME = 'groups'
+    __CATALOGUE_NAME = 'groups'
 
     @classmethod
     def catalogue_location(cls):
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATLOGUE_NAME)
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATALOGUE_NAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------

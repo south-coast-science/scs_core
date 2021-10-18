@@ -39,11 +39,11 @@ class ModelCompendium(JSONCatalogueEntry):
     classdocs
     """
 
-    __CATLOGUE_NAME = 'compendia'
+    __CATALOGUE_NAME = 'compendia'
 
     @classmethod
     def catalogue_location(cls):
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATLOGUE_NAME)
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATALOGUE_NAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
