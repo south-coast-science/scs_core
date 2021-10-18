@@ -13,7 +13,7 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONReport
+from scs_core.data.json import JSONCatalogueEntry
 from scs_core.data.str import Str
 
 from scs_core.model.catalogue.model_compendium import ModelCompendium
@@ -21,49 +21,16 @@ from scs_core.model.catalogue.model_compendium import ModelCompendium
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ModelCompendiumGroup(JSONReport):
+class ModelCompendiumGroup(JSONCatalogueEntry):
     """
     classdocs
     """
 
-    # ----------------------------------------------------------------------------------------------------------------
+    __CATLOGUE_NAME = 'groups'
 
     @classmethod
-    def list(cls):
-        return [cls.__filename_to_name(item) for item in sorted(os.listdir(cls.__catalogue_location()))
-                if item.endswith('.json')]
-
-
-    @classmethod
-    def exists(cls, name):
-        return name in cls.list()
-
-
-    @classmethod
-    def retrieve(cls, name):
-        return cls.load(cls.catalogue_entry_location(name))
-
-
-    @classmethod
-    def catalogue_entry_location(cls, name):
-        return os.path.join(cls.__catalogue_location(), cls.__name_to_filename(name))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def __catalogue_location(cls):
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'groups')
-
-
-    @classmethod
-    def __name_to_filename(cls, name):
-        return name.replace('.', '-') + '.json'
-
-
-    @classmethod
-    def __filename_to_name(cls, name):
-        return name.replace('-', '.')[:-len('.json')]
+    def catalogue_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATLOGUE_NAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -87,7 +54,7 @@ class ModelCompendiumGroup(JSONReport):
         """
         Constructor
         """
-        self.__name = name                              # string
+        self.__name = name
         self.__compendia = compendia                    # dict of gas: ModelCompendium
 
 
@@ -114,8 +81,8 @@ class ModelCompendiumGroup(JSONReport):
 
 
     @property
-    def filename(self):
-        return self.catalogue_entry_location(self.name)
+    def gases(self):
+        return sorted(self.compendia.keys())
 
 
     def compendium(self, gas):
@@ -133,7 +100,7 @@ class ModelCompendiumGroup(JSONReport):
         jdict = OrderedDict()
 
         jdict['name'] = self.name
-        jdict['compendia'] = {gas: self.compendia[gas].name for gas in sorted(self.compendia.keys())}
+        jdict['compendia'] = {gas: self.compendia[gas].name for gas in self.gases}
 
         return jdict
 

@@ -23,7 +23,7 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONReport
+from scs_core.data.json import JSONCatalogueEntry
 from scs_core.data.lin_regress import LinRegress
 from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
@@ -34,50 +34,19 @@ from scs_core.model.catalogue.training_period import TrainingPeriod
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ModelCompendium(JSONReport):
+class ModelCompendium(JSONCatalogueEntry):
     """
     classdocs
     """
 
-    # ----------------------------------------------------------------------------------------------------------------
+    __CATLOGUE_NAME = 'compendia'
 
     @classmethod
-    def list(cls):
-        return [cls.__filename_to_name(item) for item in sorted(os.listdir(cls.__catalogue_location()))
-                if item.endswith('.json')]
-
-
-    @classmethod
-    def exists(cls, name):
-        return name in cls.list()
-
-
-    @classmethod
-    def retrieve(cls, name):
-        return cls.load(cls.catalogue_entry_location(name))
-
-
-    @classmethod
-    def catalogue_entry_location(cls, name):
-        return os.path.join(cls.__catalogue_location(), cls.__name_to_filename(name))
+    def catalogue_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATLOGUE_NAME)
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def __catalogue_location(cls):
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'compendia')
-
-
-    @classmethod
-    def __name_to_filename(cls, name):
-        return name.replace('.', '-') + '.json'
-
-
-    @classmethod
-    def __filename_to_name(cls, name):
-        return name.replace('-', '.')[:-len('.json')]
-
 
     @classmethod
     def __term_path(cls, path):
@@ -217,11 +186,6 @@ class ModelCompendium(JSONReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def filename(self):
-        return self.catalogue_entry_location(self.name)
-
-
-    @property
     def name(self):
         return self.output.path[len('exg.'):]
 
@@ -287,7 +251,7 @@ class ModelCompendium(JSONReport):
         primaries = Str.collection(self.primaries)
         secondaries = Str.collection(self.secondaries)
 
-        return "ModelCompendium:{data_set:%s, period:%s, primaries:%s, secondaries:%s, reference:%s, output:%s, " \
-               "performance:%s}" %  \
-               (self.data_set, self.period, primaries, secondaries, self.reference, self.output,
-                self.performance)
+        return "ModelCompendium:{data_set:%s, data_set:%s, period:%s, primaries:%s, secondaries:%s, reference:%s, " \
+               "output:%s, performance:%s}" %  \
+               (self.name, self.data_set, self.period, primaries, secondaries, self.reference,
+                self.output, self.performance)
