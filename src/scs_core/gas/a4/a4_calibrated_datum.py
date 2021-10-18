@@ -34,7 +34,6 @@ class A4Calibrator(object):
     def calibrated_gases(cls):
         return cls.__CALIBRATED_GASES
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, calib: A4Calib):
