@@ -16,9 +16,13 @@ import os
 from collections import OrderedDict
 
 from scs_core.data.json import JSONCatalogueEntry
+from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
+from scs_core.model.gas.baseline import Baseline
 from scs_core.model.catalogue.model_compendium import ModelCompendium
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -62,6 +66,18 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
     def __len__(self):
         return len(self.compendia)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def preprocess(self, datum: PathDict, offsets=None):
+        if offsets is None:
+            offsets = Baseline({})
+
+        for gas, compendium in self.__compendia.items():
+            datum = compendium.preprocess(datum, offset=offsets.sensor_offset(gas))
+
+        return datum
 
 
     # ----------------------------------------------------------------------------------------------------------------

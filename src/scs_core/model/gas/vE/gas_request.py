@@ -4,11 +4,12 @@ Created on 2 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"sample": {"rec": "2021-10-15T09:14:38Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
-"val": {"NO2": {"weV": 0.29, "aeV": 0.29557, "weC": 0.0005, "cnc": 17.9, "vCal": 12.799},
-"Ox": {"weV": 0.39951, "aeV": 0.39988, "weC": 0.00196, "cnc": 54.6, "vCal": 1.795, "xCal": -0.392451},
-"CO": {"weV": 0.37994, "aeV": 0.28975, "weC": 0.09457, "cnc": 409.5, "vCal": 380.414},
-"sht": {"hmd": 58.6, "tmp": 22.3}}}, "t-slope": -0.1, "rh-slope": 0.2, "brd-tmp": 32.5}
+{"sample": {"rec": "2021-10-19T08:36:34Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.28919, "aeV": 0.29607, "weC": -0.00125, "cnc": 11.3, "vCal": 7.91},
+"Ox": {"weV": 0.39813, "aeV": 0.40013, "weC": 0.00286, "cnc": 57.1, "vCal": -2.849},
+"CO": {"weV": 0.35688, "aeV": 0.29844, "weC": 0.08079, "cnc": 357.7, "vCal": 261.053},
+"sht": {"hmd": 67.0, "tmp": 23.1}}},
+"t-slope": 0.0, "rh-slope": 0.0, "brd-tmp": 28.6}
 """
 
 from collections import OrderedDict
@@ -51,11 +52,10 @@ class GasRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['sample'] = self.sample
+        jdict['sample'] = self.sample.as_json()
 
-        jdict['t-slope'] = self.t_slope
-        jdict['rh-slope'] = self.rh_slope
-        jdict['brd-tmp'] = self.board_temp
+        jdict['tmp'] = {'cur': self.sample.sht_datum.temp, 'slope': self.t_slope, 'brd': self.board_temp}
+        jdict['hmd'] = {'cur': self.sample.sht_datum.humid, 'slope': self.rh_slope}
 
         return jdict
 

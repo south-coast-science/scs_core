@@ -31,6 +31,8 @@ from scs_core.data.str import Str
 from scs_core.model.catalogue.term import Term, PrimaryTerm, SecondaryTerm
 from scs_core.model.catalogue.training_period import TrainingPeriod
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -130,7 +132,9 @@ class ModelCompendium(JSONCatalogueEntry):
         return True
 
 
-    def preprocess(self, datum: PathDict, offset):
+    def preprocess(self, datum: PathDict, offset=0):
+        logger = Logging.getLogger()
+
         target = PathDict()
 
         for datum_path in datum.paths():
@@ -138,17 +142,21 @@ class ModelCompendium(JSONCatalogueEntry):
             node = datum.node(datum_path)
 
             if term_path in self.primaries:
+                logger.error("matched primary:%s" % term_path)
+
                 value, extr = self.primaries[term_path].preprocess(node, offset)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only
+                target.append(datum_path + 'Orig', node)                            # batch  mode only?
                 target.append(datum_path, None if value is None else "%g" % value)
                 target.append(datum_path + 'Extr', None if value is None else "%g" % extr)
                 continue
 
             if term_path in self.secondaries:
+                logger.error("matched secondary:%s" % term_path)
+
                 value = self.secondaries[term_path].preprocess(node)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only
+                target.append(datum_path + 'Orig', node)                            # batch  mode only?
                 target.append(datum_path, None if value is None else "%g" % value)
                 continue
 
