@@ -2,14 +2,6 @@
 Created on 15 Oct 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-example request:
-{"sample": {"rec": "2021-10-15T09:14:38Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
-"val": {"NO2": {"weV": 0.29, "aeV": 0.29557, "weC": 0.0005, "cnc": 17.9, "vCal": 12.799},
-"Ox": {"weV": 0.39951, "aeV": 0.39988, "weC": 0.00196, "cnc": 54.6, "vCal": 1.795, "xCal": -0.392451},
-"CO": {"weV": 0.37994, "aeV": 0.28975, "weC": 0.09457, "cnc": 409.5, "vCal": 380.414},
-"sht": {"hmd": 58.6, "tmp": 22.3}}},
-"t-slope": -0.1, "rh-slope": 0.2, "brd-tmp": 32.5}
 """
 
 import json
@@ -67,14 +59,10 @@ class VEGasInferenceClient(GasInferenceClient):
 
         self.__logger = Logging.getLogger()
 
-        self.__logger.error("model_compendium_group: %s" % model_compendium_group)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def infer(self, gas_sample, board_temp):
-        self.__logger.error("gas_sample:%s" % gas_sample)
-
         # T / rH slope...
         self.__t_regression.append(gas_sample.rec, gas_sample.sht_datum.temp)
         self.__rh_regression.append(gas_sample.rec, gas_sample.sht_datum.humid)
@@ -85,24 +73,25 @@ class VEGasInferenceClient(GasInferenceClient):
         m, _ = self.__rh_regression.line()
         rh_slope = 0.0 if m is None else m
 
+        # preprocess...
+        request = PathDict(GasRequest(gas_sample, t_slope, rh_slope, board_temp).as_json())
+        preprocessed = self.__model_compendium_group.preprocess(request, self.__vcal_baseline)
 
-        # request...
-        gas_request = GasRequest(gas_sample, t_slope, rh_slope, board_temp)
+        # infer...
+        self._uds_client.request(JSONify.dumps(preprocessed))
+        response = PathDict(json.loads(self._uds_client.wait_for_response()))
 
-        # TODO: preprocess
+        # postprocess...
+        exg = self.__model_compendium_group.postprocess(preprocessed, response)
 
-        preprocessed = self.__model_compendium_group.preprocess(PathDict(gas_request.as_json()), self.__vcal_baseline)
-        self.__logger.error("preprocessed:%s" % preprocessed)
+        # report...
+        report = request.node('sample')
+        report['ver'] = response.node('ver')
+        report['exg'] = exg
 
-        self._uds_client.request(JSONify.dumps(gas_request))
+        # TODO: apply gas baseline (or adjust vCal baseline)?
 
-        response = self._uds_client.wait_for_response()
-
-        # TODO: postprocess
-
-        # TODO: apply gas baseline
-
-        return json.loads(response)
+        return report
 
 
     # ----------------------------------------------------------------------------------------------------------------

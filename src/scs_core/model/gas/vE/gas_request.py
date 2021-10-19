@@ -4,16 +4,29 @@ Created on 2 Dec 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"sample": {"rec": "2021-10-19T08:36:34Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
-"val": {"NO2": {"weV": 0.28919, "aeV": 0.29607, "weC": -0.00125, "cnc": 11.3, "vCal": 7.91},
-"Ox": {"weV": 0.39813, "aeV": 0.40013, "weC": 0.00286, "cnc": 57.1, "vCal": -2.849},
-"CO": {"weV": 0.35688, "aeV": 0.29844, "weC": 0.08079, "cnc": 357.7, "vCal": 261.053},
-"sht": {"hmd": 67.0, "tmp": 23.1}}},
-"t-slope": 0.0, "rh-slope": 0.0, "brd-tmp": 28.6}
+{"sample": {"rec": "2021-10-19T11:20:37Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
+"val": {
+"NO2": {"weV": 0.28882, "aeV": 0.29582, "weC": -0.00118, "cnc": 11.6, "vCal": 7.463},
+"Ox": {"weV": 0.39938, "aeV": 0.39982, "weC": 0.0037, "cnc": 59.6, "vCal": 1.595},
+"CO": {"weV": 0.34707, "aeV": 0.30013, "weC": 0.07294, "cnc": 328.2, "vCal": 217.82},
+"sht": {"hmd": 65.8, "tmp": 23.4}}},
+"tmp": {"cur": 23.4, "slope": 0.0, "brd": 28.8},
+"hmd": {"cur": 65.8, "slope": 0.0}}
+
+example document (preprocessed):
+{"sample": {"rec": "2021-10-19T11:18:16Z", "tag": "scs-be2-3", "ver": 1.0, "src": "AFE",
+"val": {
+"NO2": {"weV": 0.28869, "aeV": 0.296, "weC": -0.00165, "cnc": 9.8, "vCalOrig": 6.306, "vCal": "6.306", "vCalExtr": "0"},
+"Ox": {"weV": 0.39944, "aeV": 0.39969, "weC": 0.0041, "cnc": 60.7, "vCal": 2.137},
+"CO": {"weV": 0.34544, "aeV": 0.29738, "weC": 0.06828, "cnc": 310.7, "vCal": 222.03},
+"sht": {"hmd": 65.8, "tmp": 23.4}}},
+"tmp": {"curOrig": 23.4, "cur": "23.4", "slopeOrig": 0.0, "slope": "0", "brdOrig": 28.8, "brd": "28.8"},
+"hmd": {"curOrig": 65.8, "cur": "65.8", "slopeOrig": 0.0, "slope": "0"}}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
@@ -40,11 +53,11 @@ class GasRequest(JSONable):
         """
         Constructor
         """
-        self.__sample = sample                              # GasesSample (must contain EXT SHTDatum and vCals)
+        self.__sample = sample                                      # GasesSample (must contain EXT SHTDatum and vCals)
 
-        self.__t_slope = float(t_slope)                     # float
-        self.__rh_slope = float(rh_slope)                   # float
-        self.__board_temp = float(board_temp)               # float
+        self.__t_slope = Datum.float(t_slope, ndigits=4)            # float
+        self.__rh_slope = Datum.float(rh_slope, ndigits=4)          # float
+        self.__board_temp = Datum.float(board_temp, ndigits=1)      # float
 
 
     # ----------------------------------------------------------------------------------------------------------------

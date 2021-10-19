@@ -80,6 +80,29 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
         return datum
 
 
+    def postprocess(self, preprocessed: PathDict, response: PathDict):
+        logger = Logging.getLogger()
+
+        for gas, compendium in self.__compendia.items():
+            try:
+                vcal_excess_path = '.'.join(('sample', 'val', gas, 'vCalExtr'))
+                vcal_excess = float(preprocessed.node(vcal_excess_path))
+
+                model_output_path = '.'.join(('exg', 'val', gas, 'cnc'))
+                model_output = float(response.node(model_output_path))
+
+            except KeyError:
+                continue
+
+            for primary in compendium.primaries:
+                corrected_exg = round(compendium.postprocess(primary, vcal_excess, model_output), 1)
+                logger.error("model_output:%s corrected_exg:%s" % (model_output, corrected_exg))
+
+                response.append(model_output_path, corrected_exg)
+
+        return response.node('exg')
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, gas, compendium):
