@@ -20,6 +20,7 @@ from scs_core.sync.schedule import ScheduleItem
 from scs_core.sys.logging import Logging
 
 
+# TODO: WARNING! offsets should be added, not subtracted!!
 # --------------------------------------------------------------------------------------------------------------------
 
 class VEGasInferenceClient(GasInferenceClient):
@@ -85,13 +86,13 @@ class VEGasInferenceClient(GasInferenceClient):
         exg = self.__model_compendium_group.postprocess(preprocessed, response)
 
         # report...
-        report = request.node('sample')
-        report['ver'] = response.node('ver')
-        report['exg'] = exg
+        report = PathDict(request.node('sample'))
+        report.append('ver', response.node('ver'))
+        report.append('exg', exg)
 
         # TODO: apply gas baseline (or adjust vCal baseline)?
 
-        return report
+        return report.dictionary
 
 
     # ----------------------------------------------------------------------------------------------------------------
