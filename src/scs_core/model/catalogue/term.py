@@ -121,7 +121,7 @@ class PrimaryTerm(Term):
         except (TypeError, ValueError):
             return None, 0
 
-        baselined_value = value - offset        # TODO: WARNING! offsets should be added, not subtracted!!
+        baselined_value = value + offset
 
         if baselined_value > self.maximum:
             return self.maximum, baselined_value - self.maximum

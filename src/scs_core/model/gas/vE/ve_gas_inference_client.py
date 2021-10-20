@@ -20,7 +20,6 @@ from scs_core.sync.schedule import ScheduleItem
 from scs_core.sys.logging import Logging
 
 
-# TODO: WARNING! offsets should be added, not subtracted!!
 # --------------------------------------------------------------------------------------------------------------------
 
 class VEGasInferenceClient(GasInferenceClient):
