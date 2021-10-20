@@ -28,6 +28,13 @@ class A4Calibrator(object):
     classdocs
     """
 
+    __CALIBRATED_GASES = ['CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe']
+
+    @classmethod
+    def calibrated_gases(cls):
+        return cls.__CALIBRATED_GASES
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, calib: A4Calib):

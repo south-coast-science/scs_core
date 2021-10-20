@@ -102,7 +102,7 @@ class OrganisationManager(object):
 
         while True:
             # request...
-            response_jdict = self.__rest_client.get(request_path, params)
+            response_jdict = self.__rest_client.get(request_path, params=params)
 
             # organisations...
             orgs = [Organisation.construct_from_jdict(org_jdict) for org_jdict in response_jdict] \

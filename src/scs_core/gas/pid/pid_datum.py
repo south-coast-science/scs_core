@@ -46,7 +46,7 @@ class PIDDatum(JSONable):
         # cnc...
         cnc = cls.__cnc(calib, we_c)
 
-        baselined_cnc = cnc + baseline.offset
+        baselined_cnc = cnc + baseline.offset               # a positive offset causes the value to be raised
 
         return cls(we_v, we_c, baselined_cnc)
 

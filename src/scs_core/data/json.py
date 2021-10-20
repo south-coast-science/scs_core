@@ -142,7 +142,7 @@ class JSONReport(JSONable):
     @classmethod
     @abstractmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        return JSONReport()
+        return cls()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -168,6 +168,77 @@ class JSONReport(JSONable):
         os.rename(tmp_filename, filename)
 
         return True
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class JSONCatalogueEntry(JSONReport):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def list(cls):
+        return [cls.__filename_to_name(item) for item in sorted(os.listdir(cls.catalogue_location()))
+                if item.endswith('.json')]
+
+
+    @classmethod
+    def exists(cls, name):
+        return name in cls.list()
+
+
+    @classmethod
+    def retrieve(cls, name):
+        return cls.load(cls.__catalogue_entry_location(name))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    @abstractmethod
+    def catalogue_location(cls):
+        return ''
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def __catalogue_entry_location(cls, name):
+        return os.path.join(cls.catalogue_location(), cls.__name_to_filename(name))
+
+
+    @classmethod
+    def __name_to_filename(cls, name):
+        return name.replace('.', '-') + '.json'
+
+
+    @classmethod
+    def __filename_to_name(cls, name):
+        return name.replace('-', '.')[:-len('.json')]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def filename(self):
+        return self.__catalogue_entry_location(self.name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def store(self):
+        self.save(self.filename)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def name(self):
+        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -257,7 +328,6 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
         try:
             jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
-
         except (KeyError, ValueError) as ex:            # caused by incorrect encryption_key
             time.sleep(cls._SECURITY_DELAY)
             raise ex
