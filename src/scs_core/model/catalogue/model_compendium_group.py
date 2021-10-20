@@ -83,6 +83,9 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
     def postprocess(self, preprocessed: PathDict, response: PathDict):
         logger = Logging.getLogger()
 
+        if not response.has_sub_path('exg'):
+            return None
+
         for gas, compendium in self.__compendia.items():
             try:
                 vcal_excess_path = '.'.join(('sample', 'val', gas, 'vCalExtr'))

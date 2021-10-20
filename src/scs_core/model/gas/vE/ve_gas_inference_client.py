@@ -86,9 +86,11 @@ class VEGasInferenceClient(GasInferenceClient):
         exg = self.__model_compendium_group.postprocess(preprocessed, response)
 
         # report...
-        report = PathDict(request.node('sample'))
-        report.append('ver', response.node('ver'))
-        report.append('exg', exg)
+        report = PathDict(request.node('sample'))           # discard any changes made in preprocessing
+
+        if exg is not None:
+            report.append('ver', response.node('ver'))
+            report.append('exg', exg)
 
         # TODO: apply gas baseline (or adjust vCal baseline)?
 
