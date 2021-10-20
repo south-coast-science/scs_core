@@ -63,6 +63,8 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
         self.__name = name
         self.__compendia = compendia                    # dict of gas: ModelCompendium
 
+        self.__logger = Logging.getLogger()
+
 
     def __len__(self):
         return len(self.compendia)
@@ -81,8 +83,6 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
 
     def postprocess(self, preprocessed: PathDict, response: PathDict):
-        logger = Logging.getLogger()
-
         if not response.has_sub_path('exg'):
             return None
 
@@ -99,7 +99,7 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
             for primary in compendium.primaries:
                 corrected_exg = round(compendium.postprocess(primary, vcal_excess, model_output), 1)
-                logger.error("%s model:%s corrected:%s" % (gas, model_output, corrected_exg))
+                self.__logger.error("%s model:%s corrected:%s" % (gas, model_output, corrected_exg))
 
                 response.append(model_output_path, corrected_exg)
 
