@@ -2,15 +2,10 @@
 Created on 30 Sep 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
+
 https://medium.com/@houzier.saurav/aws-cognito-with-python-6a2867dd02c6
 
 A single manager for all required cognito related functions.
-
-Potential exceptions (for top level users?)
-    except client.exceptions.NotAuthorizedException:
-        return "The username or password is incorrect"
-    except client.exceptions.UserNotConfirmedException:
-        return "User is not confirmed"
 
 """
 # --------------------------------------------------------------------------------------------------------------------
@@ -83,6 +78,17 @@ class CognitoManager(object):
             DesiredDeliveryMediums=[
                 'EMAIL',
             ],
+            MessageAction='SUPPRESS'
+        )
+
+        return res
+
+    def set_password(self, user, password):
+        res = self.__cognito_client.admin_set_user_password(
+            UserPoolId=self.__pool_id,
+            Username=user,
+            Password=password,
+            Permanent=True
         )
 
         return res
@@ -95,8 +101,6 @@ class CognitoManager(object):
 
         return res
 
-        # CognitoIdentityProvider.Client.exceptions.TooManyRequestsException
-        # CognitoIdentityProvider.Client.exceptions.NotAuthorizedException
         # CognitoIdentityProvider.Client.exceptions.UserNotFoundException
 
     def password_reset(self, user):
@@ -122,13 +126,7 @@ class CognitoManager(object):
             AccessToken=token
         )
 
-        """
-        CognitoIdentityProvider.Client.exceptions.ResourceNotFoundException
-        CognitoIdentityProvider.Client.exceptions.InvalidParameterException
-        CognitoIdentityProvider.Client.exceptions.InvalidPasswordException
-        CognitoIdentityProvider.Client.exceptions.NotAuthorizedException
-        CognitoIdentityProvider.Client.exceptions.TooManyRequestsException
-        """
+        return res
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -139,7 +137,7 @@ class CognitoCredentials(object):
     """
     PASSWORD = 'password'
     ADMIN = 'is_admin'
-    BODY_USER = 'user'
+    BODY_USER = 'username'
     EVENT_USER = 'cognito:username'
     EVENT_EMAIL = 'email'
 
@@ -212,22 +210,27 @@ class CognitoAccount(object):
     EMAIL = "email"
     FORENAME = "forename"
     SURNAME = "surname"
+    PASSWORD = "password"
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_qsp(cls, qsp):
-        if not qsp:
+    def construct_from_body(cls, body):
+        if not body:
             return None
 
-        username = qsp.get(cls.USER)
-        email = qsp.get(cls.EMAIL)
-        forename = qsp.get(cls.FORENAME)
-        surname = qsp.get(cls.SURNAME)
+        jdict = json.loads(body)
 
-        return cls(username, email, forename, surname)
+        username = jdict[cls.USER]
+        password = jdict[cls.PASSWORD]
+        email = jdict[cls.EMAIL]
+        forename = jdict[cls.FORENAME]
+        surname = jdict[cls.SURNAME]
 
-    def __init__(self, username, email, forename, surname, admin=False):
+
+        return cls(username, email, forename, surname, password)
+
+    def __init__(self, username, email, forename, surname, password, admin=False):
         """
         Constructor
         """
@@ -236,6 +239,7 @@ class CognitoAccount(object):
         self.__email = email  # string
         self.__admin = bool(admin)  # string > bool
         self.__surname = surname
+        self.__password = password
 
     @property
     def username(self):
@@ -252,6 +256,10 @@ class CognitoAccount(object):
     @property
     def admin(self):
         return self.__admin
+
+    @property
+    def password(self):
+        return self.__password
 
     @property
     def email(self):
