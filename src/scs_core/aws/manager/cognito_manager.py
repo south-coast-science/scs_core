@@ -21,6 +21,7 @@ import hmac
 
 
 # --------------------------------------------------------------------------------------------------------------------
+import json
 
 
 class CognitoManager(object):
@@ -138,21 +139,23 @@ class CognitoCredentials(object):
     """
     PASSWORD = 'password'
     ADMIN = 'is_admin'
+    BODY_USER = 'user'
     EVENT_USER = 'cognito:username'
     EVENT_EMAIL = 'email'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_qsp(cls, qsp):
-        if not qsp:
+    def construct_from_body(cls, body):
+        if not body:
             return None
 
-        username = qsp.get(cls.EVENT_USER)
-        password = qsp.get(cls.PASSWORD)
-        admin = qsp.get(cls.ADMIN)
+        jdict = json.loads(body)
 
-        return cls(username, password, admin)
+        username = jdict[cls.BODY_USER]
+        password = jdict[cls.PASSWORD]
+
+        return cls(username, password)
 
     @classmethod
     def construct_from_event(cls, event):
@@ -169,7 +172,7 @@ class CognitoCredentials(object):
 
         return cls(username, password, email)
 
-    def __init__(self, username, password, admin, email=None):
+    def __init__(self, username, password, admin=False, email=None):
         """
         Constructor
         """
