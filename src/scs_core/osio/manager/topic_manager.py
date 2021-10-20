@@ -106,7 +106,7 @@ class TopicManager(object):
 
         try:
             while True:
-                jdict = self.__rest_client.get(request_path, params)
+                jdict = self.__rest_client.get(request_path, params=params)
 
                 # messages...
                 for message in jdict['messages']:
@@ -140,7 +140,7 @@ class TopicManager(object):
             topics = []
 
             # request...
-            response_jdict = self.__rest_client.get(request_path, params)
+            response_jdict = self.__rest_client.get(request_path, params=params)
 
             if response_jdict is None:
                 return
@@ -175,7 +175,7 @@ class TopicManager(object):
 
         while True:
             # request...
-            topics_jdict = self.__rest_client.get(request_path, params)
+            topics_jdict = self.__rest_client.get(request_path, params=params)
 
             # topics...
             topics = [UserTopic.construct_from_jdict(topic_jdict) for topic_jdict in topics_jdict]

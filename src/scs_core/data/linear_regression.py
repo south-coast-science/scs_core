@@ -3,6 +3,8 @@ Created on 14 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+A low-performance linear regression utility that does not require scipy
+
 WARNING: if used with time_relative=False and the data time intervals are small, a division by zero error may result
 because of the precision limitations of Python float.
 """

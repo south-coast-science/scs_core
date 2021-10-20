@@ -1,5 +1,5 @@
 """
-Created on 1 Mar 2017
+Created on 15 Oct 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -14,14 +14,14 @@ from scs_core.model.gas.baseline import Baseline
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasBaseline(Baseline):
+class VCalBaseline(Baseline):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =    "gas_baseline.json"
+    __FILENAME =    "vcal_baseline.json"
 
     @classmethod
     def persistence_location(cls):
@@ -40,4 +40,4 @@ class GasBaseline(Baseline):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasBaseline:{sensor_baselines:%s}" % Str.collection(self.sensor_baselines)
+        return "VCalBaseline:{sensor_baselines:%s}" % Str.collection(self.sensor_baselines)

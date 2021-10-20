@@ -75,10 +75,12 @@ class VBGasInferenceClient(GasInferenceClient):
 
         # request...
         gas_request = GasRequest(gas_sample, t_slope, rh_slope, board_temp)
-        self._uds_client.request(JSONify.dumps(gas_request))
 
+        # infer...
+        self._uds_client.request(JSONify.dumps(gas_request))
         response = self._uds_client.wait_for_response()
 
+        # report...
         return json.loads(response)
 
 

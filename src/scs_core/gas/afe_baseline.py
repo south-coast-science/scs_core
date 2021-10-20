@@ -18,8 +18,6 @@ from scs_core.data.str import Str
 from scs_core.gas.sensor_baseline import SensorBaseline
 
 
-# TODO: rename as Interface Baseline (GSBaseline)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class AFEBaseline(PersistentJSONable):

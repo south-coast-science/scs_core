@@ -13,7 +13,6 @@ CURLOPT_HTTPHEADER => array('Accept: application/json', 'Authorization: api-key 
 """
 
 import json
-# import sys
 
 from scs_core.data.json import JSONify
 
