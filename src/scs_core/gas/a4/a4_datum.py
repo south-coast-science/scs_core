@@ -56,7 +56,7 @@ class A4Datum(JSONable):
         # cnc...
         cnc = cls.__cnc(calib.we_sens_mv, we_c)
 
-        baselined_cnc = cnc + baseline.offset
+        baselined_cnc = cnc + baseline.offset                # a positive offset causes the value to be raised
 
         return cls(we_v, ae_v, we_c, baselined_cnc)
 

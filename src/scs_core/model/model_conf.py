@@ -3,7 +3,7 @@ Created on 22 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-an abstract ML model group configuration
+an abstract machine learning model group configuration
 """
 
 import os
@@ -43,25 +43,28 @@ class ModelConf(ABC, PersistentJSONable):
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
+        model_compendium_group = jdict.get('model-compendium-group')
 
-        return cls(uds_path, model_interface)
+        return cls(uds_path, model_interface, model_compendium_group=model_compendium_group)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface):
+    def __init__(self, uds_path, model_interface, model_compendium_group=None):
         """
         Constructor
         """
         super().__init__()
 
-        self.__uds_path = uds_path                                  # string
-        self.__model_interface = model_interface                    # string
+        self.__uds_path = uds_path                                      # string
+        self.__model_interface = model_interface                        # string
+        self.__model_compendium_group = model_compendium_group          # string
 
 
     def __eq__(self, other):
         try:
-            return self.uds_path == other.uds_path and self.model_interface == other.model_interface
+            return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
+                   self.model_compendium_group == other.model_compendium_group
         except (TypeError, AttributeError):
             return False
 
@@ -73,6 +76,9 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
+
+        if self.model_compendium_group is not None:
+            jdict['model-compendium-group'] = self.model_compendium_group
 
         return jdict
 
@@ -93,8 +99,13 @@ class ModelConf(ABC, PersistentJSONable):
         return self.__model_interface
 
 
+    @property
+    def model_compendium_group(self):
+        return self.__model_compendium_group
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s}" %  \
-               (self.uds_path, self.model_interface)
+        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_compendium_group:%s}" %  \
+               (self.uds_path, self.model_interface, self.model_compendium_group)

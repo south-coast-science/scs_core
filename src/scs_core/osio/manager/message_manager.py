@@ -70,7 +70,7 @@ class MessageManager(object):
 
         while True:
             # request...
-            jdict = self.__rest_client.get(request_path, params)
+            jdict = self.__rest_client.get(request_path, params=params)
 
             # messages...
             msgs_jdict = jdict.get('messages')
