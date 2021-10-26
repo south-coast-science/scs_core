@@ -115,15 +115,50 @@ class CognitoManager(object):
     # CognitoIdentityProvider.Client.exceptions.NotAuthorizedException
     # CognitoIdentityProvider.Client.exceptions.UserNotFoundException
 
+    def get_user_information(self, user):
+        res = self.__cognito_client.admin_get_user(
+            UserPoolId=self.__pool_id,
+            Username=user
+        )
+
+        return res
+
     # ----------------------------------------------------------------------------------------------------------------
     # User functionality
     # ----------------------------------------------------------------------------------------------------------------
+
+    def user_sign_up(self, user, password, name, surname, email, admin=False):
+        res = self.__cognito_client.sign_up(
+            ClientId=self.__app_id,
+            SecretHash=self.generate_hash(user),
+            Username=user,
+            Password=password,
+            UserAttributes=[
+                {"Name": "given_name", "Value": name},
+                {"Name": "family_name", "Value": surname},
+                {"Name": "email", "Value": email},
+                {"Name": "custom:super", "Value": str(admin)},
+            ]
+        )
+
+        return res
+
 
     def password_change(self, token, old_pass, new_pass):
         res = self.__cognito_client.change_password(
             PreviousPassword=old_pass,
             ProposedPassword=new_pass,
             AccessToken=token
+        )
+
+        return res
+
+    def admin_password_change(self, user, new_pass):
+        res = self.__cognito_client.admin_set_user_password(
+            UserPoolId=self.__pool_id,
+            Username=user,
+            Password=new_pass,
+            Permanent=True
         )
 
         return res
