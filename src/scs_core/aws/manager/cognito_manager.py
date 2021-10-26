@@ -205,14 +205,14 @@ class CognitoCredentials(object):
 
         return cls(username, password, email)
 
-    def __init__(self, username, password, admin=False, email=None):
+    def __init__(self, username, password, is_admin=False, email=None):
         """
         Constructor
         """
         self.__username = username  # string
         self.__password = password  # string
         self.__email = email  # string
-        self.__admin = bool(admin)  # string > bool
+        self.__is_admin = bool(is_admin)  # string > bool
 
     @property
     def username(self):
@@ -223,16 +223,20 @@ class CognitoCredentials(object):
         return self.__password
 
     @property
-    def admin(self):
-        return self.__admin
+    def is_admin(self):
+        return self.__is_admin
 
     @property
     def email(self):
         return self.__email
 
+    @is_admin.setter
+    def is_admin(self, value):
+        self.__is_admin = value
+
     def __str__(self, *args, **kwargs):
         return "CognitoCredentials:{username:%s, password:%s, email:%s, admin:%s}" % self.username, \
-               self.password, self.email, self.admin
+               self.password, self.email, self.is_admin
 
 
 # --------------------------------------------------------------------------------------------------------------------
