@@ -34,7 +34,7 @@ class GasModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 'vB', 'vB2', 'vE']
+    __INTERFACES = ('s1', 'vB', 'vB2', 'vE')
 
     @classmethod
     def interfaces(cls):
