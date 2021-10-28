@@ -123,6 +123,18 @@ class CognitoManager(object):
 
         return res
 
+    def make_super(self, user):
+        res = self.__cognito_client.admin_update_user_attributes(
+            UserPoolId=self.__pool_id,
+            Username=user,
+            UserAttributes=[
+                {
+                    'Name': 'custom:super',
+                    'Value': 'True'
+                }]
+        )
+        return res
+
     # ----------------------------------------------------------------------------------------------------------------
     # User functionality
     # ----------------------------------------------------------------------------------------------------------------
