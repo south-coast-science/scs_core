@@ -91,18 +91,20 @@ class Minimum(JSONable):
 
         if cmd == 'scd30_baseline':
             baseline = configuration.scd30_baseline
-            sensor_baseline = SensorBaseline(None, 0, None) if baseline is None else baseline.sensor_baseline
+            reported_baseline = None if baseline is None else baseline.sensor_baseline
 
         elif cmd == 'afe_baseline':
             baseline = AFEBaseline.null_datum() if configuration.afe_baseline is None else configuration.afe_baseline
-            sensor_baseline = baseline.sensor_baseline(configuration.afe_id.sensor_index(self.gas))
+            reported_baseline = baseline.sensor_baseline(configuration.afe_id.sensor_index(self.gas))
 
         elif cmd == 'gas_baseline':
             baseline = configuration.gas_baseline
-            sensor_baseline = SensorBaseline(None, 0, None) if baseline is None else baseline.sensor_baseline(self.gas)
+            reported_baseline = None if baseline is None else baseline.sensor_baseline(self.gas)
 
         else:
             raise ValueError(cmd)
+
+        sensor_baseline = SensorBaseline(None, 0, None) if reported_baseline is None else reported_baseline
 
         return sensor_baseline.calibrated_on is not None and sensor_baseline.calibrated_on > end
 
