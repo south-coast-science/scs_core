@@ -6,7 +6,7 @@ Created on 22 Dec 2020
 an ML model group configuration for gases inference
 
 example JSON:
-{"uds-path": "pipes/lambda-gas-model.uds", "model-interface": "vE", "model-compendium-group": "OE.g1"}
+{"uds-path": "pipes/lambda-gas-model.uds", "model-interface": "vE", "model-compendium-group": "OE21HA"}
 """
 
 from scs_core.gas.afe_calib import AFECalib
@@ -74,6 +74,9 @@ class GasModelConf(ModelConf):
             vcal_baseline = VCalBaseline.load(host, skeleton=True)
             gas_baseline = GasBaseline.load(host, skeleton=True)
             model_compendium_group = ModelCompendiumGroup.retrieve(self.model_compendium_group)
+
+            self._logger.info(vcal_baseline)
+            self._logger.info(gas_baseline)
 
             return VEGasInferenceClient.construct(socket, self.abs_uds_path(host), schedule_item, vcal_baseline,
                                                   gas_baseline, model_compendium_group)
