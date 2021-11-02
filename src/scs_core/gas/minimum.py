@@ -104,7 +104,7 @@ class Minimum(JSONable):
         else:
             raise ValueError(cmd)
 
-        sensor_baseline = SensorBaseline(None, 0, None) if reported_baseline is None else reported_baseline
+        sensor_baseline = SensorBaseline(None, 0) if reported_baseline is None else reported_baseline
 
         return sensor_baseline.calibrated_on is not None and sensor_baseline.calibrated_on > end
 
