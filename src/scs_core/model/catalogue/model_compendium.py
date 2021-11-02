@@ -130,7 +130,7 @@ class ModelCompendium(JSONCatalogueEntry):
         return True
 
 
-    def preprocess(self, datum: PathDict, offset=0):
+    def preprocess(self, datum: PathDict, offset=0, include_orig=False):
         target = PathDict()
 
         for datum_path in datum.paths():
@@ -140,7 +140,9 @@ class ModelCompendium(JSONCatalogueEntry):
             if term_path in self.primaries:
                 value, extr = self.primaries[term_path].preprocess(node, offset)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only?
+                if include_orig:
+                    target.append(datum_path + 'Orig', node)
+
                 target.append(datum_path, None if value is None else "%g" % value)
                 target.append(datum_path + 'Extr', None if value is None else "%g" % extr)
                 continue
@@ -148,7 +150,9 @@ class ModelCompendium(JSONCatalogueEntry):
             if term_path in self.secondaries:
                 value = self.secondaries[term_path].preprocess(node)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only?
+                if include_orig:
+                    target.append(datum_path + 'Orig', node)
+
                 target.append(datum_path, None if value is None else "%g" % value)
                 continue
 
