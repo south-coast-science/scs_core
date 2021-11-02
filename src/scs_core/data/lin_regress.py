@@ -9,7 +9,6 @@ https://www.w3schools.com/python/python_ml_linear_regression.asp
 """
 
 from collections import OrderedDict
-from scipy import stats
 
 from scs_core.data.json import JSONable
 
@@ -25,6 +24,8 @@ class LinRegress(JSONable):
 
     @classmethod
     def construct(cls, x, y, prec=6):
+        from scipy import stats                     # late import
+
         if len(x) != len(y):
             raise ValueError("len x (%d) is not the same as len y (%d)" % (len(x), len(y)))
 

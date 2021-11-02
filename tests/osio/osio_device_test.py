@@ -34,7 +34,7 @@ batch = ""
 org_id = "south-coast-science-dev"
 owner_id = "southcoastscience-dev"
 
-tags = ['temperature', 'humidity', 'NO', 'NO2', 'CO', 'O3', 'PM1', 'PM2.5', 'PM10']
+tags = ('temperature', 'humidity', 'NO', 'NO2', 'CO', 'O3', 'PM1', 'PM2.5', 'PM10')
 
 
 # --------------------------------------------------------------------------------------------------------------------

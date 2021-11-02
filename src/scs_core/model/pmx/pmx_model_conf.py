@@ -27,7 +27,7 @@ class PMxModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1', 's2']
+    __INTERFACES = ('s1', 's2')
 
     @classmethod
     def interfaces(cls):

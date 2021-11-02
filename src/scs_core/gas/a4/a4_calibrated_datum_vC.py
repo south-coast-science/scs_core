@@ -17,7 +17,6 @@ from scs_core.gas.a4.a4_datum import A4Datum
 
 
 # TODO: return to this modelling technique using calib-age, when we have a wider range of calib-age training data?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class A4Calibrator(object):
