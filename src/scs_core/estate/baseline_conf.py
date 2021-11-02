@@ -31,7 +31,7 @@ class BaselineConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __SUPPORTED_GASES = ('CO', 'CO2', 'H2S', 'NO', 'NO2', 'Ox', 'SO2')
+    __SUPPORTED_GASES = ('CO', 'CO2', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOC', 'VOCe')
 
     @classmethod
     def supported_gases(cls):

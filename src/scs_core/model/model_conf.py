@@ -13,6 +13,8 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +61,8 @@ class ModelConf(ABC, PersistentJSONable):
         self.__uds_path = uds_path                                      # string
         self.__model_interface = model_interface                        # string
         self.__model_compendium_group = model_compendium_group          # string
+
+        self._logger = Logging.getLogger()
 
 
     def __eq__(self, other):

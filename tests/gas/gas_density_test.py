@@ -13,7 +13,7 @@ from scs_core.gas.gas import Gas
 
 # --------------------------------------------------------------------------------------------------------------------
 
-gases = ['CO', 'CO2', 'NO', 'NO2', 'O3', 'SO2']
+gases = ('CO', 'CO2', 'NO', 'NO2', 'O3', 'SO2')
 
 for gas in gases:
     print("gas: %s conc: 1 ppb..." % gas)
