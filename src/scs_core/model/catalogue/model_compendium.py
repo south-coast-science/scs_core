@@ -23,13 +23,15 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONCatalogueEntry
+from scs_core.data.json import JSONCatalogueEntry, JSONify
 from scs_core.data.lin_regress import LinRegress
 from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.model.catalogue.term import Term, PrimaryTerm, SecondaryTerm
 from scs_core.model.catalogue.training_period import TrainingPeriod
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -112,6 +114,8 @@ class ModelCompendium(JSONCatalogueEntry):
 
         self.__performance = performance            # LinRegress
 
+        self.__logger = Logging.getLogger()
+
 
     def __len__(self):
         return len(self.performance)
@@ -157,6 +161,9 @@ class ModelCompendium(JSONCatalogueEntry):
                 continue
 
             target.append(datum_path, node)
+
+        self.__logger.info("datum: %s" % JSONify.dumps(datum))
+        self.__logger.info("target: %s" % JSONify.dumps(target))
 
         return target
 
