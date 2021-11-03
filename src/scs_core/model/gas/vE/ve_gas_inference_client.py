@@ -81,6 +81,9 @@ class VEGasInferenceClient(GasInferenceClient):
         self._uds_client.request(JSONify.dumps(preprocessed))
         response = PathDict(json.loads(self._uds_client.wait_for_response()))
 
+        if not response:
+            self.__logger.error("inference rejected: %s" % JSONify.dumps(gas_sample))
+
         # postprocess...
         exg = self.__model_compendium_group.postprocess(preprocessed, response)
 
@@ -91,7 +94,7 @@ class VEGasInferenceClient(GasInferenceClient):
             report.append('ver', response.node('ver'))
             report.append('exg', exg)
 
-        # TODO: apply gas baseline (or adjust vCal baseline)?
+        # TODO: apply gas baseline?
 
         return report.dictionary
 

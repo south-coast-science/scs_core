@@ -99,7 +99,9 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
             for primary in compendium.primaries:
                 corrected_exg = round(compendium.postprocess(primary, vcal_excess, model_output), 1)
-                self.__logger.error("%s model:%s corrected:%s" % (gas, model_output, corrected_exg))
+
+                self.__logger.debug("postprocess - %s model_output: %s vcal_excess: %s corrected_exg: %s" %
+                                    (gas, model_output, vcal_excess, corrected_exg))
 
                 response.append(model_output_path, corrected_exg)
 

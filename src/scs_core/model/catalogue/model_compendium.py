@@ -162,8 +162,8 @@ class ModelCompendium(JSONCatalogueEntry):
 
             target.append(datum_path, node)
 
-        self.__logger.info("datum: %s" % JSONify.dumps(datum))
-        self.__logger.info("target: %s" % JSONify.dumps(target))
+        self.__logger.debug("preprocess - datum: %s" % JSONify.dumps(datum))
+        self.__logger.debug("preprocess - target: %s" % JSONify.dumps(target))
 
         return target
 
