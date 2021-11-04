@@ -85,8 +85,8 @@ class Baseline(PersistentJSONable, ABC):
         return self.__sensor_baselines.keys()
 
 
-    def offsets(self, gases):
-        return {gas: self.sensor_offset(gas) for gas in gases}
+    def offsets(self, gases=None):
+        return {gas: self.sensor_offset(gas) for gas in (self.gases() if gases is None else gases)}
 
 
     def sensor_offset(self, gas):

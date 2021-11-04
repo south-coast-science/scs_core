@@ -85,17 +85,20 @@ class VEGasInferenceClient(GasInferenceClient):
             self.__logger.error("inference rejected: %s" % JSONify.dumps(gas_sample))
 
         # postprocess...
-        exg = self.__model_compendium_group.postprocess(preprocessed, response)
+        exg = PathDict(self.__model_compendium_group.postprocess(preprocessed, response))
 
-        # self.__logger.error("exg: %s" % exg)
-        # TODO: apply gas baseline?
+        # gas baseline...
+        for gas, offset in self.__gas_baseline.offsets().items():
+            path = '.'.join(('val', gas, 'cnc'))
+            baselined_cnc = round(float(exg.node(sub_path=path)) + offset, 1)
+            exg.append(path, round(baselined_cnc, 1))
 
         # report...
-        report = PathDict(request.node('sample'))           # discard any changes made in preprocessing
+        report = PathDict(request.node(sub_path='sample'))              # discard any changes made in preprocessing
 
         if exg is not None:
-            report.append('ver', response.node('ver'))
-            report.append('exg', exg)
+            report.append('ver', response.node(sub_path='ver'))
+            report.append('exg', exg.node())
 
         return report.dictionary
 
