@@ -87,14 +87,15 @@ class VEGasInferenceClient(GasInferenceClient):
         # postprocess...
         exg = self.__model_compendium_group.postprocess(preprocessed, response)
 
+        # self.__logger.error("exg: %s" % exg)
+        # TODO: apply gas baseline?
+
         # report...
         report = PathDict(request.node('sample'))           # discard any changes made in preprocessing
 
         if exg is not None:
             report.append('ver', response.node('ver'))
             report.append('exg', exg)
-
-        # TODO: apply gas baseline?
 
         return report.dictionary
 
