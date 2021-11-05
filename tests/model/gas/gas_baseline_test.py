@@ -39,5 +39,5 @@ baselines = GasBaseline.construct_from_jdict(json.loads(jstr))
 print(baselines)
 print("-")
 
-offsets = baselines.offsets(['CO', 'NO2', 'SO2'])
+offsets = baselines.offsets(gases=['CO', 'NO2', 'SO2'])
 print(offsets)
