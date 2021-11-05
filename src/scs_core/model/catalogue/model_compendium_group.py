@@ -83,7 +83,7 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
 
     def postprocess(self, preprocessed: PathDict, response: PathDict):
-        if not response.has_sub_path('exg'):
+        if not response.has_sub_path(sub_path='exg'):
             return None
 
         for gas, compendium in self.__compendia.items():
