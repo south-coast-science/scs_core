@@ -28,7 +28,7 @@ class A4Calibrator(object):
     classdocs
     """
 
-    __CALIBRATED_GASES = ['CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe']
+    __CALIBRATED_GASES = ('CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe')
 
     @classmethod
     def calibrated_gases(cls):

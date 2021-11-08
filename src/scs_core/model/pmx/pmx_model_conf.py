@@ -27,7 +27,7 @@ class PMxModelConf(ModelConf):
         return cls.conf_dir(), cls.__FILENAME
 
 
-    __INTERFACES = ['s1']
+    __INTERFACES = ('s1', 's2')
 
     @classmethod
     def interfaces(cls):
@@ -46,7 +46,7 @@ class PMxModelConf(ModelConf):
     # ----------------------------------------------------------------------------------------------------------------
 
     def client(self, host, socket) -> PMxInferenceClient:
-        if self.model_interface == 's1':
+        if self.model_interface == 's1' or self.model_interface == 's2':
             from scs_core.model.pmx.s1.s1_pmx_inference_client import S1PMxInferenceClient
 
             return S1PMxInferenceClient.construct(socket, self.abs_uds_path(host))
