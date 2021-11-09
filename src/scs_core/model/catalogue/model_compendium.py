@@ -23,13 +23,15 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONCatalogueEntry
+from scs_core.data.json import JSONCatalogueEntry, JSONify
 from scs_core.data.lin_regress import LinRegress
 from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.model.catalogue.term import Term, PrimaryTerm, SecondaryTerm
 from scs_core.model.catalogue.training_period import TrainingPeriod
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -112,6 +114,8 @@ class ModelCompendium(JSONCatalogueEntry):
 
         self.__performance = performance            # LinRegress
 
+        self.__logger = Logging.getLogger()
+
 
     def __len__(self):
         return len(self.performance)
@@ -130,7 +134,7 @@ class ModelCompendium(JSONCatalogueEntry):
         return True
 
 
-    def preprocess(self, datum: PathDict, offset=0):
+    def preprocess(self, datum: PathDict, offset=0, include_orig=False):
         target = PathDict()
 
         for datum_path in datum.paths():
@@ -140,7 +144,9 @@ class ModelCompendium(JSONCatalogueEntry):
             if term_path in self.primaries:
                 value, extr = self.primaries[term_path].preprocess(node, offset)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only?
+                if include_orig:
+                    target.append(datum_path + 'Orig', node)
+
                 target.append(datum_path, None if value is None else "%g" % value)
                 target.append(datum_path + 'Extr', None if value is None else "%g" % extr)
                 continue
@@ -148,11 +154,16 @@ class ModelCompendium(JSONCatalogueEntry):
             if term_path in self.secondaries:
                 value = self.secondaries[term_path].preprocess(node)
 
-                target.append(datum_path + 'Orig', node)                            # batch  mode only?
+                if include_orig:
+                    target.append(datum_path + 'Orig', node)
+
                 target.append(datum_path, None if value is None else "%g" % value)
                 continue
 
             target.append(datum_path, node)
+
+        self.__logger.debug("preprocess - datum: %s" % JSONify.dumps(datum))
+        self.__logger.debug("preprocess - target: %s" % JSONify.dumps(target))
 
         return target
 

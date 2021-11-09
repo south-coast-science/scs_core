@@ -36,8 +36,8 @@ class GasesSample(Sample):
 
     VERSION = 1.0
 
-    __NON_ELECTROCHEM_FIELDS = ['pt1', 'sht', 'CO2', 'VOC', 'VOCe']
-    __VOC_FIELDS = ['VOC', 'VOCe']
+    __NON_ELECTROCHEM_FIELDS = ('pt1', 'sht', 'CO2', 'VOC', 'VOCe')
+    __VOC_FIELDS = ('VOC', 'VOCe')
 
     # ----------------------------------------------------------------------------------------------------------------
 

@@ -20,7 +20,6 @@ from scs_core.sync.schedule import ScheduleItem
 from scs_core.sys.logging import Logging
 
 
-# TODO: WARNING! offsets should be added, not subtracted!!
 # --------------------------------------------------------------------------------------------------------------------
 
 class VEGasInferenceClient(GasInferenceClient):
@@ -76,21 +75,33 @@ class VEGasInferenceClient(GasInferenceClient):
 
         # preprocess...
         request = PathDict(GasRequest(gas_sample, t_slope, rh_slope, board_temp).as_json())
+        sample = request.node(sub_path='sample')
+
         preprocessed = self.__model_compendium_group.preprocess(request, self.__vcal_baseline)
 
         # infer...
         self._uds_client.request(JSONify.dumps(preprocessed))
         response = PathDict(json.loads(self._uds_client.wait_for_response()))
 
+        if not response:
+            self.__logger.error("request rejected: %s" % JSONify.dumps(gas_sample))
+            return sample
+
         # postprocess...
-        exg = self.__model_compendium_group.postprocess(preprocessed, response)
+        exg = PathDict(self.__model_compendium_group.postprocess(preprocessed, response))
+
+        # gas baseline...
+        for gas, offset in self.__gas_baseline.offsets().items():
+            path = '.'.join(('val', gas, 'cnc'))
+            baselined_cnc = round(float(exg.node(sub_path=path)) + offset, 1)
+            exg.append(path, round(baselined_cnc, 1))
 
         # report...
-        report = PathDict(request.node('sample'))
-        report.append('ver', response.node('ver'))
-        report.append('exg', exg)
+        report = PathDict(sample)                       # discard any changes made in preprocessing
 
-        # TODO: apply gas baseline (or adjust vCal baseline)?
+        if exg is not None:
+            report.append('ver', response.node(sub_path='ver'))
+            report.append('exg', exg.node())
 
         return report.dictionary
 

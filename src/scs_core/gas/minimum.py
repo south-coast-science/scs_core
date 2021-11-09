@@ -33,6 +33,8 @@ class Minimum(JSONable):
     classdocs
     """
 
+    FIELD_SELECTIONS = {'V': 'val.', 'E': 'exg.'}           # Val (model input) or Exg (model output)
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -41,12 +43,17 @@ class Minimum(JSONable):
 
 
     @classmethod
-    def find_minimums(cls, data):
+    def find_minimums(cls, data, field_selection):
         if not data:
             return []
 
-        minimums = {path: None for path in PathDict(data[0]).paths() if path.endswith(".cnc")}
+        # minimums...
+        field_group = cls.FIELD_SELECTIONS[field_selection]
 
+        minimums = {path: None for path in PathDict(data[0]).paths()
+                    if path.startswith(field_group) and (path.endswith('.cnc') or path.endswith('.vCal'))}
+
+        # data...
         for i in range(len(data)):
             datum = PathDict(data[i])
 
@@ -91,18 +98,24 @@ class Minimum(JSONable):
 
         if cmd == 'scd30_baseline':
             baseline = configuration.scd30_baseline
-            sensor_baseline = SensorBaseline(None, 0, None) if baseline is None else baseline.sensor_baseline
+            reported_baseline = None if baseline is None else baseline.sensor_baseline
 
         elif cmd == 'afe_baseline':
             baseline = AFEBaseline.null_datum() if configuration.afe_baseline is None else configuration.afe_baseline
-            sensor_baseline = baseline.sensor_baseline(configuration.afe_id.sensor_index(self.gas))
+            reported_baseline = baseline.sensor_baseline(configuration.afe_id.sensor_index(self.gas))
+
+        elif cmd == 'vcal_baseline':
+            baseline = configuration.vcal_baseline
+            reported_baseline = None if baseline is None else baseline.sensor_baseline(self.gas)
 
         elif cmd == 'gas_baseline':
             baseline = configuration.gas_baseline
-            sensor_baseline = SensorBaseline(None, 0, None) if baseline is None else baseline.sensor_baseline(self.gas)
+            reported_baseline = None if baseline is None else baseline.sensor_baseline(self.gas)
 
         else:
             raise ValueError(cmd)
+
+        sensor_baseline = SensorBaseline(None, 0) if reported_baseline is None else reported_baseline
 
         return sensor_baseline.calibrated_on is not None and sensor_baseline.calibrated_on > end
 
@@ -118,8 +131,11 @@ class Minimum(JSONable):
         if self.gas == 'CO2':
             return 'scd30_baseline'
 
-        if self.source == 'val':
+        if self.source == 'val' and self.interpretation == 'cnc':
             return 'afe_baseline'
+
+        if self.source == 'val' and self.interpretation == 'vCal':
+            return 'vcal_baseline'
 
         if self.source == 'exg':
             return 'gas_baseline'
@@ -132,6 +148,11 @@ class Minimum(JSONable):
     @property
     def source(self):
         return self.__path.split('.')[0]
+
+
+    @property
+    def interpretation(self):
+        return self.__path.split('.')[-1]
 
 
     @property
