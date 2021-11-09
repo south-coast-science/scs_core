@@ -41,7 +41,7 @@ class ModelConf(ABC, PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return None
+            return cls(None, None)
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
