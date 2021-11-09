@@ -22,10 +22,11 @@ class Organisation(object):
     """
     __TABLE_NAME = 'organisations'
 
-    ORG_ID = 'org_id'
-    ORG_NAME = 'org_name'
-    ORG_ADMIN = 'org_admin'
-    ORG_URL = 'url'
+    ORG_ID = 'OrganisationID'
+    ORG_NAME = 'OrganisationURL'
+    ORG_OWNER = 'OrganisationOwner'
+    ORG_ADMIN = 'OrganisationAdmin'
+    ORG_URL = 'OrganisationURL'
 
     @classmethod
     def construct_from_request(cls, body):
@@ -35,24 +36,38 @@ class Organisation(object):
         jdict = json.loads(body)
 
         name = jdict[cls.ORG_NAME]
-        admin = jdict[cls.ORG_ADMIN]
+        owner = jdict[cls.ORG_OWNER]
         url = jdict[cls.ORG_URL]
 
-        return cls(0, name, admin, url)
+        return cls(0, name, owner, url)
+
+    @classmethod
+    def retrieve_from_request(cls, body):
+        if not body:
+            return None
+
+        jdict = json.loads(body)
+
+        id = jdict[cls.ORG_ID]
+        name = jdict[cls.ORG_NAME]
+        owner = jdict[cls.ORG_OWNER]
+        url = jdict[cls.ORG_URL]
+
+        return cls(id, name, owner, url)
 
 
-    def __init__(self, id, name, admin, url):
+    def __init__(self, id, name, owner, url):
         """
         Constructor
         """
         self.__id = id  # int
         self.__name = name  # string
-        self.__admin = admin  # string
+        self.__owner = owner  # string
         self.__url = url  # string
 
     def add_org(self):
-        q = """INSERT INTO Organisations (OrganisationName, OrganisationAdmin, OrganisationURL)
-        VALUES('%s', '%s', '%s');""" % (self.__name, self.__admin, self.__url)
+        q = """INSERT INTO Organisations (OrganisationName, OrganisationOwner, OrganisationURL)
+        VALUES('%s', '%s', '%s');""" % (self.__name, self.__owner, self.__url)
 
         return q
 
@@ -60,6 +75,7 @@ class Organisation(object):
         q = """SELECT * FROM Organisations WHERE OrganisationName ='%s';""" % self.__name
 
         return q
+
 
 
     @property
@@ -71,23 +87,23 @@ class Organisation(object):
         return self.__name
 
     @property
-    def admin(self):
-        return self.__admin
+    def owner(self):
+        return self.__owner
 
     @property
     def url(self):
         return self.__url
 
-    @admin.setter
-    def admin(self, value):
-        self.__admin = value
+    @owner.setter
+    def owner(self, value):
+        self.__owner = value
 
     @staticmethod
     def create_table():
         q = """CREATE TABLE IF NOT EXISTS Organisations (
             OrganisationID int NOT NULL AUTO_INCREMENT,
             OrganisationName varchar(255),
-            OrganisationAdmin varchar(255),
+            OrganisationOwner varchar(255),
             OrganisationURL varchar(255),
             PRIMARY KEY (OrganisationID)
         );"""
@@ -99,7 +115,34 @@ class Organisation(object):
         q = """DROP TABLE  Organisations;"""
         return q
 
+    @staticmethod
+    def create_org_admin_table():
+        q = """CREATE TABLE IF NOT EXISTS OrgAdmins (
+            OrganisationID int NOT NULL,
+            OrganisationAdmin varchar(255)
+        );"""
+
+        return q
+
+
+    @staticmethod
+    def drop_org_admin_table():
+        q = """DROP TABLE  OrgAdmins;"""
+        return q
+
+    @staticmethod
+    def get_org_by_name(name):
+        q = """SELECT * FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
+    @staticmethod
+    def get_admin_org(name):
+        q = """SELECT OrganisationOwner FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Organisation:{id:%s, name:%s, admin:%s, url:%s}" % (self.id, self.name, self.admin, self.url)
+        return "Organisation:{id:%s, name:%s, admin:%s, url:%s}" % (self.id, self.name, self.owner, self.url)

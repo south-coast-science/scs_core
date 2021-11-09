@@ -135,6 +135,16 @@ class CognitoManager(object):
         )
         return res
 
+    def is_super(self, user):
+        b_is_admin = False
+        x = self.get_user_information(user)
+        for item in x["UserAttributes"]:
+            if item["Name"] == "custom:super":
+                b_is_admin = item["Value"]
+                break
+
+        return b_is_admin
+
     # ----------------------------------------------------------------------------------------------------------------
     # User functionality
     # ----------------------------------------------------------------------------------------------------------------
