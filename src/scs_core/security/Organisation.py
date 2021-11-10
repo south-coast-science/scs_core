@@ -166,6 +166,18 @@ class Organisation(object):
         q = """SELECT OrganisationAdmin FROM OrgAdmins WHERE OrganisationId ='%s';""" % org_id
 
         return q
+
+    @staticmethod
+    def edit_url(new_url, org_id):
+        q = """UPDATE Organisations SET OrganisationURL = '%s' WHERE OrganisationId ='%s';""" \
+            % (new_url, org_id)
+        return q
+
+    @staticmethod
+    def edit_owner(new_owner, org_id):
+        q = """UPDATE Organisations SET OrganisationOwner = '%s' WHERE OrganisationId ='%s';""" \
+            % (new_owner, org_id)
+        return q
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
