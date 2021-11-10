@@ -123,9 +123,22 @@ class Minimum(JSONable):
     def cmd_tokens(self, conf_minimums):
         cmd = self.__cmd()
 
-        return [cmd, '-vc', conf_minimums[self.gas], self.value] if cmd == 'scd30_baseline' else \
-            [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+        if cmd == 'scd30_baseline':
+            return [cmd, '-vc', conf_minimums[self.gas], self.value]
 
+        if cmd == 'afe_baseline':
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+
+        if cmd == 'vcal_baseline':
+            return [cmd, '-vs', self.gas, conf_minimums[self.gas] - self.value]     # vCal does not hold its correction
+
+        if cmd == 'gas_baseline':
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+
+        raise ValueError(cmd)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def __cmd(self):
         if self.gas == 'CO2':
