@@ -77,7 +77,6 @@ class Organisation(object):
         return q
 
 
-
     @property
     def id(self):
         return self.__id
@@ -102,7 +101,7 @@ class Organisation(object):
     def create_table():
         q = """CREATE TABLE IF NOT EXISTS Organisations (
             OrganisationID int NOT NULL AUTO_INCREMENT,
-            OrganisationName varchar(255),
+            OrganisationName varchar(255) UNIQUE NOT NULL,
             OrganisationOwner varchar(255),
             OrganisationURL varchar(255),
             PRIMARY KEY (OrganisationID)
@@ -137,11 +136,36 @@ class Organisation(object):
         return q
 
     @staticmethod
-    def get_admin_org(name):
+    def get_org_owner(name):
         q = """SELECT OrganisationOwner FROM Organisations WHERE OrganisationName ='%s';""" % name
 
         return q
 
+    @staticmethod
+    def get_org_id_by_name(name):
+        q = """SELECT OrganisationID FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
+    @staticmethod
+    def add_admin(admin_email, org_id):
+        q = """INSERT INTO OrgAdmins (OrganisationID, OrganisationAdmin)
+        VALUES('%s', '%s');""" % (org_id, admin_email)
+
+        return q
+
+    @staticmethod
+    def remove_admin(admin_email, org_id):
+        q = """DELETE FROM OrgAdmins WHERE OrganisationID = '%s' AND OrganisationAdmin = '%s';""" \
+            % (org_id, admin_email)
+
+        return q
+
+    @staticmethod
+    def get_org_admins(org_id):
+        q = """SELECT OrganisationAdmin FROM OrgAdmins WHERE OrganisationId ='%s';""" % org_id
+
+        return q
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

@@ -9,14 +9,13 @@ A single manager for all required cognito related functions.
 
 """
 # --------------------------------------------------------------------------------------------------------------------
-
+import ast
 import base64
 import hashlib
 import hmac
-
+import json
 
 # --------------------------------------------------------------------------------------------------------------------
-import json
 
 
 class CognitoManager(object):
@@ -143,7 +142,7 @@ class CognitoManager(object):
                 b_is_admin = item["Value"]
                 break
 
-        return b_is_admin
+        return ast.literal_eval(b_is_admin)
 
     # ----------------------------------------------------------------------------------------------------------------
     # User functionality
