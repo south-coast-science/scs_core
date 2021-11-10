@@ -14,6 +14,7 @@ import json
 
 
 # --------------------------------------------------------------------------------------------------------------------
+import os
 
 
 class Organisation(object):
@@ -23,10 +24,23 @@ class Organisation(object):
     __TABLE_NAME = 'organisations'
 
     ORG_ID = 'OrganisationID'
-    ORG_NAME = 'OrganisationURL'
+    ORG_NAME = 'OrganisationName'
     ORG_OWNER = 'OrganisationOwner'
     ORG_ADMIN = 'OrganisationAdmin'
     ORG_URL = 'OrganisationURL'
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        id = jdict[cls.ORG_ID]
+        name = jdict[cls.ORG_NAME]
+        owner = jdict[cls.ORG_OWNER]
+        url = jdict[cls.ORG_URL]
+
+        return cls(id, name, owner, url)
+
 
     @classmethod
     def construct_from_request(cls, body):
@@ -76,6 +90,16 @@ class Organisation(object):
 
         return q
 
+    def construct_join_email(self, creds):
+        filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', 'request.txt')
+        f = open(filepath, "r")
+        message = f.read()
+
+        message = (message.replace("USERNAME", creds.username))
+        message = (message.replace("REQUESTEE_EMAIL", creds.email))
+        message = (message.replace("ORGANISATION_NAME", self.name))
+
+        return message
 
     @property
     def id(self):
@@ -162,10 +186,11 @@ class Organisation(object):
         return q
 
     @staticmethod
-    def get_org_admins(org_id):
+    def get_org_admins_by_id(org_id):
         q = """SELECT OrganisationAdmin FROM OrgAdmins WHERE OrganisationId ='%s';""" % org_id
 
         return q
+
 
     @staticmethod
     def edit_url(new_url, org_id):

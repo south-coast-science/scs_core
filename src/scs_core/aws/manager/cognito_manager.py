@@ -16,6 +16,7 @@ import hmac
 import json
 
 # --------------------------------------------------------------------------------------------------------------------
+import logging
 
 
 class CognitoManager(object):
@@ -220,11 +221,12 @@ class CognitoCredentials(object):
             return None
 
         data = event["requestContext"]["authorizer"]["claims"]
+        logging.warning(data)
         username = data[cls.EVENT_USER]
         password = None
         email = data[cls.EVENT_EMAIL]
 
-        return cls(username, password, email)
+        return cls(username, password, False, email)
 
     def __init__(self, username, password, is_admin=False, email=None):
         """
