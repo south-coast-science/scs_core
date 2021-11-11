@@ -9,14 +9,14 @@ A single manager for all required cognito related functions.
 
 """
 # --------------------------------------------------------------------------------------------------------------------
-
+import ast
 import base64
 import hashlib
 import hmac
-
+import json
 
 # --------------------------------------------------------------------------------------------------------------------
-import json
+import logging
 
 
 class CognitoManager(object):
@@ -135,6 +135,16 @@ class CognitoManager(object):
         )
         return res
 
+    def is_super(self, user):
+        b_is_admin = False
+        x = self.get_user_information(user)
+        for item in x["UserAttributes"]:
+            if item["Name"] == "custom:super":
+                b_is_admin = item["Value"]
+                break
+
+        return ast.literal_eval(b_is_admin)
+
     # ----------------------------------------------------------------------------------------------------------------
     # User functionality
     # ----------------------------------------------------------------------------------------------------------------
@@ -211,11 +221,12 @@ class CognitoCredentials(object):
             return None
 
         data = event["requestContext"]["authorizer"]["claims"]
+        logging.warning(data)
         username = data[cls.EVENT_USER]
         password = None
         email = data[cls.EVENT_EMAIL]
 
-        return cls(username, password, email)
+        return cls(username, password, False, email)
 
     def __init__(self, username, password, is_admin=False, email=None):
         """
