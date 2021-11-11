@@ -88,7 +88,7 @@
                         }
                     ],
                     "Variables": {
-                            "MODEL_NAME": "vB20"
+                            "MODEL_NAME": "UE20HB"
                     }
                 },
                 "Executable": "lambda_function.lambda_handler",

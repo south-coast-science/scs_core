@@ -13,22 +13,26 @@ from scs_core.aws.greengrass.aws_group_configuration import AWSGroupConfiguratio
 
 # --------------------------------------------------------------------------------------------------------------------
 
-confs = AWSGroupConfiguration.list()
-print(confs)
+templates = AWSGroupConfiguration.templates()
+print(templates)
 
-jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z","unix-group": 987, "ml": true}'
+# old style...
 
-conf = AWSGroupConfiguration.construct_from_jdict(json.loads(jstr))
-print(conf)
-print("-")
-
-jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z","unix-group": 987, "ml": false}'
+jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z", "unix-group": 987, "ml": true}'
 
 conf = AWSGroupConfiguration.construct_from_jdict(json.loads(jstr))
 print(conf)
 print("-")
 
-jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z","unix-group": 987, "ml": "oE"}'
+jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z", "unix-group": 987, "ml": false}'
+
+conf = AWSGroupConfiguration.construct_from_jdict(json.loads(jstr))
+print(conf)
+print("-")
+
+# new style...
+
+jstr = '{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z", "unix-group": 987, "ml": "oE1"}'
 
 conf = AWSGroupConfiguration.construct_from_jdict(json.loads(jstr))
 print(conf)

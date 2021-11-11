@@ -3,8 +3,11 @@ Created on 21 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-DESCRIPTION The aws_group_configurator is a class used by aws_group_setup to collate information and make requests to
+The aws_group_configurator is a class used by aws_group_setup to collate information and make requests to
 the amazon greengrass API. It is dependent on aws_json_reader to collect information.
+
+example document
+{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z", "unix-group": 987, "ml": "oE1"}
 """
 
 import grp
@@ -31,7 +34,7 @@ class AWSGroupConfiguration(PersistentJSONable):
     """
     classdocs
     """
-    __CATALOGUE_NAME = 'configurations'
+    __CATALOGUE_NAME = 'templates'
 
     @classmethod
     def catalogue_location(cls):
@@ -39,7 +42,7 @@ class AWSGroupConfiguration(PersistentJSONable):
 
 
     @classmethod
-    def list(cls):
+    def templates(cls):
         return [item for item in sorted(os.listdir(cls.catalogue_location()))]
 
 
@@ -78,7 +81,7 @@ class AWSGroupConfiguration(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, group_name, init_time, unix_group=None, ml=False):
+    def __init__(self, group_name, init_time, unix_group=None, ml='m0'):
         """
         Constructor
         """
