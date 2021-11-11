@@ -88,7 +88,7 @@
                         }
                     ],
                     "Variables": {
-                            "MODEL_NAME": "OE21HA"
+                            "MODEL_NAME": "uE.1"
                     }
                 },
                 "Executable": "lambda_function.lambda_handler",

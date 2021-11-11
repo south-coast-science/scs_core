@@ -74,7 +74,7 @@ class AWSGroupConfiguration(PersistentJSONable):
         unix_group = jdict.get('unix-group')
 
         if isinstance(ml, bool):
-            ml = 'vB' if ml else 'm0'
+            ml = 'vB.1' if ml else 'm0'
 
         return cls(group_name, init_time, unix_group=unix_group, ml=ml)
 

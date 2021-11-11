@@ -51,8 +51,8 @@
                 "Name": "ML-NO2",
                 "ResourceDataContainer": {
                     "S3MachineLearningModelResourceData": {
-                        "DestinationPath": "/trained-models/UE20HB/NO2",
-                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/NO2-vE-Urban-20HB-xgboost-2021-11-08.tar.gz"
+                        "DestinationPath": "/trained-models/oE.1/NO2",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/NO2-vE-OPCube-21HA-xgboost-2021-10-14.tar.gz"
                     }
                 }
             }

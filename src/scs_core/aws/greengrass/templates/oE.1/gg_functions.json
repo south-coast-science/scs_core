@@ -88,7 +88,7 @@
                         }
                     ],
                     "Variables": {
-                            "MODEL_NAME": "UE20HB"
+                            "MODEL_NAME": "oE.1"
                     }
                 },
                 "Executable": "lambda_function.lambda_handler",
