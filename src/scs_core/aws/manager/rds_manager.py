@@ -9,6 +9,8 @@ https://johnkeefe.net/amazon-aurora-mysql-plus-python
 
 https://stackoverflow.com/questions/59742083/passing-in-iam-credentials-when-using-the-aurora-serverless-data-api
 
+https://github.com/cal-poly-dxhub/covid-dashboard/blob/1d4d3f9abe82e84c22d294642e733b5bfffb2780/lambda/utility.py
+
 """
 # --------------------------------------------------------------------------------------------------------------------
 import ast
@@ -34,7 +36,7 @@ class RDSManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def execute_query(self, q):
+    def execute_query_raw(self, q):
         res = self.__rds_client.execute_statement(
             secretArn=self.__secretArn,
             database=self.__database,
@@ -43,6 +45,26 @@ class RDSManager(object):
         )
         logging.info(res)
         return res
+
+    def execute_query_mapped(self, q):
+        res = self.__rds_client.execute_statement(
+            includeResultMetadata=True,
+            secretArn=self.__secretArn,
+            database=self.__database,
+            resourceArn=self.__resourceArn,
+            sql=q
+        )
+        return self.generate_map_from_response(res)
+
+    @staticmethod
+    def generate_map_from_response(response):
+        response_set = []
+        obj = {}
+        for record in response['records']:
+            for i in range(len(record)):
+                obj[response['columnMetadata'][i]['label']] = list(record[i].values())[0]
+            response_set.append(obj.copy())
+        return response_set
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -60,8 +82,8 @@ class RDSLambdaManager(object):
 
     def get_raw_response(self, q, user):
         event = {
-            "q": q,
-            "user": user
+            "query": q,
+            "username": user
         }
         payload = json.dumps(event).encode('utf-8')
 
@@ -91,7 +113,7 @@ class RDSLambdaManager(object):
         logging.info(jdict)
         if type(jdict) is str:
             return None
-        return jdict["records"]
+        return jdict
 
     def do_query(self, q, user):
         event = {
@@ -105,3 +127,19 @@ class RDSLambdaManager(object):
             InvocationType='RequestResponse',
             Payload=payload
         )
+
+
+    """
+    TODO: Could this be made more efficient, maybe by getting one row with raw metadata to do the 
+    mapping and the rest without? Is there any guarantee all calls are extracted in the same order???
+    """
+
+    @staticmethod
+    def do_mapping(response):
+        response_set = []
+        obj = {}
+        for record in response['records']:
+            for i in range(len(record)):
+                obj[response['columnMetadata'][i]['label']] = list(record[i].values())[0]
+            response_set.append(obj.copy())
+        return response_set

@@ -14,6 +14,7 @@ import json
 
 
 # --------------------------------------------------------------------------------------------------------------------
+import os
 
 
 class Organisation(object):
@@ -22,10 +23,24 @@ class Organisation(object):
     """
     __TABLE_NAME = 'organisations'
 
-    ORG_ID = 'org_id'
-    ORG_NAME = 'org_name'
-    ORG_ADMIN = 'org_admin'
-    ORG_URL = 'url'
+    ORG_ID = 'OrganisationID'
+    ORG_NAME = 'OrganisationName'
+    ORG_OWNER = 'OrganisationOwner'
+    ORG_ADMIN = 'OrganisationAdmin'
+    ORG_URL = 'OrganisationURL'
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        id = jdict[cls.ORG_ID]
+        name = jdict[cls.ORG_NAME]
+        owner = jdict[cls.ORG_OWNER]
+        url = jdict[cls.ORG_URL]
+
+        return cls(id, name, owner, url)
+
 
     @classmethod
     def construct_from_request(cls, body):
@@ -35,24 +50,38 @@ class Organisation(object):
         jdict = json.loads(body)
 
         name = jdict[cls.ORG_NAME]
-        admin = jdict[cls.ORG_ADMIN]
+        owner = jdict[cls.ORG_OWNER]
         url = jdict[cls.ORG_URL]
 
-        return cls(0, name, admin, url)
+        return cls(0, name, owner, url)
+
+    @classmethod
+    def retrieve_from_request(cls, body):
+        if not body:
+            return None
+
+        jdict = json.loads(body)
+
+        id = jdict[cls.ORG_ID]
+        name = jdict[cls.ORG_NAME]
+        owner = jdict[cls.ORG_OWNER]
+        url = jdict[cls.ORG_URL]
+
+        return cls(id, name, owner, url)
 
 
-    def __init__(self, id, name, admin, url):
+    def __init__(self, id, name, owner, url):
         """
         Constructor
         """
         self.__id = id  # int
         self.__name = name  # string
-        self.__admin = admin  # string
+        self.__owner = owner  # string
         self.__url = url  # string
 
     def add_org(self):
-        q = """INSERT INTO Organisations (OrganisationName, OrganisationAdmin, OrganisationURL)
-        VALUES('%s', '%s', '%s');""" % (self.__name, self.__admin, self.__url)
+        q = """INSERT INTO Organisations (OrganisationName, OrganisationOwner, OrganisationURL)
+        VALUES('%s', '%s', '%s');""" % (self.__name, self.__owner, self.__url)
 
         return q
 
@@ -61,6 +90,16 @@ class Organisation(object):
 
         return q
 
+    def construct_join_email(self, creds):
+        filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'email_templates', 'request.txt')
+        f = open(filepath, "r")
+        message = f.read()
+
+        message = (message.replace("USERNAME", creds.username))
+        message = (message.replace("REQUESTEE_EMAIL", creds.email))
+        message = (message.replace("ORGANISATION_NAME", self.name))
+
+        return message
 
     @property
     def id(self):
@@ -71,23 +110,23 @@ class Organisation(object):
         return self.__name
 
     @property
-    def admin(self):
-        return self.__admin
+    def owner(self):
+        return self.__owner
 
     @property
     def url(self):
         return self.__url
 
-    @admin.setter
-    def admin(self, value):
-        self.__admin = value
+    @owner.setter
+    def owner(self, value):
+        self.__owner = value
 
     @staticmethod
     def create_table():
         q = """CREATE TABLE IF NOT EXISTS Organisations (
             OrganisationID int NOT NULL AUTO_INCREMENT,
-            OrganisationName varchar(255),
-            OrganisationAdmin varchar(255),
+            OrganisationName varchar(255) UNIQUE NOT NULL,
+            OrganisationOwner varchar(255),
             OrganisationURL varchar(255),
             PRIMARY KEY (OrganisationID)
         );"""
@@ -99,7 +138,72 @@ class Organisation(object):
         q = """DROP TABLE  Organisations;"""
         return q
 
+    @staticmethod
+    def create_org_admin_table():
+        q = """CREATE TABLE IF NOT EXISTS OrgAdmins (
+            OrganisationID int NOT NULL,
+            OrganisationAdmin varchar(255)
+        );"""
+
+        return q
+
+
+    @staticmethod
+    def drop_org_admin_table():
+        q = """DROP TABLE  OrgAdmins;"""
+        return q
+
+    @staticmethod
+    def get_org_by_name(name):
+        q = """SELECT * FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
+    @staticmethod
+    def get_org_owner(name):
+        q = """SELECT OrganisationOwner FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
+    @staticmethod
+    def get_org_id_by_name(name):
+        q = """SELECT OrganisationID FROM Organisations WHERE OrganisationName ='%s';""" % name
+
+        return q
+
+    @staticmethod
+    def add_admin(admin_email, org_id):
+        q = """INSERT INTO OrgAdmins (OrganisationID, OrganisationAdmin)
+        VALUES('%s', '%s');""" % (org_id, admin_email)
+
+        return q
+
+    @staticmethod
+    def remove_admin(admin_email, org_id):
+        q = """DELETE FROM OrgAdmins WHERE OrganisationID = '%s' AND OrganisationAdmin = '%s';""" \
+            % (org_id, admin_email)
+
+        return q
+
+    @staticmethod
+    def get_org_admins_by_id(org_id):
+        q = """SELECT OrganisationAdmin FROM OrgAdmins WHERE OrganisationId ='%s';""" % org_id
+
+        return q
+
+
+    @staticmethod
+    def edit_url(new_url, org_id):
+        q = """UPDATE Organisations SET OrganisationURL = '%s' WHERE OrganisationId ='%s';""" \
+            % (new_url, org_id)
+        return q
+
+    @staticmethod
+    def edit_owner(new_owner, org_id):
+        q = """UPDATE Organisations SET OrganisationOwner = '%s' WHERE OrganisationId ='%s';""" \
+            % (new_owner, org_id)
+        return q
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Organisation:{id:%s, name:%s, admin:%s, url:%s}" % (self.id, self.name, self.admin, self.url)
+        return "Organisation:{id:%s, name:%s, admin:%s, url:%s}" % (self.id, self.name, self.owner, self.url)

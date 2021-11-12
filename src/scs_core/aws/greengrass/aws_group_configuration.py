@@ -3,8 +3,11 @@ Created on 21 Sep 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-DESCRIPTION The aws_group_configurator is a class used by aws_group_setup to collate information and make requests to
+The aws_group_configurator is a class used by aws_group_setup to collate information and make requests to
 the amazon greengrass API. It is dependent on aws_json_reader to collect information.
+
+example document
+{"group-name": "scs-bbe-651-group", "time-initiated": "2021-09-21T13:00:31Z", "unix-group": 987, "ml": "oE1"}
 """
 
 import grp
@@ -31,6 +34,27 @@ class AWSGroupConfiguration(PersistentJSONable):
     """
     classdocs
     """
+    __CATALOGUE_NAME = 'templates'
+
+    @classmethod
+    def catalogue_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATALOGUE_NAME)
+
+
+    @classmethod
+    def templates(cls):
+        return [item for item in sorted(os.listdir(cls.catalogue_location()))]
+
+
+    @classmethod
+    def read(cls, catalogue, file):
+        abs_path = os.path.join(cls.catalogue_location(), catalogue, file)
+
+        with open(abs_path) as f:
+            return json.loads(f.read())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     __FILENAME = "aws_group_config.json"
 
@@ -49,12 +73,15 @@ class AWSGroupConfiguration(PersistentJSONable):
         ml = jdict.get('ml')
         unix_group = jdict.get('unix-group')
 
+        if isinstance(ml, bool):
+            ml = 'vB.1' if ml else 'm0'
+
         return cls(group_name, init_time, unix_group=unix_group, ml=ml)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, group_name, init_time, unix_group=None, ml=False):
+    def __init__(self, group_name, init_time, unix_group=None, ml='m0'):
         """
         Constructor
         """
@@ -70,7 +97,7 @@ class AWSGroupConfiguration(PersistentJSONable):
         self.__group_name = group_name                  # string
         self.__init_time = init_time                    # LocalisedDatetime
         self.__unix_group = unix_group                  # int
-        self.__ml = ml                                  # bool
+        self.__ml = ml                                  # string (was bool)
 
 
     def __eq__(self, other):
@@ -146,12 +173,6 @@ class AWSGroupConfigurator(object):
     classdocs
     """
 
-    __CWD = os.path.dirname(os.path.realpath(__file__))
-
-    __V1 = __CWD + "/v1"
-    __V2 = __CWD + "/v2"
-    __V3 = __CWD + "/v3"
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, config: AWSGroupConfiguration, client):
@@ -200,18 +221,13 @@ class AWSGroupConfigurator(object):
 
     def define_aws_group_resources(self, host):
         # Setup default JSON
-        if self.config.ml:
-            j_file = os.path.join(self.__V3, 'gg_resources_ml.json')
-        else:
-            j_file = os.path.join(self.__V1, 'gg_resources.json')
-        with open(j_file) as f:
-            data = f.read()
+        r_data = AWSGroupConfiguration.read(self.config.ml, 'gg_resources.json')
+
         # Edit JSON for device
         system_id = str(self.__aws_info.node("SystemID"))
         temp = host.home_path()
         group_owner_name = temp.split("/")[2]
         scs_path = host.scs_path()
-        r_data = json.loads(data)
         r_data["Name"] = ("Resources-" + system_id)  # Edit resources name
         r_data["InitialVersion"]["Resources"][0]["Id"] = (
                 system_id + "-data-volume")  # Edit resource name
@@ -246,16 +262,11 @@ class AWSGroupConfigurator(object):
 
     def define_aws_group_functions(self):
         # Get template JSON
-        if self.config.ml:
-            j_file = os.path.join(self.__V3, 'gg_functions_ml.json')
-        else:
-            j_file = os.path.join(self.__V1, 'gg_functions.json')
-        with open(j_file) as f:
-            data = f.read()
+        f_data = AWSGroupConfiguration.read(self.config.ml, 'gg_functions.json')
+
         # Update JSON for device
         system_id = str(self.__aws_info.node("SystemID"))
         data_volume_name = (system_id + "-data-volume")
-        f_data = json.loads(data)
         f_data["InitialVersion"]["Functions"][0]["Id"] = (system_id + "-ControlSubscriber")
         f_data["InitialVersion"]["Functions"][1]["Id"] = (system_id + "-TopicPublisher")
 
@@ -293,14 +304,10 @@ class AWSGroupConfigurator(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def define_aws_group_subscriptions(self):
-        # Get template JSON
-        j_file = os.path.join(self.__V1, 'gg_subscriptions.json')
-        with open(j_file) as f:
-            data = f.read()
+        s_data = AWSGroupConfiguration.read('m0', 'gg_subscriptions.json')
 
         # Edit for device
         system_id = str(self.__aws_info.node("SystemID"))
-        s_data = json.loads(data)
         s_data["InitialVersion"]["Subscriptions"][0]["Id"] = (system_id + "-particulates-subscription")
         s_data["InitialVersion"]["Subscriptions"][1]["Id"] = (system_id + "-control-from-cloud-subscription")
         s_data["InitialVersion"]["Subscriptions"][2]["Id"] = (system_id + "-climate-subscription")
@@ -327,12 +334,9 @@ class AWSGroupConfigurator(object):
 
 
     def define_aws_logger(self):
-        j_file = os.path.join(self.__V2, 'gg_logger.json')
-        with open(j_file) as f:
-            data = f.read()
-        system_id = str(self.__aws_info.node("SystemID"))
-        l_data = json.loads(data)
+        l_data = AWSGroupConfiguration.read('m0', 'gg_logger.json')
 
+        system_id = str(self.__aws_info.node("SystemID"))
         l_data["InitialVersion"]["Loggers"][0]["Id"] = (system_id + "-lambda-logger")
 
         self.__logger.info("Creating logger definition")
