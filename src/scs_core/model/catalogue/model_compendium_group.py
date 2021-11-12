@@ -5,10 +5,10 @@ Created on 15 Oct 2021
 
 A catalogue entry for a group of machine learning model compendia, one for each gas
 
-By convention, the name of the group should be the same as the name of the ML model.
+By convention, the name of the group should be the same as the name of the ML model template.
 
 document example:
-{"name": "OE21HA", "compendia": {"NO2": "NO2.vE.OPCube.21HA"}}
+{"name": "oE.1", "compendia": {"NO2": "NO2.vE.OPCube.21HA"}}
 """
 
 import os
