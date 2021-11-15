@@ -1,0 +1,67 @@
+{
+    "data-set": "ref-scs-bgx-508-gases20HB-slp-vcal-err-clean",
+    "period": {
+        "start": "2020-04-01T00:15:00Z",
+        "end": "2020-11-26T10:15:00Z"
+    },
+    "primaries": {
+        "NO2.vCal": {
+            "path": "src.scs.env.gases.val.NO2.vCal",
+            "min": -21.835,
+            "avg": 8.169,
+            "max": 68.782
+        }
+    },
+    "secondaries": {
+        "tmp.brd": {
+            "path": "src.scs.stat.val.tmp.brd",
+            "min": 6.6,
+            "avg": 23.384,
+            "max": 44.2
+        },
+        "hmd.cur": {
+            "path": "src.scs.env.meteo.val.hmd.cur",
+            "min": 19.3,
+            "avg": 61.981,
+            "max": 87.7
+        },
+        "hmd.slope": {
+            "path": "src.scs.env.meteo.val.hmd.slope",
+            "min": -0.011,
+            "avg": -0.0,
+            "max": 0.021
+        },
+        "tmp.cur": {
+            "path": "src.scs.env.meteo.val.tmp.cur",
+            "min": 1.9,
+            "avg": 17.666,
+            "max": 38.7
+        },
+        "tmp.slope": {
+            "path": "src.scs.env.meteo.val.tmp.slope",
+            "min": -0.004,
+            "avg": 0.0,
+            "max": 0.002
+        }
+    },
+    "reference": {
+        "path": "src.ref.NO2 Processed Measurement (ppb)",
+        "min": -0.2,
+        "avg": 8.2,
+        "max": 49.0
+    },
+    "output": {
+        "path": "exg.NO2.vE.Urban.20HB",
+        "min": 0.7,
+        "avg": 8.2,
+        "max": 46.0
+    },
+    "performance": {
+        "count": 22185,
+        "slope": 0.855,
+        "intercept": 1.176,
+        "r2": 0.877,
+        "p": 0.0,
+        "std-err": 0.002
+    }
+}
