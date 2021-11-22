@@ -43,6 +43,7 @@ class EmailQueue(JSONable):
 
         return jdict
 
+
     def pop_next(self):
         if self.__queue is None:
             return None, None
@@ -58,20 +59,25 @@ class EmailQueue(JSONable):
         queue.pop(key)
         new_queue = json_list.get('queue')
         self.__queue = new_queue
+
         return key, value
+
 
     def add_item(self, device_tag, message):
         if self.__queue is None:
             self.__queue = {device_tag: message}
         else:
             self.__queue[device_tag] = message
+
         return self.__queue
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def queue(self):
         return self.__queue
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
