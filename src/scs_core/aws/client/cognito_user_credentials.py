@@ -22,12 +22,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserIdentity(PersistentJSONable):
+class CognitoUserCredentials(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "cognito_user_identity.json"
+    __FILENAME = "cognito_user_credentials.json"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -138,4 +138,4 @@ class CognitoUserIdentity(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{email_address:%s, password:%s}" %  (self.email_address, self.password)
+        return "CognitoUserCredentials:{email_address:%s, password:%s}" %  (self.email_address, self.password)
