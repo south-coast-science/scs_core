@@ -36,7 +36,7 @@ class DynamoManager(object):
         table = self.__dynamo_resource.Table(table_name)
         if sk and sk_val:
             key = {pk: pk_val, sk: sk_val}
-        elif pk and pk_val and not sk and sk_val:
+        elif pk and pk_val:
             key = {pk: pk_val}
         else:
             return None
