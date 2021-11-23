@@ -30,15 +30,15 @@ except HTTPException as ex:
 
 print("=")
 
-credentials = CognitoUserCredentials('jadempage@outlook.com', 'e77!!HDsK')
-print(credentials)
-print("-")
-
-manager = CognitoLoginManager(requests)
-
-try:
-    response = manager.login(credentials)
-    print(response)
-except HTTPException as ex:
-    print(ex.data)
+# credentials = CognitoUserCredentials('jadempage@outlook.com', 'e77!!HDsK')
+# print(credentials)
+# print("-")
+#
+# manager = CognitoLoginManager(requests)
+#
+# try:
+#     response = manager.login(credentials)
+#     print(response)
+# except HTTPException as ex:
+#     print(ex.data)
 
