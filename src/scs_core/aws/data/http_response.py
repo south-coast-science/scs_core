@@ -85,7 +85,7 @@ class HTTPResponse(JSONable, ABC):
 
         jdict = {
             'statusCode': self.status.value,
-            'body': JSONify.dumps(reason)
+            'body': reason
         }
 
         return jdict
