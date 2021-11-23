@@ -7,10 +7,12 @@ https://docs.python.org/3/library/http.html
 https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 """
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from http import HTTPStatus
 
 from scs_core.data.json import JSONable, JSONify
+
+from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -24,6 +26,29 @@ class HTTPResponse(JSONable, ABC):
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': True,
     }
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_response(cls, response):
+        status = HTTPStatus(response.status_code)
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
+
+        jdict = response.json()
+
+        if not jdict:
+            return None
+
+        return cls.construct_from_response_jdict(status, jdict)
+
+
+    @classmethod
+    @abstractmethod
+    def construct_from_response_jdict(cls, status, jdict):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,7 +82,14 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return {'statusCode': self.status.value}
+        reason = self.status.reason if self.reason is None else self.reason
+
+        jdict = {
+            'statusCode': self.status.value,
+            'body': JSONify.dumps(reason)
+        }
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
