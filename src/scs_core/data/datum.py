@@ -43,9 +43,6 @@ class Datum(object):
         return "%" + prefix + length + "." + precision + "f"
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-    # morphological numeracy...
-
     @classmethod
     def is_email_address(cls, value):
         try:
@@ -53,6 +50,9 @@ class Datum(object):
         except TypeError:
             return False
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # morphological numeracy...
 
     @classmethod
     def is_numeric(cls, value):

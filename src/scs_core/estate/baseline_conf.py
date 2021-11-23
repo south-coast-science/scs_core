@@ -82,6 +82,18 @@ class BaselineConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def duplicate(self, new_name):
+        timezone = self.timezone
+        start_hour = self.start_hour
+        end_hour = self.end_hour
+        aggregation_period = self.aggregation_period
+        minimums = self.minimums
+
+        return BaselineConf(new_name, timezone, start_hour, end_hour, aggregation_period, minimums)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def start_datetime(self, origin: LocalizedDatetime):
         dt = origin.datetime
         tz = pytz.timezone(self.timezone)
