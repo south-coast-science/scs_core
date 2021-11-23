@@ -35,7 +35,7 @@ class HTTPResponse(JSONable, ABC):
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.description, response.json())
+            raise HTTPException(status.value, response.reason, response.json())
 
         jdict = response.json()
 
@@ -52,12 +52,12 @@ class HTTPResponse(JSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, description=None):
+    def __init__(self, status, reason=None):
         """
         Constructor
         """
         self.__status = status                          # HTTPStatus member
-        self.__description = description                # string
+        self.__reason = reason                          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.status.description if self.description is None else self.description
+        return self.status.description if self.reason is None else self.reason
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -92,11 +92,11 @@ class HTTPResponse(JSONable, ABC):
 
 
     @property
-    def description(self):
-        return self.__description
+    def reason(self):
+        return self.__reason
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "HTTPResponse:{status:%s, description:%s}" % (self.status, self.description)
+        return "HTTPResponse:{status:%s, reason:%s}" % (self.status, self.reason)
