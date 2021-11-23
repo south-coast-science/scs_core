@@ -16,7 +16,7 @@ class CognitoLoginManager(object):
     classdocs
     """
 
-    __AUTHORIZATION = 'southcoastscience.co'
+    __AUTHORIZATION = 'southcoastscience.com'
     __URL = "https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogin"
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,8 +95,6 @@ class CognitoAuthenticationResult(HTTPResponse):
 
     def as_json(self):
         jdict = OrderedDict()
-
-        jdict['statusCode'] = self.status.value
 
         jdict['AccessToken'] = self.access_token
         jdict['ExpiresIn'] = self.expires_in

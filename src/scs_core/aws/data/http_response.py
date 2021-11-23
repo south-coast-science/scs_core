@@ -83,12 +83,12 @@ class HTTPResponse(JSONable, ABC):
     def as_json(self):
         reason = self.status.description if self.reason is None else self.reason
 
-        jdict = {
-            'statusCode': self.status.value,
-            'body': reason
-        }
+        # jdict = {
+        #     'statusCode': self.status.value,
+        #     'body': reason
+        # }
 
-        return jdict
+        return reason
 
 
     # ----------------------------------------------------------------------------------------------------------------
