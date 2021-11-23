@@ -47,7 +47,7 @@ class HTTPResponse(JSONable, ABC):
 
     @classmethod
     def construct_from_response_jdict(cls, status, jdict):
-        return cls(status)
+        return cls(status, description=jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

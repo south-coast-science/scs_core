@@ -16,7 +16,7 @@ from scs_core.sys.http_exception import HTTPException
 
 # --------------------------------------------------------------------------------------------------------------------
 
-credentials = CognitoUserCredentials('jadempage@outlook.com', 'g77!!HDsK')
+credentials = CognitoUserCredentials('jadempage@outlook.com', 'g77!!HDsKD')
 print(credentials)
 print("-")
 
@@ -26,19 +26,19 @@ try:
     response = manager.login(credentials)
     print(response)
 except HTTPException as ex:
-    print(ex)
+    print(ex.data)
 
 print("=")
 
-# credentials = CognitoUserCredentials('jadempage@outlook.com', 'e77!!HDsK')
-# print(credentials)
-# print("-")
-#
-# manager = CognitoLoginManager(requests)
-#
-# try:
-#     response = manager.login(credentials)
-#     print(response)
-# except HTTPException as ex:
-#     print(ex.data)
+credentials = CognitoUserCredentials('jadempage@outlook.com', 'e77!!HDsK')
+print(credentials)
+print("-")
+
+manager = CognitoLoginManager(requests)
+
+try:
+    response = manager.login(credentials)
+    print(response)
+except HTTPException as ex:
+    print(ex.data)
 

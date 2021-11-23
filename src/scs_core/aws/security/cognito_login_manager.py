@@ -17,12 +17,12 @@ class CognitoLoginManager(object):
     """
 
     __AUTHORIZATION = 'southcoastscience.com'
-    __URL = "https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogin"
+    __URL = 'https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogin'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client
+        self.__http_client = http_client                # requests package
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -30,10 +30,6 @@ class CognitoLoginManager(object):
     def login(self, credentials):
         headers = {'Authorization': self.__AUTHORIZATION}
         response = self.__http_client.post(self.__URL, headers=headers, json=credentials.as_json())
-
-        print("status_code: %s" % response.status_code)
-        print("reason: %s" % response.reason)
-        print("text: %s" % response.text)
 
         return CognitoAuthenticationResult.construct_from_response(response)
 
@@ -95,8 +91,6 @@ class CognitoAuthenticationResult(HTTPResponse):
 
     def as_json(self):
         jdict = OrderedDict()
-
-        jdict['statusCode'] = self.status.value
 
         jdict['AccessToken'] = self.access_token
         jdict['ExpiresIn'] = self.expires_in
