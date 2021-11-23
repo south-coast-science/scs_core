@@ -6,7 +6,7 @@ Created on 22 Nov 2021
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
 example document:
-{"email-address": "bruno.beloff@southcoastscience.com", "password": "hello"}
+{"email": "bruno.beloff@southcoastscience.com", "password": "hello"}
 """
 
 import json
@@ -47,12 +47,12 @@ class CognitoUserCredentials(PersistentJSONable):
             pass
 
         print("Enter email address: ", end="", file=sys.stderr)
-        email_address = input().strip()
+        email = input().strip()
 
         print("Enter password: ", end="", file=sys.stderr)
         password = input().strip()
 
-        return cls(email_address, password)
+        return cls(email, password)
 
 
     @staticmethod
@@ -77,31 +77,31 @@ class CognitoUserCredentials(PersistentJSONable):
         if not jdict:
             return cls(None, None) if skeleton else None
 
-        email_address = jdict.get('email-address')
+        email = jdict.get('email')
         password = jdict.get('password')
 
-        return cls(email_address, password)
+        return cls(email, password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, email_address, password):
+    def __init__(self, email, password):
         """
         Constructor
         """
         super().__init__()
 
-        self.__email_address = email_address                    # string
-        self.__password = password                              # string
+        self.__email = email                            # string
+        self.__password = password                      # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def ok(self):
-        if not self.email_address or not self.password:
+        if not self.email or not self.password:
             return False
 
-        if not Datum.is_email_address(self.email_address):
+        if not Datum.is_email_address(self.email):
             return False
 
         return True
@@ -117,7 +117,7 @@ class CognitoUserCredentials(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['email-address'] = self.email_address
+        jdict['email'] = self.email
         jdict['password'] = self.password
 
         return jdict
@@ -126,8 +126,8 @@ class CognitoUserCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def email_address(self):
-        return self.__email_address
+    def email(self):
+        return self.__email
 
 
     @property
@@ -138,4 +138,4 @@ class CognitoUserCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserCredentials:{email_address:%s, password:%s}" %  (self.email_address, self.password)
+        return "CognitoUserCredentials:{email:%s, password:%s}" %  (self.email, self.password)
