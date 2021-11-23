@@ -17,7 +17,7 @@ class CognitoLoginManager(object):
     """
 
     __AUTHORIZATION = 'southcoastscience.com'
-    __URL = "https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogin"
+    __URL = "https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogi"
 
     # ----------------------------------------------------------------------------------------------------------------
 
