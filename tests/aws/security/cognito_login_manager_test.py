@@ -9,7 +9,7 @@ Created on 23 Nov 2021
 import requests
 
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
-from scs_core.aws.security.cognito_user_credentials import CognitoUserCredentials
+from scs_core.aws.security.cognito_user import CognitoUserCredentials
 
 from scs_core.sys.http_exception import HTTPException
 
