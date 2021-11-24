@@ -3,16 +3,18 @@ Created on 22 Nov 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
 example document (credentials):
-{"email": "bruno.beloff@southcoastscience.com", "password": "hello"}
+{"email": "bruno.beloff@southcoastscience.com", "password": "pass"}
 
 example document (identity):
-{"email": "bruno.beloff@southcoastscience.com", "given_name": "bruno", "family_name": "beloff", "is_super": false}
+{"email": "bruno.beloff@southcoastscience.com", "given_name": "bruno", "family_name": "beloff", "is_super": true}
 """
 
 import json
+import re
 import sys
 import termios
 
@@ -154,6 +156,31 @@ class CognitoUserIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def is_valid_password(password):
+        if not isinstance(password, str):
+            return False
+
+        if not 7 < len(password) < 99:
+            return False
+
+        if not re.findall(r'[0-9]', password):
+            return False
+
+        if not re.findall(r'[A-Z]', password):
+            return False
+
+        if not re.findall(r'[a-z]', password):
+            return False
+
+        if not re.findall(r'[\^\$*.\[\]{}()?"!@#%&/\\,><\':;|_~`]', password):
+            return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_body(cls, body):
         if not body:
@@ -248,6 +275,9 @@ class CognitoUserIdentity(JSONable):
 
     def as_json(self):
         jdict = OrderedDict()
+
+        if self.username:
+            jdict['username'] = self.username
 
         jdict['email'] = self.email
 
