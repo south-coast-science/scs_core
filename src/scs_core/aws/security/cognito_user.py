@@ -5,8 +5,11 @@ Created on 22 Nov 2021
 
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
-example document:
+example document (credentials):
 {"email": "bruno.beloff@southcoastscience.com", "password": "hello"}
+
+example document (identity):
+{"email": "bruno.beloff@southcoastscience.com", "given_name": "bruno", "family_name": "beloff", "is_super": false}
 """
 
 import json
@@ -17,7 +20,7 @@ from collections import OrderedDict
 from getpass import getpass
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import JSONable, PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -138,10 +141,11 @@ class CognitoUserCredentials(PersistentJSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserIdentity(object):
+class CognitoUserIdentity(JSONable):
     """
     classdocs
     """
+
     USER = "username"
     EMAIL = "email"
     GIVEN_NAME = "given_name"
@@ -196,10 +200,10 @@ class CognitoUserIdentity(object):
 
         username = jdict.get('username')
         email = jdict.get('email')
-        given_name = jdict.get('given-name')
-        family_name = jdict.get('family-name')
+        given_name = jdict.get('given_name')
+        family_name = jdict.get('family_name')
         password = jdict.get('password')
-        is_super = jdict.get('is-super')
+        is_super = jdict.get('is_super')
 
         return cls(username, email, given_name, family_name, password, is_super=is_super)
 
@@ -218,16 +222,41 @@ class CognitoUserIdentity(object):
         self.__is_super = bool(is_super)                    # bool
 
 
+    def __lt__(self, other):
+        if self.family_name.lower() < other.family_name.lower():
+            return True
+
+        if self.family_name.lower() > other.family_name.lower():
+            return False
+
+        if self.given_name.lower() < other.given_name.lower():
+            return True
+
+        if self.given_name.lower() > other.given_name.lower():
+            return False
+
+        if self.email.lower() < other.email.lower():
+            return True
+
+        if self.email.lower() > other.email.lower():
+            return False
+
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['email'] = self.email
-        jdict['password'] = self.password
-        jdict['given-name'] = self.given_name
-        jdict['family-name'] = self.family_name
-        jdict['is-super'] = self.is_super
+
+        if self.password:
+            jdict['password'] = self.password
+
+        jdict['given_name'] = self.given_name
+        jdict['family_name'] = self.family_name
+        jdict['is_super'] = self.is_super
 
         return jdict
 
