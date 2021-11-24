@@ -26,7 +26,7 @@ try:
     response = manager.login(credentials)
     print(response)
 except HTTPException as ex:
-    print(ex)
+    print(ex.data)
 
 print("=")
 
