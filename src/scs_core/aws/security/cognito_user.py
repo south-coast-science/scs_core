@@ -185,23 +185,6 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_body(cls, body):
-        if not body:
-            return None
-
-        jdict = json.loads(body)
-
-        username = jdict[cls.USERNAME]
-        creation_date = LocalizedDatetime.construct_from_aws(jdict[cls.CREATION_DATE])
-        email = jdict[cls.EMAIL]
-        given_name = jdict[cls.GIVEN_NAME]
-        family_name = jdict[cls.FAMILY_NAME]
-        is_super = jdict.get('is_super')
-
-        return cls(username, creation_date, email, given_name, family_name, None, is_super=is_super)
-
-
-    @classmethod
     def construct_from_response(cls, res, multiples=False):
         if not res:
             return None
