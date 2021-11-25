@@ -17,7 +17,7 @@ class CognitoCreationManager(object):
     """
 
     __AUTHORIZATION = 'southcoastscience.com'
-    __URL = 'https://q3d0204kzh.execute-api.us-west-2.amazonaws.com/default/CognitoLogin'
+    __URL = 'https://85nkjtux72.execute-api.us-west-2.amazonaws.com/default/CognitoAccountCreator'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -27,11 +27,14 @@ class CognitoCreationManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def create(self, credentials):
+    def create(self, identity):
         headers = {'Authorization': self.__AUTHORIZATION}
-        response = self.__http_client.post(self.__URL, headers=headers, json=credentials.as_json())
+        response = self.__http_client.post(self.__URL, headers=headers, json=identity.as_json())
 
-        return CognitoAuthenticationResult.construct_from_response(response)
+        print("status_code: %s" % response.status_code)
+        print("text: %s" % response.text)
+
+        # return CognitoAuthenticationResult.construct_from_response(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------

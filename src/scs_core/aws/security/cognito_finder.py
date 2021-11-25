@@ -14,7 +14,7 @@ class CognitoFinder(object):
     classdocs
     """
 
-    __URL = 'https://unnyezcdaa.execute-api.us-west-2.amazonaws.com/default/CognitoFinder/'
+    __URL = 'https://unnyezcdaa.execute-api.us-west-2.amazonaws.com/default/CognitoFinder'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -30,9 +30,6 @@ class CognitoFinder(object):
         headers = {'Token': self.__id_token}
 
         response = self.__http_client.get(url, headers=headers)
-
-        # print("status_code: %s" % response.status_code)
-        # print("text: %s" % response.text)
 
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
@@ -55,10 +52,7 @@ class CognitoFinder(object):
 
         response = self.__http_client.get(url, headers=headers)
 
-        print("status_code: %s" % response.status_code)
-        print("text: %s" % response.text)
-
-        CognitoUserIdentity.construct_from_jdict(response.json())
+        return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
