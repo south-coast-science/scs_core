@@ -12,7 +12,7 @@ example document (credentials):
 example document (identity):
 {"email": "bruno.beloff@southcoastscience.com", "given_name": "bruno", "family_name": "beloff", "is_super": true}
 """
-
+import ast
 import json
 import re
 import sys
@@ -203,11 +203,14 @@ class CognitoUserIdentity(JSONable):
 
                 nk = value
 
-        creation_date = LocalizedDatetime.construct_from_aws(final_d['creation_date'])
+        try:
+            creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
+        except KeyError:
+            creation_date = None
 
         try:
             return cls(username, creation_date, final_d['email'], final_d['given_name'],
-                       final_d['family_name'], None)
+                       final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
         except KeyError:
             return None
 
