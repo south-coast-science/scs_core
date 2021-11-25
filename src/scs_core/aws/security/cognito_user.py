@@ -21,6 +21,7 @@ import termios
 from collections import OrderedDict
 from getpass import getpass
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable, PersistentJSONable
 
@@ -148,11 +149,13 @@ class CognitoUserIdentity(JSONable):
     classdocs
     """
 
-    USER = "username"
+    USERNAME = "username"
+    CREATION_DATE = "creation_date"
     EMAIL = "email"
     GIVEN_NAME = "given_name"
     FAMILY_NAME = "family_name"
     PASSWORD = "password"
+    IS_SUPER = "is_super"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -188,12 +191,14 @@ class CognitoUserIdentity(JSONable):
 
         jdict = json.loads(body)
 
+        username = jdict[cls.USERNAME]
+        creation_date = LocalizedDatetime.construct_from_aws(jdict[cls.CREATION_DATE])
         email = jdict[cls.EMAIL]
         given_name = jdict[cls.GIVEN_NAME]
         family_name = jdict[cls.FAMILY_NAME]
-        password = jdict[cls.PASSWORD]
+        is_super = jdict.get('is_super')
 
-        return cls(None, email, given_name, family_name, password)
+        return cls(username, creation_date, email, given_name, family_name, None, is_super=is_super)
 
 
     @classmethod
@@ -214,8 +219,12 @@ class CognitoUserIdentity(JSONable):
                     break
 
                 nk = value
+
+        creation_date = LocalizedDatetime.construct_from_aws(final_d['creation_date'])
+
         try:
-            return cls(username, final_d['email'], final_d['given_name'], final_d['family_name'], None)
+            return cls(username, creation_date, final_d['email'], final_d['given_name'],
+                       final_d['family_name'], None)
         except KeyError:
             return None
 
@@ -223,25 +232,27 @@ class CognitoUserIdentity(JSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
+        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
         email = jdict.get('email')
         given_name = jdict.get('given_name')
         family_name = jdict.get('family_name')
         password = jdict.get('password')
         is_super = jdict.get('is_super')
 
-        return cls(username, email, given_name, family_name, password, is_super=is_super)
+        return cls(username, creation_date, email, given_name, family_name, password, is_super=is_super)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, email, given_name, family_name, password, is_super=False):
+    def __init__(self, username, creation_date, email, given_name, family_name, password, is_super=False):
         """
         Constructor
         """
         self.__username = username                          # string (int)
+        self.__creation_date = creation_date                # LocalisedDatetime
         self.__email = email                                # string
         self.__given_name = given_name                      # string
         self.__family_name = family_name                    # string
@@ -279,6 +290,9 @@ class CognitoUserIdentity(JSONable):
         if self.username:
             jdict['username'] = self.username
 
+        if self.creation_date:
+            jdict['creation_date'] = self.creation_date.as_iso8601()
+
         jdict['email'] = self.email
 
         if self.password:
@@ -290,11 +304,17 @@ class CognitoUserIdentity(JSONable):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def username(self):
         return self.__username
+
+
+    @property
+    def creation_date(self):
+        return self.__creation_date
 
 
     @property
@@ -325,5 +345,7 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, email:%s, given_name:%s, family_name:%s, is_super:%s}" % \
-               (self.username, self.email, self.given_name, self.family_name, self.is_super)
+        return "CognitoUserIdentity:{username:%s, creation_date:%s, email:%s, given_name:%s, family_name:%s, " \
+               "is_super:%s}" % \
+               (self.username, self.creation_date, self.email, self.given_name, self.family_name,
+                self.is_super)

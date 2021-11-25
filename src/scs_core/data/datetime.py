@@ -132,6 +132,16 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
+    def construct_from_aws(cls, datetime_str):
+        if datetime_str is None:
+            return None
+
+        iso_datetime_str = datetime_str.replace(' ', 'T')
+
+        return cls.__construct_from_iso8601_numeric(iso_datetime_str)
+
+
+    @classmethod
     def construct_from_s3(cls, datetime_str):       # Sat, 11 Sep 2021 08:47:47 GMT
         # match...
         match = re.match(r'\S{3}, (\d{1,2}) (\S{3}) (\d{4}) (\d{2}):(\d{2}):(\d{2}) GMT', datetime_str)
@@ -180,7 +190,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_z(cls, datetime_str):
         # match...
-        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?Z', datetime_str)
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3,6}))?Z', datetime_str)
 
         if match is None:
             return None
@@ -195,7 +205,12 @@ class LocalizedDatetime(JSONable):
         hour = int(fields[3])
         minute = int(fields[4])
         second = int(fields[5])
-        micros = int(fields[6]) * 1000 if fields[6] else 0
+
+        if fields[6]:
+            multiplier = 1000 if len(fields[6]) == 3 else 1
+            micros = int(fields[6]) * multiplier
+        else:
+            micros = 0
 
         # construct...
         zone_offset = timedelta(hours=0, minutes=0)
@@ -210,7 +225,7 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def __construct_from_iso8601_numeric(cls, datetime_str):
         # match...
-        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3}))?([ +\-]?)(\d{2}):(\d{2})',
+        match = re.match(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:.(\d{3,6}))?([ +\-]?)(\d{2}):(\d{2})',
                          datetime_str)
 
         if match is None:
@@ -226,7 +241,12 @@ class LocalizedDatetime(JSONable):
         hour = int(fields[3])
         minute = int(fields[4])
         second = int(fields[5])
-        micros = int(fields[6]) * 1000 if fields[6] else 0
+
+        if fields[6]:
+            multiplier = 1000 if len(fields[6]) == 3 else 1
+            micros = int(fields[6]) * multiplier
+        else:
+            micros = 0
 
         zone_sign = -1 if fields[7] == '-' else 1
         zone_hours = int(fields[8])

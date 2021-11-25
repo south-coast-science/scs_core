@@ -31,6 +31,9 @@ class CognitoFinder(object):
 
         response = self.__http_client.get(url, headers=headers)
 
+        print("status_code: %s" % response.status_code)
+        print("text: %s" % response.text)
+
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
