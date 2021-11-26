@@ -169,7 +169,7 @@ class CognitoUserIdentity(JSONable):
         if not re.findall(r'[a-z]', password):
             return False
 
-        if not re.findall(r'[\^\$*.\[\]{}()?"!@#%&/\\,><\':;|_~`]', password):
+        if not re.findall(r'[\^$*.\[\]{}()?"!@#%&/\\,><\':;|_~`]', password):
             return False
 
         return True
