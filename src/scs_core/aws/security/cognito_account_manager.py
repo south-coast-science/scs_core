@@ -32,11 +32,13 @@ class CognitoCreateManager(object):
     def create(self, identity):
         headers = {'Authorization': self.__AUTHORIZATION}
 
+        print("json: %s" % identity.as_json())
+
         response = self.__http_client.post(self.__URL, headers=headers, json=identity.as_json())
         status = HTTPStatus(response.status_code)
 
-        # print("status_code: %s" % response.status_code)
-        # print("text: %s" % response.text)
+        print("status_code: %s" % response.status_code)
+        print("text: %s" % response.text)
 
         if status != HTTPStatus.OK:
             raise HTTPException(status.value, response.reason, response.json())
