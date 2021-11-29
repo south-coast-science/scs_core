@@ -201,8 +201,11 @@ class CognitoUserIdentity(JSONable):
         except KeyError:
             creation_date = None
 
+        confirmation_status = None      # TODO: implement
+        enabled = None      # TODO: implement
+
         try:
-            return cls(username, creation_date, final_d['email'], final_d['given_name'],
+            return cls(username, creation_date, confirmation_status, enabled final_d['email'], final_d['given_name'],
                        final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
         except KeyError:
             return None
@@ -211,32 +214,38 @@ class CognitoUserIdentity(JSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
+        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation-date'))
+        confirmation_status = jdict.get('confirmation-status')
+        enabled = jdict.get('enabled')
         email = jdict.get('email')
-        given_name = jdict.get('given_name')
-        family_name = jdict.get('family_name')
+        given_name = jdict.get('given-name')
+        family_name = jdict.get('family-name')
         password = jdict.get('password')
-        is_super = jdict.get('is_super')
+        is_super = jdict.get('is-super')
 
-        return cls(username, creation_date, email, given_name, family_name, password, is_super=is_super)
+        return cls(username, creation_date, confirmation_status, enabled, email,
+                   given_name, family_name, password, is_super=is_super)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, creation_date, email, given_name, family_name, password, is_super=False):
+    def __init__(self, username, creation_date, confirmation_status, enabled, email,
+                 given_name, family_name, password, is_super=False):
         """
         Constructor
         """
-        self.__username = username                          # string (int)
-        self.__creation_date = creation_date                # LocalisedDatetime
-        self.__email = email                                # string
-        self.__given_name = given_name                      # string
-        self.__family_name = family_name                    # string
-        self.__password = password                          # string
-        self.__is_super = bool(is_super)                    # bool
+        self.__username = username                              # string (int)
+        self.__creation_date = creation_date                    # LocalisedDatetime
+        self.__confirmation_status = confirmation_status        # string
+        self.__enabled = enabled                                # bool or None
+        self.__email = email                                    # string
+        self.__given_name = given_name                          # string
+        self.__family_name = family_name                        # string
+        self.__password = password                              # string
+        self.__is_super = bool(is_super)                        # bool
 
 
     def __lt__(self, other):
@@ -266,20 +275,26 @@ class CognitoUserIdentity(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.username:
+        if self.username is not None:
             jdict['username'] = self.username
 
-        if self.creation_date:
-            jdict['creation_date'] = self.creation_date.as_iso8601()
+        if self.creation_date is not None:
+            jdict['creation-date'] = self.creation_date.as_iso8601()
+
+        if self.confirmation_status is not None:
+            jdict['confirmation-status'] = self.confirmation_status
+
+        if self.enabled is not None:
+            jdict['enabled'] = self.enabled
 
         jdict['email'] = self.email
 
-        if self.password:
+        if self.password is not None:
             jdict['password'] = self.password
 
-        jdict['given_name'] = self.given_name
-        jdict['family_name'] = self.family_name
-        jdict['is_super'] = self.is_super
+        jdict['given-name'] = self.given_name
+        jdict['family-name'] = self.family_name
+        jdict['is-super'] = self.is_super
 
         return jdict
 
@@ -294,6 +309,16 @@ class CognitoUserIdentity(JSONable):
     @property
     def creation_date(self):
         return self.__creation_date
+
+
+    @property
+    def confirmation_status(self):
+        return self.__confirmation_status
+
+
+    @property
+    def enabled(self):
+        return self.__enabled
 
 
     @property
@@ -324,7 +349,7 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, creation_date:%s, email:%s, given_name:%s, family_name:%s, " \
-               "is_super:%s}" % \
-               (self.username, self.creation_date, self.email, self.given_name, self.family_name,
-                self.is_super)
+        return "CognitoUserIdentity:{username:%s, creation_date:%s, confirmation_status:%s, enabled:%s, email:%s, " \
+               "given_name:%s, family_name:%s, is_super:%s}" % \
+               (self.username, self.creation_date, self.confirmation_status, self.enabled, self.email,
+                self.given_name, self.family_name, self.is_super)
