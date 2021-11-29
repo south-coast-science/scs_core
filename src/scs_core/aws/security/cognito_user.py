@@ -196,16 +196,13 @@ class CognitoUserIdentity(JSONable):
 
                 nk = value
 
-        try:
-            creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
-        except KeyError:
-            creation_date = None
 
-        confirmation_status = None      # TODO: implement
-        enabled = None      # TODO: implement
+        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
+        confirmation_status = res["UserStatus"]
+        enabled = res["Enabled"]
 
         try:
-            return cls(username, creation_date, confirmation_status, enabled final_d['email'], final_d['given_name'],
+            return cls(username, creation_date, confirmation_status, enabled, final_d['email'], final_d['given_name'],
                        final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
         except KeyError:
             return None
