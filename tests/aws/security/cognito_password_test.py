@@ -14,13 +14,13 @@ from scs_core.aws.security.cognito_user import CognitoUserIdentity
 good = 'AaBb12!%^$'
 print("good: %s OK: %s" % (good, CognitoUserIdentity.is_valid_password(good)))
 
-good = 'AaBb12|'
+good = 'AaBb123|'
 print("good: %s OK: %s" % (good, CognitoUserIdentity.is_valid_password(good)))
 
-bad = 'AABB12|'
+bad = 'AABB123|'
 print("bad: %s OK: %s" % (bad, CognitoUserIdentity.is_valid_password(bad)))
 
-bad = 'AaBbCc|'
+bad = 'AaBbCcD|'
 print("bad: %s OK: %s" % (bad, CognitoUserIdentity.is_valid_password(bad)))
 
 bad = 'AaBbCc12'

@@ -4,7 +4,10 @@ Created on 24 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from http import HTTPStatus
+
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
+from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,9 +33,10 @@ class CognitoFinder(object):
         headers = {'Token': self.__id_token}
 
         response = self.__http_client.get(url, headers=headers)
+        status = HTTPStatus(response.status_code)
 
-        print("status_code: %s" % response.status_code)
-        print("text: %s" % response.text)
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
 
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
@@ -42,9 +46,10 @@ class CognitoFinder(object):
         headers = {'Token': self.__id_token}
 
         response = self.__http_client.get(url, headers=headers)
+        status = HTTPStatus(response.status_code)
 
-        print("status_code: %s" % response.status_code)
-        print("text: %s" % response.text)
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
 
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
@@ -54,6 +59,10 @@ class CognitoFinder(object):
         headers = {'Token': self.__id_token}
 
         response = self.__http_client.get(url, headers=headers)
+        status = HTTPStatus(response.status_code)
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
 

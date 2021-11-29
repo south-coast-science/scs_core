@@ -10,7 +10,8 @@ example document (credentials):
 {"email": "bruno.beloff@southcoastscience.com", "password": "pass"}
 
 example document (identity):
-{"email": "bruno.beloff@southcoastscience.com", "given_name": "bruno", "family_name": "beloff", "is_super": true}
+{"username": "8", "creation_date": "2021-11-24T12:51:12Z", "email": "bruno.beloff@southcoastscience.com",
+"given_name": "bruno", "family_name": "beloff", "is_super": true}
 """
 import ast
 import json
@@ -149,14 +150,6 @@ class CognitoUserIdentity(JSONable):
     classdocs
     """
 
-    USERNAME = "username"
-    CREATION_DATE = "creation_date"
-    EMAIL = "email"
-    GIVEN_NAME = "given_name"
-    FAMILY_NAME = "family_name"
-    PASSWORD = "password"
-    IS_SUPER = "is_super"
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
@@ -176,7 +169,7 @@ class CognitoUserIdentity(JSONable):
         if not re.findall(r'[a-z]', password):
             return False
 
-        if not re.findall(r'[\^\$*.\[\]{}()?"!@#%&/\\,><\':;|_~`]', password):
+        if not re.findall(r'[\^$*.\[\]{}()?"!@#%&/\\,><\':;|_~`]', password):
             return False
 
         return True
