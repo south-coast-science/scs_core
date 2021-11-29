@@ -3,6 +3,7 @@ Created on 22 Nov 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html
 https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
@@ -10,9 +11,10 @@ example document (credentials):
 {"email": "bruno.beloff@southcoastscience.com", "password": "pass"}
 
 example document (identity):
-{"username": "8", "creation_date": "2021-11-24T12:51:12Z", "email": "bruno.beloff@southcoastscience.com",
-"given_name": "bruno", "family_name": "beloff", "is_super": true}
+{"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
+"email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
 """
+
 import ast
 import json
 import re
@@ -150,6 +152,14 @@ class CognitoUserIdentity(JSONable):
     classdocs
     """
 
+    STATUSES = {
+        'U': 'UNCONFIRMED',
+        'C': 'CONFIRMED',
+        'P': 'PASSWORD_RESET_REQUIRED',
+        'F': 'FORCE_CHANGE_PASSWORD',
+        'D': 'DISABLED'
+    }
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
@@ -196,7 +206,6 @@ class CognitoUserIdentity(JSONable):
 
                 nk = value
 
-
         creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
         confirmation_status = res["UserStatus"]
         enabled = res["Enabled"]
@@ -214,14 +223,14 @@ class CognitoUserIdentity(JSONable):
             return cls(None, None, None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation-date'))
-        confirmation_status = jdict.get('confirmation-status')
+        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
+        confirmation_status = jdict.get('confirmation_status')
         enabled = jdict.get('enabled')
         email = jdict.get('email')
-        given_name = jdict.get('given-name')
-        family_name = jdict.get('family-name')
+        given_name = jdict.get('given_name')
+        family_name = jdict.get('family_name')
         password = jdict.get('password')
-        is_super = jdict.get('is-super')
+        is_super = jdict.get('is_super')
 
         return cls(username, creation_date, confirmation_status, enabled, email,
                    given_name, family_name, password, is_super=is_super)
@@ -276,10 +285,10 @@ class CognitoUserIdentity(JSONable):
             jdict['username'] = self.username
 
         if self.creation_date is not None:
-            jdict['creation-date'] = self.creation_date.as_iso8601()
+            jdict['creation_date'] = self.creation_date.as_iso8601()
 
         if self.confirmation_status is not None:
-            jdict['confirmation-status'] = self.confirmation_status
+            jdict['confirmation_status'] = self.confirmation_status
 
         if self.enabled is not None:
             jdict['enabled'] = self.enabled
@@ -289,9 +298,9 @@ class CognitoUserIdentity(JSONable):
         if self.password is not None:
             jdict['password'] = self.password
 
-        jdict['given-name'] = self.given_name
-        jdict['family-name'] = self.family_name
-        jdict['is-super'] = self.is_super
+        jdict['given_name'] = self.given_name
+        jdict['family_name'] = self.family_name
+        jdict['is_super'] = self.is_super
 
         return jdict
 
