@@ -54,6 +54,35 @@ class CognitoFinder(object):
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
+    def find_by_status(self, confirmation_status):
+        url = '/'.join((self.__URL, confirmation_status.lower()))
+        headers = {'Token': self.__id_token}
+
+        response = self.__http_client.get(url, headers=headers)
+        status = HTTPStatus(response.status_code)
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
+
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
+
+
+    def find_by_enabled(self, enabled):
+        url = '/'.join((self.__URL, 'enabled' if enabled else 'disabled'))
+        headers = {'Token': self.__id_token}
+
+        response = self.__http_client.get(url, headers=headers)
+        status = HTTPStatus(response.status_code)
+
+        # print("status_code: %s" % response.status_code)
+        # print("text: %s" % response.text)
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
+
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
+
+
     def find_self(self):
         url = '/'.join((self.__URL, 'self'))
         headers = {'Token': self.__id_token}

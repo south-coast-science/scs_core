@@ -93,7 +93,14 @@ class VEGasInferenceClient(GasInferenceClient):
         # gas baseline...
         for gas, offset in self.__gas_baseline.offsets().items():
             path = '.'.join(('val', gas, 'cnc'))
-            baselined_cnc = round(float(exg.node(sub_path=path)) + offset, 1)
+
+            try:
+                node = exg.node(sub_path=path)
+            except KeyError:
+                self.__logger.error('VEGasInferenceClient: %s not found in exg' % path)
+                continue
+
+            baselined_cnc = round(float(node) + offset, 1)
             exg.append(path, round(baselined_cnc, 1))
 
         # report...

@@ -134,9 +134,19 @@ class CognitoUserCredentials(PersistentJSONable):
         return self.__email
 
 
+    @email.setter
+    def email(self, email):
+        self.__email = email
+
+
     @property
     def password(self):
         return self.__password
+
+
+    @password.setter
+    def password(self, password):
+        self.__password = password
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -152,13 +162,23 @@ class CognitoUserIdentity(JSONable):
     classdocs
     """
 
-    STATUSES = {
+    __STATUSES = {
         'U': 'UNCONFIRMED',
         'C': 'CONFIRMED',
         'P': 'PASSWORD_RESET_REQUIRED',
         'F': 'FORCE_CHANGE_PASSWORD',
         'D': 'DISABLED'
     }
+
+    @classmethod
+    def status_codes(cls):
+        return cls.__STATUSES.keys()
+
+
+    @classmethod
+    def status(cls, code):
+        return cls.__STATUSES[code]
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -232,14 +252,14 @@ class CognitoUserIdentity(JSONable):
         password = jdict.get('password')
         is_super = jdict.get('is_super')
 
-        return cls(username, creation_date, confirmation_status, enabled, email,
-                   given_name, family_name, password, is_super=is_super)
+        return cls(username, creation_date, confirmation_status, enabled,
+                   email, given_name, family_name, password, is_super=is_super)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, creation_date, confirmation_status, enabled, email,
-                 given_name, family_name, password, is_super=False):
+    def __init__(self, username, creation_date, confirmation_status, enabled,
+                 email, given_name, family_name, password, is_super=False):
         """
         Constructor
         """
@@ -355,7 +375,7 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, creation_date:%s, confirmation_status:%s, enabled:%s, email:%s, " \
-               "given_name:%s, family_name:%s, is_super:%s}" % \
-               (self.username, self.creation_date, self.confirmation_status, self.enabled, self.email,
-                self.given_name, self.family_name, self.is_super)
+        return "CognitoUserIdentity:{username:%s, creation_date:%s, confirmation_status:%s, enabled:%s, " \
+               "email:%s, given_name:%s, family_name:%s, is_super:%s}" % \
+               (self.username, self.creation_date, self.confirmation_status, self.enabled,
+                self.email, self.given_name, self.family_name, self.is_super)
