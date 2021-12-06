@@ -27,7 +27,7 @@ class AlertSpecificationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
-        self.__http_client = http_client
+        self.__http_client = http_client                # requests package
         self.__auth = auth
 
 
