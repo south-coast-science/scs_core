@@ -68,6 +68,8 @@ class CSVLogReader(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def run(self, halt_on_empty_queue=False):
+        # self.__logger.info('CSVLogReader: running')
+
         try:
             # build queue...
             timeline_start, cursors = self.__queue_builder.find_cursors()       # waits indefinitely for network
