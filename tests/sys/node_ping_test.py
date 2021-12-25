@@ -14,3 +14,7 @@ from scs_core.sys.node import Node
 
 result = Node.ping('8.8.8.8', ttl=128)
 print("ping result: %s" % result)
+
+result = Node.is_connected('aws.amazon.com')
+print("is_connected result: %s" % result)
+
