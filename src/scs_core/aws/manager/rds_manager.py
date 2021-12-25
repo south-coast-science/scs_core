@@ -17,8 +17,8 @@ import ast
 import json
 import logging
 
-# --------------------------------------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------------------------------------
 
 
 class RDSManager(object):
@@ -66,6 +66,7 @@ class RDSManager(object):
             response_set.append(obj.copy())
         return response_set
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 
@@ -78,7 +79,6 @@ class RDSLambdaManager(object):
 
     def __init__(self, lambda_client):
         self.__lambda_client = lambda_client
-
 
     def get_raw_response(self, q, user):
         event = {
@@ -95,10 +95,17 @@ class RDSLambdaManager(object):
 
         return res
 
-    def get_records(self, q, user):
+    def get_records(self, q, user, raw=False):
+
+        if raw:
+            q_type = "raw"
+        else:
+            q_type = "mapped"
+
         event = {
             "query": q,
-            "username": user
+            "username": user,
+            "q_type": q_type
         }
         payload = json.dumps(event).encode('utf-8')
 
@@ -109,10 +116,13 @@ class RDSLambdaManager(object):
         )
 
         raw = res['Payload'].read().decode('utf-8')
-        jdict = json.loads(ast.literal_eval(raw))
+        ast_raw = ast.literal_eval(raw)
+        if type(ast_raw) is str:
+            jdict = json.loads(ast.literal_eval(raw))
+        else:
+            jdict = raw
         logging.info(jdict)
-        if type(jdict) is str:
-            return None
+
         return jdict
 
     def do_query(self, q, user):
@@ -127,7 +137,6 @@ class RDSLambdaManager(object):
             InvocationType='RequestResponse',
             Payload=payload
         )
-
 
     """
     TODO: Could this be made more efficient, maybe by getting one row with raw metadata to do the 
