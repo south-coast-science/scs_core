@@ -99,9 +99,9 @@ class Node(ABC):
 
 
     @staticmethod
-    def is_connected(uri, timeout=None):
+    def is_connected(host, timeout=None):
         try:
-            addr = (socket.gethostbyname(uri), 80)
+            addr = (socket.gethostbyname(host), 80)
             socket.create_connection(addr) if timeout is None else socket.create_connection(addr, timeout=timeout)
             return True
 
