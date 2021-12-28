@@ -47,17 +47,17 @@ class HTTPResponse(JSONable, ABC):
 
     @classmethod
     def construct_from_response_jdict(cls, status, jdict):
-        return cls(status, description=jdict)
+        return cls(status, body=jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, description=None):
+    def __init__(self, status, body=None):
         """
         Constructor
         """
         self.__status = status                          # HTTPStatus member
-        self.__description = description                # string
+        self.__body = body                              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.status.description if self.description is None else self.description
+        return self.status.body if self.body is None else self.body
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -92,11 +92,11 @@ class HTTPResponse(JSONable, ABC):
 
 
     @property
-    def description(self):
-        return self.__description
+    def body(self):
+        return self.__body
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "HTTPResponse:{status:%s, description:%s}" % (self.status, self.description)
+        return "HTTPResponse:{status:%s, body:%s}" % (self.status, self.body)

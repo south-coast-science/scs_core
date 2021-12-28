@@ -34,8 +34,8 @@ class CSVLogReader(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def __read_rows(reader):
+    @classmethod
+    def __read_rows(cls, reader):
         try:
             for datum in reader.rows():
                 print(datum)
@@ -43,6 +43,7 @@ class CSVLogReader(SynchronisedProcess):
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -110,6 +111,20 @@ class CSVLogReader(SynchronisedProcess):
                     queue.remove(cursor.file_path)
                     queue.as_list(self._value)
 
+                self.__logger.info("*** removed cursor: %s" % cursor)
+
+                if not cursor.is_live:
+                    continue
+
+                # try tailed file again...
+                with self._lock:
+                    tailed = CSVLogCursor(cursor.file_path, read_count, False)
+                    queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
+                    queue.include(tailed)
+                    queue.as_list(self._value)
+
+                self.__logger.info("*** added tailed cursor: %s" % tailed)
+
         except FileNotFoundError as ex:
             self.__logger.error(ex)
 
@@ -139,8 +154,8 @@ class CSVLogReader(SynchronisedProcess):
         try:
             self.__read_rows(reader)
 
-        except RuntimeError:
-            pass                                # Python 3.7 response to StopIteration
+        except RuntimeError:            # Python 3.7 response to StopIteration
+            pass                        # file is closed - but were all the rows read?!?
 
         except TimeoutError:
             self.__logger.error("TimeoutError: %s: read: %s" % (cursor, reader.read_count))

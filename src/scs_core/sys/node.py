@@ -4,6 +4,7 @@ Created on 4 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
+https://codereview.stackexchange.com/questions/101659/test-if-a-network-is-online-by-using-urllib2
 """
 
 import socket
@@ -58,16 +59,16 @@ class Node(ABC):
     # scanner...
 
     @classmethod
-    def scan_accessible_subnets(cls, start=1, end=254, timeout=10.0):
-        for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, timeout=timeout):
+    def scan_accessible_subnets(cls, start=1, end=254, ttl=32):
+        for dot_decimal in cls.scan_subnet(cls.server_ipv4_address(), start=start, end=end, ttl=ttl):
             yield dot_decimal
 
-        for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, timeout=timeout):
+        for dot_decimal in cls.scan_subnet(cls.ipv4_address(), start=start, end=end, ttl=ttl):
             yield dot_decimal
 
 
     @classmethod
-    def scan_subnet(cls, ipv4_address, start=1, end=254, timeout=10.0):
+    def scan_subnet(cls, ipv4_address, start=1, end=254, ttl=32):
         if ipv4_address is None:
             return
 
@@ -76,12 +77,12 @@ class Node(ABC):
         # start...
         for addr in ipv4_address.lso_range(start, end):
             dot_decimal = addr.dot_decimal()
-            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(timeout), dot_decimal],
+            pings[dot_decimal] = Popen(['ping', '-n', '-q', '-c', '1', '-t', str(ttl), dot_decimal],
                                        stdout=DEVNULL, stderr=DEVNULL)
         # report...
         for dot_decimal in pings:
             try:
-                pings[dot_decimal].wait(timeout=timeout * 2.0)
+                pings[dot_decimal].wait(timeout=ttl * 2.0)
             except (TimeoutExpired, TimeoutError):
                 continue
 
@@ -90,12 +91,22 @@ class Node(ABC):
 
 
     @staticmethod
-    def ping(host, timeout=1.0):
-        p = Popen(['ping', '-q', '-c', '1', '-t', str(timeout), host],
-                  stdout=DEVNULL, stderr=DEVNULL)
+    def ping(host, ttl=32):
+        p = Popen(['ping', '-q', '-c', '1', '-t', str(ttl), host], stdout=DEVNULL, stderr=DEVNULL)
         p.wait()
 
         return p.returncode == 0
+
+
+    @staticmethod
+    def is_connected(host, timeout=None):
+        try:
+            addr = (socket.gethostbyname(host), 80)
+            socket.create_connection(addr) if timeout is None else socket.create_connection(addr, timeout=timeout)
+            return True
+
+        except OSError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
