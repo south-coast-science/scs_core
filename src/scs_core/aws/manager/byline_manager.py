@@ -63,7 +63,6 @@ class BylineManager(object):
             self.__rest_client.close()
 
 
-
     def find_bylines(self, excluded=None):
         request_path = '/device-topics'
 
