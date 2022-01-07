@@ -21,7 +21,7 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                "aws_project.json"
+    __FILENAME = "aws_project.json"
 
     @classmethod
     def persistence_location(cls):
