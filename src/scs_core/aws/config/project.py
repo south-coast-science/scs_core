@@ -21,7 +21,7 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __FILENAME =                "aws_project.json"
+    __FILENAME = "aws_project.json"
 
     @classmethod
     def persistence_location(cls):
@@ -44,10 +44,11 @@ class Project(PersistentJSONable):
 
     @classmethod
     def construct(cls, organisation, group, location):
-        path_root = organisation + '/'
+        std_organisation = organisation.replace(' ', '-').lower()
+        std_group = group.replace(' ', '-').lower()
 
-        location_path = path_root + group + '/loc/' + str(location)
-        device_path = path_root + group + '/device'
+        location_path = '/'.join((std_organisation, std_group, 'loc', str(location)))
+        device_path = '/'.join((std_organisation, std_group, 'device'))
 
         return Project(location_path, device_path)
 
