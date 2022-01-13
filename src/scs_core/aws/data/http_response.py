@@ -9,6 +9,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
 from abc import ABC
 from http import HTTPStatus
+from http.client import responses
 
 from scs_core.data.json import JSONable, JSONify
 
@@ -70,7 +71,7 @@ class HTTPResponse(JSONable, ABC):
 
     def as_http(self, cors=False):
         jdict = {
-            'statusCode': self.status.value,
+            'statusCode': self.status,
             'body': JSONify.dumps(self)
         }
 
@@ -81,7 +82,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.status.body if self.body is None else self.body
+        return self.body if self.body is not None else responses[self.status]
 
 
     # ----------------------------------------------------------------------------------------------------------------
