@@ -82,7 +82,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.body if self.body is not None else responses[self.status]
+        return self.status.phrase if self.body is None else self.body
 
 
     # ----------------------------------------------------------------------------------------------------------------
