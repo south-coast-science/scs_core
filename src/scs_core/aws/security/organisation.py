@@ -23,9 +23,9 @@ class Organisation(JSONable):
     """
 
     ORG_ID = 'OrganisationID'
-    NAME = 'OrganisationName'
-    URL = 'OrganisationURL'
-    OWNER = 'OrganisationOwner'
+    NAME = 'Name'
+    URL = 'URL'
+    OWNER = 'Owner'
 
     # ----------------------------------------------------------------------------------------------------------------
 
