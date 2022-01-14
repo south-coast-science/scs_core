@@ -199,6 +199,9 @@ class OrganisationPathRoot(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.path_id is None or self.org_id is None:
+            return False
+
         return self.is_valid_path(self.path)
 
 
@@ -281,6 +284,13 @@ class OrganisationAdmin(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_valid(self):
+        if self.username is None or self.org_id is None:
+            return False
+
+        return True
+
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -359,6 +369,13 @@ class OrganisationUser(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        if self.username is None or self.org_id is None:
+            return False
+
+        return True
+
 
     def as_json(self):
         jdict = OrderedDict()
@@ -469,6 +486,9 @@ class OrganisationUserPath(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.username is None or self.path_id is None:
+            return False
+
         return self.is_valid_extension(self.extension)
 
 
@@ -572,6 +592,9 @@ class OrganisationDevice(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.device_tag is None or self.org_id is None:
+            return False
+
         return self.is_valid_tag(self.device_tag)
 
 
