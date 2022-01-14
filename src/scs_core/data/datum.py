@@ -12,6 +12,7 @@ import re
 import struct
 
 from datetime import date
+from urllib.parse import urlparse
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -48,6 +49,15 @@ class Datum(object):
         try:
             return bool(re.match(r'[^@\s]+@[^@\s]+\.[^@\s]+', value))
         except TypeError:
+            return False
+
+
+    @classmethod
+    def is_url(cls, value):
+        try:
+            result = urlparse(value)
+            return all((result.scheme, result.netloc))
+        except AttributeError:
             return False
 
 
