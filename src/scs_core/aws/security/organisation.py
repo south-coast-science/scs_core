@@ -32,19 +32,38 @@ class Organisation(JSONable):
     @classmethod
     def is_valid_name(cls, name):
         try:
+            if len(name) > 255:
+                return False
+
             return bool(re.fullmatch(r'([0-9A-Za-z\- .()]+)', name))
+
         except TypeError:
             return False
 
 
     @classmethod
     def is_valid_url(cls, url):
-        return Datum.is_url(url)
+        try:
+            if len(url) > 255:
+                return False
+
+            return Datum.is_url(url)
+
+        except TypeError:
+            return False
+
 
 
     @classmethod
     def is_valid_owner(cls, owner):
-        return Datum.is_email_address(owner)
+        try:
+            if len(owner) > 255:
+                return False
+
+            return Datum.is_email_address(owner)
+
+        except TypeError:
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -136,7 +155,11 @@ class OrganisationPathRoot(JSONable):
     @classmethod
     def is_valid_path(cls, path):
         try:
+            if len(path) > 255:
+                return False
+
             return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)', path))
+
         except TypeError:
             return False
 
@@ -204,6 +227,79 @@ class OrganisationPathRoot(JSONable):
     def __str__(self, *args, **kwargs):
         return "OrganisationPathRoot:{path_id:%s, org_id:%s, path:%s}" % \
                (self.path_id, self.org_id, self.path)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class OrganisationAdmin(JSONable):
+    """
+    classdocs
+    """
+
+    USERNAME = 'Username'
+    ORG_ID = 'OrganisationID'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        username = jdict.get(cls.USERNAME)
+        org_id = jdict.get(cls.ORG_ID)
+
+        return cls(username, org_id)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, username, org_id):
+        """
+        Constructor
+        """
+        self.__username = int(username)                 # PK: int
+        self.__org_id = int(org_id)                     # PK: int
+
+
+    def __lt__(self, other):
+        if self.username < other.username:
+            return True
+
+        if self.username > other.username:
+            return False
+
+        return self.org_id < other.org_id
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict[self.USERNAME] = self.username
+        jdict[self.ORG_ID] = self.org_id
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def username(self):
+        return self.__username
+
+
+    @property
+    def org_id(self):
+        return self.__org_id
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "OrganisationAdmin:{username:%s, org_id:%s}" % \
+               (self.username, self.org_id)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -313,7 +409,11 @@ class OrganisationUserPath(JSONable):
     @classmethod
     def is_valid_extension(cls, extension):
         try:
+            if len(extension) > 255:
+                return False
+
             return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)+', extension))
+
         except TypeError:
             return False
 
@@ -412,7 +512,11 @@ class OrganisationDevice(JSONable):
     @classmethod
     def is_valid_tag(cls, device_tag):
         try:
+            if len(device_tag) > 255:
+                return False
+
             return bool(re.fullmatch(r'[a-z]+[0-9]*-[a-z]+[0-9]*-[0-9]+', device_tag))
+
         except TypeError:
             return False
 

@@ -17,7 +17,6 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-
 organisation = Organisation(1, "Test Org", 'https://www.bbc.co.uk/news', "bruno.beloff@southcoastscience.com")
 print(organisation)
 
@@ -69,6 +68,7 @@ print(jstr)
 device = OrganisationDevice.construct_from_jdict(json.loads(jstr))
 print(device)
 print("-")
+
 
 path = 'ric-ardo/'
 print("is_valid_path: %s: %s" % (path, OrganisationPathRoot.is_valid_path(path)))
