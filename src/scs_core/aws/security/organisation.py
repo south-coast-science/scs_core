@@ -53,7 +53,6 @@ class Organisation(JSONable):
             return False
 
 
-
     @classmethod
     def is_valid_owner(cls, owner):
         try:
