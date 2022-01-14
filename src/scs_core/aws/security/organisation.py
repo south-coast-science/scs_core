@@ -98,6 +98,10 @@ class Organisation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_valid(self):
+        return self.is_valid_name(self.name) and self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
+
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -193,6 +197,10 @@ class OrganisationPathRoot(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        return self.is_valid_path(self.path)
+
 
     def as_json(self):
         jdict = OrderedDict()
@@ -460,6 +468,10 @@ class OrganisationUserPath(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_valid(self):
+        return self.is_valid_extension(self.extension)
+
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -558,6 +570,10 @@ class OrganisationDevice(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def is_valid(self):
+        return self.is_valid_tag(self.device_tag)
+
 
     def as_json(self):
         jdict = OrderedDict()
