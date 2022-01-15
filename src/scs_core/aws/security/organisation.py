@@ -36,7 +36,7 @@ class Organisation(JSONable):
             if not (1 < len(name) < 256):
                 return False
 
-            return bool(re.fullmatch(r'([0-9A-Za-z\- &.()]+)', name))
+            return bool(re.fullmatch(r'[0-9A-Za-z\- &.()]+', name))
 
         except TypeError:
             return False
@@ -180,7 +180,7 @@ class OrganisationPathRoot(JSONable):
             if len(path) > 255:
                 return False
 
-            return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)', path))
+            return bool(re.fullmatch(r'[0-9A-Za-z\-]+/', path))
 
         except TypeError:
             return False
