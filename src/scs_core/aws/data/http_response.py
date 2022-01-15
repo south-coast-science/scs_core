@@ -9,7 +9,6 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
 from abc import ABC
 from http import HTTPStatus
-from http.client import responses
 
 from scs_core.data.json import JSONable, JSONify
 

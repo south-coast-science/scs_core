@@ -17,7 +17,8 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-organisation = Organisation(1, "Test Org", 'https://www.bbc.co.uk/news', "bruno.beloff@southcoastscience.com")
+organisation = Organisation(1, "SCS", 'South Coast Science', 'https://www.bbc.co.uk/news',
+                            "bruno.beloff@southcoastscience.com")
 print(organisation)
 
 jstr = JSONify.dumps(organisation)
@@ -38,7 +39,7 @@ print(path_root)
 print("-")
 
 
-user = OrganisationUser(111, 1, True, False)
+user = OrganisationUser(111, 1, True, True, True, False)
 print(user)
 
 jstr = JSONify.dumps(user)
@@ -59,7 +60,7 @@ print(user_path)
 print("-")
 
 
-device = OrganisationDevice('scs-bgx-401', 1, LocalizedDatetime.now(), None)
+device = OrganisationDevice('scs-bgx-401', 1, LocalizedDatetime.now(), None, 'Preston Circus')
 print(device)
 
 jstr = JSONify.dumps(device)
@@ -69,6 +70,8 @@ device = OrganisationDevice.construct_from_jdict(json.loads(jstr))
 print(device)
 print("-")
 
+
+# --------------------------------------------------------------------------------------------------------------------
 
 path = 'ric-ardo/'
 print("is_valid_path: %s: %s" % (path, OrganisationPathRoot.is_valid_path(path)))
