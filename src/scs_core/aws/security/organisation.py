@@ -547,7 +547,7 @@ class OrganisationDevice(JSONable):
         self.__org_id = int(org_id)                     # PK: int
         self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
-        self.__deployment_label = deployment_label        # NOT NONE: string
+        self.__deployment_label = deployment_label      # NOT NONE: string
 
 
     def __lt__(self, other):
