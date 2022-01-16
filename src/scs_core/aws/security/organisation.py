@@ -23,7 +23,7 @@ class Organisation(JSONable):
     """
 
     ORG_ID = 'OrgID'
-    NAME = 'Name'
+    LABEL = 'Label'
     LONG_NAME = 'LongName'
     URL = 'URL'
     OWNER = 'Owner'
@@ -31,12 +31,12 @@ class Organisation(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def is_valid_name(cls, name):
+    def is_valid_label(cls, label):
         try:
-            if not (1 < len(name) < 256):
+            if not (1 < len(label) < 256):
                 return False
 
-            return bool(re.fullmatch(r'[0-9A-Za-z\- &.()]+', name))
+            return bool(re.fullmatch(r'[0-9A-Za-z\- &.()]+', label))
 
         except TypeError:
             return False
@@ -82,44 +82,46 @@ class Organisation(JSONable):
         if not jdict:
             return None
 
-        org_id = jdict.get(cls.ORG_ID)
-        name = jdict.get(cls.NAME)
+        org_id = jdict.get(cls.ORG_ID, 0)
+        label = jdict.get(cls.LABEL)
         long_name = jdict.get(cls.LONG_NAME)
         url = jdict.get(cls.URL)
         owner = jdict.get(cls.OWNER)
 
-        return cls(org_id, name, long_name, url, owner)
+        return cls(org_id, label, long_name, url, owner)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org_id, name, long_name, url, owner):
+    def __init__(self, org_id, label, long_name, url, owner):
         """
         Constructor
         """
         self.__org_id = int(org_id)                     # AUTO PK: int
-        self.__name = name                              # UNIQUE: string
+        self.__label = label                            # UNIQUE: string
         self.__long_name = long_name                    # string
         self.__url = url                                # string
         self.__owner = owner                            # INDEX: string (email address)
 
 
     def __lt__(self, other):
-        return self.name < other.name
+        return self.label < other.label
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):         # WARNING: does not test for name uniqueness
-        return self.is_valid_name(self.name) and self.is_valid_long_name(self.long_name) and \
+        return self.is_valid_label(self.label) and self.is_valid_long_name(self.long_name) and \
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
 
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict[self.ORG_ID] = self.org_id
-        jdict[self.NAME] = self.name
+        if self.org_id is not None:
+            jdict[self.ORG_ID] = self.org_id
+
+        jdict[self.LABEL] = self.label
         jdict[self.LONG_NAME] = self.long_name
         jdict[self.URL] = self.url
         jdict[self.OWNER] = self.owner
@@ -135,8 +137,8 @@ class Organisation(JSONable):
 
 
     @property
-    def name(self):
-        return self.__name
+    def label(self):
+        return self.__label
 
 
     @property
@@ -157,8 +159,8 @@ class Organisation(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Organisation:{org_id:%s, name:%s, long_name:%s, url:%s, owner:%s}" % \
-               (self.org_id, self.name, self.long_name, self.url, self.owner)
+        return self.__class__.__name__ + ":{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
+               (self.org_id, self.label, self.long_name, self.url, self.owner)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -168,7 +170,7 @@ class OrganisationPathRoot(JSONable):
     classdocs
     """
 
-    PATH_ID = 'PathID'
+    OPR_ID = 'OPRID'
     ORG_ID = 'OrgID'
     PATH = 'Path'
 
@@ -193,20 +195,20 @@ class OrganisationPathRoot(JSONable):
         if not jdict:
             return None
 
-        path_id = jdict.get(cls.PATH_ID)
+        opr_id = jdict.get(cls.OPR_ID, 0)
         org_id = jdict.get(cls.ORG_ID)
         path = jdict.get(cls.PATH)
 
-        return cls(path_id, org_id, path)
+        return cls(opr_id, org_id, path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, path_id, org_id, path):
+    def __init__(self, opr_id, org_id, path):
         """
         Constructor
         """
-        self.__path_id = int(path_id)                   # AUTO PK: int
+        self.__opr_id = int(opr_id)                     # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
         self.__path = path                              # UNIQUE: string
 
@@ -227,7 +229,9 @@ class OrganisationPathRoot(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict[self.PATH_ID] = self.path_id
+        if self.opr_id is not None:
+            jdict[self.OPR_ID] = self.opr_id
+
         jdict[self.ORG_ID] = self.org_id
         jdict[self.PATH] = self.path
 
@@ -237,8 +241,8 @@ class OrganisationPathRoot(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def path_id(self):
-        return self.__path_id
+    def opr_id(self):
+        return self.__opr_id
 
 
     @property
@@ -254,8 +258,8 @@ class OrganisationPathRoot(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OrganisationPathRoot:{path_id:%s, org_id:%s, path:%s}" % \
-               (self.path_id, self.org_id, self.path)
+        return self.__class__.__name__ + ":{opr_id:%s, org_id:%s, path:%s}" % \
+               (self.opr_id, self.org_id, self.path)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -370,10 +374,10 @@ class OrganisationUser(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OrganisationUser:{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_verified:%s, " \
-               "is_suspended:%s}" % \
-               (self.username, self.org_id, self.is_org_admin, self.is_device_admin, self.is_verified,
-                self.is_suspended)
+        return self.__class__.__name__ + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, " \
+                                         "is_verified:%s, is_suspended:%s}" % \
+               (self.username, self.org_id, self.is_org_admin, self.is_device_admin,
+                self.is_verified, self.is_suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -384,7 +388,7 @@ class OrganisationUserPath(JSONable):
     """
 
     USERNAME = 'Username'
-    PATH_ID = 'PathID'
+    OPR_ID = 'OPRID'
     EXTENSION = 'Extension'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -409,20 +413,20 @@ class OrganisationUserPath(JSONable):
             return None
 
         username = jdict.get(cls.USERNAME)
-        path_id = jdict.get(cls.PATH_ID)
+        opr_id = jdict.get(cls.OPR_ID)
         extension = jdict.get(cls.EXTENSION)
 
-        return cls(username, path_id, extension)
+        return cls(username, opr_id, extension)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, path_id, extension):
+    def __init__(self, username, opr_id, extension):
         """
         Constructor
         """
         self.__username = int(username)                 # PK: int
-        self.__path_id = int(path_id)                   # PK: int
+        self.__opr_id = int(opr_id)                     # PK: int
         self.__extension = extension                    # PK: string
 
 
@@ -433,10 +437,10 @@ class OrganisationUserPath(JSONable):
         if self.username > other.username:
             return False
 
-        if self.path_id < other.path_id:
+        if self.opr_id < other.opr_id:
             return True
 
-        if self.path_id > other.path_id:
+        if self.opr_id > other.opr_id:
             return False
 
         return self.extension < other.extension
@@ -445,7 +449,7 @@ class OrganisationUserPath(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.username is None or self.path_id is None:
+        if self.username is None or self.opr_id is None:
             return False
 
         return self.is_valid_extension(self.extension)
@@ -455,7 +459,7 @@ class OrganisationUserPath(JSONable):
         jdict = OrderedDict()
 
         jdict[self.USERNAME] = self.username
-        jdict[self.PATH_ID] = self.path_id
+        jdict[self.OPR_ID] = self.opr_id
         jdict[self.EXTENSION] = self.extension
 
         return jdict
@@ -469,8 +473,8 @@ class OrganisationUserPath(JSONable):
 
 
     @property
-    def path_id(self):
-        return self.__path_id
+    def opr_id(self):
+        return self.__opr_id
 
 
     @property
@@ -481,8 +485,8 @@ class OrganisationUserPath(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OrganisationUserPath:{username:%s, path_id:%s, extension:%s}" % \
-               (self.username, self.path_id, self.extension)
+        return self.__class__.__name__ + ":{username:%s, opr_id:%s, extension:%s}" %  \
+               (self.username, self.opr_id, self.extension)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -547,7 +551,7 @@ class OrganisationDevice(JSONable):
         self.__org_id = int(org_id)                     # PK: int
         self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
-        self.__deployment_label = deployment_label      # NOT NONE: string
+        self.__deployment_label = deployment_label      # NOT NONE, UNIQUE(org_id, deployment_label): string
 
 
     def __lt__(self, other):
@@ -617,7 +621,7 @@ class OrganisationDevice(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OrganisationDevice:{device_tag:%s, org_id:%s, start_datetime:%s, end_datetime:%s, " \
-               "deployment_label:%s}" % \
+        return self.__class__.__name__ + ":{device_tag:%s, org_id:%s, start_datetime:%s, end_datetime:%s, " \
+                                         "deployment_label:%s}" % \
                (self.device_tag, self.org_id, self.start_datetime, self.end_datetime,
                 self.deployment_label)
