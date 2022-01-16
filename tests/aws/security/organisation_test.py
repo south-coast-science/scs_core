@@ -82,5 +82,5 @@ print("is_valid_extension: %s: %s" % (extension, OrganisationUserPath.is_valid_e
 device_tag = 'scs-be2-3'
 print("is_valid_tag: %s: %s" % (device_tag, OrganisationDevice.is_valid_tag(device_tag)))
 
-name = 'Dust Control Brazil (Demo)'
-print("is_valid_name: %s: %s" % (name, Organisation.is_valid_name(name)))
+label = 'Dust Control Brazil (Demo)'
+print("is_valid_name: %s: %s" % (label, Organisation.is_valid_label(label)))
