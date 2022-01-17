@@ -4,6 +4,25 @@ Created on 26 Oct 2021
 @author: Jade Page (jade.page@southcoastscience.com)
 
 The foundation data classes for the security system
+
+example Organisation:
+{"OrgID": 1, "Label": "SCS", "LongName": "South Coast Science", "URL": "https://www.southcoastscience.com",
+"Owner": "bruno.beloff@southcoastscience.com"}
+
+example OrganisationPathRoot:
+{"OPRID": 11, "OrgID": 1, "PathRoot": "ricardo/"}
+
+example OrganisationUser:
+{"Username": 111, "OrgID": 1, "IsOrgAdmin": true, "IsDeviceAdmin": true, "IsSuspended": false}
+
+example OrganisationUserPath:
+{"Username": 111, "OPRID": 11, "PathExtension": "heathrow/"}
+
+example OrganisationDevice:
+{"DeviceTag": "scs-bgx-401", "OrgID": 1, "DevicePath": "south-coast-science-demo/brighton/loc/1/",
+"EnvironmentPath": "south-coast-science-demo/brighton/device/praxis-000401/",
+"StartDatetime": "2022-01-17T10:40:04Z", "EndDatetime": null,
+"DeploymentLabel": "Preston Circus"}
 """
 
 import re
@@ -118,9 +137,7 @@ class Organisation(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.org_id is not None:
-            jdict[self.ORG_ID] = self.org_id
-
+        jdict[self.ORG_ID] = self.org_id
         jdict[self.LABEL] = self.label
         jdict[self.LONG_NAME] = self.long_name
         jdict[self.URL] = self.url
@@ -159,8 +176,10 @@ class Organisation(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
-               (self.org_id, self.label, self.long_name, self.url, self.owner)
+        name = self.__class__.__name__
+
+        return name + ":{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
+            (self.org_id, self.label, self.long_name, self.url, self.owner)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -172,17 +191,17 @@ class OrganisationPathRoot(JSONable):
 
     OPR_ID = 'OPRID'
     ORG_ID = 'OrgID'
-    PATH = 'Path'
+    PATH_ROOT = 'PathRoot'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def is_valid_path(cls, path):
+    def is_valid_path_root(cls, path_root):
         try:
-            if len(path) > 255:
+            if len(path_root) > 255:
                 return False
 
-            return bool(re.fullmatch(r'[0-9A-Za-z\-]+/', path))
+            return bool(re.fullmatch(r'[0-9A-Za-z\-]+/', path_root))
 
         except TypeError:
             return False
@@ -197,24 +216,24 @@ class OrganisationPathRoot(JSONable):
 
         opr_id = jdict.get(cls.OPR_ID, 0)
         org_id = jdict.get(cls.ORG_ID)
-        path = jdict.get(cls.PATH)
+        path_root = jdict.get(cls.PATH_ROOT)
 
-        return cls(opr_id, org_id, path)
+        return cls(opr_id, org_id, path_root)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, opr_id, org_id, path):
+    def __init__(self, opr_id, org_id, path_root):
         """
         Constructor
         """
         self.__opr_id = int(opr_id)                     # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
-        self.__path = path                              # UNIQUE: string
+        self.__path_root = path_root                    # UNIQUE: string
 
 
     def __lt__(self, other):
-        return self.path < other.path
+        return self.path_root < other.path_root
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -223,17 +242,15 @@ class OrganisationPathRoot(JSONable):
         if self.org_id is None:
             return False
 
-        return self.is_valid_path(self.path)
+        return self.is_valid_path_root(self.path_root)
 
 
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.opr_id is not None:
-            jdict[self.OPR_ID] = self.opr_id
-
+        jdict[self.OPR_ID] = self.opr_id
         jdict[self.ORG_ID] = self.org_id
-        jdict[self.PATH] = self.path
+        jdict[self.PATH_ROOT] = self.path_root
 
         return jdict
 
@@ -251,15 +268,17 @@ class OrganisationPathRoot(JSONable):
 
 
     @property
-    def path(self):
-        return self.__path
+    def path_root(self):
+        return self.__path_root
 
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{opr_id:%s, org_id:%s, path:%s}" % \
-               (self.opr_id, self.org_id, self.path)
+        name = self.__class__.__name__
+
+        return name + ":{opr_id:%s, org_id:%s, path_root:%s}" % \
+            (self.opr_id, self.org_id, self.path_root)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -273,7 +292,6 @@ class OrganisationUser(JSONable):
     ORG_ID = 'OrgID'
     IS_ORG_ADMIN = 'IsOrgAdmin'
     IS_DEVICE_ADMIN = 'IsDeviceAdmin'
-    IS_VERIFIED = 'IsVerified'
     IS_SUSPENDED = 'IsSuspended'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -287,15 +305,14 @@ class OrganisationUser(JSONable):
         org_id = jdict.get(cls.ORG_ID)
         is_org_admin = jdict.get(cls.IS_ORG_ADMIN)
         is_device_admin = jdict.get(cls.IS_DEVICE_ADMIN)
-        is_verified = jdict.get(cls.IS_VERIFIED)
         is_suspended = jdict.get(cls.IS_SUSPENDED)
 
-        return cls(username, org_id, is_org_admin, is_device_admin, is_verified, is_suspended)
+        return cls(username, org_id, is_org_admin, is_device_admin, is_suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, org_id, is_org_admin, is_device_admin, is_verified, is_suspended):
+    def __init__(self, username, org_id, is_org_admin, is_device_admin, is_suspended):
         """
         Constructor
         """
@@ -303,7 +320,6 @@ class OrganisationUser(JSONable):
         self.__org_id = int(org_id)                     # PK: int
         self.__is_org_admin = bool(is_org_admin)        # INDEX: bool
         self.__is_device_admin = bool(is_device_admin)  # INDEX: bool
-        self.__is_verified = bool(is_verified)          # INDEX: bool
         self.__is_suspended = bool(is_suspended)        # INDEX: bool
 
 
@@ -333,7 +349,6 @@ class OrganisationUser(JSONable):
         jdict[self.ORG_ID] = self.org_id
         jdict[self.IS_ORG_ADMIN] = self.is_org_admin
         jdict[self.IS_DEVICE_ADMIN] = self.is_device_admin
-        jdict[self.IS_VERIFIED] = self.is_verified
         jdict[self.IS_SUSPENDED] = self.is_suspended
 
         return jdict
@@ -362,11 +377,6 @@ class OrganisationUser(JSONable):
 
 
     @property
-    def is_verified(self):
-        return self.__is_verified
-
-
-    @property
     def is_suspended(self):
         return self.__is_suspended
 
@@ -374,10 +384,10 @@ class OrganisationUser(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, " \
-                                         "is_verified:%s, is_suspended:%s}" % \
-               (self.username, self.org_id, self.is_org_admin, self.is_device_admin,
-                self.is_verified, self.is_suspended)
+        name = self.__class__.__name__
+
+        return name + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
+            (self.username, self.org_id, self.is_org_admin, self.is_device_admin, self.is_suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -389,17 +399,17 @@ class OrganisationUserPath(JSONable):
 
     USERNAME = 'Username'
     OPR_ID = 'OPRID'
-    EXTENSION = 'Extension'
+    PATH_EXTENSION = 'PathExtension'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def is_valid_extension(cls, extension):
+    def is_valid_path_extension(cls, path_extension):
         try:
-            if len(extension) > 255:
+            if len(path_extension) > 255:
                 return False
 
-            return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)+', extension))
+            return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)+', path_extension))
 
         except TypeError:
             return False
@@ -414,20 +424,20 @@ class OrganisationUserPath(JSONable):
 
         username = jdict.get(cls.USERNAME)
         opr_id = jdict.get(cls.OPR_ID)
-        extension = jdict.get(cls.EXTENSION)
+        path_extension = jdict.get(cls.PATH_EXTENSION)
 
-        return cls(username, opr_id, extension)
+        return cls(username, opr_id, path_extension)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, opr_id, extension):
+    def __init__(self, username, opr_id, path_extension):
         """
         Constructor
         """
         self.__username = int(username)                 # PK: int
         self.__opr_id = int(opr_id)                     # PK: int
-        self.__extension = extension                    # PK: string
+        self.__path_extension = path_extension          # PK: string
 
 
     def __lt__(self, other):
@@ -443,7 +453,7 @@ class OrganisationUserPath(JSONable):
         if self.opr_id > other.opr_id:
             return False
 
-        return self.extension < other.extension
+        return self.path_extension < other.path_extension
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -452,7 +462,7 @@ class OrganisationUserPath(JSONable):
         if self.username is None or self.opr_id is None:
             return False
 
-        return self.is_valid_extension(self.extension)
+        return self.is_valid_path_extension(self.path_extension)
 
 
     def as_json(self):
@@ -460,7 +470,7 @@ class OrganisationUserPath(JSONable):
 
         jdict[self.USERNAME] = self.username
         jdict[self.OPR_ID] = self.opr_id
-        jdict[self.EXTENSION] = self.extension
+        jdict[self.PATH_EXTENSION] = self.path_extension
 
         return jdict
 
@@ -478,15 +488,17 @@ class OrganisationUserPath(JSONable):
 
 
     @property
-    def extension(self):
-        return self.__extension
+    def path_extension(self):
+        return self.__path_extension
 
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{username:%s, opr_id:%s, extension:%s}" %  \
-               (self.username, self.opr_id, self.extension)
+        name = self.__class__.__name__
+
+        return name + ":{username:%s, opr_id:%s, path_extension:%s}" %  \
+            (self.username, self.opr_id, self.path_extension)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -498,6 +510,8 @@ class OrganisationDevice(JSONable):
 
     DEVICE_TAG = 'DeviceTag'
     ORG_ID = 'OrgID'
+    DEVICE_PATH = 'DevicePath'
+    ENVIRONMENT_PATH = 'EnvironmentPath'
     START_DATETIME = 'StartDatetime'
     END_DATETIME = 'EndDatetime'
     DEPLOYMENT_LABEL = 'DeploymentLabel'
@@ -525,6 +539,18 @@ class OrganisationDevice(JSONable):
             return False
 
 
+    @classmethod
+    def is_valid_path(cls, path):
+        try:
+            if len(path) > 255:
+                return False
+
+            return bool(re.fullmatch(r'([0-9A-Za-z\-]+/)+', path))
+
+        except TypeError:
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -534,24 +560,31 @@ class OrganisationDevice(JSONable):
 
         device_tag = jdict.get(cls.DEVICE_TAG)
         org_id = jdict.get(cls.ORG_ID)
+        device_path = jdict.get(cls.DEVICE_PATH)
+        environment_path = jdict.get(cls.ENVIRONMENT_PATH)
+
         start_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.START_DATETIME))
         end_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.END_DATETIME))
         deployment_label = jdict.get(cls.DEPLOYMENT_LABEL)
 
-        return cls(device_tag, org_id, start_datetime, end_datetime, deployment_label)
+        return cls(device_tag, org_id, device_path, environment_path, start_datetime, end_datetime, deployment_label)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_tag, org_id, start_datetime, end_datetime, deployment_label):
+    def __init__(self, device_tag, org_id, device_path, environment_path, start_datetime, end_datetime,
+                 deployment_label):
         """
         Constructor
         """
         self.__device_tag = device_tag                  # PK: string
         self.__org_id = int(org_id)                     # PK: int
+        self.__device_path = device_path                # PK: string
+        self.__environment_path = environment_path      # PK: string
+
         self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
-        self.__deployment_label = deployment_label      # NOT NONE, UNIQUE(org_id, deployment_label): string
+        self.__deployment_label = deployment_label      # INDEX: string
 
 
     def __lt__(self, other):
@@ -576,7 +609,8 @@ class OrganisationDevice(JSONable):
         if self.device_tag is None or self.org_id is None:
             return False
 
-        return self.is_valid_tag(self.device_tag) and self.is_valid_deployment_label(self.deployment_label)
+        return self.is_valid_tag(self.device_tag) and self.is_valid_deployment_label(self.deployment_label) and \
+            self.is_valid_path(self.device_path) and self.is_valid_path(self.environment_path)
 
 
     def as_json(self):
@@ -584,6 +618,9 @@ class OrganisationDevice(JSONable):
 
         jdict[self.DEVICE_TAG] = self.device_tag
         jdict[self.ORG_ID] = self.org_id
+        jdict[self.DEVICE_PATH] = self.device_path
+        jdict[self.ENVIRONMENT_PATH] = self.environment_path
+
         jdict[self.START_DATETIME] = self.start_datetime.as_iso8601()
         jdict[self.END_DATETIME] = None if self.end_datetime is None else self.end_datetime.as_iso8601()
         jdict[self.DEPLOYMENT_LABEL] = self.deployment_label
@@ -604,6 +641,16 @@ class OrganisationDevice(JSONable):
 
 
     @property
+    def device_path(self):
+        return self.__device_path
+
+
+    @property
+    def environment_path(self):
+        return self.__environment_path
+
+
+    @property
     def start_datetime(self):
         return self.__start_datetime
 
@@ -621,7 +668,9 @@ class OrganisationDevice(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{device_tag:%s, org_id:%s, start_datetime:%s, end_datetime:%s, " \
-                                         "deployment_label:%s}" % \
-               (self.device_tag, self.org_id, self.start_datetime, self.end_datetime,
-                self.deployment_label)
+        name = self.__class__.__name__
+
+        return name + ":{device_tag:%s, org_id:%s, device_path:%s, environment_path:%s, " \
+                      "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
+            (self.device_tag, self.org_id, self.device_path, self.environment_path,
+             self.start_datetime, self.end_datetime, self.deployment_label)
