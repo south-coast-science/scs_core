@@ -17,7 +17,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-organisation = Organisation(1, "SCS", 'South Coast Science', 'https://www.bbc.co.uk/news',
+organisation = Organisation(1, "SCS", 'South Coast Science', 'https://www.southcoastscience.com',
                             "bruno.beloff@southcoastscience.com")
 print(organisation)
 
@@ -39,7 +39,7 @@ print(path_root)
 print("-")
 
 
-user = OrganisationUser(111, 1, True, True, True, False)
+user = OrganisationUser(111, 1, True, True, False)
 print(user)
 
 jstr = JSONify.dumps(user)
@@ -60,7 +60,9 @@ print(user_path)
 print("-")
 
 
-device = OrganisationDevice('scs-bgx-401', 1, LocalizedDatetime.now(), None, 'Preston Circus')
+device = OrganisationDevice('scs-bgx-401', 1,  'south-coast-science-demo/brighton/loc/1/',
+                            'south-coast-science-demo/brighton/device/praxis-000401/',
+                            LocalizedDatetime.now(), None, 'Preston Circus',)
 print(device)
 
 jstr = JSONify.dumps(device)
@@ -73,11 +75,11 @@ print("-")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-path = 'ric-ardo/'
-print("is_valid_path: %s: %s" % (path, OrganisationPathRoot.is_valid_path(path)))
+path = 'ricardo/'
+print("is_valid_path: %s: %s" % (path, OrganisationPathRoot.is_valid_path_root(path)))
 
 extension = 'x/a/'
-print("is_valid_extension: %s: %s" % (extension, OrganisationUserPath.is_valid_extension(extension)))
+print("is_valid_extension: %s: %s" % (extension, OrganisationUserPath.is_valid_path_extension(extension)))
 
 device_tag = 'scs-be2-3'
 print("is_valid_tag: %s: %s" % (device_tag, OrganisationDevice.is_valid_tag(device_tag)))
