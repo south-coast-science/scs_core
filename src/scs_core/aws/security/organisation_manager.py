@@ -31,14 +31,6 @@ class OrganisationManager(object):
         return {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
 
 
-    @classmethod
-    def __check_response(cls, response):
-        status = HTTPStatus(response.status_code)
-
-        if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
@@ -51,6 +43,8 @@ class OrganisationManager(object):
 
     def find_organisations(self, token):
         url = '/'.join((self.__URL, 'organisation'))
+
+        self.__logger.info('headers: %s' % self.__headers(token))
 
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
@@ -86,9 +80,9 @@ class OrganisationManager(object):
         self.__check_response(response)
 
 
-    def delete_organisation(self, token, label):
+    def delete_organisation(self, token, org_id):
         url = '/'.join((self.__URL, 'organisation'))
-        payload = json.dumps({"Label": label})
+        payload = json.dumps({"OrgID": org_id})
 
         response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
@@ -105,6 +99,26 @@ class OrganisationManager(object):
         self.__check_response(response)
 
         return [OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json()]
+
+
+    def get_opr(self, token, opr_id):
+        url = '/'.join((self.__URL, 'opr'))
+        payload = json.dumps({"OPRID": opr_id})
+
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return OrganisationPathRoot.construct_from_jdict(response.json())
+
+
+    def get_opr_by_organisation_path_root(self, token, org_id, path_root):
+        url = '/'.join((self.__URL, 'opr'))
+        payload = json.dumps({"OrgID": org_id, "PathRoot": path_root})
+
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return OrganisationPathRoot.construct_from_jdict(response.json())
 
 
     def insert_opr(self, token, opr):
@@ -224,6 +238,26 @@ class OrganisationManager(object):
 
         response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
+
+
+    def delete_device(self, token, device_tag, org_id, device_path, environment_path):
+        url = '/'.join((self.__URL, 'organisation'))
+        payload = json.dumps({"DeviceTag": device_tag, "OrgID": org_id, "DevicePath": device_path,
+                              "EnvironmentPath": environment_path})
+
+        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __check_response(self, response):
+        self.__logger.info('response: %s' % response.json())
+
+        status = HTTPStatus(response.status_code)
+
+        if status != HTTPStatus.OK:
+            raise HTTPException(status.value, response.reason, response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------

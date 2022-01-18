@@ -129,7 +129,7 @@ class Organisation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):         # WARNING: does not test for name uniqueness
+    def is_valid(self):         # WARNING: does not test for label uniqueness
         return self.is_valid_label(self.label) and self.is_valid_long_name(self.long_name) and \
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
 
@@ -238,7 +238,7 @@ class OrganisationPathRoot(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):             # WARNING: does not test for path uniqueness
+    def is_valid(self):             # WARNING: does not test for path root uniqueness
         if self.org_id is None:
             return False
 
