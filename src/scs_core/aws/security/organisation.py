@@ -511,7 +511,7 @@ class OrganisationDevice(JSONable):
     DEVICE_TAG = 'DeviceTag'
     ORG_ID = 'OrgID'
     DEVICE_PATH = 'DevicePath'
-    ENVIRONMENT_PATH = 'EnvironmentPath'
+    LOCATION_PATH = 'LocationPath'
     START_DATETIME = 'StartDatetime'
     END_DATETIME = 'EndDatetime'
     DEPLOYMENT_LABEL = 'DeploymentLabel'
@@ -561,18 +561,18 @@ class OrganisationDevice(JSONable):
         device_tag = jdict.get(cls.DEVICE_TAG)
         org_id = jdict.get(cls.ORG_ID)
         device_path = jdict.get(cls.DEVICE_PATH)
-        environment_path = jdict.get(cls.ENVIRONMENT_PATH)
+        location_path = jdict.get(cls.LOCATION_PATH)
 
         start_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.START_DATETIME))
         end_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.END_DATETIME))
         deployment_label = jdict.get(cls.DEPLOYMENT_LABEL)
 
-        return cls(device_tag, org_id, device_path, environment_path, start_datetime, end_datetime, deployment_label)
+        return cls(device_tag, org_id, device_path, location_path, start_datetime, end_datetime, deployment_label)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_tag, org_id, device_path, environment_path, start_datetime, end_datetime,
+    def __init__(self, device_tag, org_id, device_path, location_path, start_datetime, end_datetime,
                  deployment_label):
         """
         Constructor
@@ -580,7 +580,7 @@ class OrganisationDevice(JSONable):
         self.__device_tag = device_tag                  # PK: string
         self.__org_id = int(org_id)                     # PK: int
         self.__device_path = device_path                # PK: string
-        self.__environment_path = environment_path      # PK: string
+        self.__location_path = location_path            # PK: string
 
         self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
@@ -610,7 +610,7 @@ class OrganisationDevice(JSONable):
             return False
 
         return self.is_valid_tag(self.device_tag) and self.is_valid_deployment_label(self.deployment_label) and \
-            self.is_valid_path(self.device_path) and self.is_valid_path(self.environment_path)
+            self.is_valid_path(self.device_path) and self.is_valid_path(self.location_path)
 
 
     def as_json(self):
@@ -619,7 +619,7 @@ class OrganisationDevice(JSONable):
         jdict[self.DEVICE_TAG] = self.device_tag
         jdict[self.ORG_ID] = self.org_id
         jdict[self.DEVICE_PATH] = self.device_path
-        jdict[self.ENVIRONMENT_PATH] = self.environment_path
+        jdict[self.LOCATION_PATH] = self.location_path
 
         jdict[self.START_DATETIME] = self.start_datetime.as_iso8601()
         jdict[self.END_DATETIME] = None if self.end_datetime is None else self.end_datetime.as_iso8601()
@@ -646,8 +646,8 @@ class OrganisationDevice(JSONable):
 
 
     @property
-    def environment_path(self):
-        return self.__environment_path
+    def location_path(self):
+        return self.__location_path
 
 
     @property
@@ -675,7 +675,7 @@ class OrganisationDevice(JSONable):
     def __str__(self, *args, **kwargs):
         name = self.__class__.__name__
 
-        return name + ":{device_tag:%s, org_id:%s, device_path:%s, environment_path:%s, " \
+        return name + ":{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
                       "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
-            (self.device_tag, self.org_id, self.device_path, self.environment_path,
+            (self.device_tag, self.org_id, self.device_path, self.location_path,
              self.start_datetime, self.end_datetime, self.deployment_label)
