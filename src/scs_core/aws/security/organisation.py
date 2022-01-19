@@ -660,6 +660,11 @@ class OrganisationDevice(JSONable):
         return self.__end_datetime
 
 
+    @end_datetime.setter
+    def end_datetime(self, end_datetime):
+        self.__end_datetime = end_datetime
+
+
     @property
     def deployment_label(self):
         return self.__deployment_label
