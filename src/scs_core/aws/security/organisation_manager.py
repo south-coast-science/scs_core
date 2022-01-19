@@ -27,13 +27,6 @@ class OrganisationManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def __headers(cls, token):
-        return {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __init__(self, http_client):
         self.__http_client = http_client                # requests package
         self.__logger = Logging.getLogger()
@@ -44,8 +37,6 @@ class OrganisationManager(object):
 
     def find_organisations(self, token):
         url = '/'.join((self.__MANAGER_URL, 'organisation'))
-
-        self.__logger.info('headers: %s' % self.__headers(token))
 
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
@@ -100,16 +91,6 @@ class OrganisationManager(object):
         self.__check_response(response)
 
         return [OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json()]
-
-
-    def get_opr(self, token, opr_id):
-        url = '/'.join((self.__MANAGER_URL, 'opr'))
-        payload = json.dumps({"OPRID": opr_id})
-
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
-        self.__check_response(response)
-
-        return OrganisationPathRoot.construct_from_jdict(response.json())
 
 
     def get_opr_by_path_root(self, token, path_root):
@@ -241,6 +222,17 @@ class OrganisationManager(object):
         return [OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json()]
 
 
+    def get_device(self, token, device_tag, org_id, device_path, environment_path):
+        url = '/'.join((self.__MANAGER_URL, 'device'))
+        payload = json.dumps({"DeviceTag": device_tag, "OrgID": org_id, "DevicePath": device_path,
+                              "EnvironmentPath": environment_path})
+
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return OrganisationDevice.construct_from_jdict(response.json())
+
+
     def assert_device(self, token, device):
         url = '/'.join((self.__EXECUTIVE_URL, 'device'))
         payload = json.dumps(device)
@@ -259,6 +251,13 @@ class OrganisationManager(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def __headers(self, token):
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
+        self.__logger.info('headers: %s' % self.__headers(token))
+
+        return headers
+
 
     def __check_response(self, response):
         self.__logger.info('response: %s' % response.json())
