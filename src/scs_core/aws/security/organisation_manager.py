@@ -112,9 +112,9 @@ class OrganisationManager(object):
         return OrganisationPathRoot.construct_from_jdict(response.json())
 
 
-    def get_opr_by_organisation_and_path_root(self, token, org_id, path_root):
+    def get_opr_by_path_root(self, token, path_root):
         url = '/'.join((self.__MANAGER_URL, 'opr'))
-        payload = json.dumps({"OrgID": org_id, "PathRoot": path_root})
+        payload = json.dumps({"PathRoot": path_root})
 
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
@@ -181,12 +181,20 @@ class OrganisationManager(object):
         self.__check_response(response)
 
 
+    def delete_user(self, token, username, org_id):
+        url = '/'.join((self.__EXECUTIVE_URL, 'user'))
+        payload = json.dumps({"Username": username, "OrgID": org_id})
+
+        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # OrganisationUserPath...
 
-    def find_oup_by_user(self, token, username):
+    def find_oups(self, token, username, opr_id):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
-        payload = json.dumps({"Username": username})
+        payload = json.dumps({"Username": username, "OPRID": opr_id})
 
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
