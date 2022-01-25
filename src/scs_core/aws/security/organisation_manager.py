@@ -143,7 +143,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUser.construct_from_jdict(jdict) for jdict in response.json()]
+        return [OrganisationUser.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
 
 
     def get_user(self, token, username, org_id):
