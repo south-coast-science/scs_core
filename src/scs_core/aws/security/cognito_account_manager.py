@@ -35,11 +35,8 @@ class CognitoCreateManager(object):
         response = self.__http_client.post(self.__URL, headers=headers, json=identity.as_json())
         status = HTTPStatus(response.status_code)
 
-        # print("status_code: %s" % response.status_code)
-        # print("text: %s" % response.text)
-
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
 
@@ -78,7 +75,7 @@ class CognitoUpdateManager(object):
         # print("text: %s" % response.text)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -116,7 +113,7 @@ class CognitoDeleteManager(object):
         # print("text: %s" % response.text)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------

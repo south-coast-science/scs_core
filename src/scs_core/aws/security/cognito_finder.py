@@ -71,6 +71,16 @@ class CognitoFinder(object):
         return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
 
 
+    def find_by_usernames(self, token, usernames):
+        url = '/'.join((self.__URL, 'usernames'))
+        payload = JSONify.dumps(usernames)
+
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+
+
     def get_by_email(self, token, email):
         url = '/'.join((self.__URL, 'exact'))
         payload = JSONify.dumps({"Email": email})
@@ -105,7 +115,7 @@ class CognitoFinder(object):
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
