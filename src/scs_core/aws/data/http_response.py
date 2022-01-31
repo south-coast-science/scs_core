@@ -35,7 +35,7 @@ class HTTPResponse(JSONable, ABC):
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
         jdict = response.json()
 

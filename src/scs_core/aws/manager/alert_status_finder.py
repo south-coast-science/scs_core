@@ -159,7 +159,7 @@ class AlertStatusFinderResponse(HTTPResponse):
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, status.phrase, status.description)
+            raise HTTPException.construct(status.value, status.phrase, status.description)
 
         mode = AlertStatusFinderRequest.MODE[jdict.get('mode')]
 
