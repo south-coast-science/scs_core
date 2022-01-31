@@ -316,8 +316,8 @@ class OrganisationUser(JSONable):
         """
         Constructor
         """
-        self.__username = int(username)                 # PK: int
-        self.__org_id = int(org_id)                     # PK: int
+        self.__username = username                      # PK: int
+        self.__org_id = org_id                          # PK: int
         self.__is_org_admin = bool(is_org_admin)        # INDEX: bool
         self.__is_device_admin = bool(is_device_admin)  # INDEX: bool
         self.__is_suspended = bool(is_suspended)        # INDEX: bool
