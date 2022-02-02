@@ -94,6 +94,9 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
                 model_output_path = '.'.join(('exg', 'val', gas, 'cnc'))
                 model_output = float(response.node(model_output_path))
 
+                # TODO: if this is an error-mode model, fix it here?
+                # TODO: model_output = vcal - model_predicted_error
+
             except KeyError:
                 continue
 
