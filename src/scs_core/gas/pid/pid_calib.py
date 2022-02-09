@@ -39,8 +39,8 @@ class PIDCalib(SensorCalib):
         """
         SensorCalib.__init__(self, serial_number, sensor_type)
 
-        self.__pid_elc_mv = Datum.int(pid_elc_mv)                 # PID electronic zero                   mV
-        self.__pid_sens_mv = Datum.float(pid_sens_mv, 6)          # PID sensitivity                       mV / ppm
+        self.__pid_elc_mv = Datum.float(pid_elc_mv)                 # PID electronic zero           mV
+        self.__pid_sens_mv = Datum.float(pid_sens_mv, 6)            # PID sensitivity               mV / ppm
 
 
     def __eq__(self, other):

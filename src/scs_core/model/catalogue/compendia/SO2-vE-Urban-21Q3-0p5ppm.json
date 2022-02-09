@@ -1,0 +1,68 @@
+{
+    "is-error-model": true,
+    "data-set": "ref-scs-bgx-642-gases-21Q3-slp16-clean-vcal-300err-0p5ppm",
+    "period": {
+        "start": "2021-11-01T00:02:00Z",
+        "end": "2021-12-28T06:49:00Z"
+    },
+    "primaries": {
+        "SO2.vCal": {
+            "path": "src.scs.env.gases.val.SO2.vCal",
+            "min": -293.363,
+            "avg": 13.666,
+            "max": 728.155
+        }
+    },
+    "secondaries": {
+        "tmp.brd": {
+            "path": "src.scs.stat.val.tmp.brd",
+            "min": 21.4,
+            "avg": 31.983,
+            "max": 48.7
+        },
+        "hmd.cur": {
+            "path": "src.scs.env.meteo.val.hmd.cur",
+            "min": 11.0,
+            "avg": 51.871,
+            "max": 84.1
+        },
+        "hmd.slope": {
+            "path": "src.scs.env.meteo.val.hmd.slope",
+            "min": -0.021,
+            "avg": 0.0,
+            "max": 0.029
+        },
+        "tmp.cur": {
+            "path": "src.scs.env.meteo.val.tmp.cur",
+            "min": 16.3,
+            "avg": 26.558,
+            "max": 42.8
+        },
+        "tmp.slope": {
+            "path": "src.scs.env.meteo.val.tmp.slope",
+            "min": -0.006,
+            "avg": -0.0,
+            "max": 0.003
+        }
+    },
+    "reference": {
+        "path": "src.ref.gas.SO2",
+        "min": 1.0,
+        "avg": 14.3,
+        "max": 499.0
+    },
+    "output": {
+        "path": "exg.SO2.vE.Urban.21Q3",
+        "min": -50.9,
+        "avg": 14.3,
+        "max": 496.3
+    },
+    "performance": {
+        "count": 77568,
+        "slope": 0.882,
+        "intercept": 1.604,
+        "r2": 0.893,
+        "p": 0.0,
+        "std-err": 0.001
+    }
+}

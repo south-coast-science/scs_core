@@ -180,7 +180,7 @@ class AlertSpecificationManagerResponse(HTTPResponse):
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, status.phrase, status.description)
+            raise HTTPException.construct(status.value, status.phrase, status.description)
 
         alerts = []
         if jdict.get('Items'):

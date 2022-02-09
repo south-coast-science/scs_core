@@ -19,10 +19,27 @@ class HTTPException(RuntimeError, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, response, encoded_data):
+    def construct_from_response(cls, response, encoded_data):
         status = None if response.status is None else int(response.status)
         reason = response.reason
         data = encoded_data.decode()
+
+        return cls.construct(status, reason, data)
+
+
+    @classmethod
+    def construct(cls, status, reason, data):
+        if status == HTTPBadRequestException.STATUS:
+            return HTTPBadRequestException(status, reason, data)
+
+        if status == HTTPUnauthorizedException.STATUS:
+            return HTTPUnauthorizedException(status, reason, data)
+
+        if status == HTTPNotFoundException.STATUS:
+            return HTTPNotFoundException(status, reason, data)
+
+        if status == HTTPConflictException.STATUS:
+            return HTTPConflictException(status, reason, data)
 
         return cls(status, reason, data)
 
@@ -70,4 +87,62 @@ class HTTPException(RuntimeError, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "HTTPException:{status:%s, reason:%s, data:%s}" % (self.status, self.reason, self.data)
+        name = self.__class__.__name__
+
+        return name + ":{status:%s, reason:%s, data:%s}" % (self.status, self.reason, self.data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPBadRequestException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 400
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPUnauthorizedException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 401
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPNotFoundException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 404
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPConflictException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 409
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)

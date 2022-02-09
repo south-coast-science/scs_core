@@ -26,12 +26,12 @@ from getpass import getpass
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable, PersistentJSONable
+from scs_core.data.json import JSONable, MultiPersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserCredentials(PersistentJSONable):
+class CognitoUserCredentials(MultiPersistentJSONable):
     """
     classdocs
     """
@@ -41,15 +41,15 @@ class CognitoUserCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def from_stdin(cls):
+    def from_stdin(cls, name):
         line = sys.stdin.readline()
         jdict = json.loads(line)
 
-        return cls.construct_from_jdict(jdict)
+        return cls.construct_from_jdict(jdict, name=name)
 
 
     @classmethod
-    def from_user(cls):
+    def from_user(cls, name):
         try:
             termios.tcflush(sys.stdin, termios.TCIOFLUSH)               # flush stdin
         except termios.error:
@@ -61,7 +61,7 @@ class CognitoUserCredentials(PersistentJSONable):
         print("Enter password: ", end="", file=sys.stderr)
         password = input().strip()
 
-        return cls(email, password)
+        return cls(name, email, password)
 
 
     @staticmethod
@@ -77,28 +77,30 @@ class CognitoUserCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def persistence_location(cls):
-        return cls.aws_dir(), cls.__FILENAME
+    def persistence_location(cls, name):
+        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
+
+        return cls.aws_dir(), filename
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict, skeleton=False):
+    def construct_from_jdict(cls, jdict, name=None, skeleton=False):
         if not jdict:
-            return cls(None, None) if skeleton else None
+            return cls(None, None, None) if skeleton else None
 
         email = jdict.get('email')
         password = jdict.get('password')
 
-        return cls(email, password)
+        return cls(name, email, password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, email, password):
+    def __init__(self, name, email, password):
         """
         Constructor
         """
-        super().__init__()
+        super().__init__(name)
 
         self.__email = email                            # string
         self.__password = password                      # string
@@ -152,7 +154,8 @@ class CognitoUserCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserCredentials:{email:%s, password:%s}" %  (self.email, self.password)
+        return "CognitoUserCredentials:{name:%s, email:%s, password:%s}" %  \
+               (self.name, self.email, self.password)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -275,17 +278,19 @@ class CognitoUserIdentity(JSONable):
 
 
     def __lt__(self, other):
-        if self.family_name.lower() < other.family_name.lower():
-            return True
+        if self.family_name is not None:
+            if self.family_name.lower() < other.family_name.lower():
+                return True
 
-        if self.family_name.lower() > other.family_name.lower():
-            return False
+            if self.family_name.lower() > other.family_name.lower():
+                return False
 
-        if self.given_name.lower() < other.given_name.lower():
-            return True
+        if self.given_name is not None:
+            if self.given_name.lower() < other.given_name.lower():
+                return True
 
-        if self.given_name.lower() > other.given_name.lower():
-            return False
+            if self.given_name.lower() > other.given_name.lower():
+                return False
 
         if self.email.lower() < other.email.lower():
             return True
