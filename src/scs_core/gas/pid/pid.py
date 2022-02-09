@@ -5,9 +5,9 @@ Created on 30 Sep 2016
 
 Alphasense A4 photo ionisation detector
 
-PID-AH sn: 143950149 - pid_elc_mv: 47.6, pid_sens_mv: 0.0375
+PID-AH sn: 143950149 - pid_elc_mv: 47.6, pid_sens_mv_ppm: 0.0375
 
-PID-AH "default" - pid_elc_mv: 54, pid_sens_mv: 0.040
+PID-AH "default" - pid_elc_mv: 54, pid_sens_mv_ppm: 0.040
 """
 
 from scs_core.gas.pid.pid_calib import PIDCalib
@@ -30,11 +30,11 @@ class PID(Sensor):
     @classmethod
     def init(cls):
         # ppb sensitivity...
-        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
-        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
-        cls.SENSORS[cls.CODE_VOC_PPB_T3] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
-        cls.SENSORS[cls.CODE_VOC_PPB_T4] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
-        cls.SENSORS[cls.CODE_VOC_PPB_T5] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 0.000040)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T1] = PID(cls.CODE_VOC_PPB_T1,  'PIDH2', 'VOC',  4, 50.0, 40.0)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T2] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 40.0)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T3] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 40.0)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T4] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 40.0)    # was PIDNH
+        cls.SENSORS[cls.CODE_VOC_PPB_T5] = PID(cls.CODE_VOC_PPB_T2,  'PIDH2', 'VOC',  4, 50.0, 40.0)    # was PIDNH
 
         # ppm sensitivity
         cls.SENSORS[cls.CODE_VOC_PPM] = PID(cls.CODE_VOC_PPM,  'VOC',  'PID12', 4, 50.0, 0.040)     # was PIDN1
@@ -42,14 +42,14 @@ class PID(Sensor):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, default_elc_mv, default_sens_mv):
+    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, default_elc_mv, default_sens_mv_ppm):
         """
         Constructor
         """
         Sensor.__init__(self, sensor_code, sensor_type, gas_name, adc_gain_index)
 
         self.__default_elc_mv = default_elc_mv
-        self.__default_sens_mv = default_sens_mv
+        self.__default_sens_mv_ppm = default_sens_mv_ppm
 
         self.__tc = PIDTempComp.find(sensor_code)
 
@@ -74,8 +74,8 @@ class PID(Sensor):
 
 
     @property
-    def default_sens_mv(self):
-        return self.__default_sens_mv
+    def default_sens_mv_ppm(self):
+        return self.__default_sens_mv_ppm
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -89,16 +89,16 @@ class PID(Sensor):
     def calib(self, calib):
         # replace missing values with defaults...
         pid_elc_mv = self.default_elc_mv if calib.pid_elc_mv is None else calib.pid_elc_mv
-        pid_sens_mv = self.default_sens_mv if calib.pid_sens_mv is None else calib.pid_sens_mv
+        pid_sens_mv_ppm = self.default_sens_mv_ppm if calib.pid_sens_mv_ppm is None else calib.pid_sens_mv_ppm
 
         # set calibration...
-        self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv)
+        self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv_ppm)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "PID:{sensor_code:%s, sensor_type:%s, gas_name:%s, adc_gain_index:0x%04x, default_elc_mv:%s, " \
-               "default_sens_mv:%s, calib:%s, baseline:%s}" %  \
+               "default_sens_mv_ppm:%s, calib:%s, baseline:%s}" %  \
                (self.sensor_code, self.sensor_type, self.gas_name, self.adc_gain_index, self.default_elc_mv,
-                self.default_sens_mv, self.calib, self.baseline)
+                self.default_sens_mv_ppm, self.calib, self.baseline)
