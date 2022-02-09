@@ -167,7 +167,7 @@ class ConfigurationCheckResponse(HTTPResponse):
         status = HTTPStatus(jdict.get('statusCode'))
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, status.phrase, status.description)
+            raise HTTPException.construct(status.value, status.phrase, status.description)
 
         mode = ConfigurationCheckRequest.MODE[jdict.get('mode')]
 

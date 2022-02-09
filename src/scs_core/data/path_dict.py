@@ -4,8 +4,8 @@ Created on 27 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import re
 import json
+import re
 
 from collections import OrderedDict
 from copy import deepcopy

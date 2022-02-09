@@ -1,4 +1,5 @@
 {
+    "is-error-model": false,
     "data-set": "ref-scs-bgx-508-gases20HB-slp-vcal-err-clean",
     "period": {
         "start": "2020-04-01T00:15:00Z",

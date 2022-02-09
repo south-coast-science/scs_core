@@ -35,7 +35,7 @@ class HTTPResponse(JSONable, ABC):
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:
-            raise HTTPException(status.value, response.reason, response.json())
+            raise HTTPException.construct(status.value, response.reason, response.json())
 
         jdict = response.json()
 
@@ -70,7 +70,7 @@ class HTTPResponse(JSONable, ABC):
 
     def as_http(self, cors=False):
         jdict = {
-            'statusCode': self.status.value,
+            'statusCode': self.status,
             'body': JSONify.dumps(self)
         }
 
@@ -81,7 +81,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.status.body if self.body is None else self.body
+        return self.status.phrase if self.body is None else self.body
 
 
     # ----------------------------------------------------------------------------------------------------------------

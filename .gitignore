@@ -91,5 +91,8 @@ ENV/
 .idea/
 
 # South Coast Science
+**/.DS_Store
 **/*.log
 **/*.numbers
+**/*.xls
+**/*.xlsx
