@@ -39,7 +39,7 @@ class PIDCalib(SensorCalib):
         """
         SensorCalib.__init__(self, serial_number, sensor_type)
 
-        self.__pid_elc_mv = Datum.float(pid_elc_mv)                     # PID electronic zero           mV
+        self.__pid_elc_mv = Datum.float(pid_elc_mv, 3)                  # PID electronic zero           mV
         self.__pid_sens_mv_ppm = Datum.float(pid_sens_mv_ppm, 6)        # PID sensitivity               mV / ppm
 
 
