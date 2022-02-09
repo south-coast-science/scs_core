@@ -84,7 +84,7 @@ class PIDCalib(SensorCalib):
 
 
     @property
-    def pid_sens_v_ppp(self):
+    def pid_sens_v_ppb(self):
         return self.__pid_sens_mv_ppm / 1000000.0
 
 
