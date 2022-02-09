@@ -26,27 +26,27 @@ class PIDCalib(SensorCalib):
         sensor_type = jdict.get('sensor_type')
 
         pid_elc_mv = jdict.get('pid_zero_mv')
-        pid_sens_mv = jdict.get('pid_sensitivity_mv_ppm')
+        pid_sens_mv_ppm = jdict.get('pid_sensitivity_mv_ppm')
 
-        return cls(serial_number, sensor_type, pid_elc_mv, pid_sens_mv)
+        return cls(serial_number, sensor_type, pid_elc_mv, pid_sens_mv_ppm)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, serial_number, sensor_type, pid_elc_mv, pid_sens_mv):
+    def __init__(self, serial_number, sensor_type, pid_elc_mv, pid_sens_mv_ppm):
         """
         Constructor
         """
         SensorCalib.__init__(self, serial_number, sensor_type)
 
-        self.__pid_elc_mv = Datum.float(pid_elc_mv)                 # PID electronic zero           mV
-        self.__pid_sens_mv = Datum.float(pid_sens_mv, 6)            # PID sensitivity               mV / ppm
+        self.__pid_elc_mv = Datum.float(pid_elc_mv, 3)                  # PID electronic zero           mV
+        self.__pid_sens_mv_ppm = Datum.float(pid_sens_mv_ppm, 6)        # PID sensitivity               mV / ppm
 
 
     def __eq__(self, other):
         try:
             return self.serial_number == other.serial_number and self.sensor_type == other.sensor_type and \
-                   self.pid_elc_mv == other.pid_elc_mv and self.pid_sens_mv == other.pid_sens_mv
+                   self.pid_elc_mv == other.pid_elc_mv and self.pid_sens_mv_ppm == other.pid_sens_mv_ppm
 
         except (TypeError, AttributeError):
             return False
@@ -71,7 +71,7 @@ class PIDCalib(SensorCalib):
         jdict['sensor_type'] = self.sensor_type
 
         jdict['pid_zero_mv'] = self.pid_elc_mv
-        jdict['pid_sensitivity_mv_ppm'] = self.pid_sens_mv
+        jdict['pid_sensitivity_mv_ppm'] = self.pid_sens_mv_ppm
 
         return jdict
 
@@ -84,12 +84,17 @@ class PIDCalib(SensorCalib):
 
 
     @property
-    def pid_sens_mv(self):
-        return self.__pid_sens_mv
+    def pid_sens_v_ppp(self):
+        return self.__pid_sens_mv_ppm / 1000000.0
+
+
+    @property
+    def pid_sens_mv_ppm(self):
+        return self.__pid_sens_mv_ppm
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PIDCalib:{serial_number:%s, sensor_type:%s, pid_elc_mv:%s, pid_sens_mv:%s}" % \
-                    (self.serial_number, self.sensor_type, self.pid_elc_mv, self.pid_sens_mv)
+        return "PIDCalib:{serial_number:%s, sensor_type:%s, pid_elc_mv:%s, pid_sens_mv_ppm:%s}" % \
+                    (self.serial_number, self.sensor_type, self.pid_elc_mv, self.pid_sens_mv_ppm)
