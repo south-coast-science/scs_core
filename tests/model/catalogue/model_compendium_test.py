@@ -8,6 +8,7 @@ Created on 22 Sep 2021
 
 import json
 
+from scs_core.data.json import JSONify
 from scs_core.model.catalogue.model_compendium import ModelCompendium
 
 
@@ -31,6 +32,10 @@ jstr = '{"data-set": "ref-scs-opc-116-gases-2021H1-vcal-slp-err", ' \
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
+compendia = ModelCompendium.list()
+print(compendia)
+print("-")
+
 compendium = ModelCompendium.construct_from_jdict(json.loads(jstr))
 print(compendium)
 print("-")
@@ -48,5 +53,26 @@ summary = ModelCompendium.retrieve(name)
 print(summary)
 print("-")
 
-compendia = ModelCompendium.list()
-print(compendia)
+print("name: %s" % summary.name)
+print("species_name: %s" % summary.species_name)
+print("model_name: %s" % summary.model_name)
+print("device_name: %s" % summary.device_name)
+print("period_name: %s" % summary.period_name)
+print("-")
+print("is_error_prediction: %s" % summary.is_error_model)
+print("=")
+
+summary = ModelCompendium.retrieve('SO2.vE.Urban.21Q3')
+print(summary)
+print("-")
+
+print("name: %s" % summary.name)
+print("species_name: %s" % summary.species_name)
+print("model_name: %s" % summary.model_name)
+print("device_name: %s" % summary.device_name)
+print("period_name: %s" % summary.period_name)
+print("-")
+print("is_error_prediction: %s" % summary.is_error_model)
+print("-")
+
+print(JSONify.dumps(summary))

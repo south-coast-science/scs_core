@@ -5,18 +5,21 @@ Created on 19 Sep 2021
 
 A catalogue entry for a machine learning model, for a specific gas
 
+https://github.com/south-coast-science/scs_sagemaker_automl/blob/a1db0b830909b20fc3a7cea8b895a8bdb8d5b033/src/scs_sagemaker/project.py#L277
+
 document example:
-{"data-set": "ref-scs-opc-116-gases-2021HA-vcal-slp-err-clean",
-"period": {"start": "2021-02-10T10:15:00Z", "end": "2021-09-01T00:00:00Z"},
-"primaries": {"NO2.vCal": {"path": "src.scs.env.gases.val.NO2.vCal", "min": -16.297, "avg": 9.003, "max": 67.087}},
-"secondaries": {"tmp.brd": {"path": "src.scs.stat.val.tmp.brd", "min": 11.7, "avg": 26.955, "max": 47.8},
-"hmd.cur": {"path": "src.scs.env.meteo.val.hmd.cur", "min": 18.7, "avg": 62.599, "max": 87.3},
-"hmd.slope": {"path": "src.scs.env.meteo.val.hmd.slope", "min": -0.01, "avg": -0.0, "max": 0.015},
-"tmp.cur": {"path": "src.scs.env.meteo.val.tmp.cur", "min": -1.4, "avg": 16.044, "max": 37.2},
-"tmp.slope": {"path": "src.scs.env.meteo.val.tmp.slope", "min": -0.003, "avg": 0.0, "max": 0.002}},
-"reference": {"path": "src.ref.NO2 (ppb)", "min": 0.0, "avg": 9.0, "max": 55.3},
-"output": {"path": "exg.NO2.vE.OPCube.21HA", "min": 0.8, "avg": 9.0, "max": 50.0},
-"performance": {"count": 18887, "slope": 0.91, "intercept": 0.813, "r2": 0.929, "p": 0.0, "std-err": 0.002}}
+{"is-error-model": true,
+"data-set": "ref-scs-bgx-642-gases-21Q3-slp16-clean-vcal-err",
+"period": {"start": "2021-11-01T00:02:00Z", "end": "2021-12-28T06:57:00Z"},
+"primaries": {"SO2.vCal": {"path": "src.scs.env.gases.val.SO2.vCal", "min": -355.462, "avg": 18.488, "max": 4256.394}},
+"secondaries": {"tmp.brd": {"path": "src.scs.stat.val.tmp.brd", "min": 21.4, "avg": 31.994, "max": 48.7},
+"hmd.cur": {"path": "src.scs.env.meteo.val.hmd.cur", "min": 11.0, "avg": 51.815, "max": 84.1},
+"hmd.slope": {"path": "src.scs.env.meteo.val.hmd.slope", "min": -0.022, "avg": 0.0, "max": 0.031},
+"tmp.cur": {"path": "src.scs.env.meteo.val.tmp.cur", "min": 16.3, "avg": 26.568, "max": 42.8},
+"tmp.slope": {"path": "src.scs.env.meteo.val.tmp.slope", "min": -0.009, "avg": -0.0, "max": 0.003}},
+"reference": {"path": "src.ref.gas.SO2", "min": 1.0, "avg": 18.5, "max": 3211.0},
+"output": {"path": "exg.SO2.vE.Urban.21Q3", "min": -63.2, "avg": 18.6, "max": 4228.2},
+"performance": {"count": 78052, "slope": 0.953, "intercept": 0.999, "r2": 0.863, "p": 0.0, "std-err": 0.001}}
 """
 
 import os
@@ -58,8 +61,8 @@ class ModelCompendium(JSONCatalogueEntry):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, data_set, recs, primary_values, secondary_values, output_path, outputs, reference_path,
-                  references):
+    def construct(cls, is_error_model, data_set, recs, primary_values, secondary_values, output_path, outputs,
+                  reference_path, references):
         period = TrainingPeriod.construct(recs)
 
         primaries = {cls.__term_path(path): PrimaryTerm.construct(path, values, prec=3)
@@ -73,7 +76,7 @@ class ModelCompendium(JSONCatalogueEntry):
 
         performance = LinRegress.construct(references, outputs, prec=3)
 
-        return cls(data_set, period, primaries, secondaries, reference, output, performance)
+        return cls(is_error_model, data_set, period, primaries, secondaries, reference, output, performance)
 
 
     @classmethod
@@ -81,6 +84,7 @@ class ModelCompendium(JSONCatalogueEntry):
         if not jdict:
             return None
 
+        is_error_model = jdict.get('is-error-model', False)
         data_set = jdict.get('data-set')
         period = TrainingPeriod.construct_from_jdict(jdict.get('period'))
 
@@ -95,24 +99,25 @@ class ModelCompendium(JSONCatalogueEntry):
 
         performance = LinRegress.construct_from_jdict(jdict.get('performance'))
 
-        return cls(data_set, period, primaries, secondaries, reference, output, performance)
+        return cls(is_error_model, data_set, period, primaries, secondaries, reference, output, performance)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, data_set, period, primaries, secondaries, reference, output, performance):
+    def __init__(self, is_error_model, data_set, period, primaries, secondaries, reference, output, performance):
         """
         Constructor
         """
-        self.__data_set = data_set                  # string
-        self.__period = period                      # TrainingPeriod
+        self.__is_error_model = bool(is_error_model)        # bool
+        self.__data_set = data_set                          # string
+        self.__period = period                              # TrainingPeriod
 
-        self.__primaries = primaries                # dict of path: PrimaryTerm
-        self.__secondaries = secondaries            # dict of path: SecondaryTerm
-        self.__reference = reference                # Term
-        self.__output = output                      # Term
+        self.__primaries = primaries                        # dict of path: PrimaryTerm
+        self.__secondaries = secondaries                    # dict of path: SecondaryTerm
+        self.__reference = reference                        # Term
+        self.__output = output                              # Term
 
-        self.__performance = performance            # LinRegress
+        self.__performance = performance                    # LinRegress
 
         self.__logger = Logging.getLogger()
 
@@ -198,10 +203,40 @@ class ModelCompendium(JSONCatalogueEntry):
 
     @property
     def name(self):
-        return self.output.path[len('exg.'):]
+        pieces = self.output.path.split('.')
+        return '.'.join(pieces[1:])
+
+
+    @property
+    def species_name(self):
+        pieces = self.output.path.split('.')
+        return pieces[1]
+
+
+    @property
+    def model_name(self):
+        pieces = self.output.path.split('.')
+        return pieces[2]
+
+
+    @property
+    def device_name(self):
+        pieces = self.output.path.split('.')
+        return pieces[3]
+
+
+    @property
+    def period_name(self):
+        pieces = self.output.path.split('.')
+        return pieces[4]
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def is_error_model(self):
+        return self.__is_error_model
+
 
     @property
     def data_set(self):
@@ -243,6 +278,7 @@ class ModelCompendium(JSONCatalogueEntry):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['is-error-model'] = self.is_error_model
         jdict['data-set'] = self.data_set
         jdict['period'] = self.period
 
@@ -262,7 +298,7 @@ class ModelCompendium(JSONCatalogueEntry):
         primaries = Str.collection(self.primaries)
         secondaries = Str.collection(self.secondaries)
 
-        return "ModelCompendium:{data_set:%s, data_set:%s, period:%s, primaries:%s, secondaries:%s, reference:%s, " \
-               "output:%s, performance:%s}" %  \
-               (self.name, self.data_set, self.period, primaries, secondaries, self.reference,
-                self.output, self.performance)
+        return "ModelCompendium:{name:%s, is_error_model:%s, data_set:%s, period:%s, primaries:%s, secondaries:%s, " \
+               "reference:%s, output:%s, performance:%s}" %  \
+               (self.name, self.is_error_model, self.data_set, self.period, primaries, secondaries,
+                self.reference, self.output, self.performance)

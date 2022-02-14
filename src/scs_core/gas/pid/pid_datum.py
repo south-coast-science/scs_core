@@ -81,8 +81,8 @@ class PIDDatum(JSONable):
 
         offset_v = calib.pid_elc_mv / 1000.0
 
-        response_c = we_c - offset_v                # remove electronic zero
-        cnc = response_c / calib.pid_sens_mv        # pid_sens_mv set for ppb or ppm - see PID.init()
+        response_c = we_c - offset_v                    # remove electronic zero
+        cnc = response_c / calib.pid_sens_v_ppb         # units are Volts / ppb
 
         return cnc
 

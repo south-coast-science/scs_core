@@ -153,9 +153,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        users = [OrganisationUser.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
-
-        return users[0] if users else None      # TODO: should the API do this?
+        return OrganisationUser.construct_from_jdict(json.loads(response.json()))
 
 
     def assert_user(self, token, user):
