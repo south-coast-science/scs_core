@@ -35,7 +35,9 @@ class Histogram(object):
         self.__counts = [0] * bin_count                             # array of int
         self.__max_count = int(0)                                   # int
 
-        self.__delta = (maximum - minimum) / bin_count              # float
+        domain = maximum - minimum if minimum > 0 else maximum - minimum + 1        # 0 is a cell too!
+
+        self.__delta = domain / bin_count                           # float
 
 
     def __len__(self):
