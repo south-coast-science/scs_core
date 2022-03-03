@@ -35,9 +35,7 @@ class Histogram(object):
         self.__counts = [0] * bin_count                             # array of int
         self.__max_count = int(0)                                   # int
 
-        domain = maximum - minimum if minimum > 0 else maximum - minimum + 1        # 0 is a cell too!
-
-        self.__delta = domain / bin_count                           # float
+        self.__delta = (maximum - minimum) / bin_count              # float
 
 
     def __len__(self):
@@ -48,7 +46,7 @@ class Histogram(object):
 
     def append(self, datum):
         # reject out-of-range
-        if datum < self.__minimum or datum > self.__maximum:
+        if datum < self.__minimum or datum >= self.__maximum:
             raise ValueError("datum out of range:%f" % datum)
 
         # compute index...
