@@ -46,7 +46,7 @@ class Histogram(object):
 
     def append(self, datum):
         # reject out-of-range
-        if datum < self.__minimum or datum > self.__maximum:
+        if datum < self.__minimum or datum >= self.__maximum:
             raise ValueError("datum out of range:%f" % datum)
 
         # compute index...

@@ -174,6 +174,10 @@ class ModelCompendium(JSONCatalogueEntry):
 
 
     def postprocess(self, primary_path, vcal_excess, model_output):
+        # self.__logger.info("postprocess - primary_path: %s vcal_excess: %s model_output: %s" %
+        #                    (primary_path, vcal_excess, model_output))
+
+        # TODO: don't correct the predicted error, correct the final result!
         corrected_exg = (model_output - self.performance.intercept) / self.performance.slope
 
         if vcal_excess > 0:
