@@ -9,6 +9,7 @@ from collections import OrderedDict
 from scs_core.aws.data.http_response import HTTPResponse
 
 
+# TODO: CognitoUserLoginManager, CognitoDeviceLoginManager
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoLoginManager(object):

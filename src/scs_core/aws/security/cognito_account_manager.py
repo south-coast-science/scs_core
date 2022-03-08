@@ -11,6 +11,7 @@ from scs_core.aws.security.cognito_user import CognitoUserIdentity
 from scs_core.sys.http_exception import HTTPException
 
 
+# TODO: CognitoUserAccountCreator
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoCreateManager(object):
@@ -47,6 +48,7 @@ class CognitoCreateManager(object):
         return "CognitoCreateManager:{}"
 
 
+# TODO: CognitoUserAccounts
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoUpdateManager(object):
@@ -84,6 +86,7 @@ class CognitoUpdateManager(object):
         return "CognitoUpdateManager:{id_token:%s}" % self.__id_token
 
 
+# TODO: CognitoUserAccounts
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoDeleteManager(object):
