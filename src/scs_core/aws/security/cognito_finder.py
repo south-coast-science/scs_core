@@ -16,6 +16,7 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
+# TODO: CognitoUserFinder
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoFinder(object):

@@ -229,6 +229,7 @@ class AWSGroupConfigurator(object):
         group_owner_name = temp.split("/")[2]
         scs_path = host.scs_path()
         r_data["Name"] = ("Resources-" + system_id)  # Edit resources name
+
         r_data["InitialVersion"]["Resources"][0]["Id"] = (
                 system_id + "-data-volume")  # Edit resource name
         r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
@@ -247,6 +248,12 @@ class AWSGroupConfigurator(object):
                 (system_id + "-ml-pm10"))  # Edit resource name
             r_data["InitialVersion"]["Resources"][4]["Id"] = (
                 (system_id + "-ml-no2"))  # Edit resource name
+
+            try:
+                r_data["InitialVersion"]["Resources"][5]["Id"] = (
+                    (system_id + "-ml-so2"))  # Edit resource name
+            except IndexError:
+                pass
 
         # Send request
         self.__logger.info("Creating resource definition")
@@ -274,6 +281,7 @@ class AWSGroupConfigurator(object):
             "ResourceId"] = data_volume_name
         f_data["InitialVersion"]["Functions"][1]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
             "ResourceId"] = data_volume_name
+
         if self.config.ml:
             f_data["InitialVersion"]["Functions"][2]["Id"] = (system_id + "-PMxInference")
             f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
@@ -290,6 +298,12 @@ class AWSGroupConfigurator(object):
                 0]["ResourceId"] = data_volume_name
             f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 1]["ResourceId"] = (system_id + "-ml-no2")
+
+            try:
+                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                    "ResourceAccessPolicies"][2]["ResourceId"] = (system_id + "-ml-so2")
+            except IndexError:
+                pass
 
         self.__logger.info("Creating function definition")
         self.__logger.info(f_data)
