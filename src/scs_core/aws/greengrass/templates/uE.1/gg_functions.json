@@ -85,6 +85,10 @@
                         {
                             "Permission": "ro",
                             "ResourceId": "DEV_ID-ml-no2"
+                        },
+                        {
+                            "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-so2"
                         }
                     ],
                     "Variables": {
