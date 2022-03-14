@@ -130,7 +130,7 @@ class Minimum(JSONable):
             return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
 
         if cmd == 'vcal_baseline':
-            return [cmd, '-vm', self.gas, conf_minimums[self.gas]]          # vCal does not hold its correction
+            return [cmd, '-vm', self.gas, self.value]           # vCal does not hold its correction
 
         if cmd == 'gas_baseline':
             return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
