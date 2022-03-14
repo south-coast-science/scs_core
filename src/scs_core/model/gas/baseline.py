@@ -105,6 +105,14 @@ class Baseline(PersistentJSONable, ABC):
         self.__sensor_baselines[gas] = sensor_baseline
 
 
+    def remove_sensor_baseline(self, gas):
+        try:
+            del self.__sensor_baselines[gas]
+            return True
+        except KeyError:
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
