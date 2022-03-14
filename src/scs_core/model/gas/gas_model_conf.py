@@ -75,9 +75,6 @@ class GasModelConf(ModelConf):
             gas_baseline = GasBaseline.load(host, skeleton=True)
             model_compendium_group = ModelCompendiumGroup.retrieve(self.model_compendium_group)
 
-            self._logger.info(vcal_baseline)
-            self._logger.info(gas_baseline)
-
             return VEGasInferenceClient.construct(socket, self.abs_uds_path(host), schedule_item, vcal_baseline,
                                                   gas_baseline, model_compendium_group)
 

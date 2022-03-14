@@ -17,6 +17,13 @@ class A4Calib(SensorCalib):
     classdocs
     """
 
+    __CALIBRATED_GASES = ('CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe')
+
+    @classmethod
+    def calibrated_gases(cls):
+        return cls.__CALIBRATED_GASES
+
+
     # used for Digital Single Interface...
     DEFAULT_WE_ELECTRONIC_ZERO_MV =     300
     DEFAULT_WE_SENSOR_ZERO_MV =           0
