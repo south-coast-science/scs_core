@@ -6,6 +6,8 @@ Created on 07 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+# import sys
+
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
@@ -165,7 +167,7 @@ class ConfigurationResponse(HTTPResponse):
         if not jdict:
             return None
 
-        # print("jdict: %s" % jdict)
+        # print("jdict: %s" % jdict, file=sys.stderr)
 
         status = HTTPStatus(jdict.get('statusCode'))
 

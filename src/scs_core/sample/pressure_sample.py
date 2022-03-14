@@ -36,7 +36,11 @@ class PressureSample(Sample):
 
         tag = jdict.get('tag')
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        version = jdict.get('ver', cls.DEFAULT_VERSION)
+
+        try:
+            version = float(jdict.get('ver'))
+        except (TypeError, ValueError):
+            version = cls.DEFAULT_VERSION
 
         barometer_datum = PressureDatum.construct_from_jdict(jdict.get('val'))
         exegeses = jdict.get('exg')
