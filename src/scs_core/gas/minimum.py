@@ -58,7 +58,7 @@ class Minimum(JSONable):
             datum = PathDict(data[i])
 
             for path in minimums:
-                value = round(float(datum.node(path)))
+                value = round(float(datum.node(path)), 3)
 
                 if minimums[path] is None or value < minimums[path].value:
                     minimums[path] = cls(path, i, value, data[i])
@@ -74,7 +74,7 @@ class Minimum(JSONable):
         """
         self.__path = path                          # string
         self.__index = int(index)                   # int
-        self.__value = int(round(value))            # int
+        self.__value = round(value, 3)              # float
         self.__sample = sample                      # dict (of GasesSample)
 
 
@@ -87,6 +87,17 @@ class Minimum(JSONable):
         jdict['index'] = self.index
         jdict['value'] = self.value
         jdict['sample'] = self.sample
+
+        return jdict
+
+
+    def summary(self, gas):
+        sample = PathDict(self.sample)
+        jdict = OrderedDict()
+
+        jdict['rec'] = sample.node('rec')
+        jdict[gas] = sample.node('.'.join(('val', gas)))
+        jdict['sht'] = sample.node('val.sht')
 
         return jdict
 
@@ -122,18 +133,19 @@ class Minimum(JSONable):
 
     def cmd_tokens(self, conf_minimums):
         cmd = self.__cmd()
+        value = int(round(self.value))
 
         if cmd == 'scd30_baseline':
-            return [cmd, '-vc', conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', conf_minimums[self.gas], value]
 
         if cmd == 'afe_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value]
 
         if cmd == 'vcal_baseline':
-            return [cmd, '-vm', self.gas, self.value]           # vCal does not hold its correction
+            return [cmd, '-vm', self.gas, value]            # vCal does not hold its correction
 
         if cmd == 'gas_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value]
 
         raise ValueError(cmd)
 
@@ -192,7 +204,7 @@ class Minimum(JSONable):
 
     @value.setter
     def value(self, value):
-        self.__value = int(round(value))
+        self.__value = round(value, 3)
 
 
     @property
