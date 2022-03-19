@@ -48,7 +48,7 @@ class AFEBaseline(PersistentJSONable):
         for i in range(len(jdict)):
             key = 'sn' + str(i + 1)
 
-            base = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline(None, 0)
+            base = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline.null_datum()
             sensor_baselines.append(base)
 
         return cls(sensor_baselines)
@@ -56,7 +56,7 @@ class AFEBaseline(PersistentJSONable):
 
     @classmethod
     def null_datum(cls):
-        return cls([SensorBaseline(None, 0)] * cls.__SENSORS)
+        return cls([SensorBaseline.null_datum()] * cls.__SENSORS)
 
 
     # ----------------------------------------------------------------------------------------------------------------

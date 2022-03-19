@@ -21,9 +21,12 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 calibrated_on = LocalizedDatetime.construct_from_iso8601("2021-06-02T13:11:31+01:00")
+sample_on = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
+sample_humid = 54.3
+sample_temp = 12.3
 offset = -123
 
-baseline = SensorBaseline(calibrated_on, offset)
+baseline = SensorBaseline(calibrated_on, sample_on, sample_humid, sample_temp, offset)
 print(baseline)
 
 scd30_baseline = SCD30Baseline(baseline)

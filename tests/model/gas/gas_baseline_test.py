@@ -18,12 +18,15 @@ from scs_core.model.gas.gas_baseline import GasBaseline
 
 # --------------------------------------------------------------------------------------------------------------------
 
-now = LocalizedDatetime.now()
+calibrated_on = LocalizedDatetime.construct_from_iso8601("2021-06-02T13:11:31+01:00")
+sample_on = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
+sample_humid = 54.3
+sample_temp = 12.3
 
-baseline1 = SensorBaseline(now, 1)
+baseline1 = SensorBaseline(calibrated_on, sample_on, sample_humid, sample_temp, 1)
 print(baseline1)
 
-baseline2 = SensorBaseline(now, 2)
+baseline2 = SensorBaseline(calibrated_on, sample_on, sample_humid, sample_temp, 2)
 print(baseline1)
 print("-")
 
