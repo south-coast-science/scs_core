@@ -4,7 +4,8 @@ Created on 1 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50}
+{"calibrated-on": "2021-06-02T13:11:31+01:00", "offset": -123,
+"sample": {"rec": "2021-06-01T13:11:31+01:00", "hmd": 54.3, "tmp": 12.3}}
 """
 
 from collections import OrderedDict
