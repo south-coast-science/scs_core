@@ -13,20 +13,20 @@ from scs_core.data.json import JSONify
 from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.gas.scd30.scd30_baseline import SCD30Baseline
-from scs_core.gas.sensor_baseline import SensorBaseline
+from scs_core.gas.sensor_baseline import SensorBaseline, SensorBaselineSample
 
 from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
+rec = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
+sample = SensorBaselineSample(rec, 54.3, 12.3)
+
 calibrated_on = LocalizedDatetime.construct_from_iso8601("2021-06-02T13:11:31+01:00")
-sample_on = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
-sample_humid = 54.3
-sample_temp = 12.3
 offset = -123
 
-baseline = SensorBaseline(calibrated_on, sample_on, sample_humid, sample_temp, offset)
+baseline = SensorBaseline(calibrated_on, offset, sample=sample)
 print(baseline)
 
 scd30_baseline = SCD30Baseline(baseline)

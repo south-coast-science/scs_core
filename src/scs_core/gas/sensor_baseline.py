@@ -172,4 +172,4 @@ class SensorBaselineSample(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SensorBaseline:{rec:%s, humid:%s, temp:%s}" %  (self.rec, self.humid, self.temp)
+        return "SensorBaselineSample:{rec:%s, humid:%s, temp:%s}" %  (self.rec, self.humid, self.temp)
