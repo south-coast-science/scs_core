@@ -4,8 +4,8 @@ Created on 15 Oct 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"CO": {"calibrated-on": "2021-01-19T10:07:27Z", "offset": 2, "env": {"hmd": 41.5, "tmp": 22.1, "pA": null}},
-"NO2": {"calibrated-on": "2021-01-19T11:07:27Z", "offset": 1, "env": {"hmd": 41.5, "tmp": 22.1, "pA": null}}}
+{"NO2": {"calibrated-on": "2022-03-21T11:46:45Z", "offset": -31,
+"env": {"rec": "2022-03-16T05:10:00Z", "hmd": 48.3, "tmp": 22.4}}}
 """
 
 from scs_core.data.str import Str
