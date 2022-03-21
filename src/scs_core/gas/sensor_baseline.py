@@ -13,6 +13,7 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -120,6 +121,21 @@ class SensorBaselineSample(JSONable):
         humid = jdict.get('hmd')
         temp = jdict.get('tmp')
         press = jdict.get('pA')
+
+        return cls(rec, humid, temp, press)
+
+
+    @classmethod
+    def construct_from_sample_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        sample = PathDict(jdict)
+
+        rec = LocalizedDatetime.construct_from_iso8601(sample.node('rec'))
+        humid = sample.node('val.sht.hmd')
+        temp = sample.node('val.sht.tmp')
+        press = sample.node('val.sht.bar.pA') if sample.has_path('val.sht.bar') else None
 
         return cls(rec, humid, temp, press)
 
