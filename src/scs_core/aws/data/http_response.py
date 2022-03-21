@@ -7,8 +7,6 @@ https://docs.python.org/3/library/http.html
 https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 """
 
-import requests
-
 from abc import ABC
 from http import HTTPStatus
 
@@ -33,7 +31,7 @@ class HTTPResponse(JSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, response: requests.Response):
+    def construct_from_response(cls, response):      # response: requests.Response
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:
