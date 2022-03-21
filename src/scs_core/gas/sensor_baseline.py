@@ -37,7 +37,7 @@ class SensorBaseline(JSONable):
             calibrated_on = LocalizedDatetime.construct_from_iso8601(jdict.get('calibrated-on'))
 
         offset = jdict.get('offset')
-        sample = SensorBaselineSample.construct_from_jdict(jdict.get('sample'))
+        sample = SensorBaselineSample.construct_from_jdict(jdict.get('env'))
 
         return cls(calibrated_on, offset, sample=sample)
 
@@ -73,7 +73,7 @@ class SensorBaseline(JSONable):
 
         jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601()
         jdict['offset'] = self.offset
-        jdict['sample'] = self.sample
+        jdict['env'] = self.sample
 
         return jdict
 
@@ -119,24 +119,27 @@ class SensorBaselineSample(JSONable):
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         humid = jdict.get('hmd')
         temp = jdict.get('tmp')
+        press = jdict.get('pA')
 
-        return cls(rec, humid, temp)
+        return cls(rec, humid, temp, press)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, rec, humid, temp):
+    def __init__(self, rec, humid, temp, press):
         """
         Constructor
         """
         self.__rec = rec                                # LocalizedDatetime
         self.__humid = Datum.float(humid, 1)            # float
         self.__temp = Datum.float(temp, 1)              # float
+        self.__press = Datum.float(press, 1)            # float
 
 
     def __eq__(self, other):
         try:
-            return self.rec == other.rec and self.humid == other.humid and self.temp == other.temp
+            return self.rec == other.rec and self.humid == other.humid and self.temp == other.temp and \
+                   self.press == other.press
         except (TypeError, AttributeError):
             return False
 
@@ -146,9 +149,14 @@ class SensorBaselineSample(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rec'] = None if self.rec is None else self.rec.as_iso8601()
+        if self.rec is not None:
+            jdict['rec'] = self.rec.as_iso8601()
+
         jdict['hmd'] = self.humid
         jdict['tmp'] = self.temp
+
+        if self.press is not None:
+            jdict['pA'] = self.press
 
         return jdict
 
@@ -170,7 +178,13 @@ class SensorBaselineSample(JSONable):
         return self.__temp
 
 
+    @property
+    def press(self):
+        return self.__press
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SensorBaselineSample:{rec:%s, humid:%s, temp:%s}" %  (self.rec, self.humid, self.temp)
+        return "SensorBaselineSample:{rec:%s, humid:%s, temp:%s, press:%s}" %  \
+               (self.rec, self.humid, self.temp, self.press)

@@ -20,8 +20,7 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-rec = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
-sample = SensorBaselineSample(rec, 54.3, 12.3)
+sample = SensorBaselineSample(None, 54.3, 12.3, 99.7)
 
 calibrated_on = LocalizedDatetime.construct_from_iso8601("2021-06-02T13:11:31+01:00")
 offset = -123

@@ -19,7 +19,7 @@ from scs_core.model.gas.gas_baseline import GasBaseline
 # --------------------------------------------------------------------------------------------------------------------
 
 rec = LocalizedDatetime.construct_from_iso8601("2021-06-01T13:11:31+01:00")
-sample = SensorBaselineSample(rec, 54.3, 12.3)
+sample = SensorBaselineSample(rec, 54.3, 12.3, None)
 
 calibrated_on = LocalizedDatetime.construct_from_iso8601("2021-06-02T13:11:31+01:00")
 
