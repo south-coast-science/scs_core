@@ -4,12 +4,13 @@ Created on 2 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"baseline": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}}}
+{"CO2": {"calibrated-on": "2022-03-21T12:46:52Z", "offset": 321, "env": {"hmd": 54.3, "tmp": 21.3, "pA": 99.6}}}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
+
 from scs_core.gas.sensor_baseline import SensorBaseline
 
 
@@ -34,7 +35,7 @@ class SCD30Baseline(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(SensorBaseline(None, 0)) if skeleton else None
+            return cls(SensorBaseline.null_datum()) if skeleton else None
 
         field = 'baseline' if 'baseline' in jdict else 'CO2'                        # TODO: deprecated field name
         sensor_baseline = SensorBaseline.construct_from_jdict(jdict.get(field))

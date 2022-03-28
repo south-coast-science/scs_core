@@ -4,10 +4,13 @@ Created on 1 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"sn1": {"calibrated-on": "2019-02-02T11:34:16Z", "offset": 50, "env": {"hmd": 66.0, "tmp": 11.0, "pA": 99.0}},
-"sn2": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null},
-"sn3": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null},
-"sn4": {"calibrated-on": "2019-02-02T11:30:17Z", "offset": 0, "env": null}}
+{"sn1": {"calibrated-on": "2022-03-21T11:46:43Z", "offset": -1,
+"env": {"rec": "2022-03-16T07:45:00Z", "hmd": 51.6, "tmp": 21.8}},
+"sn2": {"calibrated-on": "2022-03-21T11:46:48Z", "offset": 44,
+"env": {"rec": "2022-03-16T06:15:00Z", "hmd": 48.1, "tmp": 22.0}},
+"sn3": {"calibrated-on": null, "offset": 0, "env": null},
+"sn4": {"calibrated-on": "2022-03-21T11:46:37Z", "offset": 174,
+"env": {"rec": "2022-03-16T06:30:00Z", "hmd": 48.2, "tmp": 21.9}}}
 """
 
 from collections import OrderedDict
@@ -48,7 +51,7 @@ class AFEBaseline(PersistentJSONable):
         for i in range(len(jdict)):
             key = 'sn' + str(i + 1)
 
-            base = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline(None, 0)
+            base = SensorBaseline.construct_from_jdict(jdict[key]) if key in jdict else SensorBaseline.null_datum()
             sensor_baselines.append(base)
 
         return cls(sensor_baselines)
@@ -56,7 +59,7 @@ class AFEBaseline(PersistentJSONable):
 
     @classmethod
     def null_datum(cls):
-        return cls([SensorBaseline(None, 0)] * cls.__SENSORS)
+        return cls([SensorBaseline.null_datum()] * cls.__SENSORS)
 
 
     # ----------------------------------------------------------------------------------------------------------------

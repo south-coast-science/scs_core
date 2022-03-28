@@ -7,6 +7,10 @@ A catalogue entry for a machine learning model, for a specific gas
 
 https://github.com/south-coast-science/scs_sagemaker_automl/blob/a1db0b830909b20fc3a7cea8b895a8bdb8d5b033/src/scs_sagemaker/project.py#L277
 
+IMPORTANT: Assuming that the miniumum gas concentration in the data set is close to zero, the minimum vCal value
+of the primary term indicates the minimum vCal value for every equivalent sensor - the vCal baseline on the target
+devices should be set to make this so.
+
 document example:
 {"is-error-model": true,
 "data-set": "ref-scs-bgx-642-gases-21Q3-slp16-clean-vcal-err",

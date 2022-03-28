@@ -83,6 +83,10 @@ class Stats(JSONable):
         self.__stdev3 = stdev3                          # float
 
 
+    def __len__(self):
+        return self.count
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -102,6 +106,32 @@ class Stats(JSONable):
         jdict['stdev3'] = self.stdev3
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def lower1(self):
+        return self.median - self.stdev
+
+
+    def lower2(self):
+        return self.median - self.stdev2
+
+
+    def lower3(self):
+        return self.median - self.stdev3
+
+
+    def upper1(self):
+        return self.median + self.stdev
+
+
+    def upper2(self):
+        return self.median + self.stdev2
+
+
+    def upper3(self):
+        return self.median + self.stdev3
 
 
     # ----------------------------------------------------------------------------------------------------------------

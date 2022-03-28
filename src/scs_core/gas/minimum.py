@@ -23,7 +23,7 @@ from scs_core.data.path_dict import PathDict
 
 from scs_core.gas.a4.a4 import A4
 from scs_core.gas.afe_baseline import AFEBaseline
-from scs_core.gas.sensor_baseline import SensorBaseline
+from scs_core.gas.sensor_baseline import SensorBaseline, SensorBaselineSample
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ class Minimum(JSONable):
             datum = PathDict(data[i])
 
             for path in minimums:
-                value = round(float(datum.node(path)))
+                value = round(float(datum.node(path)), 3)
 
                 if minimums[path] is None or value < minimums[path].value:
                     minimums[path] = cls(path, i, value, data[i])
@@ -74,7 +74,7 @@ class Minimum(JSONable):
         """
         self.__path = path                          # string
         self.__index = int(index)                   # int
-        self.__value = int(round(value))            # int
+        self.__value = round(value, 3)              # float
         self.__sample = sample                      # dict (of GasesSample)
 
 
@@ -87,6 +87,17 @@ class Minimum(JSONable):
         jdict['index'] = self.index
         jdict['value'] = self.value
         jdict['sample'] = self.sample
+
+        return jdict
+
+
+    def summary(self, gas):
+        sample = PathDict(self.sample)
+        jdict = OrderedDict()
+
+        jdict['rec'] = sample.node('rec')
+        jdict[gas] = sample.node('.'.join(('val', gas)))
+        jdict['sht'] = sample.node('val.sht')
 
         return jdict
 
@@ -115,25 +126,31 @@ class Minimum(JSONable):
         else:
             raise ValueError(cmd)
 
-        sensor_baseline = SensorBaseline(None, 0) if reported_baseline is None else reported_baseline
+        sensor_baseline = SensorBaseline.null_datum() if reported_baseline is None else reported_baseline
 
         return sensor_baseline.calibrated_on is not None and sensor_baseline.calibrated_on > end
 
 
     def cmd_tokens(self, conf_minimums):
         cmd = self.__cmd()
+        value = int(round(self.value))
+        sample = SensorBaselineSample.construct_from_sample_jdict(self.sample)
 
         if cmd == 'scd30_baseline':
-            return [cmd, '-vc', conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', conf_minimums[self.gas], value,
+                    '-t', sample.temp, '-m', sample.humid, '-p', sample.press]
 
         if cmd == 'afe_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
 
-        if cmd == 'vcal_baseline':
-            return [cmd, '-vs', self.gas, conf_minimums[self.gas] - self.value]     # vCal does not hold its correction
+        if cmd == 'vcal_baseline':                  # vCal does not hold its correction!
+            return [cmd, '-vc', self.gas, value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
 
         if cmd == 'gas_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], self.value]
+            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
 
         raise ValueError(cmd)
 
@@ -192,7 +209,7 @@ class Minimum(JSONable):
 
     @value.setter
     def value(self, value):
-        self.__value = int(round(value))
+        self.__value = round(value, 3)
 
 
     @property
