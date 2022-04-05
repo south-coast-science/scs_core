@@ -134,6 +134,18 @@ class Stats(JSONable):
         return self.median + self.stdev3
 
 
+    def amp1(self):
+        return self.upper1() - self.lower1()
+
+
+    def amp2(self):
+        return self.upper2() - self.lower2()
+
+
+    def amp3(self):
+        return self.upper3() - self.lower3()
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
