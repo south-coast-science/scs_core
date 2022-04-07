@@ -1,37 +1,36 @@
 """
-Created on 24 Nov 2021
+Created on 5 Apr 2022
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
 from http import HTTPStatus
 
+from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
 from scs_core.data.json import JSONify
-from scs_core.aws.security.cognito_user import CognitoUserIdentity
 from scs_core.sys.http_exception import HTTPException
 
 
-# TODO: CognitoUserAccountCreator
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoCreateManager(object):
+class CognitoDeviceCreator(object):
     """
     classdocs
     """
 
-    __AUTHORIZATION = '@southcoastscience.com'
-    __URL = 'https://85nkjtux72.execute-api.us-west-2.amazonaws.com/default/CognitoAccountCreator'
+    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/CognitoDevices/add'
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        self.__http_client = http_client                # requests package
+    def __init__(self, http_client, id_token):
+        self.__http_client = http_client                    # requests package
+        self.__id_token = id_token                          # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, identity):
-        headers = {'Authorization': self.__AUTHORIZATION}
+        headers = {'Token': self.__id_token}
 
         response = self.__http_client.post(self.__URL, headers=headers, json=identity.as_json())
         status = HTTPStatus(response.status_code)
@@ -39,24 +38,23 @@ class CognitoCreateManager(object):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())
 
-        return CognitoUserIdentity.construct_from_jdict(response.json())
+        return CognitoDeviceIdentity.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoCreateManager:{}"
+        return "CognitoDeviceCreator:{id_token:%s}" % self.__id_token
 
 
-# TODO: CognitoUserAccounts
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUpdateManager(object):
+class CognitoDeviceEditor(object):
     """
     classdocs
     """
 
-    __URL = 'https://x45yjp88e2.execute-api.us-west-2.amazonaws.com/default/CognitoAccounts/edit'
+    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/CognitoDevices/update'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -83,18 +81,17 @@ class CognitoUpdateManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUpdateManager:{id_token:%s}" % self.__id_token
+        return "CognitoDeviceEditor:{id_token:%s}" % self.__id_token
 
 
-# TODO: CognitoUserAccounts
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeleteManager(object):
+class CognitoDeviceDeleter(object):
     """
     classdocs
     """
 
-    __URL = 'https://x45yjp88e2.execute-api.us-west-2.amazonaws.com/default/CognitoAccounts/delete'
+    __URL = ''
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -122,4 +119,4 @@ class CognitoDeleteManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeleteManager:{id_token:%s}" % self.__id_token
+        return "CognitoDeviceDeleter:{id_token:%s}" % self.__id_token
