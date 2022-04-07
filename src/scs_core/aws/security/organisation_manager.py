@@ -4,8 +4,6 @@ Created on 17 Jan 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
-
 from http import HTTPStatus
 
 from scs_core.aws.security.organisation import Organisation, OrganisationPathRoot, OrganisationUser, \
@@ -25,7 +23,7 @@ class OrganisationManager(object):
     """
 
     __MANAGER_URL = "https://04h65m94o8.execute-api.us-west-2.amazonaws.com/default/OrganisationManager"
-    __EXECUTIVE_URL = "https://mmkduy8i4l.execute-api.us-west-2.amazonaws.com/default/OrganisationExecutive"
+    __EXECUTIVE_URL = "https://19tm2j6odj.execute-api.us-west-2.amazonaws.com/default/OrganisationExecutive"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +41,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [Organisation.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [Organisation.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def get_organisation_by_label(self, token, label):
@@ -53,7 +51,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return Organisation.construct_from_jdict(json.loads(response.json()))
+        return Organisation.construct_from_jdict(response.json())
 
 
     def insert_organisation(self, token, organisation):
@@ -63,7 +61,7 @@ class OrganisationManager(object):
         response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return Organisation.construct_from_jdict(json.loads(response.json()))
+        return Organisation.construct_from_jdict(response.json())
 
 
     def update_organisation(self, token, organisation):
@@ -92,7 +90,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationPathRoot.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def get_opr_by_path_root(self, token, path_root):
@@ -102,7 +100,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return OrganisationPathRoot.construct_from_jdict(json.loads(response.json()))
+        return OrganisationPathRoot.construct_from_jdict(response.json())
 
 
     def insert_opr(self, token, opr):
@@ -112,7 +110,7 @@ class OrganisationManager(object):
         response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return OrganisationPathRoot.construct_from_jdict(json.loads(response.json()))
+        return OrganisationPathRoot.construct_from_jdict(response.json())
 
 
     def delete_opr(self, token, opr_id):
@@ -133,7 +131,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUser.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationUser.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_users_by_username(self, token, username):
@@ -143,7 +141,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUser.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationUser.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def get_user(self, token, username, org_id):
@@ -153,7 +151,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return OrganisationUser.construct_from_jdict(json.loads(response.json()))
+        return OrganisationUser.construct_from_jdict(response.json())
 
 
     def assert_user(self, token, user):
@@ -182,7 +180,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUserPath.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def assert_oup(self, token, oup):
@@ -211,7 +209,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_devices_by_organisation(self, token, org_id):
@@ -221,7 +219,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def get_device(self, token, device_tag, org_id, device_path, environment_path):
