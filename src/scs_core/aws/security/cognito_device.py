@@ -21,6 +21,16 @@ class CognitoDeviceIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @staticmethod
+    def is_valid_password(password):
+        if not isinstance(password, str):
+            return False
+
+        return len(password) > 15
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_response(cls, res):
         if not res:

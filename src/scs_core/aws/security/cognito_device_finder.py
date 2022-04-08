@@ -38,7 +38,7 @@ class CognitoDeviceFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        print("response: %s" % response.json())
+        # print("response: %s" % response.json())
 
         return [CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
@@ -56,7 +56,7 @@ class CognitoDeviceFinder(object):
 
     def __headers(self, token):
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-        self.__logger.info('headers: %s' % headers)
+        self.__logger.debug('headers: %s' % headers)
 
         return headers
 

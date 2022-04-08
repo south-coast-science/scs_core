@@ -51,7 +51,7 @@ class Minimum(JSONable):
         field_group = cls.FIELD_SELECTIONS[field_selection]
 
         minimums = {path: None for path in PathDict(data[0]).paths()
-                    if path.startswith(field_group) and (path.endswith('.cnc') or path.endswith('.vCal'))}
+                    if path.startswith(field_group) and (path.endswith('.cnc'))}    # or path.endswith('.vCal')
 
         # data...
         for i in range(len(data)):
@@ -134,18 +134,22 @@ class Minimum(JSONable):
     def cmd_tokens(self, conf_minimums):
         cmd = self.__cmd()
         value = int(round(self.value))
-        sample = SensorBaselineSample.construct_from_sample_jdict(self.sample)
+        sample = SensorBaselineSample.construct_from_sample_jdict(self.sample)      # TODO: sample needs pressure!
 
         if cmd == 'scd30_baseline':
             return [cmd, '-vc', conf_minimums[self.gas], value,
-                    '-t', sample.temp, '-m', sample.humid, '-p', sample.press]
+                    '-t', sample.temp, '-m', sample.humid]          # , '-p', sample.press
 
         if cmd == 'afe_baseline':
             return [cmd, '-vc', self.gas, conf_minimums[self.gas], value,
                     '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
 
-        if cmd == 'vcal_baseline':                  # vCal does not hold its correction!
-            return [cmd, '-vc', self.gas, value,
+        # hueristics:
+        # NO2 - make minimum value 10
+        # SO2 - make minimum value -20
+
+        if cmd == 'vcal_baseline':                  # set vCal offset to make minimum value 0
+            return [cmd, '-vs', self.gas, -value,
                     '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
 
         if cmd == 'gas_baseline':
