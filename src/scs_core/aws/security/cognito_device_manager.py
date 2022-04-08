@@ -35,6 +35,8 @@ class CognitoDeviceCreator(object):
         response = self.__http_client.post(self.__URL, headers=headers, json=identity.as_json())
         status = HTTPStatus(response.status_code)
 
+        # print("response: %s" % response.json())
+
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())
 
