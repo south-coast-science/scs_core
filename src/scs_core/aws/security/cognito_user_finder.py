@@ -4,8 +4,6 @@ Created on 24 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
-
 from http import HTTPStatus
 
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
@@ -16,15 +14,14 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
-# TODO: CognitoUserFinder
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoFinder(object):
+class CognitoUserFinder(object):
     """
     classdocs
     """
 
-    __URL = 'https://unnyezcdaa.execute-api.us-west-2.amazonaws.com/default/CognitoFinder'
+    __URL = 'https://iw0jza59y1.execute-api.us-west-2.amazonaws.com/default/CognitoUsersFinder/'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -41,7 +38,9 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        # print("response: %s" % response.json())
+
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_by_status(self, token, confirmation_status):
@@ -50,7 +49,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_by_enabled(self, token, enabled):
@@ -59,7 +58,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_by_email(self, token, email):
@@ -69,7 +68,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_by_usernames(self, token, usernames):
@@ -79,7 +78,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in json.loads(response.json())]
+        return [CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def get_by_email(self, token, email):
@@ -89,7 +88,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return CognitoUserIdentity.construct_from_jdict(json.loads(response.json()))
+        return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
     def get_self(self, token):
@@ -98,7 +97,7 @@ class CognitoFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return CognitoUserIdentity.construct_from_jdict(json.loads(response.json()))
+        return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -122,4 +121,4 @@ class CognitoFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoFinder:{http_client:%s}" % self.__http_client
+        return "CognitoUserFinder:{http_client:%s}" % self.__http_client
