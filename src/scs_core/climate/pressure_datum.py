@@ -45,8 +45,8 @@ class PressureDatum(JSONable):
         """
         Constructor
         """
-        self.__actual_press = Datum.float(actual_press, 1)          # kPa
-        self.__sl_press = Datum.float(sl_press, 1)                  # kPa
+        self.__actual_press = Datum.float(actual_press, 3)          # kPa
+        self.__sl_press = Datum.float(sl_press, 3)                  # kPa
 
         self.__temp = Datum.float(temp, 1)                          # °C
 
