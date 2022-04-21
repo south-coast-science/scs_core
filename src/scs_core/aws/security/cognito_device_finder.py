@@ -14,6 +14,7 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
+# TODO: fix find-by-tab
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoDeviceFinder(object):
