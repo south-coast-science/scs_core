@@ -3,8 +3,11 @@ Created on 5 Apr 2022
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example document:
+example document (credentials):
 {"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
+
+example document (identity):
+{"username": "scs-ap1-343", "creation_date": "2022-04-07T13:37:56Z"}
 """
 
 from collections import OrderedDict
@@ -128,11 +131,11 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if self.tag is not None:
             jdict['username'] = self.tag
 
-        if self.creation_date is not None:
-            jdict['creation_date'] = self.creation_date.as_iso8601()
-
         if self.shared_secret is not None:
             jdict['password'] = self.shared_secret
+
+        if self.creation_date is not None:
+            jdict['creation_date'] = self.creation_date.as_iso8601()
 
         return jdict
 
@@ -147,5 +150,5 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, creation_date:%s, shared_secret:%s}" % \
-               (self.tag, self.creation_date, self.shared_secret)
+        return "CognitoDeviceIdentity:{tag:%s, shared_secret:%s, creation_date:%s}" % \
+               (self.tag, self.shared_secret, self.creation_date)

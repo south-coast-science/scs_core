@@ -56,13 +56,13 @@ class CognitoDeviceFinder(object):
 
     def __headers(self, token):
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-        self.__logger.info('headers: %s' % headers)
+        self.__logger.debug('headers: %s' % headers)
 
         return headers
 
 
     def __check_response(self, response):
-        self.__logger.info('response: %s' % response.json())
+        self.__logger.debug('response: %s' % response.json())
 
         status = HTTPStatus(response.status_code)
 
