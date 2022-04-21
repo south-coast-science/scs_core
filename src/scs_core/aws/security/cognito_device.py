@@ -4,6 +4,7 @@ Created on 5 Apr 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
+{"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
 """
 
 from collections import OrderedDict
@@ -21,15 +22,12 @@ class CognitoDeviceCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def construct_from_jdict(cls, jdict, skeleton=False):
-        if not jdict:
-            return cls(None, None) if skeleton else None
+    @staticmethod
+    def is_valid_password(password):
+        if not isinstance(password, str):
+            return False
 
-        tag = jdict.get('username')
-        shared_secret = jdict.get('password')
-
-        return cls(tag, shared_secret)
+        return len(password) > 15
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -40,6 +38,10 @@ class CognitoDeviceCredentials(JSONable):
         """
         self.__tag = tag                                        # string
         self.__shared_secret = shared_secret                    # string
+
+
+    def __lt__(self, other):
+        return self.tag < other.tag
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -74,20 +76,10 @@ class CognitoDeviceCredentials(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceIdentity(JSONable):
+class CognitoDeviceIdentity(CognitoDeviceCredentials):
     """
     classdocs
     """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @staticmethod
-    def is_valid_password(password):
-        if not isinstance(password, str):
-            return False
-
-        return len(password) > 15
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -100,7 +92,7 @@ class CognitoDeviceIdentity(JSONable):
         creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
 
         try:
-            return cls(tag, creation_date, None)
+            return cls(tag, None, creation_date)
         except KeyError:
             return None
 
@@ -111,25 +103,21 @@ class CognitoDeviceIdentity(JSONable):
             return cls(None, None, None) if skeleton else None
 
         tag = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
         shared_secret = jdict.get('password')
+        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
 
-        return cls(tag, creation_date, shared_secret)
+        return cls(tag, shared_secret, creation_date)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, creation_date, shared_secret):
+    def __init__(self, tag, shared_secret, creation_date):
         """
         Constructor
         """
-        self.__tag = tag                                        # string
+        super().__init__(tag, shared_secret)
+
         self.__creation_date = creation_date                    # LocalisedDatetime
-        self.__shared_secret = shared_secret                    # string
-
-
-    def __lt__(self, other):
-        return self.tag < other.tag
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -152,18 +140,8 @@ class CognitoDeviceIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def tag(self):
-        return self.__tag
-
-
-    @property
     def creation_date(self):
         return self.__creation_date
-
-
-    @property
-    def shared_secret(self):
-        return self.__shared_secret
 
 
     # ----------------------------------------------------------------------------------------------------------------
