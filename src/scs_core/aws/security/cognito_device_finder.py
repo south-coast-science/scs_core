@@ -56,7 +56,7 @@ class CognitoDeviceFinder(object):
 
     def __headers(self, token):
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-        self.__logger.debug('headers: %s' % headers)
+        self.__logger.info('headers: %s' % headers)
 
         return headers
 
