@@ -4,6 +4,7 @@ Created on 23 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from abc import abstractmethod
 from collections import OrderedDict
 
 from scs_core.aws.data.http_response import HTTPResponse
@@ -11,65 +12,84 @@ from scs_core.aws.data.http_response import HTTPResponse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserLoginManager(object):
+class CognitoLoginManager(object):
     """
     classdocs
     """
 
     __AUTHORIZATION = 'southcoastscience.com'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, http_client):
+        self.__http_client = http_client                # requests package
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def login(self, credentials):
+        headers = {'Authorization': self.__AUTHORIZATION}
+        response = self.__http_client.post(self.url, headers=headers, json=credentials.as_json())
+
+        return CognitoAuthenticationResult.construct_from_response(response)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def url(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return self.__class__.__name__ + ":{http_client:%s}" % self.__http_client
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CognitoUserLoginManager(CognitoLoginManager):
+    """
+    classdocs
+    """
+
     __URL = 'https://ywmuri8c41.execute-api.us-west-2.amazonaws.com/default/CognitoUserLogin'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def login(self, credentials):
-        headers = {'Authorization': self.__AUTHORIZATION}
-        response = self.__http_client.post(self.__URL, headers=headers, json=credentials.as_json())
-
-        return CognitoAuthenticationResult.construct_from_response(response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoUserLoginManager:{}"
+    @property
+    def url(self):
+        return self.__URL
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceLoginManager(object):
+class CognitoDeviceLoginManager(CognitoLoginManager):
     """
     classdocs
     """
 
-    __AUTHORIZATION = 'southcoastscience.com'
     __URL = 'https://xatuk2wgb9.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceLogin'
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def login(self, credentials):
-        headers = {'Authorization': self.__AUTHORIZATION}
-        print("json: %s" % credentials.as_json())
-        response = self.__http_client.post(self.__URL, headers=headers, json=credentials.as_json())
-
-        return CognitoAuthenticationResult.construct_from_response(response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoDeviceLoginManager:{}"
+    @property
+    def url(self):
+        return self.__URL
 
 
 # --------------------------------------------------------------------------------------------------------------------
