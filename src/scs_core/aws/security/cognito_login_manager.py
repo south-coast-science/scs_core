@@ -9,10 +9,9 @@ from collections import OrderedDict
 from scs_core.aws.data.http_response import HTTPResponse
 
 
-# TODO: CognitoUserLoginManager, CognitoDeviceLoginManager
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoLoginManager(object):
+class CognitoUserLoginManager(object):
     """
     classdocs
     """
@@ -38,7 +37,39 @@ class CognitoLoginManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoLoginManager:{}"
+        return "CognitoUserLoginManager:{}"
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CognitoDeviceLoginManager(object):
+    """
+    classdocs
+    """
+
+    __AUTHORIZATION = 'southcoastscience.com'
+    __URL = 'https://xatuk2wgb9.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceLogin'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, http_client):
+        self.__http_client = http_client                # requests package
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def login(self, credentials):
+        headers = {'Authorization': self.__AUTHORIZATION}
+        print("json: %s" % credentials.as_json())
+        response = self.__http_client.post(self.__URL, headers=headers, json=credentials.as_json())
+
+        return CognitoAuthenticationResult.construct_from_response(response)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CognitoDeviceLoginManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

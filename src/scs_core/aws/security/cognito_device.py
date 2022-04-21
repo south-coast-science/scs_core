@@ -14,6 +14,66 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
+class CognitoDeviceCredentials(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, skeleton=False):
+        if not jdict:
+            return cls(None, None) if skeleton else None
+
+        tag = jdict.get('username')
+        shared_secret = jdict.get('password')
+
+        return cls(tag, shared_secret)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, tag, shared_secret):
+        """
+        Constructor
+        """
+        self.__tag = tag                                        # string
+        self.__shared_secret = shared_secret                    # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['username'] = self.tag
+        jdict['password'] = self.shared_secret
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def tag(self):
+        return self.__tag
+
+
+    @property
+    def shared_secret(self):
+        return self.__shared_secret
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CognitoDeviceCredentials:{tag:%s, shared_secret:%s}" % \
+               (self.tag, self.shared_secret)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class CognitoDeviceIdentity(JSONable):
     """
     classdocs

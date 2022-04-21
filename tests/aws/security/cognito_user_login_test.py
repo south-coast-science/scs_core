@@ -8,7 +8,7 @@ Created on 23 Nov 2021
 
 import requests
 
-from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
+from scs_core.aws.security.cognito_login_manager import CognitoUserLoginManager
 from scs_core.aws.security.cognito_user import CognitoUserCredentials
 
 from scs_core.sys.http_exception import HTTPException
@@ -20,7 +20,7 @@ credentials = CognitoUserCredentials('jade', 'jadempage@outlook.com', 'g77!!HDsK
 print(credentials)
 print("-")
 
-manager = CognitoLoginManager(requests)
+manager = CognitoUserLoginManager(requests)
 
 try:
     response = manager.login(credentials)
@@ -34,7 +34,7 @@ credentials = CognitoUserCredentials('jade', 'jadempage@outlook.com', 'e77!!HDsK
 print(credentials)
 print("-")
 
-manager = CognitoLoginManager(requests)
+manager = CognitoUserLoginManager(requests)
 
 try:
     response = manager.login(credentials)
