@@ -14,6 +14,7 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
+# TODO: fix find-by-tab
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoDeviceFinder(object):
@@ -62,7 +63,7 @@ class CognitoDeviceFinder(object):
 
 
     def __check_response(self, response):
-        self.__logger.info('response: %s' % response.json())
+        self.__logger.debug('response: %s' % response.json())
 
         status = HTTPStatus(response.status_code)
 

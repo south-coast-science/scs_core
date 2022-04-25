@@ -3,7 +3,11 @@ Created on 5 Apr 2022
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example document:
+example document (credentials):
+{"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
+
+example document (identity):
+{"username": "scs-ap1-343", "creation_date": "2022-04-07T13:37:56Z"}
 """
 
 from collections import OrderedDict
@@ -14,7 +18,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceIdentity(JSONable):
+class CognitoDeviceCredentials(JSONable):
     """
     classdocs
     """
@@ -31,40 +35,11 @@ class CognitoDeviceIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @classmethod
-    def construct_from_response(cls, res):
-        if not res:
-            return None
-
-        tag = res['Username']
-        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
-
-        try:
-            return cls(tag, creation_date, None)
-        except KeyError:
-            return None
-
-
-    @classmethod
-    def construct_from_jdict(cls, jdict, skeleton=False):
-        if not jdict:
-            return cls(None, None, None) if skeleton else None
-
-        tag = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
-        shared_secret = jdict.get('password')
-
-        return cls(tag, creation_date, shared_secret)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, tag, creation_date, shared_secret):
+    def __init__(self, tag, shared_secret):
         """
         Constructor
         """
         self.__tag = tag                                        # string
-        self.__creation_date = creation_date                    # LocalisedDatetime
         self.__shared_secret = shared_secret                    # string
 
 
@@ -77,14 +52,8 @@ class CognitoDeviceIdentity(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.tag is not None:
-            jdict['username'] = self.tag
-
-        if self.creation_date is not None:
-            jdict['creation_date'] = self.creation_date.as_iso8601()
-
-        if self.shared_secret is not None:
-            jdict['password'] = self.shared_secret
+        jdict['username'] = self.tag
+        jdict['password'] = self.shared_secret
 
         return jdict
 
@@ -97,11 +66,6 @@ class CognitoDeviceIdentity(JSONable):
 
 
     @property
-    def creation_date(self):
-        return self.__creation_date
-
-
-    @property
     def shared_secret(self):
         return self.__shared_secret
 
@@ -109,5 +73,82 @@ class CognitoDeviceIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, creation_date:%s, shared_secret:%s}" % \
-               (self.tag, self.creation_date, self.shared_secret)
+        return "CognitoDeviceCredentials:{tag:%s, shared_secret:%s}" % \
+               (self.tag, self.shared_secret)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CognitoDeviceIdentity(CognitoDeviceCredentials):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_response(cls, res):
+        if not res:
+            return None
+
+        tag = res['Username']
+        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
+
+        try:
+            return cls(tag, None, creation_date)
+        except KeyError:
+            return None
+
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, skeleton=False):
+        if not jdict:
+            return cls(None, None, None) if skeleton else None
+
+        tag = jdict.get('username')
+        shared_secret = jdict.get('password')
+        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
+
+        return cls(tag, shared_secret, creation_date)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, tag, shared_secret, creation_date):
+        """
+        Constructor
+        """
+        super().__init__(tag, shared_secret)
+
+        self.__creation_date = creation_date                    # LocalisedDatetime
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        if self.tag is not None:
+            jdict['username'] = self.tag
+
+        if self.shared_secret is not None:
+            jdict['password'] = self.shared_secret
+
+        if self.creation_date is not None:
+            jdict['creation_date'] = self.creation_date.as_iso8601()
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def creation_date(self):
+        return self.__creation_date
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CognitoDeviceIdentity:{tag:%s, shared_secret:%s, creation_date:%s}" % \
+               (self.tag, self.shared_secret, self.creation_date)
