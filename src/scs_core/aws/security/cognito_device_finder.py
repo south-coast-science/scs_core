@@ -14,7 +14,6 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
-# TODO: fix find-by-tab
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoDeviceFinder(object):
@@ -45,9 +44,10 @@ class CognitoDeviceFinder(object):
 
 
     def find_by_tag(self, token, tag):
+        url = '/'.join((self.__URL, 'in'))
         payload = json.dumps({"username": tag})
 
-        response = self.__http_client.get(self.__URL, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
         return [CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json()]
