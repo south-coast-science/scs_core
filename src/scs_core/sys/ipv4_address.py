@@ -15,6 +15,21 @@ class IPv4Address(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def is_valid(cls, dot_decimal):
+        try:
+            octets = [int(octet) for octet in dot_decimal.split('.') if 0 <= int(octet) <= 255]
+        except (TypeError, ValueError):
+            return False
+
+        if len(octets) != 4:
+            return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct(cls, dot_decimal):
         if dot_decimal is None:
             return None
