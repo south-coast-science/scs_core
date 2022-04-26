@@ -44,9 +44,10 @@ class CognitoDeviceFinder(object):
 
 
     def find_by_tag(self, token, tag):
+        url = '/'.join((self.__URL, 'in'))
         payload = json.dumps({"username": tag})
 
-        response = self.__http_client.get(self.__URL, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
         return [CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json()]
@@ -62,7 +63,7 @@ class CognitoDeviceFinder(object):
 
 
     def __check_response(self, response):
-        self.__logger.info('response: %s' % response.json())
+        self.__logger.debug('response: %s' % response.json())
 
         status = HTTPStatus(response.status_code)
 
