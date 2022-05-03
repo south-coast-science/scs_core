@@ -23,7 +23,6 @@ from scs_core.data.timedelta import Timedelta
 
 
 # TODO: object should carry a flag indicating presence of millis - for "preserve millis" mode?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class LocalizedDatetime(JSONable):

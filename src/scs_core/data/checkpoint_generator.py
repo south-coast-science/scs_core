@@ -17,6 +17,7 @@ For example, **:/5:30 is used to indicate 30 seconds past the minute, every 5 mi
 from datetime import datetime, timedelta
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -83,6 +84,10 @@ class CheckpointGenerator(object):
             return interval
 
         return 86400            # 24 hours
+
+
+    def min_timedelta(self):
+        return Timedelta.construct(timedelta(seconds=self.min_interval()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
