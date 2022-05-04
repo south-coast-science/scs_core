@@ -1,0 +1,68 @@
+{
+    "is-error-model": false,
+    "data-set": "ref-scs-bgx-508-20H1-slp16-vcal-err-clean-train",
+    "period": {
+        "start": "2020-03-13T01:30:00Z",
+        "end": "2020-06-30T23:45:00Z"
+    },
+    "primaries": {
+        "NO.vCal": {
+            "path": "src.scs.env.gases.val.NO.vCal",
+            "min": -41.151,
+            "avg": -14.742,
+            "max": 74.501
+        }
+    },
+    "secondaries": {
+        "tmp.brd": {
+            "path": "src.scs.stat.val.tmp.brd",
+            "min": 6.6,
+            "avg": 21.157,
+            "max": 40.2
+        },
+        "hmd.cur": {
+            "path": "src.scs.env.meteo.val.hmd.cur",
+            "min": 19.3,
+            "avg": 55.926,
+            "max": 88.5
+        },
+        "hmd.slope": {
+            "path": "src.scs.env.meteo.val.hmd.slope",
+            "min": -0.004,
+            "avg": -0.0,
+            "max": 0.003
+        },
+        "tmp.cur": {
+            "path": "src.scs.env.meteo.val.tmp.cur",
+            "min": 1.9,
+            "avg": 16.061,
+            "max": 34.4
+        },
+        "tmp.slope": {
+            "path": "src.scs.env.meteo.val.tmp.slope",
+            "min": -0.001,
+            "avg": 0.0,
+            "max": 0.001
+        }
+    },
+    "reference": {
+        "path": "src.ref.NO Processed Measurement (ppb)",
+        "min": 0.0,
+        "avg": 2.5,
+        "max": 105.4
+    },
+    "output": {
+        "path": "exg.NO.vE.Urban.20H1",
+        "min": 0.6,
+        "avg": 2.5,
+        "max": 100.9
+    },
+    "performance": {
+        "count": 8097,
+        "slope": 0.949,
+        "intercept": 0.129,
+        "r2": 0.964,
+        "p": 0.0,
+        "std-err": 0.002
+    }
+}
