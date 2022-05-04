@@ -307,7 +307,13 @@ class AWSGroupConfigurator(object):
 
             try:
                 f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
-                    "ResourceAccessPolicies"][2]["ResourceId"] = (system_id + "-ml-so2")
+                    "ResourceAccessPolicies"][2]["ResourceId"] = (system_id + "-ml-no")
+            except IndexError:
+                pass
+
+            try:
+                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                    "ResourceAccessPolicies"][3]["ResourceId"] = (system_id + "-ml-so2")
             except IndexError:
                 pass
 
