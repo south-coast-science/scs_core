@@ -17,6 +17,8 @@ class A4Calib(SensorCalib):
     classdocs
     """
 
+    __OX_SENSOR_PREFIX = 'OX'
+
     __CALIBRATED_GASES = ('CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe')
 
     @classmethod
@@ -128,6 +130,10 @@ class A4Calib(SensorCalib):
 
     def reports_no2_cross_sensitivity(self):
         return self.__we_no2_x_sens_mv is not None
+
+
+    def is_ox_sensor(self):
+        return self.sensor_type.upper().startswith(self.__OX_SENSOR_PREFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------

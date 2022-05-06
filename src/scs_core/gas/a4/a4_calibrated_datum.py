@@ -39,10 +39,10 @@ class A4Calibrator(object):
 
         self.__we_sens_v = round(calib.we_sens_mv / 1000.0, 6)                      # we_sensitivity_mv_ppb
 
-        if calib.we_no2_x_sens_mv is None:
-            self.__we_no2_x_sens_v = None
-        else:
+        if calib.is_ox_sensor():
             self.__we_no2_x_sens_v = round(calib.we_no2_x_sens_mv / 1000.0, 6)      # we_cross_sensitivity_no2_mv_ppb
+        else:
+            self.__we_no2_x_sens_v = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
