@@ -69,9 +69,10 @@ class A4Calibrator(object):
         return v_zero_cal / we_sens_v
 
 
-    # def set_x_cal(self, datum, no2_cnc):
-    #     we_v_x = no2_cnc * self.we_no2_x_sens_v
-    #     datum.x_cal = we_v_x - self.we_elc_v
+    def set_we_v_zero_x_cal(self, datum, no2_cnc):
+        # we_v_x = no2_cnc * self.we_no2_x_sens_v
+        # datum.we_v_zero_x_cal = we_v_x - self.we_elc_v
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
