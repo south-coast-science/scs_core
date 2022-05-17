@@ -6,11 +6,11 @@ Created on 9 Dec 2020
 The A4CalibratedDatum is a normalised electrochem output voltage. Its vCal field represents the calibrated weV
 minus the calibrated aeV.
 
-The vXCal field should only be computed when the NO2 concentration is known precisely, so this should be done
-in the preprocessing phase for the O3 model.
+(Obsolete: The vXCal field should only be computed when the NO2 concentration is known precisely, so this should be
+done in the preprocessing phase for the O3 model.)
 
 example document:
-{"weV": 0.41138, "aeV": 0.40257, "weC": 0.02671, "cnc": 116.5, "vCal": 17.292, "vXCal": 0.00212}
+{"weV": 0.39519, "aeV": 0.39963, "weC": 0.00627, "cnc": 61.9, "vCal": -9.801, "xCal": -12.601}
 """
 
 from collections import OrderedDict
@@ -174,9 +174,9 @@ class A4CalibratedDatum(A4Datum):
         return self.__x_cal
 
 
-    @x_cal.setter
-    def x_cal(self, x_cal):
-        self.__x_cal = round(x_cal, 9)
+    # @x_cal.setter
+    # def x_cal(self, x_cal):
+    #     self.__x_cal = round(x_cal, 9)
 
 
     # ----------------------------------------------------------------------------------------------------------------
