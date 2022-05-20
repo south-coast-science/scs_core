@@ -91,8 +91,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if not res:
             return None
 
-        tag = res['Username']
-        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
+        tag = res['username']
+        creation_date = LocalizedDatetime.construct_from_aws(str(res["creation_date"]))
 
         try:
             return cls(tag, None, creation_date)

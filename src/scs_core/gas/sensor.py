@@ -19,8 +19,8 @@ class Sensor(ABC):
     CODE_CO =           '132'           # CO A4
     CODE_H2S =          '133'           # H2SA4
     CODE_NO =           '130'           # NO A4
-    CODE_NO2 =          '212'           # NOGA4
-    CODE_OX =           '214'           # OXGA4
+    CODE_NO2 =          '212'           # NOGA4, NO2A43F
+    CODE_OX =           '214'           # OXGA4, OXA431
     CODE_SO2 =          '134'           # SO2A4
 
     CODE_VOCe =         '217'           # VOCA4
