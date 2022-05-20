@@ -17,6 +17,8 @@ class A4Calib(SensorCalib):
     classdocs
     """
 
+    __OX_SENSOR_PREFIX = 'OX'
+
     __CALIBRATED_GASES = ('CO', 'H2S', 'NO', 'NO2', 'Ox', 'SO2', 'VOCe')
 
     @classmethod
@@ -110,24 +112,42 @@ class A4Calib(SensorCalib):
     # ----------------------------------------------------------------------------------------------------------------
 
     def set_defaults(self):
-        self.__we_elc_mv = self.DEFAULT_WE_ELECTRONIC_ZERO_MV
-        self.__we_cal_mv = self.DEFAULT_WE_SENSOR_ZERO_MV
-        self.__we_tot_mv = self.DEFAULT_WE_TOTAL_ZERO_MV
+        if self.__we_elc_mv is None:
+            self.__we_elc_mv = self.DEFAULT_WE_ELECTRONIC_ZERO_MV
 
-        self.__ae_elc_mv = self.DEFAULT_AE_ELECTRONIC_ZERO_MV
-        self.__ae_cal_mv = self.DEFAULT_AE_SENSOR_ZERO_MV
-        self.__ae_tot_mv = self.DEFAULT_AE_TOTAL_ZERO_MV
+        if self.__we_cal_mv is None:
+            self.__we_cal_mv = self.DEFAULT_WE_SENSOR_ZERO_MV
 
-        self.__pcb_gain = self.DEFAULT_PCB_GAIN
+        if self.__we_tot_mv is None:
+            self.__we_tot_mv = self.DEFAULT_WE_TOTAL_ZERO_MV
+
+        if self.__ae_elc_mv is None:
+            self.__ae_elc_mv = self.DEFAULT_AE_ELECTRONIC_ZERO_MV
+
+        if self.__ae_cal_mv is None:
+            self.__ae_cal_mv = self.DEFAULT_AE_SENSOR_ZERO_MV
+
+        if self.__ae_tot_mv is None:
+            self.__ae_tot_mv = self.DEFAULT_AE_TOTAL_ZERO_MV
+
+        if self.__pcb_gain is None:
+            self.__pcb_gain = self.DEFAULT_PCB_GAIN
 
 
     def set_sens_mv_from_sens_na(self):
+        if self.__we_sens_mv is not None:
+            return
+
         we_sens_mv = -0.7313 * self.__we_sens_na + -0.0006          # coefficients found from Alphasense calibrations
         self.__we_sens_mv = round(we_sens_mv, 3)
 
 
     def reports_no2_cross_sensitivity(self):
         return self.__we_no2_x_sens_mv is not None
+
+
+    def is_ox_sensor(self):
+        return self.sensor_type.upper().startswith(self.__OX_SENSOR_PREFIX)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,12 @@
 Created on 24 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+www.alphasense-technology.co.uk...
+{"sensor_type":"PIDH2","serial_number":"143370503","we_electronic_zero_mv":"n/a","we_sensor_zero_mv":"61.88",
+"we_total_zero_mv":"n/a","ae_electronic_zero_mv":"n/a","ae_sensor_zero_mv":"n/a","ae_total_zero_mv":"n/a",
+"we_sensitivity_na_ppb":"n/a","we_cross_sensitivity_no2_na_ppb":"n/a","pcb_gain":"n/a",
+"we_sensitivity_mv_ppb":"51.68","we_cross_sensitivity_no2_mv_ppb":"n/a","calibration_date":"2022-05-10"}
 """
 
 from collections import OrderedDict
@@ -15,6 +21,7 @@ from scs_core.gas.sensor_calib import SensorCalib
 class PIDCalib(SensorCalib):
     """
     classdocs
+
     """
 
     @classmethod
@@ -25,8 +32,15 @@ class PIDCalib(SensorCalib):
         serial_number = jdict.get('serial_number')
         sensor_type = jdict.get('sensor_type')
 
-        pid_elc_mv = jdict.get('pid_zero_mv')
-        pid_sens_mv_ppm = jdict.get('pid_sensitivity_mv_ppm')
+        if 'pid_zero_mv' in jdict:
+            pid_elc_mv = jdict.get('pid_zero_mv')
+        else:
+            pid_elc_mv = jdict.get('we_sensor_zero_mv')
+
+        if 'pid_sensitivity_mv_ppm' in jdict:
+            pid_sens_mv_ppm = jdict.get('pid_sensitivity_mv_ppm')
+        else:
+            pid_sens_mv_ppm = jdict.get('we_sensitivity_mv_ppb')        # uses mV / ppb field to record mV / ppm
 
         return cls(serial_number, sensor_type, pid_elc_mv, pid_sens_mv_ppm)
 
