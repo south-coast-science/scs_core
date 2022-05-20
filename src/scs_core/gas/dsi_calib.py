@@ -47,6 +47,8 @@ class DSICalib(AFECalib):
             path = SensorCalib.ALPHASENSE_PATH + serial_number
             jstr = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
 
+            print("jstr: %s" % jstr)
+
             return cls.construct_from_jdict(json.loads(jstr))
 
         finally:
