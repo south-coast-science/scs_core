@@ -48,7 +48,6 @@ class A4(Sensor):
         Sensor.__init__(self, sensor_code, sensor_type, gas_name, adc_gain_index)
 
         self.__tc = A4TempComp.find(sensor_code)
-        self.__calibrator = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -86,11 +85,6 @@ class A4(Sensor):
 
 
     @property
-    def calibrator(self):
-        return self.__calibrator
-
-
-    @property
     def calib(self):
         return self._calib
 
@@ -98,7 +92,7 @@ class A4(Sensor):
     @calib.setter
     def calib(self, calib):
         self._calib = calib
-        self.__calibrator = A4Calibrator(calib)
+        self._calibrator = A4Calibrator(calib)
 
 
     # ----------------------------------------------------------------------------------------------------------------

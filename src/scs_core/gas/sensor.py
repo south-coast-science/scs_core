@@ -56,7 +56,7 @@ class Sensor(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, calib=None, baseline=None):
+    def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index):
         """
         Constructor
         """
@@ -66,8 +66,9 @@ class Sensor(ABC):
         self.__gas_name = gas_name
         self.__adc_gain_index = adc_gain_index
 
-        self._calib = calib
-        self.__baseline = baseline
+        self._calib = None
+        self._calibrator = None
+        self.__baseline = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -123,6 +124,11 @@ class Sensor(ABC):
     @abstractmethod
     def calib(self, calib):
         pass
+
+
+    @property
+    def calibrator(self):
+        return self._calibrator
 
 
     @property

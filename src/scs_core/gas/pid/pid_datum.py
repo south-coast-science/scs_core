@@ -60,13 +60,13 @@ class PIDDatum(JSONable):
         """
         offset_v = calib.pid_elc_mv / 1000.0
 
-        response_v = we_v - offset_v                # remove electronic zero
-        response_c = tc.correct(temp, response_v)   # correct the response component
+        response_v = we_v - offset_v                    # remove electronic zero
+        response_c = tc.correct(temp, response_v)       # correct the response component
 
         if response_c is None:
             return None
 
-        we_c = response_c + offset_v                # replace electronic zero
+        we_c = response_c + offset_v                    # replace electronic zero
 
         return we_c
 
@@ -93,10 +93,10 @@ class PIDDatum(JSONable):
         """
         Constructor
         """
-        self.__we_v = Datum.float(we_v, 5)          # uncorrected working electrode output      Volts
+        self.__we_v = Datum.float(we_v, 5)              # uncorrected working electrode output      Volts
 
-        self.__we_c = Datum.float(we_c, 5)          # corrected working electrode voltage       Volts
-        self.__cnc = Datum.float(cnc, 1)            # gas concentration                         ppb
+        self.__we_c = Datum.float(we_c, 5)              # corrected working electrode voltage       Volts
+        self.__cnc = Datum.float(cnc, 1)                # gas concentration                         ppb
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -106,8 +106,8 @@ class PIDDatum(JSONable):
 
         jdict['weV'] = self.we_v
 
-        jdict['weC'] = self.we_c                    # may be None
-        jdict['cnc'] = self.cnc                     # may be None
+        jdict['weC'] = self.we_c                        # may be None
+        jdict['cnc'] = self.cnc                         # may be None
 
         return jdict
 
