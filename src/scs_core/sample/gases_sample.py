@@ -21,7 +21,7 @@ from scs_core.data.str import Str
 from scs_core.gas.a4.a4_calibrated_datum import A4CalibratedDatum
 from scs_core.gas.afe.afe_datum import AFEDatum
 from scs_core.gas.afe.pt1000_datum import Pt1000Datum
-from scs_core.gas.pid.pid import PIDDatum
+from scs_core.gas.pid.pid_calibrated_datum import PIDCalibratedDatum
 from scs_core.gas.scd30.scd30_datum import SCD30Datum
 
 from scs_core.sample.sample import Sample
@@ -76,7 +76,7 @@ class GasesSample(Sample):
                 sns[field] = A4CalibratedDatum.construct_from_jdict(node)
 
             if field in cls.__VOC_FIELDS:
-                sns[field] = PIDDatum.construct_from_jdict(node)
+                sns[field] = PIDCalibratedDatum.construct_from_jdict(node)
 
         electrochem_datum = AFEDatum(pt1000_datum, *list(sns.items()))
 

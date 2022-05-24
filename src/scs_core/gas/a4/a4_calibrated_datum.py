@@ -120,7 +120,6 @@ class A4CalibratedDatum(A4Datum):
 
         we_v = jdict.get('weV')
         ae_v = jdict.get('aeV')
-
         we_c = jdict.get('weC')
         cnc = jdict.get('cnc')
 
@@ -149,7 +148,6 @@ class A4CalibratedDatum(A4Datum):
 
         jdict['weV'] = self.we_v
         jdict['aeV'] = self.ae_v
-
         jdict['weC'] = self.we_c                                # may be None
         jdict['cnc'] = self.cnc                                 # may be None
 
