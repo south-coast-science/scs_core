@@ -11,6 +11,7 @@ PID-AH "default" - pid_elc_mv: 54, pid_sens_mv_ppm: 0.040
 """
 
 from scs_core.gas.pid.pid_calib import PIDCalib
+from scs_core.gas.pid.pid_calibrated_datum import PIDCalibrator
 from scs_core.gas.pid.pid_datum import PIDDatum
 from scs_core.gas.pid.pid_temp_comp import PIDTempComp
 
@@ -59,7 +60,12 @@ class PID(Sensor):
     def sample(self, afe, temp, sensor_index, no2_sample=None):
         we_v = afe.sample_raw_wrk(sensor_index, self.adc_gain_index)
 
-        return PIDDatum.construct(self.calib, self.baseline, self.__tc, temp, we_v)
+        datum = PIDDatum.construct(self.calib, self.baseline, self.__tc, temp, we_v)
+
+        if self.calibrator is None:
+            return datum
+
+        return self.calibrator.calibrate(datum)
 
 
     def null_datum(self):
@@ -93,6 +99,7 @@ class PID(Sensor):
 
         # set calibration...
         self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv_ppm)
+        self._calibrator = PIDCalibrator(self.calib)
 
 
     # ----------------------------------------------------------------------------------------------------------------
