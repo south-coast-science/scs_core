@@ -26,6 +26,8 @@ class DSICalib(AFECalib):
     classdocs
     """
 
+    TYPE = 'DSI'
+
     DSI_WRAPPER = '''
                 {"serial_number": "00-000000", "type": "ISI", "calibrated_on": "YYYY-MM-DD", 
                 "dispatched_on": null, "pt1000_v20": 1.0, 
@@ -47,8 +49,6 @@ class DSICalib(AFECalib):
             path = SensorCalib.ALPHASENSE_PATH + serial_number
             jstr = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
 
-            print("jstr: %s" % jstr)
-
             return cls.construct_from_jdict(json.loads(jstr))
 
         finally:
@@ -66,7 +66,7 @@ class DSICalib(AFECalib):
         sensor_calib.set_defaults()
         sensor_calib.set_sens_mv_from_sens_na()
 
-        return cls('DSI', sensor_calib)
+        return cls(cls.TYPE, sensor_calib)
 
 
     # ----------------------------------------------------------------------------------------------------------------
