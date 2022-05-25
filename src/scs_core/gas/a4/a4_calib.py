@@ -135,7 +135,7 @@ class A4Calib(SensorCalib):
 
 
     def set_sens_mv_from_sens_na(self):
-        if self.__we_sens_mv is not None:
+        if self.__we_sens_na is None:
             return
 
         we_sens_mv = -0.7313 * self.__we_sens_na + -0.0006          # coefficients found from Alphasense calibrations
