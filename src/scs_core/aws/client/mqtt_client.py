@@ -30,7 +30,7 @@ class MQTTClient(object):
     """
     classdocs
     """
-    __KEEP_ALIVE_INTERVAL =         60                     # recommended: 30 default: 600 (sec)
+    __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 default: 600 (sec)
 
     __PORT =                        8883
 
@@ -39,7 +39,7 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  32                      # recommended: 32 or 128 (sec), was 10
+    __RECONN_MAX =                  5                       # recommended: 32 or 128 (sec), was 10
     __RECONN_STABLE =               20                      # recommended: 20 (sec), was 10
 
     __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec), was 40

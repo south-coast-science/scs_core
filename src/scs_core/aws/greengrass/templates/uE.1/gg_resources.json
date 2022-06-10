@@ -57,6 +57,16 @@
                 }
             },
             {
+                "Id": "SYSTEM_ID-ml-no",
+                "Name": "ML-NO",
+                "ResourceDataContainer": {
+                    "S3MachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/uE.1/NO",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/NO-vE-Urban-20H1-xgboost-2022-05-04.tar.gz"
+                    }
+                }
+            },
+            {
                 "Id": "SYSTEM_ID-ml-so2",
                 "Name": "ML-SO2",
                 "ResourceDataContainer": {
