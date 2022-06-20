@@ -713,6 +713,27 @@ class Configuration(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_table(self):
+        pass
+
+
+    def __as_table(self, depth, tag, value):
+        indent = ',' * depth
+
+        if isinstance(value, list) or isinstance(value, tuple):
+            print(str(indent) + tag)
+            for i in range(len(value)):
+                collection(depth + 1, str(i), value[i])
+
+        try:
+            print(str(indent) + tag)
+            for tag, item in value.items():
+                collection(depth + 1, tag, item)
+
+        except (AttributeError, TypeError):
+            print(str(indent) + tag + ',' + str(value))
+
+
     def as_json(self):
         jdict = OrderedDict()
 
