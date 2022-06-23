@@ -54,6 +54,11 @@ class AFEDatum(JSONable):
         return self.__sns
 
 
+    @sns.setter
+    def sns(self, sns):
+        self.__sns = sns
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
