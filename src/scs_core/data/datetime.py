@@ -492,7 +492,7 @@ class DateParser(object):
 
             return datetime.strptime(standard_datetime, self.__strptime_format)
 
-        except (KeyError, ValueError):
+        except (KeyError, TypeError, ValueError):
             return None
 
 
