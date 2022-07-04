@@ -5,9 +5,15 @@ Created on 3 Mar 2022
 
 https://en.wikipedia.org/wiki/Standard_deviation
 
-example document:
-{"err": {"SO2": {"vE": {"Urban": {"22Q1": {"count": 14167, "min": -239.8, "mean": 0.1, "median": 0.1, "max": 145.0,
-"var": 19.5, "stdev": 4.4, "stdev2": 8.8, "stdev3": 13.2}}}}}}
+
+example documents:
+Stats:
+{"tag": "scs-bgx-619", "val": {"VOC": {"cnc": {"count": 4320, "min": 397.7, "mean": 448.2, "median": 446.1,
+"max": 498.9, "var": 375.6, "stdev": 19.4, "stdev2": 38.8, "stdev3": 58.2}}}}
+
+StatsAnalysis:
+{"tag": "scs-bgx-619", "val": {"VOC": {"cnc": {"min": 397.7, "mean": 448.2, "max": 498.9,
+"l3": 387.9,  "l2": 407.3, "l1": 426.7, "u1": 465.5, "u2": 484.9, "u3": 504.3, "a1": 38.8, "a2": 77.6, "a3": 116.4}}}}
 """
 
 from collections import OrderedDict
@@ -215,6 +221,7 @@ class StatsAnalysis(JSONable):
             return None
 
         minimum = jdict.get('min')
+        mean = jdict.get('mean')
         maximum = jdict.get('max')
 
         lower3 = jdict.get('l3')
@@ -229,37 +236,46 @@ class StatsAnalysis(JSONable):
         amp2 = jdict.get('a2')
         amp3 = jdict.get('a3')
 
-        return cls(minimum, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3)
+        return cls(minimum, mean, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3)
 
 
     @classmethod
     def construct_from_stats_jdict(cls, jdict):
         stats = Stats.construct_from_jdict(jdict)
 
-        return cls(stats.minimum, stats.maximum, stats.lower3(), stats.lower2(), stats.lower1(),
+        return cls(stats.minimum, stats.mean, stats.maximum, stats.lower3(), stats.lower2(), stats.lower1(),
                    stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(), stats.amp3())
+
+
+    @classmethod
+    def construct_from_stats(cls, stats, prec=1):
+        return cls(stats.minimum, stats.mean, stats.maximum, stats.lower3(), stats.lower2(), stats.lower1(),
+                   stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(), stats.amp3(),
+                   prec=prec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, minimum, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3):
+    def __init__(self, minimum, mean, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3,
+                 prec=1):
         """
         Constructor
         """
-        self.__minimum = round(float(minimum), 1)
-        self.__maximum = round(float(maximum), 1)
+        self.__minimum = round(float(minimum), prec)
+        self.__mean = round(float(mean), prec)
+        self.__maximum = round(float(maximum), prec)
 
-        self.__lower3 = round(float(lower3), 1)
-        self.__lower2 = round(float(lower2), 1)
-        self.__lower1 = round(float(lower1), 1)
+        self.__lower3 = round(float(lower3), prec)
+        self.__lower2 = round(float(lower2), prec)
+        self.__lower1 = round(float(lower1), prec)
 
-        self.__upper1 = round(float(upper1), 1)
-        self.__upper2 = round(float(upper2), 1)
-        self.__upper3 = round(float(upper3), 1)
+        self.__upper1 = round(float(upper1), prec)
+        self.__upper2 = round(float(upper2), prec)
+        self.__upper3 = round(float(upper3), prec)
 
-        self.__amp1 = round(float(amp1), 1)
-        self.__amp2 = round(float(amp2), 1)
-        self.__amp3 = round(float(amp3), 1)
+        self.__amp1 = round(float(amp1), prec)
+        self.__amp2 = round(float(amp2), prec)
+        self.__amp3 = round(float(amp3), prec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -268,6 +284,7 @@ class StatsAnalysis(JSONable):
         jdict = OrderedDict()
 
         jdict['min'] = self.minimum
+        jdict['mean'] = self.mean
         jdict['max'] = self.maximum
 
         jdict['l3'] = self.lower3
@@ -290,6 +307,11 @@ class StatsAnalysis(JSONable):
     @property
     def minimum(self):
         return self.__minimum
+
+
+    @property
+    def mean(self):
+        return self.__mean
 
 
     @property
@@ -345,7 +367,7 @@ class StatsAnalysis(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatsAnalysis:{minimum:%s, maximum:%s, lower3:%s, lower2:%s, lower1:%s, " \
+        return "StatsAnalysis:{minimum:%s, mean:%s, maximum:%s, lower3:%s, lower2:%s, lower1:%s, " \
                "upper1:%s, upper2:%s, upper3:%s, amp1:%s, amp2:%s, amp3:%s}" % \
-               (self.minimum, self.maximum, self.lower3, self.lower2, self.lower1,
+               (self.minimum, self.mean, self.maximum, self.lower3, self.lower2, self.lower1,
                 self.upper1, self.upper2, self.upper3, self.amp1, self.amp2, self.amp3)
