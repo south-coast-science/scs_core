@@ -222,6 +222,7 @@ class StatsAnalysis(JSONable):
 
         minimum = jdict.get('min')
         mean = jdict.get('mean')
+        median = jdict.get('median')
         maximum = jdict.get('max')
 
         lower3 = jdict.get('l3')
@@ -236,33 +237,35 @@ class StatsAnalysis(JSONable):
         amp2 = jdict.get('a2')
         amp3 = jdict.get('a3')
 
-        return cls(minimum, mean, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3)
+        return cls(minimum, mean, median, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3)
 
 
     @classmethod
     def construct_from_stats_jdict(cls, jdict):
         stats = Stats.construct_from_jdict(jdict)
 
-        return cls(stats.minimum, stats.mean, stats.maximum, stats.lower3(), stats.lower2(), stats.lower1(),
-                   stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(), stats.amp3())
+        return cls(stats.minimum, stats.mean, stats.median, stats.maximum, stats.lower3(), stats.lower2(),
+                   stats.lower1(), stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(),
+                   stats.amp3())
 
 
     @classmethod
     def construct_from_stats(cls, stats, prec=1):
-        return cls(stats.minimum, stats.mean, stats.maximum, stats.lower3(), stats.lower2(), stats.lower1(),
-                   stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(), stats.amp3(),
-                   prec=prec)
+        return cls(stats.minimum, stats.mean, stats.median, stats.maximum, stats.lower3(), stats.lower2(),
+                   stats.lower1(), stats.upper1(), stats.upper2(), stats.upper3(), stats.amp1(), stats.amp2(),
+                   stats.amp3(), prec=prec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, minimum, mean, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3,
+    def __init__(self, minimum, mean, median, maximum, lower3, lower2, lower1, upper1, upper2, upper3, amp1, amp2, amp3,
                  prec=1):
         """
         Constructor
         """
         self.__minimum = round(float(minimum), prec)
         self.__mean = round(float(mean), prec)
+        self.__median = round(float(median), prec)
         self.__maximum = round(float(maximum), prec)
 
         self.__lower3 = round(float(lower3), prec)
@@ -285,6 +288,7 @@ class StatsAnalysis(JSONable):
 
         jdict['min'] = self.minimum
         jdict['mean'] = self.mean
+        jdict['median'] = self.median
         jdict['max'] = self.maximum
 
         jdict['l3'] = self.lower3
@@ -312,6 +316,11 @@ class StatsAnalysis(JSONable):
     @property
     def mean(self):
         return self.__mean
+
+
+    @property
+    def median(self):
+        return self.__median
 
 
     @property
@@ -367,7 +376,7 @@ class StatsAnalysis(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatsAnalysis:{minimum:%s, mean:%s, maximum:%s, lower3:%s, lower2:%s, lower1:%s, " \
+        return "StatsAnalysis:{minimum:%s, mean:%s, median:%s, maximum:%s, lower3:%s, lower2:%s, lower1:%s, " \
                "upper1:%s, upper2:%s, upper3:%s, amp1:%s, amp2:%s, amp3:%s}" % \
-               (self.minimum, self.mean, self.maximum, self.lower3, self.lower2, self.lower1,
+               (self.minimum, self.mean, self.median, self.maximum, self.lower3, self.lower2, self.lower1,
                 self.upper1, self.upper2, self.upper3, self.amp1, self.amp2, self.amp3)
