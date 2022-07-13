@@ -40,6 +40,10 @@ class IntervalTimer(object):
         return True
 
 
+    def reset(self):
+        self.__next_yield = time.time() + self.__interval
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __sleep_until_next_yield(self):
