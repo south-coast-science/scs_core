@@ -12,8 +12,8 @@ Stats:
 "max": 498.9, "var": 375.6, "stdev": 19.4, "stdev2": 38.8, "stdev3": 58.2}}}}
 
 StatsAnalysis:
-{"tag": "scs-bgx-619", "val": {"VOC": {"cnc": {"min": 397.7, "mean": 448.2, "max": 498.9,
-"l3": 387.9,  "l2": 407.3, "l1": 426.7, "u1": 465.5, "u2": 484.9, "u3": 504.3, "a1": 38.8, "a2": 77.6, "a3": 116.4}}}}
+{"tag": "scs-bgx-570", "val": {"SO2": {"cnc": {"min": -3.6, "mean": 1.7, "median": 1.4, "max": 9.3,
+"l3": -5.8, "l2": -3.4, "l1": -1.0, "u1": 3.8, "u2": 6.2, "u3": 8.6, "a1": 4.8, "a2": 9.6, "a3": 14.4}
 """
 
 from collections import OrderedDict
