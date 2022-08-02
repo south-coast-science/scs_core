@@ -54,7 +54,8 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONify, JSONable
+from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
@@ -70,6 +71,12 @@ class ConfigurationSample(Sample):
     """
 
     VERSION = 1.0
+
+    __HIDDEN_VALUES = [
+        'val.aws-api-auth.api-key',
+        'val.shared-secret.key'
+    ]
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -132,8 +139,26 @@ class ConfigurationSample(Sample):
         return False
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def diff(self, other):
         return ConfigurationSample(self.tag, self.rec, self.configuration.diff(other.configuration))
+
+
+    def as_table(self):
+        path_dict = PathDict.construct_from_jstr(JSONify.dumps(self))
+        rows = []
+
+        for path in path_dict.paths():
+            node = path_dict.node(path)
+            value = '' if node is None else node
+
+            key = path[4:] if path.startswith('val.') else path
+            setting = '######' if path in self.__HIDDEN_VALUES else value
+
+            rows.append(','.join((key, str(setting))))
+
+        return rows
 
 
     # ----------------------------------------------------------------------------------------------------------------
