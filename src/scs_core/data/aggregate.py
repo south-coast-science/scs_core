@@ -6,8 +6,6 @@ Created on 1 Mar 2019
 source repo: scs_analysis
 """
 
-import sys
-
 from decimal import InvalidOperation
 
 from scs_core.data.categorical_regression import CategoricalRegression
@@ -57,27 +55,21 @@ class Aggregate(object):
     def append(self, datetime: LocalizedDatetime, sample: PathDict):
         # initialise...
         if not self.__initialised:
-            nodes = self.__nodes if self.__nodes else sample.paths()        # use all paths if nodes are not specified
+            if self.__nodes:
+                paths = []
+                for node in self.__nodes:
+                    paths += sample.paths(node)
+            else:
+                paths = sample.paths()
 
-            for node in nodes:
-                try:
-                    paths = sample.paths(node)
-                except KeyError:
+            for path in paths:
+                if path == 'rec':
                     continue
 
-                except IndexError as ex:
-                    paths = None
-                    print("sample_aggregate: %s: IndexError: %s" % (node, ex), file=sys.stderr)
-                    sys.stderr.flush()
-                    exit(1)
+                self.__precisions[path] = Precision()
 
-                for path in paths:
-                    if path == 'rec':
-                        continue
-
-                    self.__precisions[path] = Precision()
-                    self.__regressions[path] = CategoricalRegression() if isinstance(sample.node(path), str) else \
-                        LinearRegression()
+                node = sample.node(path)
+                self.__regressions[path] = CategoricalRegression() if isinstance(node, str) else LinearRegression()
 
             self.__initialised = True
 
@@ -88,7 +80,7 @@ class Aggregate(object):
             except KeyError:
                 continue
 
-            if value is None:
+            if value is None or value == '':
                 continue
 
             try:
