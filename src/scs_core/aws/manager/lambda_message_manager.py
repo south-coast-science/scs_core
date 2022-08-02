@@ -36,6 +36,7 @@ class MessageManager(object):
     """
 
     __REQUEST_PATH = '/topicMessages'
+
     # __REQUEST_PATH = '/default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -49,7 +50,6 @@ class MessageManager(object):
 
         self.__logger = Logging.getLogger()
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_latest_for_topic(self, topic, end, path, include_wrapper, rec_only, backoff_limit):
@@ -59,7 +59,6 @@ class MessageManager(object):
             return documents[0]
 
         return None
-
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
@@ -100,7 +99,6 @@ class MessageManager(object):
         finally:
             self.__rest_client.close()
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
@@ -139,7 +137,7 @@ class MessageRequest(object):
         delta = end - start
 
         if delta < cls.__DAY:
-            return None             # raw data rate
+            return None  # raw data rate
 
         if delta < cls.__WEEK:
             return '**:/01:00'
@@ -151,7 +149,6 @@ class MessageRequest(object):
             return '**:00:00'
 
         return '/06:00:00'
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -174,14 +171,13 @@ class MessageRequest(object):
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
         exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
         fetch_last_written_before = qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE, 'false').lower() == 'true'
-        backoff_limit = qsp.get(cls.PATH)
+        backoff_limit = qsp.get(cls.backoff_limit)
 
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
 
         return cls(topic, start, end, path, fetch_last_written, checkpoint, include_wrapper, rec_only,
                    min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -190,20 +186,19 @@ class MessageRequest(object):
         """
         Constructor
         """
-        self.__topic = topic                                                    # string
-        self.__start = start                                                    # LocalizedDatetime
-        self.__end = end                                                        # LocalizedDatetime
+        self.__topic = topic  # string
+        self.__start = start  # LocalizedDatetime
+        self.__end = end  # LocalizedDatetime
 
-        self.__path = path                                                      # string
-        self.__fetch_last_written = bool(fetch_last_written)                    # bool
-        self.__checkpoint = checkpoint                                          # string
-        self.__include_wrapper = bool(include_wrapper)                          # bool
-        self.__rec_only = bool(rec_only)                                        # bool
-        self.__min_max = bool(min_max)                                          # bool
-        self.__exclude_remainder = bool(exclude_remainder)                      # bool
-        self.__fetch_last_written_before = bool(fetch_last_written_before)      # bool
-        self.__backoff_limit = backoff_limit                                    # int seconds
-
+        self.__path = path  # string
+        self.__fetch_last_written = bool(fetch_last_written)  # bool
+        self.__checkpoint = checkpoint  # string
+        self.__include_wrapper = bool(include_wrapper)  # bool
+        self.__rec_only = bool(rec_only)  # bool
+        self.__min_max = bool(min_max)  # bool
+        self.__exclude_remainder = bool(exclude_remainder)  # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)  # bool
+        self.__backoff_limit = backoff_limit  # int seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -239,7 +234,6 @@ class MessageRequest(object):
 
         return True
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, start):
@@ -247,12 +241,10 @@ class MessageRequest(object):
                               self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
                               self.backoff_limit, self.fetch_last_written_before).params()
 
-
     def change_params(self, start, end):
         return MessageRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
                               self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
                               self.backoff_limit, self.fetch_last_written_before)
-
 
     def params(self):
         params = {
@@ -290,7 +282,6 @@ class MessageRequest(object):
 
         return params
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
@@ -303,63 +294,51 @@ class MessageRequest(object):
 
         return self.__checkpoint
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def topic(self):
         return self.__topic
 
-
     @property
     def start(self):
         return self.__start
-
 
     @property
     def end(self):
         return self.__end
 
-
     @property
     def path(self):
         return self.__path
-
 
     @property
     def fetch_last_written(self):
         return self.__fetch_last_written
 
-
     @property
     def include_wrapper(self):
         return self.__include_wrapper
-
 
     @property
     def rec_only(self):
         return self.__rec_only
 
-
     @property
     def min_max(self):
         return self.__min_max
-
 
     @property
     def exclude_remainder(self):
         return self.__exclude_remainder
 
-
     @property
     def fetch_last_written_before(self):
         return self.__fetch_last_written_before
 
-
     @property
     def backoff_limit(self):
         return self.__backoff_limit
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -400,26 +379,23 @@ class MessageResponse(JSONable):
 
         return cls(code, status, fetched_last, interval, items, next_url)
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, code, status, fetched_last, interval, items, next_url):
         """
         Constructor
         """
-        self.__code = int(code)                     # int
-        self.__status = status                      # string
-        self.__fetched_last = fetched_last          # Fetched last written data flag
-        self.__interval = interval                  # int
+        self.__code = int(code)  # int
+        self.__status = status  # string
+        self.__fetched_last = fetched_last  # Fetched last written data flag
+        self.__interval = interval  # int
 
-        self.__items = items                        # list of Message
+        self.__items = items  # list of Message
 
-        self.__next_url = next_url                  # URL string
-
+        self.__next_url = next_url  # URL string
 
     def __len__(self):
         return len(self.items)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -446,7 +422,6 @@ class MessageResponse(JSONable):
 
         return jdict
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
@@ -460,7 +435,6 @@ class MessageResponse(JSONable):
         except TypeError:
             return item.payload['rec']
 
-
     def end(self):
         if not self.items:
             return None
@@ -472,38 +446,31 @@ class MessageResponse(JSONable):
         except TypeError:
             return item.payload['rec']
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def code(self):
         return self.__code
 
-
     @property
     def status(self):
         return self.__status
-
 
     @property
     def fetched_last(self):
         return self.__fetched_last
 
-
     @property
     def interval(self):
         return self.__interval
-
 
     @property
     def items(self):
         return self.__items
 
-
     @property
     def next_url(self):
         return self.__next_url
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
