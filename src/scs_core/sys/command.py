@@ -27,8 +27,8 @@ class Command(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def o(self, args, wait=False):
-        p = Popen(self.__cmd(args), stdout=PIPE)
+    def o(self, cmd_args, wait=False):
+        p = Popen(self.__cmd(cmd_args), stdout=PIPE)
 
         if wait:
             p.wait()
@@ -36,8 +36,8 @@ class Command(object):
         return p
 
 
-    def io(self, p, args, wait=False):
-        p = Popen(self.__cmd(args), stdin=p.stdout, stdout=PIPE)
+    def io(self, p, cmd_args, wait=False):
+        p = Popen(self.__cmd(cmd_args), stdin=p.stdout, stdout=PIPE)
 
         if wait:
             p.wait()
@@ -45,15 +45,15 @@ class Command(object):
         return p
 
 
-    def i(self, p, args, wait=True):
-        p = Popen(self.__cmd(args), stdin=p.stdout)
+    def i(self, p, cmd_args, wait=True):
+        p = Popen(self.__cmd(cmd_args), stdin=p.stdout)
 
         if wait:
             p.wait()
 
 
-    def __cmd(self, args):
-        strs = [str(arg) for arg in args if arg is not None]
+    def __cmd(self, cmd_args):
+        strs = [str(cmd_arg) for cmd_arg in cmd_args if cmd_arg is not None]
 
         return strs[:1] + ['-v'] + strs[1:] if self.__verbose else strs
 

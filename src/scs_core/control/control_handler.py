@@ -74,7 +74,7 @@ class ControlHandler(object):
 
                 self.__logger.info(self.receipt)
 
-                return self.receipt.command.stdout, self.receipt.command.stderr
+                return self.receipt.command.stdout, self.receipt.command.stderr,  self.receipt.command.return_code
 
             if time.time() > timeout:
                 raise TimeoutError(cmd_timeout)
