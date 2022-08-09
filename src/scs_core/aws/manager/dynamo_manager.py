@@ -14,6 +14,7 @@ A single manager for all required dynamoDB related functions.
 # --------------------------------------------------------------------------------------------------------------------
 from boto3.dynamodb.conditions import Key, Attr
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 
@@ -181,7 +182,6 @@ class DynamoManager(object):
 
             return kwargs
 
-
     def do_query(self, table_name, query, limited=False):
         table = self.__dynamo_resource.Table(table_name)
         to_return = []
@@ -193,6 +193,19 @@ class DynamoManager(object):
                 q = table.scan(**query)
                 to_return.extend(q['Items'])
         return to_return
+
+    def do_query_batched(self, table_name, query, exclusive_start_key=None):
+        last_evaluated_key = None
+        table = self.__dynamo_resource.Table(table_name)
+        to_return = []
+        if exclusive_start_key:
+            query['ExclusiveStartKey'] = exclusive_start_key
+        q = table.scan(**query)
+        to_return.extend(q['Items'])
+        if 'LastEvaluatedKey' in q:
+            last_evaluated_key = q['LastEvaluatedKey']
+
+        return to_return, last_evaluated_key
 
     # ----------------------------------------------------------------------------------------------------------------
     # UTILITIES
@@ -209,7 +222,6 @@ class DynamoManager(object):
         table = self.__dynamo_resource.Table(table_name)
         return table.key_schema
 
-
     # ----------------------------------------------------------------------------------------------------------------
     # BATCH FUNCTIONS
     # ----------------------------------------------------------------------------------------------------------------
@@ -225,6 +237,5 @@ class DynamoManager(object):
         with table.batch_writer() as batch:
             for item in items:
                 batch.put_item(Item=item)
-
 
 # --------------------------------------------------------------------------------------------------------------------
