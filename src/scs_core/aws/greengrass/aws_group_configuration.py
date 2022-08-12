@@ -24,6 +24,7 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
 
+from scs_core.sys.filesystem import Filesystem
 from scs_core.sys.logging import Logging
 from scs_core.sys.system_id import SystemID
 
@@ -43,7 +44,7 @@ class AWSGroupConfiguration(PersistentJSONable):
 
     @classmethod
     def templates(cls):
-        return [item for item in sorted(os.listdir(cls.catalogue_location()))]
+        return [item.name for item in Filesystem.ls(cls.catalogue_location()) if item.is_directory]
 
 
     @classmethod
