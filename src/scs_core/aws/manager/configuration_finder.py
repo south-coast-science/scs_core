@@ -75,6 +75,8 @@ class ConfigurationFinder(object):
             next_url = urlparse(block.next_url)
             params = parse_qs(next_url.query)
 
+            self.__logger.debug("+++ params: %s" % next_url.query)
+
             # noinspection PyTypeChecker
             # params[MessageRequest.START] = next_params[MessageRequest.START][0]
 
@@ -228,6 +230,11 @@ class ExclusiveStartKey(object):
         return cls(rec, tag)
 
 
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        return cls.construct_from_qsp(jdict)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, rec, tag):
@@ -236,6 +243,7 @@ class ExclusiveStartKey(object):
         """
         self.__rec = rec                    # string
         self.__tag = tag                    # string
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
