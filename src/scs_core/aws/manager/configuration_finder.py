@@ -115,7 +115,8 @@ class ConfigurationRequest(object):
         except KeyError:
             response_mode = None
 
-        exclusive_start_key = ExclusiveStartKey.construct_from_qsp(json.loads(qsp.get(cls.EXCLUSIVE_START_KEY)))
+        esk_json = qsp.get(cls.EXCLUSIVE_START_KEY)
+        exclusive_start_key = ExclusiveStartKey.construct_from_qsp(json.loads(esk_json)) if esk_json else None
 
         return cls(tag_filter, exact_match, response_mode, exclusive_start_key=exclusive_start_key)
 
