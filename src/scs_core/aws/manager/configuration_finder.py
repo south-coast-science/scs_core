@@ -169,7 +169,7 @@ class ConfigurationRequest(object):
         }
 
         if self.exclusive_start_key:
-            params[self.EXCLUSIVE_START_KEY] = self.exclusive_start_key
+            params[self.EXCLUSIVE_START_KEY] = self.exclusive_start_key.params()
 
         return params
 
@@ -236,6 +236,16 @@ class ExclusiveStartKey(object):
         """
         self.__rec = rec                    # string
         self.__tag = tag                    # string
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def params(self):
+        params = {
+            'rec': self.rec,
+            'tag': self.tag
+        }
+
+        return params
 
 
     # ----------------------------------------------------------------------------------------------------------------
