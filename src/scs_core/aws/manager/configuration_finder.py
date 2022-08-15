@@ -170,8 +170,8 @@ class ConfigurationRequest(object):
             self.RESPONSE_MODE: self.response_mode.name
         }
 
-        if self.exclusive_start_key:
-            params[self.EXCLUSIVE_START_KEY] = self.exclusive_start_key.params()
+        if self.exclusive_start_key is not None:
+            params[self.EXCLUSIVE_START_KEY] = json.dumps(self.exclusive_start_key.params())
 
         return params
 
