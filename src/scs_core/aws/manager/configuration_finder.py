@@ -6,16 +6,21 @@ Created on 07 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
-# import sys
+import sys
 
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
+from urllib.parse import urlparse, parse_qs
 
 from scs_core.aws.data.http_response import HTTPResponse
+
 from scs_core.data.str import Str
+
 from scs_core.sample.configuration_sample import ConfigurationSample
+
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -29,9 +34,12 @@ class ConfigurationFinder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
-        self.__http_client = http_client                # requests package
+    def __init__(self, http_client, auth, reporter=None):
+        self.__http_client = http_client                        # requests package
         self.__auth = auth
+        self.__reporter = reporter
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -40,9 +48,35 @@ class ConfigurationFinder(object):
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
         headers = {'Authorization': self.__auth.email_address}
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        params = request.params()
 
-        return ConfigurationResponse.construct_from_jdict(response.json())
+        while True:
+            self.__logger.debug("*** url: %s" % self.__URL)
+            self.__logger.debug("*** params: %s" % params)
+
+            response = self.__http_client.get(self.__URL, headers=headers, params=params)
+
+            # messages...
+            block = ConfigurationResponse.construct_from_jdict(response.json())
+            self.__logger.debug(block)
+
+            for item in block.items:
+                yield item
+
+            # report...
+            # if self.__reporter:
+            #     self.__reporter.print(block.start(), len(block))
+
+            # next request...
+            if block.next_url is None:
+                break
+
+            next_url = urlparse(block.next_url)
+            params = parse_qs(next_url.query)
+
+            # noinspection PyTypeChecker
+            # params[MessageRequest.START] = next_params[MessageRequest.START][0]
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -79,18 +113,22 @@ class ConfigurationRequest(object):
         except KeyError:
             response_mode = None
 
-        return cls(tag_filter, exact_match, response_mode)
+        exclusive_start_key = ExclusiveStartKey.construct_from_qsp(qsp.get('exclusiveStartKey'))
+
+        return cls(tag_filter, exact_match, response_mode, exclusive_start_key=exclusive_start_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag_filter, exact_match, response_mode):
+    def __init__(self, tag_filter, exact_match, response_mode, exclusive_start_key=None):
         """
         Constructor
         """
         self.__tag_filter = tag_filter                          # string
         self.__exact_match = bool(exact_match)                  # bool
         self.__response_mode = response_mode                    # MODE enum
+
+        self.__exclusive_start_key = exclusive_start_key        # ExclusiveStartKey
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -146,11 +184,69 @@ class ConfigurationRequest(object):
         return self.__response_mode
 
 
+    @property
+    def exclusive_start_key(self):
+        return self.__exclusive_start_key
+
+
+    @exclusive_start_key.setter
+    def exclusive_start_key(self, exclusive_start_key):
+        self.__exclusive_start_key = exclusive_start_key
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationRequest:{tag_filter:%s, exact_match:%s, response_mode:%s}" % \
-               (self.tag_filter, self.exact_match, self.response_mode)
+        return "ConfigurationRequest:{tag_filter:%s, exact_match:%s, response_mode:%s, exclusive_start_key:%s}" % \
+               (self.tag_filter, self.exact_match, self.response_mode, self.exclusive_start_key)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ExclusiveStartKey(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_qsp(cls, qsp):
+        if not qsp:
+            return None
+
+        rec = qsp.get('rec')
+        tag = qsp.get('tag')
+
+        return cls(rec, tag)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, rec, tag):
+        """
+        Constructor
+        """
+        self.__rec = rec                    # string
+        self.__tag = tag                    # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def rec(self):
+        return self.__rec
+
+
+    @property
+    def tag(self):
+        return self.__tag
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ExclusiveStartKey:{rec:%s, tag:%s}" %  (self.rec, self.tag)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -164,10 +260,10 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("ConfigurationResponse - jdict: %s" % jdict, file=sys.stderr)
+
         if not jdict:
             return None
-
-        # print("jdict: %s" % jdict, file=sys.stderr)
 
         status = HTTPStatus(jdict.get('statusCode'))
 
