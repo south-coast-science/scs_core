@@ -6,6 +6,7 @@ Created on 07 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+import json
 import sys
 
 from collections import OrderedDict
@@ -97,6 +98,7 @@ class ConfigurationRequest(object):
     TAG_FILTER = 'tagFilter'
     EXACT_MATCH = 'exactMatch'
     RESPONSE_MODE = 'responseMode'
+    EXCLUSIVE_START_KEY = 'exclusiveStartKey'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -113,7 +115,7 @@ class ConfigurationRequest(object):
         except KeyError:
             response_mode = None
 
-        exclusive_start_key = ExclusiveStartKey.construct_from_qsp(qsp.get('exclusiveStartKey'))
+        exclusive_start_key = ExclusiveStartKey.construct_from_qsp(json.loads(qsp.get(cls.EXCLUSIVE_START_KEY)))
 
         return cls(tag_filter, exact_match, response_mode, exclusive_start_key=exclusive_start_key)
 
@@ -162,10 +164,12 @@ class ConfigurationRequest(object):
         params = {
             self.TAG_FILTER: self.tag_filter,
             self.EXACT_MATCH: self.exact_match,
-            self.RESPONSE_MODE: self.response_mode.name
+            self.RESPONSE_MODE: self.response_mode.name,
+            self.EXCLUSIVE_START_KEY: self.exclusive_start_key
         }
 
         return params
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
