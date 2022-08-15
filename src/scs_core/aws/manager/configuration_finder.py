@@ -165,9 +165,11 @@ class ConfigurationRequest(object):
         params = {
             self.TAG_FILTER: self.tag_filter,
             self.EXACT_MATCH: self.exact_match,
-            self.RESPONSE_MODE: self.response_mode.name,
-            self.EXCLUSIVE_START_KEY: self.exclusive_start_key
+            self.RESPONSE_MODE: self.response_mode.name
         }
+
+        if self.exclusive_start_key:
+            params[self.EXCLUSIVE_START_KEY] = self.exclusive_start_key.params()
 
         return params
 
@@ -234,6 +236,16 @@ class ExclusiveStartKey(object):
         """
         self.__rec = rec                    # string
         self.__tag = tag                    # string
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def params(self):
+        params = {
+            'rec': self.rec,
+            'tag': self.tag
+        }
+
+        return params
 
 
     # ----------------------------------------------------------------------------------------------------------------
