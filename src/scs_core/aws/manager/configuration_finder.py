@@ -7,7 +7,7 @@ https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
 import json
-import sys
+# import sys
 
 from collections import OrderedDict
 from enum import Enum
@@ -46,27 +46,30 @@ class ConfigurationFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, tag_filter, exact_match, response_mode):
+        self.__reporter.reset()
+
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
         headers = {'Authorization': self.__auth.email_address}
 
         params = request.params()
 
         while True:
-            self.__logger.debug("*** url: %s" % self.__URL)
-            self.__logger.debug("*** params: %s" % params)
+            self.__logger.info("*** url: %s" % self.__URL)
+            self.__logger.info("*** params: %s" % params)
 
             response = self.__http_client.get(self.__URL, headers=headers, params=params)
+            self.__logger.info(response.json())
 
             # messages...
             block = ConfigurationResponse.construct_from_jdict(response.json())
-            self.__logger.debug(block)
+            # self.__logger.debug(block)
 
             for item in block.items:
                 yield item
 
             # report...
-            # if self.__reporter:
-            #     self.__reporter.print(block.start(), len(block))
+            if self.__reporter:
+                self.__reporter.print(len(block))
 
             # next request...
             if block.next_url is None:
@@ -74,12 +77,6 @@ class ConfigurationFinder(object):
 
             next_url = urlparse(block.next_url)
             params = parse_qs(next_url.query)
-
-            self.__logger.debug("+++ params: %s" % next_url.query)
-
-            # noinspection PyTypeChecker
-            # params[MessageRequest.START] = next_params[MessageRequest.START][0]
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -165,10 +162,12 @@ class ConfigurationRequest(object):
 
     def params(self):
         params = {
-            self.TAG_FILTER: self.tag_filter,
             self.EXACT_MATCH: self.exact_match,
             self.RESPONSE_MODE: self.response_mode.name
         }
+
+        if self.tag_filter is not None:
+            params[self.TAG_FILTER] = self.tag_filter
 
         if self.exclusive_start_key is not None:
             params[self.EXCLUSIVE_START_KEY] = json.dumps(self.exclusive_start_key.params())
@@ -285,7 +284,7 @@ class ConfigurationResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        print("ConfigurationResponse - jdict: %s" % jdict, file=sys.stderr)
+        # print("ConfigurationResponse - jdict: %s" % jdict, file=sys.stderr)
 
         if not jdict:
             return None
@@ -300,7 +299,7 @@ class ConfigurationResponse(HTTPResponse):
         items = []
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
-                item = item_jdict.get('tag') if mode == ConfigurationRequest.MODE.TAGS_ONLY else \
+                item = item_jdict if mode == ConfigurationRequest.MODE.TAGS_ONLY else  \
                     ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
 
