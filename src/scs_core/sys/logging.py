@@ -19,6 +19,7 @@ class Logging(object):
     """
 
     __NAME = None
+    __LEVEL = None
 
     __MULTI_FORMAT = '%(name)s: %(message)s'
 
@@ -27,14 +28,18 @@ class Logging(object):
     @classmethod
     def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr):
         cls.__NAME = name
+        cls.__LEVEL = logging.INFO if verbose else level
 
-        level = logging.INFO if verbose else level
-
-        logging.basicConfig(format=cls.__MULTI_FORMAT, level=level, stream=stream)
+        logging.basicConfig(format=cls.__MULTI_FORMAT, level=cls.__LEVEL, stream=stream)
 
 
     @classmethod
     def getLogger(cls, name=None):
         logger_name = cls.__NAME if cls.__NAME else name
 
-        return logging.getLogger(logger_name)
+        return logging.getLogger(name=logger_name)
+
+
+    @classmethod
+    def level(cls):
+        return cls.__LEVEL

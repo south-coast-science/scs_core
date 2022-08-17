@@ -36,6 +36,7 @@ class MessageManager(object):
     """
 
     __REQUEST_PATH = '/topicMessages'
+
     # __REQUEST_PATH = '/default/AWSAggregateTest'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,6 +64,8 @@ class MessageManager(object):
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
+        self.__reporter.reset()
+
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                  min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self.__logger.debug(request)
@@ -85,7 +88,7 @@ class MessageManager(object):
 
                 # report...
                 if self.__reporter:
-                    self.__reporter.print(block.start(), len(block))
+                    self.__reporter.print(len(block), block_start=block.start())
 
                 # next request...
                 if block.next_url is None:
@@ -139,7 +142,7 @@ class MessageRequest(object):
         delta = end - start
 
         if delta < cls.__DAY:
-            return None             # raw data rate
+            return None  # raw data rate
 
         if delta < cls.__WEEK:
             return '**:/01:00'
@@ -174,7 +177,7 @@ class MessageRequest(object):
         min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
         exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
         fetch_last_written_before = qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE, 'false').lower() == 'true'
-        backoff_limit = qsp.get(cls.PATH)
+        backoff_limit = qsp.get(cls.backoff_limit)
 
         if checkpoint and checkpoint.lower() == 'none':
             checkpoint = None
@@ -190,19 +193,19 @@ class MessageRequest(object):
         """
         Constructor
         """
-        self.__topic = topic                                                    # string
-        self.__start = start                                                    # LocalizedDatetime
-        self.__end = end                                                        # LocalizedDatetime
+        self.__topic = topic  # string
+        self.__start = start  # LocalizedDatetime
+        self.__end = end  # LocalizedDatetime
 
-        self.__path = path                                                      # string
-        self.__fetch_last_written = bool(fetch_last_written)                    # bool
-        self.__checkpoint = checkpoint                                          # string
-        self.__include_wrapper = bool(include_wrapper)                          # bool
-        self.__rec_only = bool(rec_only)                                        # bool
-        self.__min_max = bool(min_max)                                          # bool
-        self.__exclude_remainder = bool(exclude_remainder)                      # bool
-        self.__fetch_last_written_before = bool(fetch_last_written_before)      # bool
-        self.__backoff_limit = backoff_limit                                    # int seconds
+        self.__path = path  # string
+        self.__fetch_last_written = bool(fetch_last_written)  # bool
+        self.__checkpoint = checkpoint  # string
+        self.__include_wrapper = bool(include_wrapper)  # bool
+        self.__rec_only = bool(rec_only)  # bool
+        self.__min_max = bool(min_max)  # bool
+        self.__exclude_remainder = bool(exclude_remainder)  # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)  # bool
+        self.__backoff_limit = backoff_limit  # int seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -407,14 +410,14 @@ class MessageResponse(JSONable):
         """
         Constructor
         """
-        self.__code = int(code)                     # int
-        self.__status = status                      # string
-        self.__fetched_last = fetched_last          # Fetched last written data flag
-        self.__interval = interval                  # int
+        self.__code = int(code)                         # int
+        self.__status = status                          # string
+        self.__fetched_last = fetched_last              # "Fetched last written data" flag
+        self.__interval = interval                      # int
 
-        self.__items = items                        # list of Message
+        self.__items = items                            # list of Message
 
-        self.__next_url = next_url                  # URL string
+        self.__next_url = next_url                      # URL string
 
 
     def __len__(self):
