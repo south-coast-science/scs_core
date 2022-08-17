@@ -50,6 +50,7 @@ example document:
 """
 
 import json
+# import sys
 
 from collections import OrderedDict
 
@@ -82,6 +83,8 @@ class ConfigurationSample(Sample):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
+        # print("ConfigurationSample - jdict: %s" % jdict, file=sys.stderr)
+
         if not jdict:
             return None
 
