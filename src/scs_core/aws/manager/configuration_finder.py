@@ -92,7 +92,11 @@ class ConfigurationRequest(object):
     classdocs
     """
 
-    MODE = Enum('Mode', 'LATEST HISTORY DIFF TAGS_ONLY')
+    class Mode(Enum):
+        LATEST = 1
+        HISTORY = 2
+        DIFF = 3
+        TAGS_ONLY = 4
 
     TAG_FILTER = 'tagFilter'
     EXACT_MATCH = 'exactMatch'
@@ -110,7 +114,7 @@ class ConfigurationRequest(object):
         exact_match = qsp.get(cls.EXACT_MATCH, 'false').lower() == 'true'
 
         try:
-            response_mode = cls.MODE[qsp.get(cls.RESPONSE_MODE)]
+            response_mode = cls.Mode[qsp.get(cls.RESPONSE_MODE)]
         except KeyError:
             response_mode = None
 
@@ -128,7 +132,7 @@ class ConfigurationRequest(object):
         """
         self.__tag_filter = tag_filter                          # string
         self.__exact_match = bool(exact_match)                  # bool
-        self.__response_mode = response_mode                    # MODE enum
+        self.__response_mode = response_mode                    # Mode enum
 
         self.__exclusive_start_key = exclusive_start_key        # ExclusiveStartKey
 
@@ -143,19 +147,19 @@ class ConfigurationRequest(object):
 
 
     def latest(self):
-        return self.__response_mode == self.MODE.LATEST
+        return self.__response_mode == self.Mode.LATEST
 
 
     def history(self):
-        return self.__response_mode == self.MODE.HISTORY
+        return self.__response_mode == self.Mode.HISTORY
 
 
     def diff(self):
-        return self.__response_mode == self.MODE.DIFF
+        return self.__response_mode == self.Mode.DIFF
 
 
     def tags_only(self):
-        return self.__response_mode == self.MODE.TAGS_ONLY
+        return self.__response_mode == self.Mode.TAGS_ONLY
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -294,12 +298,12 @@ class ConfigurationResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, status.phrase, status.description)
 
-        mode = ConfigurationRequest.MODE[jdict.get('mode')]
+        mode = ConfigurationRequest.Mode[jdict.get('mode')]
 
         items = []
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
-                item = item_jdict if mode == ConfigurationRequest.MODE.TAGS_ONLY else  \
+                item = item_jdict if mode == ConfigurationRequest.Mode.TAGS_ONLY else  \
                     ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
 

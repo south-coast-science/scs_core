@@ -57,7 +57,9 @@ class AlertStatusFinderRequest(object):
     classdocs
     """
 
-    MODE = Enum('Mode', 'HISTORY LATEST')
+    class Mode(Enum):
+        HISTORY = 1
+        LATEST = 2
 
     ID_FILTER = 'id'
     CAUSE_FILTER = 'cause'
@@ -74,7 +76,7 @@ class AlertStatusFinderRequest(object):
         cause_filter = qsp.get(cls.CAUSE_FILTER)
 
         try:
-            response_mode = cls.MODE[qsp.get(cls.RESPONSE_MODE)]
+            response_mode = cls.Mode[qsp.get(cls.RESPONSE_MODE)]
         except KeyError:
             response_mode = None
 
@@ -161,7 +163,7 @@ class AlertStatusFinderResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, status.phrase, status.description)
 
-        mode = AlertStatusFinderRequest.MODE[jdict.get('mode')]
+        mode = AlertStatusFinderRequest.Mode[jdict.get('mode')]
 
         alert_statuses = []
         if jdict.get('alert-statuses'):

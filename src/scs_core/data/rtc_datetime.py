@@ -57,7 +57,7 @@ class RTCDatetime(JSONable):
     @classmethod
     def construct_from_localized_datetime(cls, localized_datetime):
         # RTC zone...
-        zone_offset = timedelta(hours=0, minutes=0)
+        zone_offset = timedelta()
         utc_zone = timezone(zone_offset)
 
         # localized...
@@ -99,7 +99,7 @@ class RTCDatetime(JSONable):
 
     def as_localized_datetime(self, local_zone):        # may be pytz timezone or datetime timezone
         # RTC zone...
-        zone_offset = timedelta(hours=0, minutes=0)
+        zone_offset = timedelta()
         utc_zone = timezone(zone_offset)
 
         # localized...
