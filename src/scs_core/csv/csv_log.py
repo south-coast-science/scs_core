@@ -131,7 +131,7 @@ class CSVLogFile(object):
 
     @classmethod
     def construct(cls, file: File):
-        match = re.match(r'^(.+-)?([^-]+)-([\d]{4})-([\d]{2})-([\d]{2})-([\d]{2})-([\d]{2})-([\d]{2})\.csv',
+        match = re.match(r'^(.+-)?([^-]+)-(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.csv',
                          file.name)
 
         if not match:

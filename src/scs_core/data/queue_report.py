@@ -125,22 +125,16 @@ class QueueReport(JSONReport):
 # --------------------------------------------------------------------------------------------------------------------
 
 class ClientStatus(Enum):
-    """
-    classdocs
-   """
-    NONE =              0
-    INHIBITED =         1
-    WAITING =           2
-    CONNECTING =        3
-    CONNECTED =         4
+    NONE =              1
+    INHIBITED =         2
+    WAITING =           3
+    CONNECTING =        4
+    CONNECTED =         5
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class QueueStatus(Enum):
-    """
-    classdocs
-   """
     NONE =              1
     INHIBITED =         2
     STARTING =          3

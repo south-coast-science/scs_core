@@ -38,7 +38,7 @@ class UptimeDatum(JSONable):
         period = Timedelta.construct_from_uptime_report(report)
 
         # users...
-        users_match = re.match(r'.*(\d+) user[s]?,', report)
+        users_match = re.match(r'.*(\d+) users?,', report)
 
         if users_match:
             fields = users_match.groups()
@@ -132,7 +132,7 @@ class UptimeLoad(JSONable):
 
     @classmethod
     def construct_from_period_report(cls, report):
-        load_match = re.match(r'.*load average[s]?: (\d+\.\d+),? (\d+\.\d+),? (\d+\.\d+)', report)
+        load_match = re.match(r'.*load averages?: (\d+\.\d+),? (\d+\.\d+),? (\d+\.\d+)', report)
 
         if load_match:
             fields = load_match.groups()

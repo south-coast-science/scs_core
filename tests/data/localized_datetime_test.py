@@ -55,7 +55,7 @@ print("-")
 
 
 print("datetime localise...")
-offset = 1 * timedelta(hours=2, minutes=0)
+offset = 1 * timedelta(hours=2)
 print("offset: %s" % offset)
 
 zone = timezone(offset)
