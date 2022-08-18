@@ -36,7 +36,7 @@ class PsDatum(JSONable):
 
     @classmethod
     def construct_from_report(cls, report):
-        mat = re.match(r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+([^\s]+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+([^\s]+)\s+([^\s]+)\s+(.+)$',
+        mat = re.match(r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\S+)\s+(\S+)\s+(.+)$',
                        report)
 
         if mat is None:

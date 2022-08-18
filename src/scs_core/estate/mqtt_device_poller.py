@@ -7,7 +7,6 @@ Created on 22 Feb 2021
 import json
 import logging
 import requests
-import sys
 import time
 
 from collections import OrderedDict
@@ -159,7 +158,7 @@ class MQTTDevicePoller(object):
             client.publish(publication)
 
         except (OSError, operationError, operationTimeoutException) as ex:
-            self.__logger.error(ex.__class__.__name__, file=sys.stderr)
+            self.__logger.error(ex.__class__.__name__)
 
         timeout = time.time() + self.__TIMEOUT
 
