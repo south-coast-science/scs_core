@@ -160,7 +160,7 @@ class LocalizedDatetime(JSONable):
         second = int(fields[5])
 
         # construct...
-        zone_offset = timedelta(hours=0, minutes=0)
+        zone_offset = timedelta()
         zone = timezone(zone_offset)
 
         localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, tzinfo=zone)
@@ -212,7 +212,7 @@ class LocalizedDatetime(JSONable):
             micros = 0
 
         # construct...
-        zone_offset = timedelta(hours=0, minutes=0)
+        zone_offset = timedelta()
         zone = timezone(zone_offset)
 
         localized = datetime(year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=micros,

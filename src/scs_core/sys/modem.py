@@ -65,7 +65,7 @@ class ModemList(object):
         modems = []
 
         for line in lines:
-            match = re.match(r'modem-list.value\[[\d]+]\s+:\s+([\S]+)', line)
+            match = re.match(r'modem-list.value\[\d+]\s+:\s+(\S+)', line)
             if match:
                 modems.append(match.groups()[0])
 
@@ -283,7 +283,7 @@ class ModemConnection(JSONable):
                 failure = None if reported_failure == '--' else reported_failure
                 continue
 
-            match = re.match(r'modem\.generic\.signal-quality\.value\s+:\s+([\d]+)', line)
+            match = re.match(r'modem\.generic\.signal-quality\.value\s+:\s+(\d+)', line)
             if match:
                 quality = match.groups()[0]
                 continue
@@ -431,7 +431,7 @@ class SIMList(object):
         sims = []
 
         for line in lines:
-            match = re.match(r'modem\.generic\.sim\s+:\s+([\S]+)', line)
+            match = re.match(r'modem\.generic\.sim\s+:\s+(\S+)', line)
             if match:
                 sims.append(match.groups()[0])
 
@@ -499,17 +499,17 @@ class SIM(JSONable):
         operator_name = None
 
         for line in lines:
-            match = re.match(r'sim\.properties\.imsi\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.imsi\s+:\s+(\d+)', line)
             if match:
                 imsi = match.groups()[0]
                 continue
 
-            match = re.match(r'sim\.properties\.iccid\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.iccid\s+:\s+(\d+)', line)
             if match:
                 iccid = match.groups()[0]
                 continue
 
-            match = re.match(r'sim\.properties\.operator-code\s+:\s+([\d]+)', line)
+            match = re.match(r'sim\.properties\.operator-code\s+:\s+(\d+)', line)
             if match:
                 operator_code = match.groups()[0]
                 continue

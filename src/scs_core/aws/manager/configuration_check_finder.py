@@ -56,7 +56,9 @@ class ConfigurationCheckRequest(object):
     classdocs
     """
 
-    MODE = Enum('Mode', 'FULL TAGS_ONLY')
+    class Mode(Enum):
+        FULL = 1
+        TAGS_ONLY = 2
 
     TAG_FILTER = 'tagFilter'
     EXACT_MATCH = 'exactMatch'
@@ -76,7 +78,7 @@ class ConfigurationCheckRequest(object):
         result_code = qsp.get(cls.RESULT_CODE)
 
         try:
-            response_mode = cls.MODE[qsp.get(cls.RESPONSE_MODE)]
+            response_mode = cls.Mode[qsp.get(cls.RESPONSE_MODE)]
         except KeyError:
             response_mode = None
 
@@ -105,7 +107,7 @@ class ConfigurationCheckRequest(object):
 
 
     def tags_only(self):
-        return self.__response_mode == self.MODE.TAGS_ONLY
+        return self.__response_mode == self.Mode.TAGS_ONLY
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -169,12 +171,12 @@ class ConfigurationCheckResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, status.phrase, status.description)
 
-        mode = ConfigurationCheckRequest.MODE[jdict.get('mode')]
+        mode = ConfigurationCheckRequest.Mode[jdict.get('mode')]
 
         items = []
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
-                item = item_jdict.get('tag') if mode == ConfigurationCheckRequest.MODE.TAGS_ONLY else \
+                item = item_jdict.get('tag') if mode == ConfigurationCheckRequest.Mode.TAGS_ONLY else \
                     ConfigurationCheck.construct_from_jdict(item_jdict)
                 items.append(item)
 
