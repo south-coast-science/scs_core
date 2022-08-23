@@ -3,21 +3,38 @@ Created on 8 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+NB This class sets its own temporary persistence filename, and therefore overrides the JSONReport load(..) and
+save(..) methods.
+
 example:
 {"id": "South Coast Science PSU", "tag": "1.0.0", "c-date": "Aug  8 2017", "c-time": "08:35:25"}
 """
 
+import os.path
+
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, JSONReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUVersion(JSONable):
+class PSUVersion(JSONReport):
     """
     classdocs
     """
+
+    __FILENAME = 'psu_version.json'
+
+    @classmethod
+    def filename(cls, host):
+        return os.path.join(host.tmp_dir(), cls.__FILENAME)
+
+
+    @classmethod
+    def load(cls, host, skeleton=False):
+        return super().load(cls.filename(host), skeleton=skeleton)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -29,9 +46,9 @@ class PSUVersion(JSONable):
 
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return None
+            return cls(None, None, None, None) if skeleton else None
 
         id = jdict.get('id')
 
@@ -63,6 +80,12 @@ class PSUVersion(JSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, host):
+        return super().save(self.filename(host))
 
 
     # ----------------------------------------------------------------------------------------------------------------
