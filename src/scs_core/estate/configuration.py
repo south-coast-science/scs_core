@@ -365,7 +365,7 @@ class Configuration(JSONable):
 
 
     @classmethod
-    def load(cls, manager, psu=None):
+    def load(cls, manager, psu_version=None):
         hostname = socket.gethostname()
         packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
@@ -390,7 +390,7 @@ class Configuration(JSONable):
         pmx_model_conf = PMxModelConf.load(manager)
         pressure_conf = PressureConf.load(manager)
         psu_conf = PSUConf.load(manager)
-        psu_version = None if psu is None else psu.version()
+        psu_version = psu_version
         pt1000_calib = Pt1000Calib.load(manager)
         scd30_baseline = SCD30Baseline.load(manager)
         scd30_conf = SCD30Conf.load(manager)
