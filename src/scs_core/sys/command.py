@@ -5,7 +5,7 @@ Created on 15 Sep 2021
 
 https://pymotw.com/2/subprocess/
 """
-
+import sys
 from subprocess import Popen, PIPE
 
 
@@ -46,7 +46,7 @@ class Command(object):
 
 
     def i(self, p, cmd_args, wait=True):
-        p = Popen(self.__cmd(cmd_args), stdin=p.stdout)
+        p = Popen(self.__cmd(cmd_args), stdin=p.stdout, stdout=sys.stderr)
 
         if wait:
             p.wait()
