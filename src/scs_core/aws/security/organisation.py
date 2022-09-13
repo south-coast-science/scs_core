@@ -152,6 +152,10 @@ class Organisation(JSONable):
     def org_id(self):
         return self.__org_id
 
+    @org_id.setter
+    def org_id(self, org_id):
+        self.__org_id = org_id
+
 
     @property
     def label(self):
@@ -260,6 +264,12 @@ class OrganisationPathRoot(JSONable):
     @property
     def opr_id(self):
         return self.__opr_id
+
+
+    @opr_id.setter
+    def opr_id(self, opr_id):
+        self.__opr_id = opr_id
+
 
 
     @property

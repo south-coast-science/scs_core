@@ -28,7 +28,7 @@ class ModelConf(ABC, PersistentJSONable):
     @classmethod
     @abstractmethod
     def interfaces(cls):
-        return []
+        return ()
 
 
     @classmethod
