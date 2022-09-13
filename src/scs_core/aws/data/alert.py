@@ -35,9 +35,10 @@ class AlertStatus(JSONable):
     ABOVE_UPPER_THRESHOLD =     '>U'
     NULL_VALUE =                'NV'
 
+
     @classmethod
     def causes(cls):
-        return [cls.BELOW_LOWER_THRESHOLD, cls.ABOVE_UPPER_THRESHOLD, cls.NULL_VALUE]
+        return cls.BELOW_LOWER_THRESHOLD, cls.ABOVE_UPPER_THRESHOLD, cls.NULL_VALUE
 
 
     # ----------------------------------------------------------------------------------------------------------------

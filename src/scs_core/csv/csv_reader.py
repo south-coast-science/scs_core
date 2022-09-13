@@ -127,10 +127,10 @@ class CSVReader(object):
                     continue
 
                 if self.__nullify:
-                    row = [self.__renullify(cell) for cell in row]
+                    row = (self.__renullify(cell) for cell in row)
 
                 if self.__cast:
-                    row = [self.__recast(cell) for cell in row]
+                    row = (self.__recast(cell) for cell in row)
 
                 datum = self.__header.as_dict([cell for cell in row])
 

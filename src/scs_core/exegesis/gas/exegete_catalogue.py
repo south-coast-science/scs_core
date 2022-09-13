@@ -18,7 +18,7 @@ class ExegeteCatalogue(object):
 
     @staticmethod
     def model_names():
-        return []
+        return ()
 
 
     @staticmethod
