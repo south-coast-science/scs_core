@@ -21,7 +21,7 @@ class ProjectClient(object):
 
     @classmethod
     def tags(cls):
-        return ['SCS']
+        return ('SCS', )
 
 
     @classmethod
