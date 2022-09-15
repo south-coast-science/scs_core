@@ -112,15 +112,8 @@ class EmailList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def subset(self, email_address):
-        email_list = OrderedDict()
-
-        for device_tag in sorted(self.__email_list):
-            print("device_tag: %s" % device_tag, file=sys.stderr)
-            if self.__item_contains_address(self.__email_list[device_tag], email_address):
-                email_list[device_tag] = self.__email_list[device_tag]
-
-        # email_list = {device_tag: addresses for device_tag, addresses in self.__email_list.items()
-        #               if self.__item_contains_address(addresses, email_address)}
+        email_list = {device_tag: addresses for device_tag, addresses in self.__email_list.items()
+                      if self.__item_contains_address(addresses, email_address)}
 
         return EmailList(email_list)
 
@@ -140,7 +133,12 @@ class EmailList(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return {'email_list': self.__email_list}
+        email_list = OrderedDict()
+
+        for device_tag in sorted(self.__email_list):
+            email_list[device_tag] = self.__email_list[device_tag]
+
+        return {'email_list': email_list}
 
 
     # ----------------------------------------------------------------------------------------------------------------
