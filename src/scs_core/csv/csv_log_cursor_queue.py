@@ -5,6 +5,7 @@ Created on 20 Jan 2020
 """
 
 import json
+import re
 
 from collections import OrderedDict
 
@@ -26,6 +27,11 @@ class CSVLogCursorQueue(JSONable):
     classdocs
     """
 
+    @staticmethod
+    def is_data_directory(name):
+        return bool(re.fullmatch(r'[1-9]\d{3}-[0-1]\d', name))                  # YYYY-MM
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -45,17 +51,16 @@ class CSVLogCursorQueue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def __directory_paths(log: CSVLog):
-        from_directory = CSVLog.directory_name(log.timeline_start)
-
+    @classmethod
+    def __directory_paths(cls, log: CSVLog):
         root_directory = Filesystem.ls(log.root_path)
+        from_directory = CSVLog.directory_name(log.timeline_start)
 
         if root_directory is None:
             raise FileNotFoundError(log.root_path)
 
         for item in root_directory:
-            if not item.is_directory or item.name < from_directory:
+            if not item.is_directory or not cls.is_data_directory(item.name) or item.name < from_directory:
                 continue
 
             yield item.path()
