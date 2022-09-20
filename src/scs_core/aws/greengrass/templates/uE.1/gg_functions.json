@@ -84,11 +84,11 @@
                         },
                         {
                             "Permission": "ro",
-                            "ResourceId": "DEV_ID-ml-no"
+                            "ResourceId": "DEV_ID-ml-no2"
                         },
                         {
                             "Permission": "ro",
-                            "ResourceId": "DEV_ID-ml-no2"
+                            "ResourceId": "DEV_ID-ml-no"
                         },
                         {
                             "Permission": "ro",
