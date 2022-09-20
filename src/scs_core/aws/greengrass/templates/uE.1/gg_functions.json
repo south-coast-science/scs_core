@@ -92,6 +92,10 @@
                         },
                         {
                             "Permission": "ro",
+                            "ResourceId": "DEV_ID-ml-o3"
+                        },
+                        {
+                            "Permission": "ro",
                             "ResourceId": "DEV_ID-ml-so2"
                         }
                     ],

@@ -258,6 +258,12 @@ class AWSGroupConfigurator(object):
 
             try:
                 r_data["InitialVersion"]["Resources"][6]["Id"] = (
+                    (system_id + "-ml-o3"))  # Edit resource name
+            except IndexError:
+                pass
+
+            try:
+                r_data["InitialVersion"]["Resources"][7]["Id"] = (
                     (system_id + "-ml-so2"))  # Edit resource name
             except IndexError:
                 pass
