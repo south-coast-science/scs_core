@@ -76,13 +76,13 @@ class PathDict(JSONable):
 
     def __lt__(self, other):
         for sort_path in self.__sort_paths:
-            self_value = self.node(sub_path=sort_path)
+            value = self.node(sub_path=sort_path)
             other_value = other.node(sub_path=sort_path)
 
-            if self_value < other_value:
+            if value < other_value:
                 return True
 
-            if self_value > other_value:
+            if value > other_value:
                 return False
 
         return False
