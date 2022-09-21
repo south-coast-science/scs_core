@@ -122,8 +122,9 @@ class DynamoManager(object):
 
         response = table.query(KeyConditionExpression=Key(sk).eq(filter_item),
                                IndexName=index_name)
-
-        return response
+        to_return = []
+        to_return.extend(response['Items'])
+        return to_return
 
     # ----------------------------------------------------------------------------------------------------------------
     # MAIN FUNCTIONALITY
