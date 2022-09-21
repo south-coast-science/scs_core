@@ -5,7 +5,3 @@ pytz~=2020.1
 scipy~=1.5
 setuptools~=50.3.0
 tzlocal~=2.1
-
-
-
-
