@@ -12,6 +12,7 @@ A single manager for all required dynamoDB related functions.
 
 """
 # --------------------------------------------------------------------------------------------------------------------
+from boto3.dynamodb import conditions
 from boto3.dynamodb.conditions import Key, Attr
 
 
@@ -113,6 +114,14 @@ class DynamoManager(object):
             ExpressionAttributeValues=eav,
             ReturnValues="UPDATED_NEW"
         )
+
+        return response
+
+    def filter_on_index(self, table_name, index_name, sk, filter_item):
+        table = self.__dynamo_resource.Table(table_name)
+
+        response = table.query(KeyConditionExpression=Key(sk).eq(filter_item),
+                               IndexName=index_name)
 
         return response
 
