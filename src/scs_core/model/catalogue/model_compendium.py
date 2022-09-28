@@ -41,6 +41,8 @@ from scs_core.model.catalogue.training_period import TrainingPeriod
 from scs_core.sys.logging import Logging
 
 
+# TODO: treat NO2 as a special case, not as a secondary?
+# TODO: present vCal + xCal, not separate terms (test by model building)
 # --------------------------------------------------------------------------------------------------------------------
 
 class ModelCompendium(JSONCatalogueEntry):
