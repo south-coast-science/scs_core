@@ -51,26 +51,41 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jstr(cls, jstr):
+    def construct_from_jstr(cls, jstr, sort_paths=()):
         try:
             jdict = json.loads(jstr)
         except ValueError:
             return None
 
-        return PathDict(jdict)
+        return cls(dictionary=jdict, sort_paths=sort_paths)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, dictionary=None):
+    def __init__(self, dictionary=None, sort_paths=()):
         """
         Constructor
         """
         self.__dictionary = OrderedDict() if dictionary is None else dictionary
+        self.__sort_paths = sort_paths
 
 
     def __len__(self):
         return len(self.__dictionary)
+
+
+    def __lt__(self, other):
+        for sort_path in self.__sort_paths:
+            value = self.node(sub_path=sort_path)
+            other_value = other.node(sub_path=sort_path)
+
+            if value < other_value:
+                return True
+
+            if value > other_value:
+                return False
+
+        return False
 
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -287,6 +302,11 @@ class PathDict(JSONable):
         return self.node()
 
 
+    @property
+    def sort_paths(self):
+        return self.__sort_paths
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -296,4 +316,4 @@ class PathDict(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PathDict:{dictionary:%s}" % (self.node())
+        return "PathDict:{sort_paths:%s, dictionary:%s}" % (self.sort_paths, self.node())

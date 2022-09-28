@@ -44,7 +44,7 @@ class AWSGroupConfiguration(PersistentJSONable):
 
     @classmethod
     def templates(cls):
-        return [item.name for item in Filesystem.ls(cls.catalogue_location()) if item.is_directory]
+        return (item.name for item in Filesystem.ls(cls.catalogue_location()) if item.is_directory)
 
 
     @classmethod
@@ -258,6 +258,12 @@ class AWSGroupConfigurator(object):
 
             try:
                 r_data["InitialVersion"]["Resources"][6]["Id"] = (
+                    (system_id + "-ml-o3"))  # Edit resource name
+            except IndexError:
+                pass
+
+            try:
+                r_data["InitialVersion"]["Resources"][7]["Id"] = (
                     (system_id + "-ml-so2"))  # Edit resource name
             except IndexError:
                 pass
@@ -314,7 +320,13 @@ class AWSGroupConfigurator(object):
 
             try:
                 f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
-                    "ResourceAccessPolicies"][3]["ResourceId"] = (system_id + "-ml-so2")
+                    "ResourceAccessPolicies"][3]["ResourceId"] = (system_id + "-ml-o3")
+            except IndexError:
+                pass
+
+            try:
+                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                    "ResourceAccessPolicies"][4]["ResourceId"] = (system_id + "-ml-so2")
             except IndexError:
                 pass
 

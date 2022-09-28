@@ -41,9 +41,9 @@ class GitPull(PersistentJSONable):
         items = Filesystem.ls(root)
 
         if not items:
-            return []
+            return ()
 
-        return [item.name for item in items if item.is_directory and item.name.startswith(cls.__DIR_PREFIX)]
+        return (item.name for item in items if item.is_directory and item.name.startswith(cls.__DIR_PREFIX))
 
 
     @classmethod

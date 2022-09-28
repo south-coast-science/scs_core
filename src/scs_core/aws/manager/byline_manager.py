@@ -8,7 +8,8 @@ curl "https://aws.southcoastscience.com/device-topics?topic=south-coast-science-
 curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 """
 
-from scs_core.aws.client.rest_client import RESTClient
+from urllib.parse import parse_qs, urlparse
+
 from scs_core.aws.data.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 
 
@@ -19,130 +20,112 @@ class BylineManager(object):
     classdocs
     """
 
+    # __URL = 'https://aws.southcoastscience.com/device-topics'
+    __URL = 'https://cxzne688y0.execute-api.us-west-2.amazonaws.com/default/Bylines'
+
     __DEVICE =      'device'
     __TOPIC =       'topic'
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, api_key):
+    def __init__(self, http_client, reporter=None):
         """
         Constructor
         """
-        self.__rest_client = RESTClient(api_key)
+        self.__http_client = http_client                        # requests package
+        self.__reporter = reporter                              # BatchDownloadReporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_latest_byline_for_topic(self, topic):
-        request_path = '/device-topics'
-
         params = {self.__TOPIC: topic}
 
-        # request...
-        self.__rest_client.connect()
+        response = self.__http_client.get(self.__URL, params=params)
+        jdict = response.json()
 
-        try:
-            jdict = self.__rest_client.get(request_path, params=params)
+        # bylines...
+        if jdict is None:
+            return None
 
-            # bylines...
-            if jdict is None:
-                return None
+        latest_byline = None
 
-            latest_byline = None
+        for item in jdict:
+            byline = Byline.construct_from_jdict(item)
 
-            for item in jdict:
-                byline = Byline.construct_from_jdict(item)
+            if latest_byline is None or latest_byline.rec < byline.rec:
+                latest_byline = byline
 
-                if latest_byline is None or latest_byline.rec < byline.rec:
-                    latest_byline = byline
-
-            return latest_byline
-
-        finally:
-            self.__rest_client.close()
+        return latest_byline
 
 
     def find_bylines(self, excluded=None):
-        request_path = '/device-topics'
+        params = {}
+        items_jdict = []
 
-        # request...
-        self.__rest_client.connect()
+        while True:
+            response = self.__http_client.get(self.__URL, params=params)
+            jdict = response.json()
 
-        try:
-            jdict = self.__rest_client.get(request_path)
+            block = jdict.get('Items')
+            items_jdict += block
 
-            # bylines...
-            return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
+            # report...
+            if self.__reporter:
+                self.__reporter.print(len(block))
 
-        finally:
-            self.__rest_client.close()
+            # next...
+            if jdict.get('next') is None:
+                break
+
+            next_url = urlparse(jdict.get('next'))
+            params = parse_qs(next_url.query)
+
+        # bylines...
+        return TopicBylineGroup.construct_from_jdict(items_jdict, excluded=excluded, skeleton=True)
 
 
     def find_bylines_for_topic(self, topic, excluded=None):
-        request_path = '/device-topics'
-
         params = {self.__TOPIC: topic}
 
-        # request...
-        self.__rest_client.connect()
+        response = self.__http_client.get(self.__URL, params=params)
+        jdict = response.json()
 
-        try:
-            jdict = self.__rest_client.get(request_path, params=params)
-
-            # bylines...
-            return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
-
-        finally:
-            self.__rest_client.close()
+        # bylines...
+        return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
 
 
     def find_bylines_for_device(self, device, excluded=None):
-        request_path = '/device-topics'
-
         params = {self.__DEVICE: device}
 
-        # request...
-        self.__rest_client.connect()
+        response = self.__http_client.get(self.__URL, params=params)
+        jdict = response.json()
 
-        try:
-            jdict = self.__rest_client.get(request_path, params=params)
-
-            # bylines...
-            return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
-
-        finally:
-            self.__rest_client.close()
+        # bylines...
+        return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
 
 
     def find_byline_for_device_topic(self, device, topic):
-        request_path = '/device-topics'
-
         params = {self.__DEVICE: device}
 
-        # request...
-        self.__rest_client.connect()
+        response = self.__http_client.get(self.__URL, params=params)
+        jdict = response.json()
 
-        try:
-            jdict = self.__rest_client.get(request_path, params=params)
-
-            # bylines...
-            if jdict is None:
-                return None
-
-            for item in jdict:
-                byline = Byline.construct_from_jdict(item)
-
-                if byline.topic == topic:
-                    return byline
-
+        # bylines...
+        if jdict is None:
             return None
 
-        finally:
-            self.__rest_client.close()
+        for item in jdict:
+            byline = Byline.construct_from_jdict(item)
+
+            if byline.topic == topic:
+                return byline
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BylineManager:{rest_client:%s}" % self.__rest_client
+        return "BylineManager:{http_client:%s}" % self.__http_client

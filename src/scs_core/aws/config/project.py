@@ -98,7 +98,7 @@ class Project(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def environment_paths(self, system_id):
-        return [self.channel_path(channel, system_id) for channel in self.ENVIRONMENT_CHANNELS]
+        return (self.channel_path(channel, system_id) for channel in self.ENVIRONMENT_CHANNELS)
 
 
     def channel_path(self, channel, system_id):

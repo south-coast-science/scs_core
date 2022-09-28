@@ -45,7 +45,7 @@ class Minimum(JSONable):
     @classmethod
     def find_minimums(cls, data, field_selection):
         if not data:
-            return []
+            return ()
 
         # minimums...
         field_group = cls.FIELD_SELECTIONS[field_selection]
@@ -63,7 +63,7 @@ class Minimum(JSONable):
                 if minimums[path] is None or value < minimums[path].value:
                     minimums[path] = cls(path, i, value, data[i])
 
-        return [minimums[path] for path in sorted(minimums.keys())]
+        return (minimums[path] for path in sorted(minimums.keys()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -137,24 +137,24 @@ class Minimum(JSONable):
         sample = SensorBaselineSample.construct_from_sample_jdict(self.sample)      # TODO: sample needs pressure!
 
         if cmd == 'scd30_baseline':
-            return [cmd, '-vc', conf_minimums[self.gas], value,
-                    '-t', sample.temp, '-m', sample.humid]          # , '-p', sample.press
+            return (cmd, '-vc', conf_minimums[self.gas], value,
+                    '-t', sample.temp, '-m', sample.humid)          # , '-p', sample.press
 
         if cmd == 'afe_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value,
-                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
+            return (cmd, '-vc', self.gas, conf_minimums[self.gas], value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid)
 
         # hueristics:
         # NO2 - make minimum value 10
         # SO2 - make minimum value -20
 
         if cmd == 'vcal_baseline':                  # set vCal offset to make minimum value 0
-            return [cmd, '-vs', self.gas, -value,
-                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
+            return (cmd, '-vs', self.gas, -value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid)
 
         if cmd == 'gas_baseline':
-            return [cmd, '-vc', self.gas, conf_minimums[self.gas], value,
-                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid]
+            return (cmd, '-vc', self.gas, conf_minimums[self.gas], value,
+                    '-r', sample.rec.as_iso8601(), '-t', sample.temp, '-m', sample.humid)
 
         raise ValueError(cmd)
 
