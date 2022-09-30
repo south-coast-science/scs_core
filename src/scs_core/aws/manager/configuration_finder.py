@@ -7,12 +7,11 @@ https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
 import json
-# import sys
 
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.data.http_response import HTTPResponse
 
@@ -38,7 +37,7 @@ class ConfigurationFinder(object):
     def __init__(self, http_client, auth, reporter=None):
         self.__http_client = http_client                        # requests package
         self.__auth = auth
-        self.__reporter = reporter
+        self.__reporter = reporter                              # BatchDownloadReporter
 
         self.__logger = Logging.getLogger()
 
