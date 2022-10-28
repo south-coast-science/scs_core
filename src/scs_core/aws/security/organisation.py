@@ -263,14 +263,7 @@ class OrganisationPathRoot(JSONable):
 
     @property
     def opr_id(self):
-        return self.__opr_id
-
-
-    @opr_id.setter
-    def opr_id(self, opr_id):
-        self.__opr_id = opr_id
-
-
+        return self._opr_id
 
     @property
     def org_id(self):
@@ -498,7 +491,7 @@ class OrganisationUserPath(JSONable):
 
     @property
     def opr_id(self):
-        return self._opr_id
+        return self.__opr_id
 
 
     @property
