@@ -27,7 +27,7 @@ class BylineFilter(object):
         for byline in bylines:
             topic = byline['topic']
 
-            for user_path in self.user_paths:
+            for user_path in self.__user_paths:
                 if topic.startswith(user_path):
                     yield byline
                     break
