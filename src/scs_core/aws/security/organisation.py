@@ -24,7 +24,7 @@ example OrganisationDevice:
 "StartDatetime": "2022-01-17T10:40:04Z", "EndDatetime": null,
 "DeploymentLabel": "Preston Circus"}
 """
-
+import logging
 import re
 
 from collections import OrderedDict
@@ -116,7 +116,7 @@ class Organisation(JSONable):
         """
         Constructor
         """
-        self.__org_id = int(org_id)                     # AUTO PK: int
+        self.__org_id = int(org_id) if org_id else 0    # AUTO PK: int
         self.__label = label                            # UNIQUE: string
         self.__long_name = long_name                    # string
         self.__url = url                                # string
@@ -231,7 +231,7 @@ class OrganisationPathRoot(JSONable):
         """
         Constructor
         """
-        self.__opr_id = int(opr_id)                     # AUTO PK: int
+        self._opr_id = int(opr_id)                     # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
         self.__path_root = path_root                    # UNIQUE: string
 
@@ -263,14 +263,7 @@ class OrganisationPathRoot(JSONable):
 
     @property
     def opr_id(self):
-        return self.__opr_id
-
-
-    @opr_id.setter
-    def opr_id(self, opr_id):
-        self.__opr_id = opr_id
-
-
+        return self._opr_id
 
     @property
     def org_id(self):
@@ -281,6 +274,10 @@ class OrganisationPathRoot(JSONable):
     def path_root(self):
         return self.__path_root
 
+
+    @opr_id.setter
+    def opr_id(self, value):
+        self._opr_id = value
 
     # ------------------------------------------------------------------------------------------------------------------
 
