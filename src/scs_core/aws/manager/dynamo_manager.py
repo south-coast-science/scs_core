@@ -1,6 +1,6 @@
 """
 Created on 08 Mar 2021
-Modified on 21 Sep 2021
+Modified on 16 Aug 2022
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
@@ -12,6 +12,7 @@ A single manager for all required dynamoDB related functions.
 
 """
 # --------------------------------------------------------------------------------------------------------------------
+from boto3.dynamodb import conditions
 from boto3.dynamodb.conditions import Key, Attr
 
 
@@ -116,6 +117,15 @@ class DynamoManager(object):
 
         return response
 
+    def filter_on_index(self, table_name, index_name, sk, filter_item):
+        table = self.__dynamo_resource.Table(table_name)
+
+        response = table.query(KeyConditionExpression=Key(sk).eq(filter_item),
+                               IndexName=index_name)
+        to_return = []
+        to_return.extend(response['Items'])
+        return to_return
+
     # ----------------------------------------------------------------------------------------------------------------
     # MAIN FUNCTIONALITY
     # ----------------------------------------------------------------------------------------------------------------
@@ -141,7 +151,7 @@ class DynamoManager(object):
         # retrieve filtered on pk - retrieve filtered on pk keys only - retrieve filtered on pk batched
         if pk and pk_val and sk is None and sk_val is None and not fosk:
             if exact:
-                kwargs['FilterExpression'] = (Attr(pk).eq(pk_val))
+                kwargs['KeyConditionExpression'] = (Key(pk).eq(pk_val))
             else:
                 kwargs['FilterExpression'] = (Attr(pk).contains(pk_val))
             if limit:
@@ -156,7 +166,7 @@ class DynamoManager(object):
         # basically the same as a get but can also be used with batch, exact and reserved keys
         if pk and pk_val and sk and sk_val and not fosk:
             if exact:
-                kwargs['FilterExpression'] = Attr(pk).eq(pk_val) & Attr(sk).eq(sk_val)
+                kwargs['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).eq(sk_val)
             else:
                 kwargs['FilterExpression'] = Attr(pk).contains(pk_val) & Attr(sk).contains(sk_val)
             if limit:
@@ -171,9 +181,9 @@ class DynamoManager(object):
         if pk and sk and sk_val and fosk:
             kwargs['ProjectionExpression'] = pk
             if exact:
-                kwargs['FilterExpression'] = Attr(sk).eq(sk_val)
+                kwargs['KeyConditionExpression'] = Key(sk).eq(sk_val)
             else:
-                kwargs['FilterExpression'] = Attr(sk).contains(sk_val)
+                kwargs['KeyConditionExpression'] = Attr(sk).contains(sk_val)
             if limit:
                 kwargs['Limit'] = limit
             if keys_only:
@@ -183,24 +193,39 @@ class DynamoManager(object):
             return kwargs
 
     def do_query(self, table_name, query, limited=False):
+        exact_match = False
+        if "KeyConditionExpression" in query:
+            exact_match = True
         table = self.__dynamo_resource.Table(table_name)
         to_return = []
-        q = table.scan(**query)
+        if exact_match:
+            q = table.query(**query)
+        else:
+            q = table.scan(**query)
         to_return.extend(q['Items'])
         if not limited:
             while 'LastEvaluatedKey' in q:
                 query['ExclusiveStartKey'] = q['LastEvaluatedKey']
-                q = table.scan(**query)
+                if exact_match:
+                    q = table.query(**query)
+                else:
+                    q = table.scan(**query)
                 to_return.extend(q['Items'])
         return to_return
 
     def do_query_batched(self, table_name, query, exclusive_start_key=None):
+        exact_match = False
+        if "KeyConditionExpression" in query:
+            exact_match = True
         last_evaluated_key = None
         table = self.__dynamo_resource.Table(table_name)
         to_return = []
         if exclusive_start_key:
             query['ExclusiveStartKey'] = exclusive_start_key
-        q = table.scan(**query)
+        if exact_match:
+            q = table.query(**query)
+        else:
+            q = table.scan(**query)
         to_return.extend(q['Items'])
         if 'LastEvaluatedKey' in q:
             last_evaluated_key = q['LastEvaluatedKey']
