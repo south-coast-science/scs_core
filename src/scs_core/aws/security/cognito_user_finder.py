@@ -121,4 +121,4 @@ class CognitoUserFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserFinder:{http_client:%s}" % self.__http_client
+        return "CognitoUserFinder:{}"

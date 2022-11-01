@@ -11,8 +11,7 @@ https://github.com/boto/botocore/issues/1688
 A single manager for all required dynamoDB related functions.
 
 """
-# --------------------------------------------------------------------------------------------------------------------
-from boto3.dynamodb import conditions
+
 from boto3.dynamodb.conditions import Key, Attr
 
 
