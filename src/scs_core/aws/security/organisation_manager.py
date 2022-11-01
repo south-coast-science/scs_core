@@ -271,4 +271,4 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OrganisationManager:{http_client:%s}" % self.__http_client
+        return "OrganisationManager:{}"

@@ -74,4 +74,4 @@ class CognitoDeviceFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceFinder:{http_client:%s}" % self.__http_client
+        return "CognitoDeviceFinder:{}"

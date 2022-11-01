@@ -24,7 +24,7 @@ example OrganisationDevice:
 "StartDatetime": "2022-01-17T10:40:04Z", "EndDatetime": null,
 "DeploymentLabel": "Preston Circus"}
 """
-import logging
+
 import re
 
 from collections import OrderedDict

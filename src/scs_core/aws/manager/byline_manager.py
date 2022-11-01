@@ -128,4 +128,4 @@ class BylineManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BylineManager:{http_client:%s}" % self.__http_client
+        return "BylineManager:{reporter:%s}" % self.__reporter
