@@ -19,7 +19,7 @@ class Logging(object):
     """
 
     __NAME = None
-    __LEVEL = None
+    __LEVEL = logging.NOTSET
 
     __MULTI_FORMAT = '%(name)s: %(message)s'
 
