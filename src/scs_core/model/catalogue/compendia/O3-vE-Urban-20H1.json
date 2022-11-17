@@ -1,0 +1,80 @@
+{
+    "is-error-model": false,
+    "data-set": "ref-scs-bgx-508-20H1-slp16-vcal-err-clean-on-train",
+    "period": {
+        "start": "2020-03-13T01:30:00Z",
+        "end": "2020-06-30T23:45:00Z"
+    },
+    "primaries": {
+        "Ox.vCal": {
+            "path": "src.scs.env.gases.val.Ox.vCal",
+            "min": -13.232,
+            "avg": 30.487,
+            "max": 109.192
+        },
+        "Ox.xCal": {
+            "path": "src.scs.env.gases.val.Ox.xCal",
+            "min": -13.575,
+            "avg": 31.277,
+            "max": 112.021
+        }
+    },
+    "secondaries": {
+        "ref.NO2 Processed Measurement (ppb)": {
+            "path": "src.ref.NO2 Processed Measurement (ppb)",
+            "min": -0.2,
+            "avg": 7.614,
+            "max": 46.5
+        },
+        "tmp.brd": {
+            "path": "src.scs.stat.val.tmp.brd",
+            "min": 6.6,
+            "avg": 21.147,
+            "max": 40.2
+        },
+        "hmd.cur": {
+            "path": "src.scs.env.meteo.val.hmd.cur",
+            "min": 19.3,
+            "avg": 55.963,
+            "max": 88.5
+        },
+        "hmd.slope": {
+            "path": "src.scs.env.meteo.val.hmd.slope",
+            "min": -0.004,
+            "avg": -0.0,
+            "max": 0.003
+        },
+        "tmp.cur": {
+            "path": "src.scs.env.meteo.val.tmp.cur",
+            "min": 1.9,
+            "avg": 16.052,
+            "max": 34.0
+        },
+        "tmp.slope": {
+            "path": "src.scs.env.meteo.val.tmp.slope",
+            "min": -0.001,
+            "avg": 0.0,
+            "max": 0.001
+        }
+    },
+    "reference": {
+        "path": "src.ref.O3 Processed Measurement (ppb)",
+        "min": 0.0,
+        "avg": 30.2,
+        "max": 90.8
+    },
+    "output": {
+        "path": "exg.O3.vE.Urban.20H1",
+        "min": 0.1,
+        "avg": 30.2,
+        "max": 90.3
+    },
+    "performance": {
+        "count": 8089,
+        "slope": 0.997,
+        "intercept": 0.105,
+        "r2": 0.999,
+        "p": 0.0,
+        "std-err": 0.0
+    }
+}

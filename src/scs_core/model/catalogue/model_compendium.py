@@ -41,8 +41,6 @@ from scs_core.model.catalogue.training_period import TrainingPeriod
 from scs_core.sys.logging import Logging
 
 
-# TODO: treat NO2 as a special case, not as a secondary?
-# TODO: present vCal + xCal, not separate terms (test by model building)
 # --------------------------------------------------------------------------------------------------------------------
 
 class ModelCompendium(JSONCatalogueEntry):
@@ -183,8 +181,9 @@ class ModelCompendium(JSONCatalogueEntry):
         # self.__logger.info("postprocess - primary_path: %s vcal_excess: %s model_output: %s" %
         #                    (primary_path, vcal_excess, model_output))
 
-        # TODO: don't correct the predicted error, correct the final result!
         corrected_exg = (model_output - self.performance.intercept) / self.performance.slope
+
+        # TODO: handle vCal and xCal excesses differently
 
         if vcal_excess > 0:
             model_vcal_max = self.primary_term(primary_path).maximum
@@ -195,11 +194,19 @@ class ModelCompendium(JSONCatalogueEntry):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def primary_paths(self):
+        return [primary.path for primary in self.primaries.values()]
+
+
     def primary_term(self, path):
         try:
             return self.primaries[self.__term_path(path)]
         except KeyError:
             return None
+
+
+    def secondary_paths(self):
+        return [secondary.path for secondary in self.secondaries.values()]
 
 
     def secondary_term(self, path):
