@@ -127,7 +127,7 @@ class CSVLogReader(SynchronisedProcess):
                 self.__logger.info("added tailed cursor: %s" % tailed)
 
         except FileNotFoundError as ex:
-            self.__logger.error(ex)
+            self.__logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
         except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -224,7 +224,7 @@ class CSVLogQueueBuilder(object):
                                                                             self.__topic_path)
                 break
             except (ConnectionError, ResourceUnavailableException) as ex:
-                self.__logger.info("%s" % ex)
+                self.__logger.info("%s: %s" % (ex.__class__.__name__, ex))
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
         rec = None if byline is None else byline.rec
