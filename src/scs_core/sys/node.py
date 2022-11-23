@@ -8,7 +8,6 @@ https://codereview.stackexchange.com/questions/101659/test-if-a-network-is-onlin
 """
 
 import socket
-import sys
 
 from abc import ABC, abstractmethod
 from collections import OrderedDict
@@ -107,7 +106,6 @@ class Node(ABC):
             return True
 
         except OSError:
-            print("*** is_connected: False", file=sys.stderr)
             return False
 
 
