@@ -61,7 +61,13 @@ class CognitoUserCredentials(MultiPersistentJSONable):
         print("Enter password: ", end="", file=sys.stderr)
         password = input().strip()
 
-        return cls(name, email, password)
+        print("Enter retrieval password (RETURN for same): ", end="", file=sys.stderr)
+        retrieval_password = input().strip()
+
+        if not retrieval_password:
+            retrieval_password = password
+
+        return cls(name, email, password, retrieval_password)
 
 
     @staticmethod
@@ -86,24 +92,26 @@ class CognitoUserCredentials(MultiPersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, name=None, skeleton=False):
         if not jdict:
-            return cls(None, None, None) if skeleton else None
+            return cls(None, None, None, None) if skeleton else None
 
         email = jdict.get('email')
         password = jdict.get('password')
+        retrieval_password = jdict.get('retrieval-password')
 
-        return cls(name, email, password)
+        return cls(name, email, password, retrieval_password)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, email, password, retrieval_password):
         """
         Constructor
         """
         super().__init__(name)
 
-        self.__email = email                            # string
-        self.__password = password                      # string
+        self.__email = email                                        # string (email)
+        self.__password = password                                  # string (AWS password)
+        self.__retrieval_password = retrieval_password              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,6 +121,9 @@ class CognitoUserCredentials(MultiPersistentJSONable):
             return False
 
         if not Datum.is_email_address(self.email):
+            return False
+
+        if not CognitoUserIdentity.is_valid_password(self.password):
             return False
 
         return True
@@ -125,6 +136,7 @@ class CognitoUserCredentials(MultiPersistentJSONable):
 
         jdict['email'] = self.email
         jdict['password'] = self.password
+        jdict['retrieval-password'] = self.retrieval_password
 
         return jdict
 
@@ -146,16 +158,16 @@ class CognitoUserCredentials(MultiPersistentJSONable):
         return self.__password
 
 
-    @password.setter
-    def password(self, password):
-        self.__password = password
+    @property
+    def retrieval_password(self):
+        return self.__retrieval_password
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserCredentials:{name:%s, email:%s, password:%s}" %  \
-               (self.name, self.email, self.password)
+        return "CognitoUserCredentials:{name:%s, email:%s, password:%s, retrieval_password:%s}" %  \
+               (self.name, self.email, self.password, self.retrieval_password)
 
 
 # --------------------------------------------------------------------------------------------------------------------

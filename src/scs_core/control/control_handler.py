@@ -61,7 +61,7 @@ class ControlHandler(object):
             self.__logger.info("paho: %s" % "1" if success else "0")
 
         except (OSError, operationError, operationTimeoutException) as ex:
-            self.__logger.error(ex.__class__.__name__)
+            self.__logger.error(repr(ex))
             exit(1)
 
         # subscribe...
