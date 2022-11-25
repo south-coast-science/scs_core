@@ -8,7 +8,7 @@ Created on 25 Nov 2022
 
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 from scs_core.data.json import JSONify
-from scs_core.sys.filesystem_report import FilesystemReport
+from scs_core.sys.filesystem import FilesystemReport
 
 from scs_host.sys.host import Host
 

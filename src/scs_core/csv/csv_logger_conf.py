@@ -11,7 +11,7 @@ from collections import OrderedDict
 
 from scs_core.csv.csv_log import CSVLog
 from scs_core.data.json import PersistentJSONable
-from scs_core.sys.filesystem_report import FilesystemReport
+from scs_core.sys.filesystem import FilesystemReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
