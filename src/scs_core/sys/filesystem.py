@@ -4,7 +4,7 @@ Created on 12 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example FilesystemReport JSON:
-{"path": "/srv/removable_data_storage", "available": false, "on-root": null}
+{"path": "/srv/removable_data_storage", "is-available": false, "on-root": null}
 """
 
 import os
@@ -103,7 +103,7 @@ class FilesystemReport(JSONable):
             return None
 
         path = jdict.get('path')
-        available = jdict.get('available')
+        available = jdict.get('is-available')
         on_root = jdict.get('on-root')
 
         return cls(path, available, on_root)
@@ -151,7 +151,7 @@ class FilesystemReport(JSONable):
         jdict = OrderedDict()
 
         jdict['path'] = self.path
-        jdict['available'] = self.available
+        jdict['is-available'] = self.available
         jdict['on-root'] = self.on_root
 
         return jdict
