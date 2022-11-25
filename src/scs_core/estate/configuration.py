@@ -235,7 +235,6 @@ import socket
 
 from collections import OrderedDict
 
-from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.greengrass.aws_group_configuration import AWSGroupConfiguration
 from scs_core.aws.greengrass.aws_identity import AWSIdentity
@@ -281,6 +280,7 @@ from scs_core.psu.psu_version import PSUVersion
 
 from scs_core.sync.schedule import Schedule
 
+from scs_core.sys.filesystem_report import FilesystemReport
 from scs_core.sys.modem import Modem, SIM
 from scs_core.sys.network import Networks
 from scs_core.sys.shared_secret import SharedSecret
@@ -308,7 +308,7 @@ class Configuration(JSONable):
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             if skeleton:
-                return cls(None, None, None, None, None,
+                return cls(None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
@@ -323,10 +323,9 @@ class Configuration(JSONable):
 
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'))
         afe_id = AFEId.construct_from_jdict(jdict.get('afe-id'))
-        aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'))
         aws_group_config = AWSGroupConfiguration.construct_from_jdict(jdict.get('aws-group-config'))
         aws_project = Project.construct_from_jdict(jdict.get('aws-project'))
-        csv_logger_conf = CSVLoggerConf.construct_from_jdict(jdict.get('csv-logger-conf'))
+        data_log = FilesystemReport.construct_from_jdict(jdict.get('data-log'))
         display_conf = DisplayConf.construct_from_jdict(jdict.get('display-conf'))
         vcal_baseline = VCalBaseline.construct_from_jdict(jdict.get('vcal-baseline'))
         gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'))
@@ -355,8 +354,8 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
 
-        return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf,
+        return cls(hostname, packs, afe_baseline, afe_id,
+                   aws_group_config, aws_project, data_log, display_conf,
                    vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
                    interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
                    pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
@@ -369,12 +368,13 @@ class Configuration(JSONable):
         hostname = socket.gethostname()
         packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
+        csv_logger_conf = CSVLoggerConf.load(manager)
+
         afe_baseline = AFEBaseline.load(manager)
         afe_id = AFEId.load(manager)
-        aws_api_auth = APIAuth.load(manager)
         aws_group_config = AWSGroupConfiguration.load(manager)
         aws_project = Project.load(manager)
-        csv_logger_conf = CSVLoggerConf.load(manager)
+        data_log = None if csv_logger_conf is None else csv_logger_conf.filesystem_report()
         display_conf = DisplayConf.load(manager)
         vcal_baseline = VCalBaseline.load(manager)
         gas_baseline = GasBaseline.load(manager)
@@ -403,8 +403,8 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf,
+        return cls(hostname, packs, afe_baseline, afe_id,
+                   aws_group_config, aws_project, data_log, display_conf,
                    vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
                    interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
                    pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
@@ -414,8 +414,8 @@ class Configuration(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                 aws_group_config, aws_project, csv_logger_conf, display_conf,
+    def __init__(self, hostname, packs, afe_baseline, afe_id,
+                 aws_group_config, aws_project, data_log, display_conf,
                  vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
                  interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
                  pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
@@ -430,10 +430,9 @@ class Configuration(JSONable):
 
         self.__afe_baseline = afe_baseline                          # AFEBaseline
         self.__afe_id = afe_id                                      # AFEId
-        self.__aws_api_auth = aws_api_auth                          # APIAuth
         self.__aws_group_config = aws_group_config                  # AWSGroupConfiguration
         self.__aws_project = aws_project                            # Project
-        self.__csv_logger_conf = csv_logger_conf                    # CSVLoggerConf
+        self.__data_log = data_log                                  # FilesystemReport
         self.__display_conf = display_conf                          # DisplayConf
         self.__vcal_baseline = vcal_baseline                        # VCalBaseline
         self.__gas_baseline = gas_baseline                          # GasBaseline
@@ -467,8 +466,7 @@ class Configuration(JSONable):
         try:
             return self.hostname == other.hostname and self.packs == other.packs and \
                    self.afe_baseline == other.afe_baseline and self.afe_id == other.afe_id and \
-                   self.aws_api_auth == other.aws_api_auth and self.aws_group_config == other.aws_group_config and \
-                   self.aws_project == other.aws_project and self.csv_logger_conf == other.csv_logger_conf and \
+                   self.aws_project == other.aws_project and self.data_log == other.data_log and \
                    self.display_conf == other.display_conf and self.vcal_baseline == other.vcal_baseline and \
                    self.gas_baseline == other.gas_baseline and self.gas_model_conf == other.gas_model_conf and \
                    self.gps_conf == other.gps_conf and self.greengrass_identity == other.greengrass_identity and \
@@ -489,7 +487,7 @@ class Configuration(JSONable):
 
 
     def diff(self, other):
-        diff = Configuration(None, None, None, None, None,
+        diff = Configuration(None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
@@ -506,17 +504,14 @@ class Configuration(JSONable):
         if self.afe_id != other.afe_id:
             diff.__afe_id = self.afe_id
 
-        if self.aws_api_auth != other.aws_api_auth:
-            diff.__aws_api_auth = self.aws_api_auth
-
         if self.aws_group_config != other.aws_group_config:
             diff.__aws_group_config = self.aws_group_config
 
         if self.aws_project != other.aws_project:
             diff.__aws_project = self.aws_project
 
-        if self.csv_logger_conf != other.csv_logger_conf:
-            diff.__csv_logger_conf = self.csv_logger_conf
+        if self.data_log != other.data_log:
+            diff.__data_log = self.data_log
 
         if self.display_conf != other.display_conf:
             diff.__display_conf = self.display_conf
@@ -617,17 +612,14 @@ class Configuration(JSONable):
         if self.afe_id:
             raise ValueError('afe_id may not be set')
 
-        if self.aws_api_auth:
-            self.aws_api_auth.save(manager)
-
         if self.aws_group_config:
             self.aws_group_config.save(manager)
 
         if self.aws_project:
             self.aws_project.save(manager)
 
-        if self.csv_logger_conf:
-            self.csv_logger_conf.save(manager)
+        if self.data_log:
+            raise ValueError('data_log may not be set')
 
         if self.display_conf:
             self.display_conf.save(manager)
@@ -721,10 +713,9 @@ class Configuration(JSONable):
 
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-id'] = self.afe_id
-        jdict['aws-api-auth'] = self.aws_api_auth
         jdict['aws-group-config'] = self.aws_group_config
         jdict['aws-project'] = self.aws_project
-        jdict['csv-logger-conf'] = self.csv_logger_conf
+        jdict['data-log'] = self.data_log
         jdict['display-conf'] = self.display_conf
         jdict['vcal-baseline'] = self.vcal_baseline
         jdict['gas-baseline'] = self.gas_baseline
@@ -780,11 +771,6 @@ class Configuration(JSONable):
 
 
     @property
-    def aws_api_auth(self):
-        return self.__aws_api_auth
-
-
-    @property
     def aws_group_config(self):
         return self.__aws_group_config
 
@@ -795,8 +781,8 @@ class Configuration(JSONable):
 
 
     @property
-    def csv_logger_conf(self):
-        return self.__csv_logger_conf
+    def data_log(self):
+        return self.__data_log
 
 
     @property
@@ -937,15 +923,15 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_api_auth:%s, " \
-               "aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
+        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, " \
+               "aws_group_config:%s, aws_project:%s, data_log:%s, display_conf:%s, " \
                "vcal_baseline:%s, gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, " \
                "interface_conf:%s, mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
                "opc_version:%s, pmx_model_conf:%s, pressure_conf:%s, psu_conf:%s, psu_version:%s, " \
                "pt1000_calib:%s,  scd30_baseline:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, " \
                "sht_conf:%s, networks:%s,  modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_api_auth,
-                self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
+               (self.hostname, self.packs, self.afe_baseline, self.afe_id,
+                self.aws_group_config, self.aws_project, self.data_log, self.display_conf,
                 self.vcal_baseline, self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity,
                 self.interface_conf, self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf,
                 self.opc_version, self.pmx_model_conf, self.pressure_conf, self.psu_conf, self.psu_version,

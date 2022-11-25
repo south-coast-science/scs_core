@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 
 """
-Created on 10 Sep 2021
+Created on 25 Nov 2022
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
-
-import os
 
 from scs_core.sys.filesystem import Filesystem
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-path = os.path.expanduser('~/SCS/conf')
+DATA_STORE = "/srv/removable_data_storage"
 
-files = Filesystem.ls(path)
-for file in files:
-    print(file)
+try:
+    on_root = Filesystem.is_on_root_filesystem(DATA_STORE)
+    print("on_root: %s" % on_root)
+
+except FileNotFoundError:
+    print("file not found")

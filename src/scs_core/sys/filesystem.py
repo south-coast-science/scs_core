@@ -64,6 +64,13 @@ class Filesystem(object):
         return (File.construct(path, name) for name in sorted(os.listdir(path)))
 
 
+    @classmethod
+    def is_on_root_filesystem(cls, path):
+        ds_rp = os.path.realpath(path)
+
+        return os.stat(ds_rp).st_dev == os.stat('/').st_dev         # may raise FileNotFoundError
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class File(object):
