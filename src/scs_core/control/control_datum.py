@@ -6,11 +6,8 @@ Created on 17 Apr 2017
 http://pythoncentral.io/hashing-strings-with-python/
 
 example document:
-{"tag": "bruno.lan",
-"attn": "scs-be2-3",
-"rec": "2017-08-29T11:12:31.636+01:00",
-"cmd_tokens": ["?"],
-"digest": "6e81c77aa20562ea06e0e32158d2c7c9431ed251cd5790917f6cb385f6cf62c0"}
+{"tag": "my-laptop", "attn": "scs-ap1-6", "rec": "2022-11-28T12:05:26Z", "ver": 2.0,
+"cmd_tokens": ["test"], "timeout": 20, "digest": "183f9036b2afd0f347ae30f20b228f962ba9731d"}
 """
 
 import hashlib
@@ -30,9 +27,9 @@ class ControlDatum(JSONable):
     classdocs
     """
 
-    VERSION = 1.0
+    VERSION = 1.0                   # Version 2.0 is not compatible with deployed devices
 
-    __DEFAULT_TIMEOUT = 30.0            # seconds
+    __DEFAULT_TIMEOUT = 30.0        # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 

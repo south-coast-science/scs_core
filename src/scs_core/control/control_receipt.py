@@ -6,11 +6,9 @@ Created on 17 Apr 2017
 http://pythoncentral.io/hashing-strings-with-python/
 
 example document:
-{"tag": "scs-be2-3", "attn": "bruno",
-"rec": "2017-08-29T10:12:32.056+00:00",
-"cmd": {"cmd": "?", "params": [], "stdout": ["[\"afe_baseline\", \"afe_calib\""], "stderr": [], "ret": 0},
-"omd": "6e81c77aa20562ea06e0e32158d2c7c9431ed251cd5790917f6cb385f6cf62c0",
-"digest": "59cb897c308050f6d07f400cc3b784bfa81938d4e8a36896bec2126d24c8fe00"}
+{"tag": "scs-ap1-6", "attn": "my-laptop", "rec": "2022-11-28T12:05:27Z", "ver": 2.0,
+"cmd": {"cmd": "CMD", "params": [], "stdout": null, "stderr": null, "ret": 0},
+"omd": "183f9036b2afd0f347ae30f20b228f962ba9731d", "digest": "9360daca435f4a50c35123452003e56cb756d0a9"}
 """
 
 import hashlib
