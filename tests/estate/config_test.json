@@ -1,1 +1,202 @@
-{"rec": "2021-07-21T08:56:24Z", "tag": "scs-bgx-641", "ver": 1.0, "val": {"hostname": "scs-bbe-641", "packs": {"scs_core": {"repo": "scs_core", "version": "1.0.21"}, "scs_dev": {"repo": "scs_dev", "version": "1.0.8"}, "scs_dfe": {"repo": "scs_dfe_eng", "version": "1.0.8"}, "scs_host": {"repo": "scs_host_bbe_southern", "version": "1.0.5"}, "scs_mfr": {"repo": "scs_mfr", "version": "1.0.9"}, "scs_psu": {"repo": "scs_psu", "version": "1.0.8"}}, "afe-baseline": "", "afe-id": {"serial_number": 1, "type": "test-load", "calibrated_on": "2020-01-01", "sn1": {"serial_number": 1, "sensor_type": "SN1"}, "sn2": {"serial_number": 2, "sensor_type": "SN2"}, "sn3": {"serial_number": 3, "sensor_type": "SN3"}, "sn4": {"serial_number": 4, "sensor_type": "SN4"}}, "aws-api-auth": {"endpoint": "aws.southcoastscience.com", "api-key": "Galcross-dust"}, "aws-group-config": {"group-name": "scs-bbe-641-group", "time-initiated": "2021-07-20T12:01:10Z", "unix-group": 987, "ml": "vB.1"}, "aws-project": {"location-path": "galcross/641/loc/1", "device-path": "galcross/641/device"}, "csv-logger-conf": {"root-path": "/srv/removable_data_storage", "delete-oldest": true, "write-interval": 0}, "display-conf": "", "vcal-baseline": "", "gas-baseline": "", "gas-model-conf": "", "sim": {"imsi": "", "iccid": "", "operator-code": "", "operator-name": ""}, "gps-conf": {"model": "SAM8Q", "sample-interval": 10, "tally": 60, "report-file": "/tmp/southcoastscience/gps_report.json", "debug": false}, "interface-conf": {"model": "DFE"}, "greengrass-identity": {"core-name": "scs-bbe-641-core", "group-name": "scs-bbe-641-group"}, "mpl115a2-calib": "", "mqtt-conf": "", "ndir-conf": "", "opc-conf": {"model": "N3", "sample-period": 10, "restart-on-zeroes": true, "power-saving": false}, "opc-version": "", "pmx-model-conf": {"uds-path": "pipes/lambda-pmx-model.uds", "model-interface": "s1"}, "pressure-conf": "", "psu-conf": {"model": "OsloV1", "batt-model": "", "ignore-threshold": false, "reporting-interval": 20, "report-file": "/tmp/southcoastscience/psu_status_report.json"}, "psu-version": "", "pt1000-calib": {"calibrated-on": "2017-08-15T11:21:45Z", "v20": 0.320208}, "scd30-baseline": "", "scd30-conf": "", "schedule": {"scs-climate": {"interval": 10.0, "tally": 1}, "scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}}, "shared-secret": {"key": "ycfl0SFRGQzJuwyv"}, "sht-conf": {"int": "0x45", "ext": "0x45"}, "networks": {"eth0": {"kind": "ethernet", "state": "connected", "connection": "Ethernet eth0"}, "usb0": {"kind": "ethernet", "state": "unavailable", "connection": ""}, "cdc-wdm0": {"kind": "gsm", "state": "unavailable", "connection": ""}}, "modem": {"id": "0cad3ff746185fd25d07b2e3351bfdc3a5ec9d9d", "imei": "", "mfr": "QUALCOMM INCORPORATED", "model": "QUECTEL Mobile Broadband Module", "rev": "EG25GGBR07A08M2G"}, "system-id": {"vendor-id": "SCS", "model-id": "BGX", "model": "Praxis", "config": "BGX", "system-sn": 641}, "timezone-conf": {"set-on": "2017-08-15T12:50:05Z", "name": "Europe/London"}}}
+{
+    "rec": "2022-11-25T11:33:58Z",
+    "tag": "scs-opc-1",
+    "ver": 1.0,
+    "val": {
+        "hostname": "scs-cube-001",
+        "packs": {
+            "scs_core": {
+                "repo": "scs_core",
+                "version": "1.4.18"
+            },
+            "scs_dev": {
+                "repo": "scs_dev",
+                "version": "2.1.6"
+            },
+            "scs_dfe": {
+                "repo": "scs_dfe_eng",
+                "version": "2.1.3"
+            },
+            "scs_greengrass": {
+                "repo": "scs_greengrass",
+                "version": "2.3.1"
+            },
+            "scs_host": {
+                "repo": "scs_host_cpc",
+                "version": "1.0.12"
+            },
+            "scs_mfr": {
+                "repo": "scs_mfr",
+                "version": "1.4.8"
+            },
+            "scs_ndir": {
+                "repo": "scs_ndir",
+                "version": null
+            },
+            "scs_psu": {
+                "repo": "scs_psu",
+                "version": "1.1.4"
+            }
+        },
+        "afe-baseline": {
+            "sn1": {
+                "calibrated-on": "2022-11-16T15:14:30Z",
+                "offset": 272,
+                "env": {
+                    "rec": "2022-11-15T21:40:00Z",
+                    "hmd": 58.9,
+                    "tmp": 20.6
+                }
+            },
+            "sn2": {
+                "calibrated-on": "2022-11-15T13:12:54Z",
+                "offset": 0,
+                "env": null
+            },
+            "sn3": {
+                "calibrated-on": "2022-11-15T13:12:54Z",
+                "offset": 0,
+                "env": null
+            },
+            "sn4": {
+                "calibrated-on": "2022-11-15T13:12:54Z",
+                "offset": 0,
+                "env": null
+            }
+        },
+        "afe-id": {
+            "serial_number": null,
+            "type": "DSI",
+            "calibrated_on": "2022-01-01",
+            "sn1": {
+                "serial_number": "212060325",
+                "sensor_type": "NO2A43F"
+            }
+        },
+        "aws-group-config": {
+            "group-name": "scs-cube-001-group",
+            "time-initiated": "2022-11-15T13:20:17Z",
+            "unix-group": 984,
+            "ml": "oE.1"
+        },
+        "aws-project": {
+            "location-path": "south-coast-science-dev/cube/loc/1",
+            "device-path": "south-coast-science-dev/cube/device"
+        },
+        "data-log": {
+            "path": "/srv/removable_data_storage",
+            "available": true,
+            "on-root": false
+        },
+        "display-conf": null,
+        "vcal-baseline": {
+            "NO2": {
+                "calibrated-on": "2022-11-16T15:04:46Z",
+                "offset": 206,
+                "env": null
+            }
+        },
+        "gas-baseline": null,
+        "gas-model-conf": {
+            "uds-path": "pipes/lambda-gas-model.uds",
+            "model-interface": "vE",
+            "model-compendium-group": "oE.1"
+        },
+        "gps-conf": null,
+        "interface-conf": {
+            "model": "OPCubeT1"
+        },
+        "greengrass-identity": null,
+        "mpl115a2-calib": null,
+        "mqtt-conf": null,
+        "ndir-conf": null,
+        "opc-conf": {
+            "model": "N3",
+            "sample-period": 10,
+            "restart-on-zeroes": true,
+            "power-saving": false
+        },
+        "opc-version": {
+            "serial": "177336702",
+            "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
+        },
+        "pmx-model-conf": {
+            "uds-path": "pipes/lambda-pmx-model.uds",
+            "model-interface": "s2"
+        },
+        "pressure-conf": null,
+        "psu-conf": {
+            "model": "OPCubeV1",
+            "batt-model": "PackV2",
+            "ignore-threshold": false,
+            "reporting-interval": 10,
+            "report-file": "/tmp/southcoastscience/psu_status_report.json"
+        },
+        "psu-version": {
+            "id": "SCS OPCube Controller type 1 firmware 1",
+            "tag": "001.001.003",
+            "c-date": null,
+            "c-time": null
+        },
+        "pt1000-calib": null,
+        "scd30-baseline": null,
+        "scd30-conf": null,
+        "schedule": {
+            "scs-climate": {
+                "interval": 60.0,
+                "tally": 1
+            },
+            "scs-gases": {
+                "interval": 10.0,
+                "tally": 1
+            },
+            "scs-particulates": {
+                "interval": 10.0,
+                "tally": 1
+            },
+            "scs-status": {
+                "interval": 60.0,
+                "tally": 1
+            }
+        },
+        "shared-secret": {
+            "key": "IuIIGqwQWX5c7Z0Z"
+        },
+        "sht-conf": {
+            "int": "0x45",
+            "ext": "0x45"
+        },
+        "networks": {
+            "eth0": {
+                "kind": "ethernet",
+                "state": "connected",
+                "connection": "Ethernet eth0"
+            },
+            "cdc-wdm0": {
+                "kind": "gsm",
+                "state": "unavailable",
+                "connection": null
+            }
+        },
+        "modem": {
+            "id": "3f07553c31ce11715037ac16c24ceddcfb6f7a0b",
+            "imei": null,
+            "mfr": "QUALCOMM INCORPORATED",
+            "model": "QUECTEL Mobile Broadband Module",
+            "rev": "EC21EFAR06A01M4G"
+        },
+        "sim": null,
+        "system-id": {
+            "set-on": "2022-11-15T13:17:28Z",
+            "vendor-id": "SCS",
+            "model-id": "OPC",
+            "model": "Praxis/OPCube",
+            "config": "v1",
+            "system-sn": 1
+        },
+        "timezone-conf": {
+            "set-on": "2022-11-15T13:46:10Z",
+            "name": "Europe/London"
+        }
+    }
+}

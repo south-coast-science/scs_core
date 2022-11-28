@@ -18,4 +18,3 @@ path = os.path.expanduser('~/SCS/conf')
 files = Filesystem.ls(path)
 for file in files:
     print(file)
-

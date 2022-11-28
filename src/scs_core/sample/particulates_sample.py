@@ -41,7 +41,7 @@ class ParticulatesSample(Sample):
         tag = jdict.get('tag')
 
         try:
-            version = float(jdict.get('ver'))
+            version = round(float(jdict.get('ver')), 1)
         except (TypeError, ValueError):
             version = cls.DEFAULT_VERSION
 
