@@ -51,7 +51,7 @@ class GasesSample(Sample):
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:
-            version = float(jdict.get('ver'))
+            version = round(float(jdict.get('ver')), 1)
         except (TypeError, ValueError):
             version = cls.DEFAULT_VERSION
 

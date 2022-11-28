@@ -5,227 +5,201 @@ Created on 27 Jan 2021
 
 example document:
 {
-    "rec": "2021-11-02T10:53:15Z",
-    "tag": "scs-opc-1",
-    "ver": 1.0,
-    "val": {
-        "hostname": "scs-cube-001",
-        "packs": {
-            "scs_core": {
-                "repo": "scs_core",
-                "version": "1.1.1"
-            },
-            "scs_dev": {
-                "repo": "scs_dev",
-                "version": "1.1.1"
-            },
-            "scs_dfe": {
-                "repo": "scs_dfe_eng",
-                "version": "1.1.0"
-            },
-            "scs_greengrass": {
-                "repo": "scs_greengrass",
-                "version": "2.1.2"
-            },
-            "scs_host": {
-                "repo": "scs_host_cpc",
-                "version": "1.0.5"
-            },
-            "scs_inference": {
-                "repo": "scs_inference",
-                "version": null
-            },
-            "scs_mfr": {
-                "repo": "scs_mfr",
-                "version": "1.1.1"
-            },
-            "scs_ndir": {
-                "repo": "scs_ndir",
-                "version": null
-            },
-            "scs_psu": {
-                "repo": "scs_psu",
-                "version": "1.0.10"
-            }
+    "hostname": "scs-cube-001",
+    "packs": {
+        "scs_core": {
+            "repo": "scs_core",
+            "version": "1.4.18"
         },
-        "afe-baseline": {
-            "sn1": {
-                "calibrated-on": "2021-11-01T17:43:41Z",
-                "offset": 120
-            },
-            "sn2": {
-                "calibrated-on": "2021-11-01T17:32:48Z",
-                "offset": 0
-            },
-            "sn3": {
-                "calibrated-on": "2021-11-01T17:32:48Z",
-                "offset": 0
-            },
-            "sn4": {
-                "calibrated-on": "2021-11-01T17:32:48Z",
-                "offset": 0
-            }
+        "scs_dev": {
+            "repo": "scs_dev",
+            "version": "2.1.6"
         },
-        "afe-id": {
-            "serial_number": null,
-            "type": "DSI",
-            "calibrated_on": "2020-01-01",
-            "sn1": {
-                "serial_number": "212060325",
-                "sensor_type": "NOGA4"
-            }
+        "scs_dfe": {
+            "repo": "scs_dfe_eng",
+            "version": "2.1.3"
         },
-        "aws-api-auth": {
-            "endpoint": "aws.southcoastscience.com",
-            "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d64a1f"
+        "scs_greengrass": {
+            "repo": "scs_greengrass",
+            "version": "2.3.1"
         },
-        "aws-group-config": {
-            "group-name": "scs-cube-001-group",
-            "time-initiated": "2021-02-08T16:38:55Z",
-            "unix-group": 984,
-            "ml": true
+        "scs_host": {
+            "repo": "scs_host_cpc",
+            "version": "1.0.12"
         },
-        "aws-project": {
-            "location-path": "south-coast-science-dev/cube/loc/1",
-            "device-path": "south-coast-science-dev/cube/device"
+        "scs_mfr": {
+            "repo": "scs_mfr",
+            "version": "1.4.8"
         },
-        "csv-logger-conf": {
-            "root-path": "/srv/removable_data_storage",
-            "delete-oldest": true,
-            "write-interval": 0
+        "scs_ndir": {
+            "repo": "scs_ndir",
+            "version": null
         },
-        "display-conf": null,
-        "vcal-baseline": {
-            "NO2": {
-                "calibrated-on": "2021-11-01T17:33:10Z",
-                "offset": 107
-            }
-        },
-        "gas-baseline": {
-            "NO2": {
-                "calibrated-on": "2021-11-01T09:30:50Z",
-                "offset": 0
-            }
-        },
-        "gas-model-conf": {
-            "uds-path": "pipes/lambda-gas-model.uds",
-            "model-interface": "vE",
-            "model-compendium-group": "OE21HA"
-        },
-        "gps-conf": {
-            "model": "SAM8Q",
-            "sample-interval": 10,
-            "tally": 60,
-            "report-file": "/tmp/southcoastscience/gps_report.json",
-            "debug": false
-        },
-        "interface-conf": {
-            "model": "OPCubeT1"
-        },
-        "greengrass-identity": {
-            "core-name": "scs-cube-001-core",
-            "group-name": "scs-cube-001-group"
-        },
-        "mpl115a2-calib": null,
-        "mqtt-conf": {
-            "inhibit-publishing": false,
-            "report-file": "/tmp/southcoastscience/mqtt_queue_report.json",
-            "debug": false
-        },
-        "ndir-conf": null,
-        "opc-conf": {
-            "model": "N3",
-            "sample-period": 10,
-            "restart-on-zeroes": true,
-            "power-saving": false
-        },
-        "opc-version": {
-            "serial": "177336702",
-            "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
-        },
-        "pmx-model-conf": {
-            "uds-path": "pipes/lambda-pmx-model.uds",
-            "model-interface": "s2"
-        },
-        "pressure-conf": null,
-        "psu-conf": {
-            "model": "OPCubeV1",
-            "batt-model": "PackV2",
-            "ignore-threshold": true,
-            "reporting-interval": 5,
-            "report-file": "/tmp/southcoastscience/psu_status_report.json"
-        },
-        "psu-version": {
-            "id": "SCS OPCube Controller type 1 firmware 1",
-            "tag": "001.001.003",
-            "c-date": null,
-            "c-time": null
-        },
-        "pt1000-calib": null,
-        "scd30-baseline": null,
-        "scd30-conf": null,
-        "schedule": {
-            "scs-climate": {
-                "interval": 60.0,
-                "tally": 1
-            },
-            "scs-gases": {
-                "interval": 10.0,
-                "tally": 1
-            },
-            "scs-particulates": {
-                "interval": 10.0,
-                "tally": 1
-            },
-            "scs-status": {
-                "interval": 60.0,
-                "tally": 1
-            }
-        },
-        "shared-secret": {
-            "key": "Ytzglk6oYpzJY0FB"
-        },
-        "sht-conf": {
-            "int": "0x45",
-            "ext": "0x45"
-        },
-        "networks": {
-            "eth0": {
-                "kind": "ethernet",
-                "state": "connected",
-                "connection": "Ethernet eth0"
-            },
-            "cdc-wdm0": {
-                "kind": "gsm",
-                "state": "connecting",
-                "connection": "(prepare)  Claro_Brazil"
-            }
-        },
-        "modem": {
-            "id": "3f07553c31ce11715037ac16c24ceddcfb6f7a0b",
-            "imei": "867962041294151",
-            "mfr": "QUALCOMM INCORPORATED",
-            "model": "QUECTEL Mobile Broadband Module",
-            "rev": "EC21EFAR06A01M4G"
-        },
-        "sim": {
-            "imsi": "234104886708667",
-            "iccid": "8944110068256270054",
-            "operator-code": null,
-            "operator-name": null
-        },
-        "system-id": {
-            "set-on": "2020-09-17T11:16:25Z",
-            "vendor-id": "SCS",
-            "model-id": "OPC",
-            "model": "Praxis/OPCube",
-            "config": "v1",
-            "system-sn": 1
-        },
-        "timezone-conf": {
-            "set-on": "2017-08-15T12:50:05Z",
-            "name": "Europe/London"
+        "scs_psu": {
+            "repo": "scs_psu",
+            "version": "1.1.4"
         }
+    },
+    "afe-baseline": {
+        "sn1": {
+            "calibrated-on": "2022-11-16T15:14:30Z",
+            "offset": 272,
+            "env": {
+                "rec": "2022-11-15T21:40:00Z",
+                "hmd": 58.9,
+                "tmp": 20.6
+            }
+        },
+        "sn2": {
+            "calibrated-on": "2022-11-15T13:12:54Z",
+            "offset": 0,
+            "env": null
+        },
+        "sn3": {
+            "calibrated-on": "2022-11-15T13:12:54Z",
+            "offset": 0,
+            "env": null
+        },
+        "sn4": {
+            "calibrated-on": "2022-11-15T13:12:54Z",
+            "offset": 0,
+            "env": null
+        }
+    },
+    "afe-id": {
+        "serial_number": null,
+        "type": "DSI",
+        "calibrated_on": "2022-01-01",
+        "sn1": {
+            "serial_number": "212060325",
+            "sensor_type": "NO2A43F"
+        }
+    },
+    "aws-group-config": {
+        "group-name": "scs-cube-001-group",
+        "time-initiated": "2022-11-15T13:20:17Z",
+        "unix-group": 984,
+        "ml": "oE.1"
+    },
+    "aws-project": {
+        "location-path": "south-coast-science-dev/cube/loc/1",
+        "device-path": "south-coast-science-dev/cube/device"
+    },
+    "data-log": {
+        "path": "/srv/removable_data_storage",
+        "available": true,
+        "on-root": false,
+        "used": 69
+    },
+    "display-conf": null,
+    "vcal-baseline": {
+        "NO2": {
+            "calibrated-on": "2022-11-16T15:04:46Z",
+            "offset": 206,
+            "env": null
+        }
+    },
+    "gas-baseline": null,
+    "gas-model-conf": {
+        "uds-path": "pipes/lambda-gas-model.uds",
+        "model-interface": "vE",
+        "model-compendium-group": "oE.1"
+    },
+    "gps-conf": null,
+    "interface-conf": {
+        "model": "OPCubeT1"
+    },
+    "greengrass-identity": null,
+    "mpl115a2-calib": null,
+    "mqtt-conf": null,
+    "ndir-conf": null,
+    "opc-conf": {
+        "model": "N3",
+        "sample-period": 10,
+        "restart-on-zeroes": true,
+        "power-saving": false
+    },
+    "opc-version": {
+        "serial": "177336702",
+        "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
+    },
+    "pmx-model-conf": {
+        "uds-path": "pipes/lambda-pmx-model.uds",
+        "model-interface": "s2"
+    },
+    "pressure-conf": null,
+    "psu-conf": {
+        "model": "OPCubeV1",
+        "batt-model": "PackV2",
+        "ignore-threshold": false,
+        "reporting-interval": 10,
+        "report-file": "/tmp/southcoastscience/psu_status_report.json"
+    },
+    "psu-version": {
+        "id": "SCS OPCube Controller type 1 firmware 1",
+        "tag": "001.001.003",
+        "c-date": null,
+        "c-time": null
+    },
+    "pt1000-calib": null,
+    "scd30-baseline": null,
+    "scd30-conf": null,
+    "schedule": {
+        "scs-climate": {
+            "interval": 60.0,
+            "tally": 1
+        },
+        "scs-gases": {
+            "interval": 10.0,
+            "tally": 1
+        },
+        "scs-particulates": {
+            "interval": 10.0,
+            "tally": 1
+        },
+        "scs-status": {
+            "interval": 60.0,
+            "tally": 1
+        }
+    },
+    "shared-secret": {
+        "key": "IuIIGqwQWX5c7Z0Z"
+    },
+    "sht-conf": {
+        "int": "0x45",
+        "ext": "0x45"
+    },
+    "networks": {
+        "eth0": {
+            "kind": "ethernet",
+            "state": "connected",
+            "connection": "Ethernet eth0"
+        },
+        "cdc-wdm0": {
+            "kind": "gsm",
+            "state": "unavailable",
+            "connection": null
+        }
+    },
+    "modem": {
+        "id": "3f07553c31ce11715037ac16c247a0b",
+        "imei": null,
+        "mfr": "QUALCOMM INCORPORATED",
+        "model": "QUECTEL Mobile Broadband Module",
+        "rev": "EC216A01M4G"
+    },
+    "sim": null,
+    "system-id": {
+        "set-on": "2022-11-15T13:17:28Z",
+        "vendor-id": "SCS",
+        "model-id": "OPC",
+        "model": "Praxis/OPCube",
+        "config": "v1",
+        "system-sn": 1
+    },
+    "timezone-conf": {
+        "set-on": "2022-11-15T13:46:10Z",
+        "name": "Europe/London"
     }
 }
 """
@@ -235,7 +209,6 @@ import socket
 
 from collections import OrderedDict
 
-from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.greengrass.aws_group_configuration import AWSGroupConfiguration
 from scs_core.aws.greengrass.aws_identity import AWSIdentity
@@ -281,6 +254,7 @@ from scs_core.psu.psu_version import PSUVersion
 
 from scs_core.sync.schedule import Schedule
 
+from scs_core.sys.filesystem import FilesystemReport
 from scs_core.sys.modem import Modem, SIM
 from scs_core.sys.network import Networks
 from scs_core.sys.shared_secret import SharedSecret
@@ -293,6 +267,8 @@ class Configuration(JSONable):
     """
     classdocs
     """
+
+    VERSION = 1.1
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -314,7 +290,7 @@ class Configuration(JSONable):
                            None, None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
-                           None, None, None, None, None)
+                           None, None, None, None)
             else:
                 return None
 
@@ -323,10 +299,9 @@ class Configuration(JSONable):
 
         afe_baseline = AFEBaseline.construct_from_jdict(jdict.get('afe-baseline'))
         afe_id = AFEId.construct_from_jdict(jdict.get('afe-id'))
-        aws_api_auth = APIAuth.construct_from_jdict(jdict.get('aws-api-auth'))
         aws_group_config = AWSGroupConfiguration.construct_from_jdict(jdict.get('aws-group-config'))
         aws_project = Project.construct_from_jdict(jdict.get('aws-project'))
-        csv_logger_conf = CSVLoggerConf.construct_from_jdict(jdict.get('csv-logger-conf'))
+        data_log = FilesystemReport.construct_from_jdict(jdict.get('data-log'))
         display_conf = DisplayConf.construct_from_jdict(jdict.get('display-conf'))
         vcal_baseline = VCalBaseline.construct_from_jdict(jdict.get('vcal-baseline'))
         gas_baseline = GasBaseline.construct_from_jdict(jdict.get('gas-baseline'))
@@ -355,26 +330,27 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
 
-        return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf,
-                   vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                   interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+        return cls(hostname, packs, afe_baseline, afe_id, aws_group_config,
+                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks,
                    modem, sim, system_id, timezone_conf)
 
 
     @classmethod
     def load(cls, manager, psu_version=None):
+        csv_logger_conf = CSVLoggerConf.load(manager)
+
         hostname = socket.gethostname()
         packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
         afe_baseline = AFEBaseline.load(manager)
         afe_id = AFEId.load(manager)
-        aws_api_auth = APIAuth.load(manager)
         aws_group_config = AWSGroupConfiguration.load(manager)
         aws_project = Project.load(manager)
-        csv_logger_conf = CSVLoggerConf.load(manager)
+        data_log = None if csv_logger_conf is None else csv_logger_conf.filesystem_report()
         display_conf = DisplayConf.load(manager)
         vcal_baseline = VCalBaseline.load(manager)
         gas_baseline = GasBaseline.load(manager)
@@ -403,23 +379,23 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                   aws_group_config, aws_project, csv_logger_conf, display_conf,
-                   vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                   interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+        return cls(hostname, packs, afe_baseline, afe_id, aws_group_config,
+                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks,
                    modem, sim, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, packs, afe_baseline, afe_id, aws_api_auth,
-                 aws_group_config, aws_project, csv_logger_conf, display_conf,
-                 vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                 interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                 pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                 scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+    def __init__(self, hostname, packs, afe_baseline, afe_id, aws_group_config,
+                 aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                 gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                 mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                 pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                 scd30_conf, schedule, shared_secret, sht_conf, networks,
                  modem, sim, system_id, timezone_conf):
         """
         Constructor
@@ -430,10 +406,9 @@ class Configuration(JSONable):
 
         self.__afe_baseline = afe_baseline                          # AFEBaseline
         self.__afe_id = afe_id                                      # AFEId
-        self.__aws_api_auth = aws_api_auth                          # APIAuth
         self.__aws_group_config = aws_group_config                  # AWSGroupConfiguration
         self.__aws_project = aws_project                            # Project
-        self.__csv_logger_conf = csv_logger_conf                    # CSVLoggerConf
+        self.__data_log = data_log                                  # FilesystemReport
         self.__display_conf = display_conf                          # DisplayConf
         self.__vcal_baseline = vcal_baseline                        # VCalBaseline
         self.__gas_baseline = gas_baseline                          # GasBaseline
@@ -467,8 +442,7 @@ class Configuration(JSONable):
         try:
             return self.hostname == other.hostname and self.packs == other.packs and \
                    self.afe_baseline == other.afe_baseline and self.afe_id == other.afe_id and \
-                   self.aws_api_auth == other.aws_api_auth and self.aws_group_config == other.aws_group_config and \
-                   self.aws_project == other.aws_project and self.csv_logger_conf == other.csv_logger_conf and \
+                   self.aws_project == other.aws_project and self.data_log == other.data_log and \
                    self.display_conf == other.display_conf and self.vcal_baseline == other.vcal_baseline and \
                    self.gas_baseline == other.gas_baseline and self.gas_model_conf == other.gas_model_conf and \
                    self.gps_conf == other.gps_conf and self.greengrass_identity == other.greengrass_identity and \
@@ -495,7 +469,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None, None, None)
+                             None, None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -506,17 +480,14 @@ class Configuration(JSONable):
         if self.afe_id != other.afe_id:
             diff.__afe_id = self.afe_id
 
-        if self.aws_api_auth != other.aws_api_auth:
-            diff.__aws_api_auth = self.aws_api_auth
-
         if self.aws_group_config != other.aws_group_config:
             diff.__aws_group_config = self.aws_group_config
 
         if self.aws_project != other.aws_project:
             diff.__aws_project = self.aws_project
 
-        if self.csv_logger_conf != other.csv_logger_conf:
-            diff.__csv_logger_conf = self.csv_logger_conf
+        if self.data_log != other.data_log:
+            diff.__data_log = self.data_log
 
         if self.display_conf != other.display_conf:
             diff.__display_conf = self.display_conf
@@ -617,17 +588,14 @@ class Configuration(JSONable):
         if self.afe_id:
             raise ValueError('afe_id may not be set')
 
-        if self.aws_api_auth:
-            self.aws_api_auth.save(manager)
-
         if self.aws_group_config:
             self.aws_group_config.save(manager)
 
         if self.aws_project:
             self.aws_project.save(manager)
 
-        if self.csv_logger_conf:
-            self.csv_logger_conf.save(manager)
+        if self.data_log:
+            raise ValueError('data_log may not be set')
 
         if self.display_conf:
             self.display_conf.save(manager)
@@ -721,10 +689,9 @@ class Configuration(JSONable):
 
         jdict['afe-baseline'] = self.afe_baseline
         jdict['afe-id'] = self.afe_id
-        jdict['aws-api-auth'] = self.aws_api_auth
         jdict['aws-group-config'] = self.aws_group_config
         jdict['aws-project'] = self.aws_project
-        jdict['csv-logger-conf'] = self.csv_logger_conf
+        jdict['data-log'] = self.data_log
         jdict['display-conf'] = self.display_conf
         jdict['vcal-baseline'] = self.vcal_baseline
         jdict['gas-baseline'] = self.gas_baseline
@@ -780,11 +747,6 @@ class Configuration(JSONable):
 
 
     @property
-    def aws_api_auth(self):
-        return self.__aws_api_auth
-
-
-    @property
     def aws_group_config(self):
         return self.__aws_group_config
 
@@ -795,8 +757,8 @@ class Configuration(JSONable):
 
 
     @property
-    def csv_logger_conf(self):
-        return self.__csv_logger_conf
+    def data_log(self):
+        return self.__data_log
 
 
     @property
@@ -937,17 +899,17 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_api_auth:%s, " \
-               "aws_group_config:%s, aws_project:%s, csv_logger_conf:%s, display_conf:%s, " \
-               "vcal_baseline:%s, gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, " \
-               "interface_conf:%s, mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
-               "opc_version:%s, pmx_model_conf:%s, pressure_conf:%s, psu_conf:%s, psu_version:%s, " \
-               "pt1000_calib:%s,  scd30_baseline:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, " \
-               "sht_conf:%s, networks:%s,  modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_api_auth,
-                self.aws_group_config, self.aws_project, self.csv_logger_conf, self.display_conf,
-                self.vcal_baseline, self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity,
-                self.interface_conf, self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf,
-                self.opc_version, self.pmx_model_conf, self.pressure_conf, self.psu_conf, self.psu_version,
-                self.pt1000_calib, self.scd30_baseline, self.scd30_conf, self.schedule, self.shared_secret,
-                self.sht_conf, self.networks, self.modem, self.sim, self.system_id, self.timezone_conf)
+        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_group_config:%s, " \
+               "aws_project:%s, data_log:%s, display_conf:%s, vcal_baseline:%s, gas_baseline:%s, " \
+               "gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, " \
+               "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, opc_version:%s, pmx_model_conf:%s, " \
+               "pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
+               "scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, networks:%s,  " \
+               "modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
+               (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_group_config,
+                self.aws_project, self.data_log, self.display_conf, self.vcal_baseline, self.gas_baseline,
+                self.gas_model_conf, self.gps_conf, self.greengrass_identity,self.interface_conf, self.mpl115a2_calib,
+                self.mqtt_conf, self.ndir_conf, self.opc_conf,self.opc_version, self.pmx_model_conf,
+                self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
+                self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks,
+                self.modem, self.sim, self.system_id, self.timezone_conf)

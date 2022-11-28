@@ -71,8 +71,6 @@ class ConfigurationSample(Sample):
     classdocs
     """
 
-    VERSION = 1.0
-
     __HIDDEN_VALUES = [
         'val.aws-api-auth.api-key',
         'val.shared-secret.key'
@@ -83,8 +81,6 @@ class ConfigurationSample(Sample):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        # print("ConfigurationSample - jdict: %s" % jdict, file=sys.stderr)
-
         if not jdict:
             return None
 
@@ -93,7 +89,7 @@ class ConfigurationSample(Sample):
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:
-            version = float(jdict.get('ver'))
+            version = round(float(jdict.get('ver')), 1)
         except (TypeError, ValueError):
             version = cls.DEFAULT_VERSION
 
@@ -114,7 +110,7 @@ class ConfigurationSample(Sample):
         Constructor
         """
         if version is None:
-            version = self.VERSION
+            version = Configuration.VERSION
 
         super().__init__(tag, rec, version)
 
