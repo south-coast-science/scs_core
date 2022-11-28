@@ -30,7 +30,7 @@ class ControlDatum(JSONable):
     classdocs
     """
 
-    VERSION = 2.0
+    VERSION = 1.0
 
     __DEFAULT_TIMEOUT = 30.0            # seconds
 
@@ -73,7 +73,7 @@ class ControlDatum(JSONable):
         rec_iso8601 = rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
         text = str(tag) + str(attn) + JSONify.dumps(rec_iso8601) + str(cmd_tokens) + str(key)
 
-        if version == cls.VERSION:
+        if version == 2.0:
             hash_object = hashlib.sha1(text.encode())
         else:
             hash_object = hashlib.sha256(text.encode())

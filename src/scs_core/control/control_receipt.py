@@ -73,7 +73,7 @@ class ControlReceipt(JSONable):
         rec_iso8601 = rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)
         text = str(tag) + JSONify.dumps(rec_iso8601) + JSONify.dumps(command) + str(omd) + str(key)
 
-        if version == cls.VERSION:
+        if version == 2.0:
             hash_object = hashlib.sha1(text.encode())
         else:
             hash_object = hashlib.sha256(text.encode())
