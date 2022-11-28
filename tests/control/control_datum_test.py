@@ -9,6 +9,7 @@ Created on 14 Oct 2016
 import json
 import time
 
+from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
 
@@ -18,10 +19,10 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-serial = '00000000cda1f8b9'
+key = '00000000cda1f8b9'
 now = LocalizedDatetime.now().utc()
 
-datum = ControlDatum.construct('my-laptop', 'scs-ap1-6', now, ['test'], 20, serial)
+datum = ControlDatum.construct('my-laptop', 'scs-ap1-6', now, ['test'], 20, key)
 print(datum)
 print("-")
 
@@ -35,19 +36,19 @@ datum = ControlDatum.construct_from_jdict(jdict)
 print(datum)
 print("-")
 
-valid = datum.is_valid(serial)
+valid = datum.is_valid(key)
 print("datum valid: %s" % valid)
 
-valid = datum.is_valid('00000000cda1f8b9')
+valid = datum.is_valid('00000000cda1f8b8')
 print("datum valid: %s" % valid)
 print("=")
 
 time.sleep(1)
 now = LocalizedDatetime.now().utc()
 
-command = 'COMMAND'
+command = Command('CMD', [], return_code=0)
 
-receipt = ControlReceipt.construct_from_datum(datum, now, command, serial)
+receipt = ControlReceipt.construct_from_datum(datum, now, command, key)
 print(receipt)
 print("-")
 
@@ -61,7 +62,7 @@ receipt = ControlReceipt.construct_from_jdict(jdict)
 print(receipt)
 print("-")
 
-valid = receipt.is_valid(serial)
+valid = receipt.is_valid(key)
 print("receipt valid: %s" % valid)
 
 valid = receipt.is_valid('00000000cda1f8b8')
