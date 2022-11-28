@@ -88,7 +88,8 @@ example document:
     "data-log": {
         "path": "/srv/removable_data_storage",
         "available": true,
-        "on-root": false
+        "on-root": false,
+        "used": 69
     },
     "display-conf": null,
     "vcal-baseline": {
@@ -329,21 +330,21 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
 
-        return cls(hostname, packs, afe_baseline, afe_id,
-                   aws_group_config, aws_project, data_log, display_conf,
-                   vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                   interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+        return cls(hostname, packs, afe_baseline, afe_id, aws_group_config,
+                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks,
                    modem, sim, system_id, timezone_conf)
 
 
     @classmethod
     def load(cls, manager, psu_version=None):
+        csv_logger_conf = CSVLoggerConf.load(manager)
+
         hostname = socket.gethostname()
         packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
-
-        csv_logger_conf = CSVLoggerConf.load(manager)
 
         afe_baseline = AFEBaseline.load(manager)
         afe_id = AFEId.load(manager)
@@ -378,23 +379,23 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(hostname, packs, afe_baseline, afe_id,
-                   aws_group_config, aws_project, data_log, display_conf,
-                   vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                   interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                   pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                   scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+        return cls(hostname, packs, afe_baseline, afe_id, aws_group_config,
+                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                   gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                   scd30_conf, schedule, shared_secret, sht_conf, networks,
                    modem, sim, system_id, timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, packs, afe_baseline, afe_id,
-                 aws_group_config, aws_project, data_log, display_conf,
-                 vcal_baseline, gas_baseline, gas_model_conf, gps_conf, greengrass_identity,
-                 interface_conf, mpl115a2_calib, mqtt_conf, ndir_conf, opc_conf, opc_version,
-                 pmx_model_conf, pressure_conf, psu_conf, psu_version, pt1000_calib,
-                 scd30_baseline, scd30_conf, schedule, shared_secret, sht_conf, networks,
+    def __init__(self, hostname, packs, afe_baseline, afe_id, aws_group_config,
+                 aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
+                 gas_model_conf, gps_conf, greengrass_identity, interface_conf, mpl115a2_calib,
+                 mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
+                 pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
+                 scd30_conf, schedule, shared_secret, sht_conf, networks,
                  modem, sim, system_id, timezone_conf):
         """
         Constructor
@@ -898,17 +899,17 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, " \
-               "aws_group_config:%s, aws_project:%s, data_log:%s, display_conf:%s, " \
-               "vcal_baseline:%s, gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, " \
-               "interface_conf:%s, mpl115a2_calib:%s, mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, " \
-               "opc_version:%s, pmx_model_conf:%s, pressure_conf:%s, psu_conf:%s, psu_version:%s, " \
-               "pt1000_calib:%s,  scd30_baseline:%s, scd30_conf:%s, schedule:%s, shared_secret:%s, " \
-               "sht_conf:%s, networks:%s,  modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.hostname, self.packs, self.afe_baseline, self.afe_id,
-                self.aws_group_config, self.aws_project, self.data_log, self.display_conf,
-                self.vcal_baseline, self.gas_baseline, self.gas_model_conf, self.gps_conf, self.greengrass_identity,
-                self.interface_conf, self.mpl115a2_calib, self.mqtt_conf, self.ndir_conf, self.opc_conf,
-                self.opc_version, self.pmx_model_conf, self.pressure_conf, self.psu_conf, self.psu_version,
-                self.pt1000_calib, self.scd30_baseline, self.scd30_conf, self.schedule, self.shared_secret,
-                self.sht_conf, self.networks, self.modem, self.sim, self.system_id, self.timezone_conf)
+        return "Configuration:{hostname:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_group_config:%s, " \
+               "aws_project:%s, data_log:%s, display_conf:%s, vcal_baseline:%s, gas_baseline:%s, " \
+               "gas_model_conf:%s, gps_conf:%s, greengrass_identity:%s, interface_conf:%s, mpl115a2_calib:%s, " \
+               "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, opc_version:%s, pmx_model_conf:%s, " \
+               "pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
+               "scd30_conf:%s, schedule:%s, shared_secret:%s, sht_conf:%s, networks:%s,  " \
+               "modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
+               (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_group_config,
+                self.aws_project, self.data_log, self.display_conf, self.vcal_baseline, self.gas_baseline,
+                self.gas_model_conf, self.gps_conf, self.greengrass_identity,self.interface_conf, self.mpl115a2_calib,
+                self.mqtt_conf, self.ndir_conf, self.opc_conf,self.opc_version, self.pmx_model_conf,
+                self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
+                self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks,
+                self.modem, self.sim, self.system_id, self.timezone_conf)

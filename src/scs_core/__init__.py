@@ -6,4 +6,4 @@ Created on 3 May 2021
 https://packaging.python.org/guides/single-sourcing-package-version/
 """
 
-__version__ = '1.5.1'
+__version__ = '1.5.2'
