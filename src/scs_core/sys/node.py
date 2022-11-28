@@ -91,18 +91,18 @@ class Node(ABC):
 
 
     @staticmethod
-    def ping(host, ttl=32):
-        p = Popen(['ping', '-q', '-c', '1', '-t', str(ttl), host], stdout=DEVNULL, stderr=DEVNULL)
+    def ping(hostname, ttl=32):
+        p = Popen(['ping', '-q', '-c', '1', '-t', str(ttl), hostname], stdout=DEVNULL, stderr=DEVNULL)
         p.wait()
 
         return p.returncode == 0
 
 
     @staticmethod
-    def is_connected(host, timeout=None):
+    def is_connected(hostname, timeout=None):
         try:
-            addr = (socket.gethostbyname(host), 80)
-            socket.create_connection(addr) if timeout is None else socket.create_connection(addr, timeout=timeout)
+            socket.create_connection((hostname, 443)) if timeout is None else \
+                socket.create_connection((hostname, 443), timeout=timeout)
             return True
 
         except OSError:

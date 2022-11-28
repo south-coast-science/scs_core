@@ -158,7 +158,7 @@ class MQTTDevicePoller(object):
             client.publish(publication)
 
         except (OSError, operationError, operationTimeoutException) as ex:
-            self.__logger.error(ex.__class__.__name__)
+            self.__logger.error(repr(ex))
 
         timeout = time.time() + self.__TIMEOUT
 

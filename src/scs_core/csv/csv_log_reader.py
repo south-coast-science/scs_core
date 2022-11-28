@@ -12,7 +12,8 @@ import time
 from collections import OrderedDict
 from multiprocessing import Manager
 
-from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
+from requests.exceptions import ConnectionError                                             # raised by requests
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException     # raised by HTTPClient
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
@@ -111,7 +112,7 @@ class CSVLogReader(SynchronisedProcess):
                     queue.remove(cursor.file_path)
                     queue.as_list(self._value)
 
-                self.__logger.info("*** removed cursor: %s" % cursor)
+                # self.__logger.info("*** removed cursor: %s" % cursor)
 
                 if not cursor.is_live:
                     continue
@@ -123,10 +124,10 @@ class CSVLogReader(SynchronisedProcess):
                     queue.include(tailed)
                     queue.as_list(self._value)
 
-                self.__logger.info("*** added tailed cursor: %s" % tailed)
+                self.__logger.info("added tailed cursor: %s" % tailed)
 
         except FileNotFoundError as ex:
-            self.__logger.error(ex)
+            self.__logger.error(repr(ex))
 
         except (ConnectionError, EOFError, KeyboardInterrupt, SystemExit):
             pass
@@ -199,7 +200,7 @@ class CSVLogQueueBuilder(object):
     classdocs
     """
 
-    __BYLINE_WAIT_TIME = 10.0                   # seconds
+    __BYLINE_WAIT_TIME = 20.0                   # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -209,6 +210,8 @@ class CSVLogQueueBuilder(object):
         self.__byline_manager = byline_manager
         self.__system_id = system_id
         self.__conf = conf
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -220,7 +223,8 @@ class CSVLogQueueBuilder(object):
                 byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(),
                                                                             self.__topic_path)
                 break
-            except ResourceUnavailableException:
+            except (ConnectionError, ResourceUnavailableException) as ex:
+                self.__logger.info(repr(ex))
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
         rec = None if byline is None else byline.rec

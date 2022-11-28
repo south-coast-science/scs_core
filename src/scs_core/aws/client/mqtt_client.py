@@ -105,7 +105,7 @@ class MQTTClient(object):
             return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
 
         except (connectError, connectTimeoutException) as ex:
-            raise OSError(ex.__class__.__name__)
+            raise OSError(repr(ex))
 
 
     def disconnect(self):
