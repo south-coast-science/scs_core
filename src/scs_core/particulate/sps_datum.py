@@ -42,12 +42,12 @@ class SPSDatum(PMxDatum):
         counts = SPSDatumCounts.construct_from_jdict(jdict.get('counts'))
         tps = jdict.get('tps')
 
-        return SPSDatum(source, rec, pm1, pm2p5, pm4, pm10, counts, tps)
+        return cls(source, rec, pm1, pm2p5, pm4, pm10, counts, tps)
 
 
     @classmethod
     def null_datum(cls):
-        return SPSDatum(None, LocalizedDatetime.now().utc(), None, None, None, None, [], None)
+        return cls(None, LocalizedDatetime.now().utc(), None, None, None, None, [], None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -148,12 +148,12 @@ class SPSDatumCounts(JSONable):
         pm4 = jdict.get('pm4')
         pm10 = jdict.get('pm10')
 
-        return SPSDatumCounts(pm0p5, pm1, pm2p5, pm4, pm10)
+        return cls(pm0p5, pm1, pm2p5, pm4, pm10)
 
 
     @classmethod
     def null_datum(cls):
-        return SPSDatumCounts(None, None, None, None, None)
+        return cls(None, None, None, None, None)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ class GPSDatum(JSONReport):
 
         quality = jdict.get('qual')
 
-        return GPSDatum(pos, elv, quality)
+        return cls(pos, elv, quality)
 
 
     @classmethod
@@ -52,12 +52,12 @@ class GPSDatum(JSONReport):
 
         quality = gga.quality
 
-        return GPSDatum(pos, elv, quality)
+        return cls(pos, elv, quality)
 
 
     @classmethod
     def null_datum(cls):
-        return GPSDatum(Position(None, None), None, None)
+        return cls(Position(None, None), None, None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
