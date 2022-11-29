@@ -59,13 +59,13 @@ class OPCDatum(PMxDatum):
 
         sht = SHTDatum.construct_from_jdict(jdict.get('sht'))
 
-        return OPCDatum(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
+        return cls(source, rec, pm1, pm2p5, pm10, period, bins, bin_1_mtof, bin_3_mtof, bin_5_mtof, bin_7_mtof,
                         sfr=sfr, sht=sht)
 
 
     @classmethod
     def null_datum(cls):
-        return OPCDatum(None, LocalizedDatetime.now().utc(), None, None, None, 0.0, [], 0, 0, 0, 0)
+        return cls(None, LocalizedDatetime.now().utc(), None, None, None, 0.0, [], 0, 0, 0, 0)
 
 
     # ----------------------------------------------------------------------------------------------------------------

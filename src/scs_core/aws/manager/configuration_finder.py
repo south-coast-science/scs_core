@@ -45,7 +45,8 @@ class ConfigurationFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, tag_filter, exact_match, response_mode):
-        self.__reporter.reset()
+        if self.__reporter:
+            self.__reporter.reset()
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
         headers = {'Authorization': self.__auth.email_address}
