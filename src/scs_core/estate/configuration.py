@@ -908,8 +908,8 @@ class Configuration(JSONable):
                "modem:%s, sim:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.packs, self.afe_baseline, self.afe_id, self.aws_group_config,
                 self.aws_project, self.data_log, self.display_conf, self.vcal_baseline, self.gas_baseline,
-                self.gas_model_conf, self.gps_conf, self.greengrass_identity,self.interface_conf, self.mpl115a2_calib,
-                self.mqtt_conf, self.ndir_conf, self.opc_conf,self.opc_version, self.pmx_model_conf,
+                self.gas_model_conf, self.gps_conf, self.greengrass_identity, self.interface_conf, self.mpl115a2_calib,
+                self.mqtt_conf, self.ndir_conf, self.opc_conf, self.opc_version, self.pmx_model_conf,
                 self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
                 self.scd30_conf, self.schedule, self.shared_secret, self.sht_conf, self.networks,
                 self.modem, self.sim, self.system_id, self.timezone_conf)

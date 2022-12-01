@@ -45,7 +45,7 @@ class SensorBaseline(JSONable):
 
     @classmethod
     def null_datum(cls):
-        return SensorBaseline(None, 0)
+        return cls(None, 0)
 
 
     # ----------------------------------------------------------------------------------------------------------------
