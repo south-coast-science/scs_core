@@ -251,10 +251,10 @@ class ExclusiveStartKey(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def params(self):
-        params = {
-            'rec': self.rec,
-            'tag': self.tag
-        }
+        params = {'tag': self.tag}
+
+        if self.rec is not None:
+            params['rec'] = self.rec
 
         return params
 
