@@ -30,6 +30,8 @@ class LocalizedDatetime(JSONable):
     classdocs
     """
 
+    UNIX_ERA_START = '1970-01-01T00:00:00Z'
+
     OLE_TIME_ZERO = datetime(1899, month=12, day=30)
 
     MONTH_NAMES = {
@@ -63,6 +65,11 @@ class LocalizedDatetime(JSONable):
         localized = datetime.now(zone)
 
         return LocalizedDatetime(localized)
+
+
+    @classmethod
+    def unix_era_start(cls):
+        return cls.construct_from_iso8601(cls.UNIX_ERA_START)
 
 
     @classmethod
