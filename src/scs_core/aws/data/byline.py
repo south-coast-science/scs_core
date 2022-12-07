@@ -222,7 +222,7 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return (byline.as_json() for byline in self.bylines)    # matches the structure of the API response
+        return [byline.as_json() for byline in self.bylines]        # matches the structure of the API response
 
 
     # ----------------------------------------------------------------------------------------------------------------
