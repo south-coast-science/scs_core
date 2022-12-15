@@ -35,7 +35,7 @@ class TopicPath(object):
 
     @classmethod
     def construct(cls, rec, path):
-        path_pieces = path.split('/')
+        path_pieces = path.strip('/').split('/')
 
         if not cls.is_valid(path_pieces):
             raise ValueError(path)
@@ -51,6 +51,13 @@ class TopicPath(object):
         """
         self.__rec = rec                                        # LocalizedDatetime
         self.__path_pieces = path_pieces                        # array of string
+
+
+    def __eq__(self, other):
+        try:
+            return self.rec == other.rec and self.path == other.path
+        except (TypeError, ValueError):
+            return False
 
 
     def __lt__(self, other):

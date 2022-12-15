@@ -17,6 +17,7 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
+from scs_core.data.topic_path import TopicPath
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -288,12 +289,17 @@ class TopicBylineGroup(BylineGroup):
         return self._device_bylines[device]                     # may raise KeyError
 
 
+    @property
+    def topic_paths(self):
+        topic_paths = set()
+        for device_tag, byline in self._device_bylines.items():
+            topic_paths.add(TopicPath.construct(byline.rec, byline.topic))
+
+        return topic_paths
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def devices(self):
         return list(self._device_bylines.keys())
-
-    @property
-    def bylines(self):
-        return sorted(self._device_bylines.values())
