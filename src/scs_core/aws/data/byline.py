@@ -19,6 +19,8 @@ from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.topic_path import TopicPath
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -282,6 +284,8 @@ class TopicBylineGroup(BylineGroup):
         """
         super().__init__(device_bylines)
 
+        self.__logger = Logging.getLogger()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -289,13 +293,18 @@ class TopicBylineGroup(BylineGroup):
         return self._device_bylines[device]                     # may raise KeyError
 
 
-    @property
-    def topic_paths(self):
-        topic_paths = set()
-        for device_tag, byline in self._device_bylines.items():
-            topic_paths.add(TopicPath.construct(byline.rec, byline.topic))
+    def topic_roots(self):
+        topic_roots = set()
+        for device_tag, bylines in self._device_bylines.items():
+            for byline in bylines:
+                try:
+                    topic_roots.add(TopicPath.construct(byline.rec, byline.topic).root())
 
-        return topic_paths
+                except ValueError:
+                    self.__logger.info("invalid topic: %s" % byline.topic)
+                    continue
+
+        return sorted(topic_roots)
 
 
     # ----------------------------------------------------------------------------------------------------------------
