@@ -10,6 +10,7 @@ ricardo/rural/loc/1/particulates
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
@@ -39,12 +40,25 @@ class TopicPath(JSONable):
         return True
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct(cls, rec, path):
         path_pieces = path.strip('/').split('/')
 
         if not cls.is_valid(path_pieces):
             raise ValueError(path)
+
+        return cls(rec, path_pieces)
+
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        path_pieces = jdict.get('path').split('/')
 
         return cls(rec, path_pieces)
 
@@ -57,10 +71,6 @@ class TopicPath(JSONable):
         """
         self.__rec = rec                                        # LocalizedDatetime
         self.__path_pieces = path_pieces                        # array of string
-
-
-    def __hash__(self):
-        return hash((self.rec, self.path()))
 
 
     def __lt__(self, other):
