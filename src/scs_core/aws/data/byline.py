@@ -293,3 +293,7 @@ class TopicBylineGroup(BylineGroup):
     @property
     def devices(self):
         return list(self._device_bylines.keys())
+
+    @property
+    def bylines(self):
+        return sorted(self._device_bylines.values())
