@@ -17,6 +17,9 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
+from scs_core.data.topic_path import TopicPath
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -281,11 +284,27 @@ class TopicBylineGroup(BylineGroup):
         """
         super().__init__(device_bylines)
 
+        self.__logger = Logging.getLogger()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def bylines_for_device(self, device):
         return self._device_bylines[device]                     # may raise KeyError
+
+
+    def topic_roots(self):
+        topic_roots = set()
+        for device_tag, bylines in self._device_bylines.items():
+            for byline in bylines:
+                try:
+                    topic_roots.add(TopicPath.construct(byline.rec, byline.topic).root())
+
+                except ValueError:
+                    self.__logger.info("invalid topic: %s" % byline.topic)
+                    continue
+
+        return sorted(topic_roots)
 
 
     # ----------------------------------------------------------------------------------------------------------------
