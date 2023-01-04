@@ -43,7 +43,7 @@ class GitPull(PersistentJSONable):
         if not items:
             return ()
 
-        return (item.name for item in items if item.is_directory and item.name.startswith(cls.__DIR_PREFIX))
+        return [item.name for item in items if item.is_directory and item.name.startswith(cls.__DIR_PREFIX)]
 
 
     @classmethod
