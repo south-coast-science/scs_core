@@ -52,7 +52,7 @@ class AWSGroupConfiguration(PersistentJSONable):
         abs_path = os.path.join(cls.catalogue_location(), catalogue, file)
 
         with open(abs_path) as f:
-            return json.loads(f.read())
+            return json.load(f)
 
 
     # ----------------------------------------------------------------------------------------------------------------
