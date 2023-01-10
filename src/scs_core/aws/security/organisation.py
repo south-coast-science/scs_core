@@ -364,6 +364,11 @@ class OrganisationUser(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def pk(self):
+        return '+'.join((self.username, self.org_id))
+
+
+    @property
     def username(self):
         return self.__username
 
