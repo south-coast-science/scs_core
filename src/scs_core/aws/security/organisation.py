@@ -134,6 +134,14 @@ class Organisation(JSONable):
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def organisation_path_root(self, aws_opr_id, path_root):
+        return OrganisationPathRoot(aws_opr_id, self.org_id, path_root)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -231,7 +239,7 @@ class OrganisationPathRoot(JSONable):
         """
         Constructor
         """
-        self._opr_id = int(opr_id)                     # AUTO PK: int
+        self._opr_id = opr_id                           # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
         self.__path_root = path_root                    # UNIQUE: string
 
@@ -365,7 +373,7 @@ class OrganisationUser(JSONable):
 
     @property
     def pk(self):
-        return '+'.join((self.username, self.org_id))
+        return '+'.join((str(self.username), str(self.org_id)))
 
 
     @property
@@ -381,6 +389,11 @@ class OrganisationUser(JSONable):
     @property
     def is_org_admin(self):
         return self.__is_org_admin
+
+
+    @is_org_admin.setter
+    def is_org_admin(self, is_org_admin):
+        self.__is_org_admin = is_org_admin
 
 
     @property
@@ -684,6 +697,11 @@ class OrganisationDevice(JSONable):
     @property
     def deployment_label(self):
         return self.__deployment_label
+
+
+    @deployment_label.setter
+    def deployment_label(self, deployment_label):
+        self.__deployment_label = deployment_label
 
 
     # ------------------------------------------------------------------------------------------------------------------
