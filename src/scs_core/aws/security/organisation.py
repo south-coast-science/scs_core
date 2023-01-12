@@ -551,6 +551,7 @@ class OrganisationDevice(JSONable):
     def deployment_interval(cls):
         return cls.__DEPLOYMENT_INTERVAL
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
