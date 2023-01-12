@@ -32,6 +32,7 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
+from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -273,6 +274,12 @@ class OrganisationPathRoot(JSONable):
     def opr_id(self):
         return self._opr_id
 
+
+    @opr_id.setter
+    def opr_id(self, value):
+        self._opr_id = value
+
+
     @property
     def org_id(self):
         return self.__org_id
@@ -281,11 +288,6 @@ class OrganisationPathRoot(JSONable):
     @property
     def path_root(self):
         return self.__path_root
-
-
-    @opr_id.setter
-    def opr_id(self, value):
-        self._opr_id = value
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -540,6 +542,14 @@ class OrganisationDevice(JSONable):
     START_DATETIME = 'StartDatetime'
     END_DATETIME = 'EndDatetime'
     DEPLOYMENT_LABEL = 'DeploymentLabel'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __DEPLOYMENT_INTERVAL = Timedelta(minutes=10)
+
+    @classmethod
+    def deployment_interval(cls):
+        return cls.__DEPLOYMENT_INTERVAL
 
     # ----------------------------------------------------------------------------------------------------------------
 
