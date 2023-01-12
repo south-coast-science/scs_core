@@ -32,6 +32,7 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
+from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -134,6 +135,14 @@ class Organisation(JSONable):
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def organisation_path_root(self, aws_opr_id, path_root):
+        return OrganisationPathRoot(aws_opr_id, self.org_id, path_root)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -231,7 +240,7 @@ class OrganisationPathRoot(JSONable):
         """
         Constructor
         """
-        self._opr_id = int(opr_id)                     # AUTO PK: int
+        self._opr_id = opr_id                           # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
         self.__path_root = path_root                    # UNIQUE: string
 
@@ -265,6 +274,12 @@ class OrganisationPathRoot(JSONable):
     def opr_id(self):
         return self._opr_id
 
+
+    @opr_id.setter
+    def opr_id(self, value):
+        self._opr_id = value
+
+
     @property
     def org_id(self):
         return self.__org_id
@@ -273,11 +288,6 @@ class OrganisationPathRoot(JSONable):
     @property
     def path_root(self):
         return self.__path_root
-
-
-    @opr_id.setter
-    def opr_id(self, value):
-        self._opr_id = value
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -364,6 +374,11 @@ class OrganisationUser(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def pk(self):
+        return '+'.join((str(self.username), str(self.org_id)))
+
+
+    @property
     def username(self):
         return self.__username
 
@@ -376,6 +391,11 @@ class OrganisationUser(JSONable):
     @property
     def is_org_admin(self):
         return self.__is_org_admin
+
+
+    @is_org_admin.setter
+    def is_org_admin(self, is_org_admin):
+        self.__is_org_admin = is_org_admin
 
 
     @property
@@ -522,6 +542,15 @@ class OrganisationDevice(JSONable):
     START_DATETIME = 'StartDatetime'
     END_DATETIME = 'EndDatetime'
     DEPLOYMENT_LABEL = 'DeploymentLabel'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __DEPLOYMENT_INTERVAL = Timedelta(minutes=10)
+
+    @classmethod
+    def deployment_interval(cls):
+        return cls.__DEPLOYMENT_INTERVAL
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -679,6 +708,11 @@ class OrganisationDevice(JSONable):
     @property
     def deployment_label(self):
         return self.__deployment_label
+
+
+    @deployment_label.setter
+    def deployment_label(self, deployment_label):
+        self.__deployment_label = deployment_label
 
 
     # ------------------------------------------------------------------------------------------------------------------
