@@ -4,7 +4,7 @@ Created on 13 Jan 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import time
+from time import time
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -20,20 +20,22 @@ class Timer(object):
         """
         Constructor
         """
-        self.__start_time = time.time()
+        self.__start_time = time()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def elapsed(self):
-        return self.__start_time - time.time()
+        elapsed = time() - self.__start_time
+
+        return round(elapsed, 3)
 
 
     def check(self):
-        elapsed = self.elapsed()
-        self.__start_time = time.time()
+        elapsed = time() - self.__start_time
+        self.__start_time = time()
 
-        return elapsed
+        return round(elapsed, 3)
 
 
     # ----------------------------------------------------------------------------------------------------------------
