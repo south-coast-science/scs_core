@@ -1,15 +1,19 @@
 """
-Created on 13 Jan 2023
+Created on 14 Jan 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/938733/total-memory-used-by-python-process
 """
 
-from time import time
+import os
+
+from psutil import Process
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Timer(object):
+class Memory(object):
     """
     classdocs
     """
@@ -20,26 +24,25 @@ class Timer(object):
         """
         Constructor
         """
-        self.__start_time = time()
-        self.__checkpoint_time = time()
+        self.__process = Process(os.getpid())
+        self.__base_usage = self.__process.memory_info().rss
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def total(self):
-        elapsed = time() - self.__start_time
+        usage = self.__process.memory_info().rss
 
-        return round(elapsed, 3)
+        return int(round(usage / 1024))
 
 
-    def checkpoint(self):
-        elapsed = time() - self.__checkpoint_time
-        self.__checkpoint_time = time()
+    def heap(self):
+        usage = self.__process.memory_info().rss - self.__base_usage
 
-        return round(elapsed, 3)
+        return int(round(usage / 1024))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Timer:{start_time:%s, checkpoint_time:%s}" % (self.__start_time, self.__checkpoint_time)
+        return "Memory:{process:%s, base_usage:%s}" % (self.__process, self.__base_usage)
