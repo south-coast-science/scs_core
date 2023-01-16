@@ -126,9 +126,7 @@ class JSONReport(JSONable):
             return cls.construct_from_jdict(None, skeleton=skeleton)
 
         with open(filename, 'r') as f:
-            jstr = f.read()
-
-        return cls.construct_from_jdict(cls.loads(jstr), skeleton=skeleton)
+            return cls.construct_from_jdict(cls.load(f), skeleton=skeleton)
 
 
     @classmethod

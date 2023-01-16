@@ -331,6 +331,42 @@ class LocalizedDatetime(JSONable):
         raise TypeError(other)
 
 
+    def __round__(self, n=0):
+        if not 0 <= n <= 3:
+            raise ValueError(n)
+
+        rounded = self.__datetime
+
+        # second...
+        if round(rounded.microsecond / 1000000):
+            rounded += timedelta(seconds=1, microseconds=-rounded.microsecond)
+        else:
+            rounded -= timedelta(microseconds=rounded.microsecond)
+
+        # minute...
+        if n > 0:
+            if round(rounded.second / 60):
+                rounded += timedelta(minutes=1, seconds=-rounded.second)
+            else:
+                rounded -= timedelta(seconds=rounded.second)
+
+        # hour...
+        if n > 1:
+            if round(rounded.minute / 60):
+                rounded += timedelta(hours=1, minutes=-rounded.minute)
+            else:
+                rounded -= timedelta(minutes=rounded.minute)
+
+        # day...
+        if n > 2:
+            if round(rounded.hour / 24):
+                rounded += timedelta(days=1, hours=-rounded.hour)
+            else:
+                rounded -= timedelta(hours=rounded.hour)
+
+        return LocalizedDatetime(rounded)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def utc(self):
