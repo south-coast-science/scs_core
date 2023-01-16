@@ -17,7 +17,7 @@ from scs_core.data.stats import Stats
 # --------------------------------------------------------------------------------------------------------------------
 
 with open('gaussian.json') as f:
-    values = json.loads(f.readline())
+    values = json.load(f)
 
 # values = [1, 2, 3, 4, 5, 10]
 precision = 3
@@ -36,11 +36,11 @@ jstr = JSONify.dumps(stats)
 print(jstr)
 print("-")
 
-print("lower 3: %s" % stats.lower3())
-print("lower 2: %s" % stats.lower2())
-print("lower 1: %s" % stats.lower1())
+print("lower 3: %s" % stats.lower3)
+print("lower 2: %s" % stats.lower2)
+print("lower 1: %s" % stats.lower1)
 print("-")
 
-print("upper 1: %s" % stats.upper1())
-print("upper 2: %s" % stats.upper2())
-print("upper 3: %s" % stats.upper3())
+print("upper 1: %s" % stats.upper1)
+print("upper 2: %s" % stats.upper2)
+print("upper 3: %s" % stats.upper3)

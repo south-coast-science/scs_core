@@ -32,6 +32,7 @@ class CognitoDeviceCredentials(JSONable):
 
         return len(password) > 15
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag, shared_secret):
@@ -93,6 +94,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         except KeyError:
             return None
 
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
@@ -104,6 +106,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
         return cls(tag, shared_secret, creation_date)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag, shared_secret, creation_date):
@@ -112,7 +115,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         """
         super().__init__(tag, shared_secret)
 
-        self.__creation_date = creation_date  # LocalisedDatetime
+        self.__creation_date = creation_date                        # LocalisedDatetime
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -130,11 +134,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def creation_date(self):
         return self.__creation_date
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
