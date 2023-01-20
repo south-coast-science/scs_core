@@ -61,9 +61,11 @@ class CognitoDeviceCredentials(JSONable):
     def tag(self):
         return self.__tag
 
+
     @property
     def shared_secret(self):
         return self.__shared_secret
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
