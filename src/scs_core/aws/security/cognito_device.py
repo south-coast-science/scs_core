@@ -88,8 +88,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if not res:
             return None
 
-        tag = res['Username']
-        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
+        tag = res.get('Username')
+        creation_date = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
 
         try:
             return cls(tag, None, creation_date)
@@ -118,6 +118,18 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         super().__init__(tag, shared_secret)
 
         self.__creation_date = creation_date                        # LocalisedDatetime
+
+
+    def __eq__(self, other):
+        try:
+            return self.tag == other.tag
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    def __lt__(self, other):
+        return self.tag < other.tag
 
 
     # ----------------------------------------------------------------------------------------------------------------

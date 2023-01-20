@@ -14,24 +14,15 @@ example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
 "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
 
-example dictionary:
+example AWS response:
 {'Username': '1092', 'Attributes': [{'Name': 'sub', 'Value': '332351ef-f74f-4cb4-aec8-664a3a9abae3'},
 {'Name': 'custom:tester', 'Value': 'False'}, {'Name': 'custom:super', 'Value': 'False'},
 {'Name': 'email', 'Value': 'adrian@em-monitors.co.uk'}],
 'UserCreateDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
 'UserLastModifiedDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
 'Enabled': True, 'UserStatus': 'FORCE_CHANGE_PASSWORD'}
-
-    response: {'Username': '1', 'Attributes': [{'Name': 'sub', 'Value': '002ca9b0-5096-484d-8115-f98ed16fad34'},
-    {'Name': 'custom:super', 'Value': 'False'}, {'Name': 'given_name', 'Value': 'jade'},
-    {'Name': 'family_name', 'Value': 'test'},
-    {'Name': 'email', 'Value': 'jadempage@outlook.com'}],
-    'UserCreateDate': datetime.datetime(2022, 1, 27, 12, 25, 15, 239000, tzinfo=tzlocal()),
-    'UserLastModifiedDate': datetime.datetime(2022, 1, 27, 12, 25, 36, 901000, tzinfo=tzlocal()),
-    'Enabled': True, 'UserStatus': 'CONFIRMED'}
 """
 
-import ast
 import json
 import re
 import sys
@@ -42,7 +33,7 @@ from getpass import getpass
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONify, JSONable, MultiPersistentJSONable
+from scs_core.data.json import JSONable, MultiPersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -243,36 +234,20 @@ class CognitoUserIdentity(JSONable):
         if not res:
             return None
 
-        print("response: %s" % JSONify.dumps(res))
+        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
+        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
 
-        username = res['Username']
+        username = res.get('Username')
+        creation_date = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
+        confirmation_status = res.get('UserStatus')
+        enabled = res.get('Enabled')
+        email = attrs.get('email')
+        given_name = attrs.get('given_name')
+        family_name = attrs.get('family_name')
+        is_super = attrs.get('custom:super')
 
-        final_d = {}
-        attrs = res['Attributes'] if multiples else res['UserAttributes']
-
-        for attr in attrs:
-            nk = None
-            for value in attr.values():
-                if nk:
-                    final_d[nk] = value
-                    break
-
-                nk = value
-
-        print("final_d: %s" % final_d)
-
-        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
-        confirmation_status = res["UserStatus"]
-        enabled = res["Enabled"]
-
-        return cls(username, creation_date, confirmation_status, enabled, final_d['email'], final_d['given_name'],
-                   final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
-
-        # try:
-        #     return cls(username, creation_date, confirmation_status, enabled, final_d['email'], final_d['given_name'],
-        #                final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
-        # except KeyError:
-        #     return None
+        return cls(username, creation_date, confirmation_status, enabled,
+                   email, given_name, family_name, None, is_super=is_super)
 
 
     @classmethod
@@ -301,15 +276,26 @@ class CognitoUserIdentity(JSONable):
         """
         Constructor
         """
-        self.__username = username                              # string (int)
+        self.__username = Datum.int(username)                   # int
         self.__creation_date = creation_date                    # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
-        self.__enabled = enabled                                # bool or None
+        self.__enabled = Datum.bool(enabled)                    # bool or None
         self.__email = email                                    # string
         self.__given_name = given_name                          # string
         self.__family_name = family_name                        # string
         self.__password = password                              # string
         self.__is_super = bool(is_super)                        # bool
+
+
+    def __eq__(self, other):
+        try:
+            return self.username == other.username and self.confirmation_status == other.confirmation_status \
+                   and self.enabled == other.enabled and self.email == other.email \
+                   and self.given_name == other.given_name and self.family_name == other.family_name \
+                   and self.is_super == other.is_super
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
