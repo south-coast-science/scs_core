@@ -314,6 +314,9 @@ class CognitoUserIdentity(JSONable):
 
     def __lt__(self, other):
         if self.family_name is not None:
+            if other.family_name is None:
+                return False
+
             if self.family_name.lower() < other.family_name.lower():
                 return True
 
@@ -321,6 +324,9 @@ class CognitoUserIdentity(JSONable):
                 return False
 
         if self.given_name is not None:
+            if other.given_name is None:
+                return False
+
             if self.given_name.lower() < other.given_name.lower():
                 return True
 
