@@ -29,6 +29,8 @@ import re
 
 from collections import OrderedDict
 
+from scs_core.aws.data.dataset import Indexable
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -37,7 +39,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Organisation(JSONable):
+class Organisation(Indexable, JSONable):
     """
     classdocs
     """
@@ -146,6 +148,7 @@ class Organisation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def index(self):
         return self.label
 
@@ -210,7 +213,7 @@ class Organisation(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class OrganisationPathRoot(JSONable):
+class OrganisationPathRoot(Indexable, JSONable):
     """
     classdocs
     """
@@ -272,6 +275,7 @@ class OrganisationPathRoot(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def index(self):
         return self.path_root
 

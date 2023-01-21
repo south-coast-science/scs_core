@@ -12,6 +12,8 @@ example document (identity):
 
 from collections import OrderedDict
 
+from scs_core.aws.data.dataset import Indexable
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
@@ -76,7 +78,7 @@ class CognitoDeviceCredentials(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceIdentity(CognitoDeviceCredentials):
+class CognitoDeviceIdentity(Indexable, CognitoDeviceCredentials):
     """
     classdocs
     """
@@ -130,6 +132,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
     def __lt__(self, other):
         return self.tag < other.tag
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def index(self):
+        return self.tag
 
 
     # ----------------------------------------------------------------------------------------------------------------
