@@ -146,6 +146,10 @@ class Organisation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def index(self):
+        return self.label
+
+
     def organisation_path_root(self, aws_opr_id, path_root):
         return OrganisationPathRoot(aws_opr_id, self.org_id, path_root)
 
@@ -268,12 +272,18 @@ class OrganisationPathRoot(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def index(self):
+        return self.path_root
+
+
     def is_valid(self):             # WARNING: does not test for path root uniqueness
         if self.org_id is None:
             return False
 
         return self.is_valid_path_root(self.path_root)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
