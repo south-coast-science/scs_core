@@ -7,6 +7,8 @@ Created on 21 Jan 2023
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 
+from scs_core.data.str import Str
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +21,7 @@ class Indexable(ABC):
 
     @abstractmethod
     @property
-    def index(self):
+    def index(self):                                # a scalar that is unique in the dataset
         pass
 
 
@@ -49,7 +51,7 @@ class Dataset(object):
             self.add(item)
 
 
-    def is_invalidated_by(self, item: Indexable):
+    def is_invalidated_by_item(self, item: Indexable):
         try:
             return item != self.__items[item.index]
 
@@ -69,5 +71,5 @@ class Dataset(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{items:%s}" % self.__items
+        return "Dataset:{items:%s}" % Str.collection(self.__items)
 
