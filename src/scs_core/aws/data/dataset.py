@@ -55,9 +55,13 @@ class Dataset(object):
             self.add(item)
 
 
-    def is_invalidated_by_item(self, item: Indexable):
+    def revalidate(self, item: Indexable):
         try:
             retrieved_item = self.__items[item.index]
+
+            self.__logger.error('retrieved: %s' % retrieved_item)
+            self.__logger.error('imported: %s' % item)
+            self.__logger.error('-')
 
             if item == retrieved_item:
                 self.__logger.error('invalidated: False (equals)')
