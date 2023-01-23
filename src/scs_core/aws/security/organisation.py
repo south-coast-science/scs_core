@@ -205,9 +205,7 @@ class Organisation(Indexable, JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
+        return "Organisation:{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
             (self.org_id, self.label, self.long_name, self.url, self.owner)
 
 
