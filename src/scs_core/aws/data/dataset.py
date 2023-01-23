@@ -53,6 +53,7 @@ class Dataset(object):
 
     def is_invalidated_by_item(self, item: Indexable):
         try:
+            # TODO: "LastUpdated" must be used to decide which is the authoratative version!
             return item != self.__items[item.index]
 
         except KeyError:
