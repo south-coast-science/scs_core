@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.str import Str
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -33,11 +34,14 @@ class Dataset(object):
     """
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    def __init__(self, latest_import):
         """
         Constructor
         """
-        self.__items = OrderedDict()                # dict of index: Indexable
+        self.__latest_import = latest_import                # LocalizedDatetime
+        self.__items = OrderedDict()                        # dict of index: Indexable
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -53,17 +57,29 @@ class Dataset(object):
 
     def is_invalidated_by_item(self, item: Indexable):
         try:
-            # TODO: "LastUpdated" must be used to decide which is the authoratative version!
-            return item != self.__items[item.index]
+            retrieved_item = self.__items[item.index]
+
+            if item == retrieved_item:
+                return False
+
+            if retrieved_item.latest_update > self.latest_import:
+                self.__logger.error('retrieved (kept): %s' % retrieved_item)
+                self.__logger.error('imported (discarded): %s' % item)
+                return False
+
+            else:
+                return True
 
         except KeyError:
             return True
 
 
-    # TODO: test for items in this dataset that are not in the client dataset
-
-
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def latest_import(self):
+        return self.__latest_import
+
 
     def items(self):
         return self.__items.items()
@@ -72,5 +88,5 @@ class Dataset(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{items:%s}" % Str.collection(self.__items)
+        return "Dataset:{latest_import:%s, items:%s}" % (self.__latest_import, Str.collection(self.__items))
 
