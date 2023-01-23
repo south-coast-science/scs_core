@@ -60,6 +60,7 @@ class Dataset(object):
             retrieved_item = self.__items[item.index]
 
             if item == retrieved_item:
+                self.__logger.error('invalidated: False (equals)')
                 return False
 
             if retrieved_item.latest_update > self.latest_import:
@@ -68,9 +69,11 @@ class Dataset(object):
                 return False
 
             else:
+                self.__logger.error('invalidated: True (old)')
                 return True
 
         except KeyError:
+            self.__logger.error('invalidated: True (absent)')
             return True
 
 
