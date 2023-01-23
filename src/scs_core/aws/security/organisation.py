@@ -29,8 +29,6 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.aws.data.dataset import Indexable
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -39,7 +37,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Organisation(Indexable, JSONable):
+class Organisation(JSONable):
     """
     classdocs
     """
@@ -128,7 +126,7 @@ class Organisation(Indexable, JSONable):
 
     def __eq__(self, other):
         try:
-            return self.org_id == other.org_id and self.label == other.label and self.long_name == other.long_name \
+            return self.label == other.label and self.long_name == other.long_name \
                    and self.url == other.url and self.owner == other.owner
 
         except (TypeError, AttributeError):
@@ -144,13 +142,6 @@ class Organisation(Indexable, JSONable):
     def is_valid(self):         # WARNING: does not test for label uniqueness
         return self.is_valid_label(self.label) and self.is_valid_long_name(self.long_name) and \
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def index(self):
-        return self.label
 
 
     def organisation_path_root(self, aws_opr_id, path_root):
@@ -176,10 +167,6 @@ class Organisation(Indexable, JSONable):
     @property
     def org_id(self):
         return self.__org_id
-
-    @org_id.setter
-    def org_id(self, org_id):
-        self.__org_id = org_id
 
 
     @property
@@ -211,7 +198,7 @@ class Organisation(Indexable, JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class OrganisationPathRoot(Indexable, JSONable):
+class OrganisationPathRoot(JSONable):
     """
     classdocs
     """
