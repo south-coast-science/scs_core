@@ -644,12 +644,12 @@ class OrganisationDevice(JSONable):
         """
         Constructor
         """
-        self.__device_tag = device_tag                  # PK: string
-        self.__org_id = int(org_id)                     # PK: int
-        self.__device_path = device_path                # PK: string
-        self.__location_path = location_path            # PK: string
+        self._device_tag = device_tag                   # PK: string
+        self._org_id = int(org_id)                      # PK: int
+        self.__device_path = device_path                # string
+        self.__location_path = location_path            # string
 
-        self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
+        self._start_datetime = start_datetime           # PK: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
         self.__deployment_label = deployment_label      # INDEX: string
 
@@ -710,12 +710,12 @@ class OrganisationDevice(JSONable):
 
     @property
     def device_tag(self):
-        return self.__device_tag
+        return self._device_tag
 
 
     @property
     def org_id(self):
-        return self.__org_id
+        return self._org_id
 
 
     @property
@@ -730,7 +730,7 @@ class OrganisationDevice(JSONable):
 
     @property
     def start_datetime(self):
-        return self.__start_datetime
+        return self._start_datetime
 
 
     @property
@@ -744,7 +744,7 @@ class OrganisationDevice(JSONable):
 
     @start_datetime.setter
     def start_datetime(self, start_datetime):
-        self.__start_datetime = start_datetime
+        self._start_datetime = start_datetime
 
 
     @property
