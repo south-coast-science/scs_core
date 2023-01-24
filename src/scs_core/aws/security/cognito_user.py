@@ -31,8 +31,6 @@ import termios
 from collections import OrderedDict
 from getpass import getpass
 
-from scs_core.aws.data.dataset import Indexable
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable, MultiPersistentJSONable
@@ -181,7 +179,7 @@ class CognitoUserCredentials(MultiPersistentJSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserIdentity(Indexable, JSONable):
+class CognitoUserIdentity(JSONable):
     """
     classdocs
     """
@@ -232,27 +230,6 @@ class CognitoUserIdentity(Indexable, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, res, multiples=False):
-        if not res:
-            return None
-
-        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
-        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
-
-        username = res.get('Username')
-        creation_date = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
-        confirmation_status = res.get('UserStatus')
-        enabled = res.get('Enabled')
-        email = attrs.get('email')
-        given_name = attrs.get('given_name')
-        family_name = attrs.get('family_name')
-        is_super = attrs.get('custom:super')
-
-        return cls(username, creation_date, confirmation_status, enabled,
-                   email, given_name, family_name, None, is_super=is_super)
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None) if skeleton else None
@@ -265,7 +242,7 @@ class CognitoUserIdentity(Indexable, JSONable):
         given_name = jdict.get('given_name')
         family_name = jdict.get('family_name')
         password = jdict.get('password')
-        is_super = jdict.get('is_super')
+        is_super = jdict.get('is_super') == 'True'
 
         return cls(username, creation_date, confirmation_status, enabled,
                    email, given_name, family_name, password, is_super=is_super)
@@ -279,7 +256,7 @@ class CognitoUserIdentity(Indexable, JSONable):
         Constructor
         """
         self.__username = Datum.int(username)                   # int
-        self.__creation_date = creation_date                    # LocalisedDatetime
+        self._creation_date = creation_date                     # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
         self.__enabled = Datum.bool(enabled)                    # bool or None
         self.__email = email                                    # string
@@ -337,6 +314,19 @@ class CognitoUserIdentity(Indexable, JSONable):
         return self.email
 
 
+    @property
+    def latest_update(self):                    # LocalizedDatetime
+        return None
+
+
+    def copy_id(self, other):
+        pass
+
+
+    def save(self, db_user):
+        raise NotImplementedError
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -375,7 +365,7 @@ class CognitoUserIdentity(Indexable, JSONable):
 
     @property
     def creation_date(self):
-        return self.__creation_date
+        return self._creation_date
 
 
     @property

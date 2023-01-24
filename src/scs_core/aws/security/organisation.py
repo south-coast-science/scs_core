@@ -29,8 +29,6 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.aws.data.dataset import Indexable
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -39,7 +37,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Organisation(Indexable, JSONable):
+class Organisation(JSONable):
     """
     classdocs
     """
@@ -119,7 +117,7 @@ class Organisation(Indexable, JSONable):
         """
         Constructor
         """
-        self.__org_id = Datum.int(org_id)               # AUTO PK: int
+        self._org_id = Datum.int(org_id)                # AUTO PK: int
         self.__label = label                            # UNIQUE: string
         self.__long_name = long_name                    # string
         self.__url = url                                # string
@@ -128,7 +126,7 @@ class Organisation(Indexable, JSONable):
 
     def __eq__(self, other):
         try:
-            return self.org_id == other.org_id and self.label == other.label and self.long_name == other.long_name \
+            return self.label == other.label and self.long_name == other.long_name \
                    and self.url == other.url and self.owner == other.owner
 
         except (TypeError, AttributeError):
@@ -144,13 +142,6 @@ class Organisation(Indexable, JSONable):
     def is_valid(self):         # WARNING: does not test for label uniqueness
         return self.is_valid_label(self.label) and self.is_valid_long_name(self.long_name) and \
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def index(self):
-        return self.label
 
 
     def organisation_path_root(self, aws_opr_id, path_root):
@@ -175,11 +166,7 @@ class Organisation(Indexable, JSONable):
 
     @property
     def org_id(self):
-        return self.__org_id
-
-    @org_id.setter
-    def org_id(self, org_id):
-        self.__org_id = org_id
+        return self._org_id
 
 
     @property
@@ -211,7 +198,7 @@ class Organisation(Indexable, JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class OrganisationPathRoot(Indexable, JSONable):
+class OrganisationPathRoot(JSONable):
     """
     classdocs
     """
@@ -261,7 +248,7 @@ class OrganisationPathRoot(Indexable, JSONable):
 
     def __eq__(self, other):
         try:
-            return self.opr_id == other.opr_id and self.org_id == other.org_id and self.path_root == other.path_root
+            return self.org_id == other.org_id and self.path_root == other.path_root
 
         except (TypeError, AttributeError):
             return False
@@ -321,9 +308,7 @@ class OrganisationPathRoot(Indexable, JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{opr_id:%s, org_id:%s, path_root:%s}" % \
+        return "OrganisationPathRoot:{opr_id:%s, org_id:%s, path_root:%s}" % \
             (self.opr_id, self.org_id, self.path_root)
 
 
@@ -450,9 +435,7 @@ class OrganisationUser(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
+        return "OrganisationUser:{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
             (self.username, self.org_id, self.is_org_admin, self.is_device_admin, self.is_suspended)
 
 
@@ -661,12 +644,12 @@ class OrganisationDevice(JSONable):
         """
         Constructor
         """
-        self.__device_tag = device_tag                  # PK: string
-        self.__org_id = int(org_id)                     # PK: int
-        self.__device_path = device_path                # PK: string
-        self.__location_path = location_path            # PK: string
+        self._device_tag = device_tag                   # PK: string
+        self._org_id = int(org_id)                      # PK: int
+        self.__device_path = device_path                # string
+        self.__location_path = location_path            # string
 
-        self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
+        self._start_datetime = start_datetime           # PK: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
         self.__deployment_label = deployment_label      # INDEX: string
 
@@ -727,12 +710,12 @@ class OrganisationDevice(JSONable):
 
     @property
     def device_tag(self):
-        return self.__device_tag
+        return self._device_tag
 
 
     @property
     def org_id(self):
-        return self.__org_id
+        return self._org_id
 
 
     @property
@@ -747,7 +730,7 @@ class OrganisationDevice(JSONable):
 
     @property
     def start_datetime(self):
-        return self.__start_datetime
+        return self._start_datetime
 
 
     @property
@@ -761,7 +744,7 @@ class OrganisationDevice(JSONable):
 
     @start_datetime.setter
     def start_datetime(self, start_datetime):
-        self.__start_datetime = start_datetime
+        self._start_datetime = start_datetime
 
 
     @property
@@ -779,7 +762,7 @@ class OrganisationDevice(JSONable):
     def __str__(self, *args, **kwargs):
         name = self.__class__.__name__
 
-        return name + ":{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
-                      "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
+        return "OrganisationDevice:{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
+               "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
             (self.device_tag, self.org_id, self.device_path, self.location_path,
              self.start_datetime, self.end_datetime, self.deployment_label)
