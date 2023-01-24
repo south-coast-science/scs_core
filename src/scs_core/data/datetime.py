@@ -344,21 +344,21 @@ class LocalizedDatetime(JSONable):
             rounded -= timedelta(microseconds=rounded.microsecond)
 
         # minute...
-        if n > 0:
+        if n < 3:
             if round(rounded.second / 60):
                 rounded += timedelta(minutes=1, seconds=-rounded.second)
             else:
                 rounded -= timedelta(seconds=rounded.second)
 
         # hour...
-        if n > 1:
+        if n < 2:
             if round(rounded.minute / 60):
                 rounded += timedelta(hours=1, minutes=-rounded.minute)
             else:
                 rounded -= timedelta(minutes=rounded.minute)
 
         # day...
-        if n > 2:
+        if n < 1:
             if round(rounded.hour / 24):
                 rounded += timedelta(days=1, hours=-rounded.hour)
             else:
