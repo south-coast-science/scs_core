@@ -12,8 +12,6 @@ example document (identity):
 
 from collections import OrderedDict
 
-from scs_core.aws.data.dataset import DatasetItem
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
@@ -80,7 +78,7 @@ class CognitoDeviceCredentials(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceIdentity(DatasetItem, CognitoDeviceCredentials):
+class CognitoDeviceIdentity(CognitoDeviceCredentials):
     """
     classdocs
     """
@@ -121,7 +119,7 @@ class CognitoDeviceIdentity(DatasetItem, CognitoDeviceCredentials):
         """
         super().__init__(tag, shared_secret)
 
-        self.__creation_date = creation_date                        # LocalisedDatetime
+        self._creation_date = creation_date                         # LocalisedDatetime
 
 
     def __eq__(self, other):
@@ -134,26 +132,6 @@ class CognitoDeviceIdentity(DatasetItem, CognitoDeviceCredentials):
 
     def __lt__(self, other):
         return self.tag < other.tag
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def index(self):
-        return self.tag
-
-
-    @property
-    def latest_update(self):                    # LocalizedDatetime
-        return None
-
-
-    def copy_id(self, other):
-        pass
-
-
-    def save(self, db_user):
-        raise NotImplementedError
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -177,7 +155,7 @@ class CognitoDeviceIdentity(DatasetItem, CognitoDeviceCredentials):
 
     @property
     def creation_date(self):
-        return self.__creation_date
+        return self._creation_date
 
 
     # ----------------------------------------------------------------------------------------------------------------
