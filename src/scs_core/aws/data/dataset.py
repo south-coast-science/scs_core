@@ -20,6 +20,18 @@ class DatasetItem(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @abstractmethod
+    def copy_id(self, other):
+        pass
+
+
+    @abstractmethod
+    def save(self, db_user):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     @abstractmethod
     def index(self):                            # a scalar that is unique within the dataset
@@ -30,16 +42,6 @@ class DatasetItem(ABC):
     @abstractmethod
     def latest_update(self):                    # LocalizedDatetime
         return None
-
-
-    @abstractmethod
-    def copy_id(self, other):
-        pass
-
-
-    @abstractmethod
-    def save(self, db_user):
-        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -88,12 +90,12 @@ class Dataset(object):
 
             item.copy_id(retrieved_item)
             item.save(self.db_user)
-            self.__logger.error('saved: %s' % item)
+            self.__logger.error('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
             item.save(self.db_user)
-            self.__logger.error('saved: %s' % item)
+            self.__logger.error('inserted: %s' % item)
             self.__items[item.index] = item
 
 
