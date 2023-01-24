@@ -263,7 +263,7 @@ class CognitoUserIdentity(JSONable):
         given_name = jdict.get('given_name')
         family_name = jdict.get('family_name')
         password = jdict.get('password')
-        is_super = jdict.get('is_super')
+        is_super = jdict.get('is_super') == 'True'
 
         return cls(username, creation_date, confirmation_status, enabled,
                    email, given_name, family_name, password, is_super=is_super)
