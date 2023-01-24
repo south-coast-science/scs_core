@@ -79,6 +79,9 @@ class Dataset(object):
             if item == retrieved_item:
                 return
 
+            self.__logger.error('retrieved: %s' % retrieved_item)
+            self.__logger.error('    given: %s' % item)
+
             if retrieved_item.latest_update > self.latest_import:
                 self.__logger.error('WARNING: item discarded: %s' % item)
                 return

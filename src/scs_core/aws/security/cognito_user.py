@@ -230,27 +230,6 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, res, multiples=False):
-        if not res:
-            return None
-
-        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
-        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
-
-        username = res.get('Username')
-        creation_date = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
-        confirmation_status = res.get('UserStatus')
-        enabled = res.get('Enabled')
-        email = attrs.get('email')
-        given_name = attrs.get('given_name')
-        family_name = attrs.get('family_name')
-        is_super = attrs.get('custom:super')
-
-        return cls(username, creation_date, confirmation_status, enabled,
-                   email, given_name, family_name, None, is_super=is_super)
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None) if skeleton else None
