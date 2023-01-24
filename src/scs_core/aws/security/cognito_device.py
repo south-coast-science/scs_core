@@ -41,11 +41,13 @@ class CognitoDeviceCredentials(JSONable):
         """
         Constructor
         """
-        self.__tag = tag  # string
-        self.__shared_secret = shared_secret  # string
+        self.__tag = tag                                # string
+        self.__shared_secret = shared_secret            # string
+
 
     def __lt__(self, other):
         return self.tag < other.tag
+
 
     # ----------------------------------------------------------------------------------------------------------------
 

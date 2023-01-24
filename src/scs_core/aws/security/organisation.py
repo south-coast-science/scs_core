@@ -308,9 +308,7 @@ class OrganisationPathRoot(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{opr_id:%s, org_id:%s, path_root:%s}" % \
+        return "OrganisationPathRoot:{opr_id:%s, org_id:%s, path_root:%s}" % \
             (self.opr_id, self.org_id, self.path_root)
 
 
