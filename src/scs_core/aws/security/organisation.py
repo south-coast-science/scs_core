@@ -762,7 +762,7 @@ class OrganisationDevice(JSONable):
     def __str__(self, *args, **kwargs):
         name = self.__class__.__name__
 
-        return name + ":{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
-                      "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
+        return "OrganisationDevice:{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
+               "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
             (self.device_tag, self.org_id, self.device_path, self.location_path,
              self.start_datetime, self.end_datetime, self.deployment_label)
