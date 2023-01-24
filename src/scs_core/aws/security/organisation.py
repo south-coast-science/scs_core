@@ -248,7 +248,7 @@ class OrganisationPathRoot(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.opr_id == other.opr_id and self.org_id == other.org_id and self.path_root == other.path_root
+            return self.org_id == other.org_id and self.path_root == other.path_root
 
         except (TypeError, AttributeError):
             return False
@@ -435,9 +435,7 @@ class OrganisationUser(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
+        return "OrganisationUser:{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
             (self.username, self.org_id, self.is_org_admin, self.is_device_admin, self.is_suspended)
 
 
