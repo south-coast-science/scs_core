@@ -117,7 +117,7 @@ class Organisation(JSONable):
         """
         Constructor
         """
-        self.__org_id = Datum.int(org_id)               # AUTO PK: int
+        self._org_id = Datum.int(org_id)                # AUTO PK: int
         self.__label = label                            # UNIQUE: string
         self.__long_name = long_name                    # string
         self.__url = url                                # string
@@ -166,7 +166,7 @@ class Organisation(JSONable):
 
     @property
     def org_id(self):
-        return self.__org_id
+        return self._org_id
 
 
     @property

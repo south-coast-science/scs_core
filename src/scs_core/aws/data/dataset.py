@@ -73,8 +73,6 @@ class Dataset(object):
 
 
     def update_with(self, item: DatasetItem):
-        self.__logger.error('item: %s' % item)
-
         try:
             retrieved_item = self.__items[item.index]
 
@@ -87,10 +85,12 @@ class Dataset(object):
 
             item.copy_id(retrieved_item)
             item.save(self.db_user)
+            self.__logger.error('saved: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
             item.save(self.db_user)
+            self.__logger.error('saved: %s' % item)
             self.__items[item.index] = item
 
 
