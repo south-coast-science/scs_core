@@ -12,7 +12,7 @@ example document (identity):
 
 from collections import OrderedDict
 
-from scs_core.aws.data.dataset import Indexable
+from scs_core.aws.data.dataset import DatasetItem
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
@@ -80,7 +80,7 @@ class CognitoDeviceCredentials(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceIdentity(Indexable, CognitoDeviceCredentials):
+class CognitoDeviceIdentity(DatasetItem, CognitoDeviceCredentials):
     """
     classdocs
     """
@@ -141,6 +141,19 @@ class CognitoDeviceIdentity(Indexable, CognitoDeviceCredentials):
     @property
     def index(self):
         return self.tag
+
+
+    @property
+    def latest_update(self):                    # LocalizedDatetime
+        return None
+
+
+    def copy_id(self, other):
+        pass
+
+
+    def save(self, db_user):
+        raise NotImplementedError
 
 
     # ----------------------------------------------------------------------------------------------------------------

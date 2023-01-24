@@ -37,8 +37,9 @@ class DatasetItem(ABC):
         pass
 
 
+    @abstractmethod
     def save(self, db_user):
-        raise NotImplementedError
+        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -71,30 +72,29 @@ class Dataset(object):
             self.add(item)
 
 
-    def revalidate(self, item: DatasetItem):        # TODO: add to / update dataset?
+    def update_with(self, item: DatasetItem):
         self.__logger.error('item: %s' % item)
 
         try:
             retrieved_item = self.__items[item.index]
 
             if item == retrieved_item:
-                self.__logger.error('invalidated: False (equals)')
                 return
 
             if retrieved_item.latest_update > self.latest_import:
-                self.__logger.error('invalidated: False (retrieved is younger)')
-                self.__logger.error('retrieved (kept): %s' % retrieved_item)
+                self.__logger.error('WARNING: item discarded: %s' % item)
                 return
 
-            self.__logger.error('invalidated: True (retrieved is older)')
-            item.id = retrieved_item.id
+            item.copy_id(retrieved_item)
             item.save(self.db_user)
             self.__items[item.index] = item
 
         except KeyError:
-            self.__logger.error('invalidated: True (retrieved is absent)')
             item.save(self.db_user)
             self.__items[item.index] = item
+
+
+    # TODO: check for items in retrieved set that are not in the old-world set
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -107,6 +107,10 @@ class Dataset(object):
     @property
     def latest_import(self):
         return self.__latest_import
+
+
+    def item(self, index):
+        return self.__items[index]                  # may raise KeyError
 
 
     def items(self):

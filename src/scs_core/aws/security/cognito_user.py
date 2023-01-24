@@ -31,7 +31,7 @@ import termios
 from collections import OrderedDict
 from getpass import getpass
 
-from scs_core.aws.data.dataset import Indexable
+from scs_core.aws.data.dataset import DatasetItem
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
@@ -181,7 +181,7 @@ class CognitoUserCredentials(MultiPersistentJSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserIdentity(Indexable, JSONable):
+class CognitoUserIdentity(DatasetItem, JSONable):
     """
     classdocs
     """
@@ -335,6 +335,19 @@ class CognitoUserIdentity(Indexable, JSONable):
     @property
     def index(self):
         return self.email
+
+
+    @property
+    def latest_update(self):                    # LocalizedDatetime
+        return None
+
+
+    def copy_id(self, other):
+        pass
+
+
+    def save(self, db_user):
+        raise NotImplementedError
 
 
     # ----------------------------------------------------------------------------------------------------------------
