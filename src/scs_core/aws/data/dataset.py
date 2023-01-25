@@ -103,13 +103,13 @@ class Dataset(object):
             # old-world item is newer...
             item.copy_id(retrieved_item)
             item.save(self.db_user)
-            self.__logger.info('updated: %s' % item)
+            self.__logger.info('updated: %s: %s' % (item.index, item))
             self.__items[item.index] = item
 
         except KeyError:
             # no AWS item...
             item.save(self.db_user)
-            self.__logger.info('inserted: %s' % item)
+            self.__logger.info('inserted: %s: %s' % (item.index, item))
             self.__items[item.index] = item
 
 
@@ -117,6 +117,7 @@ class Dataset(object):
         for index, item in self.__items.items():
             if index not in self.references:
                 item.delete(self.db_user)
+                self.__logger.info('deleted: %s: %s' % (item.index, item))
 
 
     # ----------------------------------------------------------------------------------------------------------------
