@@ -30,6 +30,11 @@ class DatasetItem(ABC):
         pass
 
 
+    @abstractmethod
+    def delete(self, db_user):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

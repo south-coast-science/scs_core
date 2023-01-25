@@ -484,9 +484,9 @@ class OrganisationUserPath(JSONable):
         """
         Constructor
         """
-        self.__username = int(username)                 # PK: int
-        self.__opr_id = int(opr_id)                     # PK: int
-        self.__path_extension = path_extension          # PK: string
+        self._username = int(username)                  # PK: int
+        self._opr_id = int(opr_id)                      # PK: int
+        self._path_extension = path_extension           # PK: string
 
 
     def __eq__(self, other):
@@ -537,25 +537,23 @@ class OrganisationUserPath(JSONable):
 
     @property
     def username(self):
-        return self.__username
+        return self._username
 
 
     @property
     def opr_id(self):
-        return self.__opr_id
+        return self._opr_id
 
 
     @property
     def path_extension(self):
-        return self.__path_extension
+        return self._path_extension
 
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{username:%s, opr_id:%s, path_extension:%s}" %  \
+        return "OrganisationUserPath:{username:%s, opr_id:%s, path_extension:%s}" %  \
             (self.username, self.opr_id, self.path_extension)
 
 
