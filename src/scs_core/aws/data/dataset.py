@@ -116,7 +116,6 @@ class Dataset(object):
     def delete_unreferenced(self):
         for index, item in self.__items.items():
             if index not in self.references:
-                print("deleting: %s" % index)
                 item.delete(self.db_user)
 
 
@@ -144,6 +143,7 @@ class Dataset(object):
         return self.__items.items()
 
 
+    @property
     def references(self):
         return self.__references
 
