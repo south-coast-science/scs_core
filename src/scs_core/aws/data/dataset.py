@@ -63,7 +63,9 @@ class Dataset(object):
         """
         self.__db_user = db_user                        # string
         self.__latest_import = latest_import            # LocalizedDatetime
+
         self.__items = OrderedDict()                    # dict of index: Indexable
+        self.__references = set()                       # set of scalar
 
         self.__logger = Logging.getLogger()
 
@@ -84,19 +86,21 @@ class Dataset(object):
 
 
     def update_with(self, item: DatasetItem):
+        self.__references.add(item.index)
+
         try:
             retrieved_item = self.__items[item.index]
 
-            # equal...
+            # no changes...
             if item == retrieved_item:
                 return
 
-            # AWS item is newer, discard MFR item...
+            # AWS item is newer - discard MFR item...
             if retrieved_item.latest_update > self.latest_import:
                 self.__logger.info('WARNING: item update discarded: %s' % item)
                 return
 
-            # MFR item is newer...
+            # old-world item is newer...
             item.copy_id(retrieved_item)
             item.save(self.db_user)
             self.__logger.info('updated: %s' % item)
@@ -109,7 +113,11 @@ class Dataset(object):
             self.__items[item.index] = item
 
 
-    # TODO: check for items in retrieved set that are not in the old-world set
+    def delete_unreferenced(self):
+        for index, item in self.__items.items():
+            if index not in self.references:
+                print("deleting: %s" % index)
+                item.delete(self.db_user)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -136,8 +144,12 @@ class Dataset(object):
         return self.__items.items()
 
 
+    def references(self):
+        return self.__references
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{db_user:%s, latest_import:%s, items:%s}" % \
-               (self.db_user, self.latest_import, Str.collection(self.__items))
+        return "Dataset:{db_user:%s, latest_import:%s, items:%s, references:%s}" % \
+               (self.db_user, self.latest_import, Str.collection(self.__items), self.references)
