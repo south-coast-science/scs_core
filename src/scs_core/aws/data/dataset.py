@@ -65,8 +65,6 @@ class Dataset(object):
         self.__latest_import = latest_import            # LocalizedDatetime
 
         self.__items = OrderedDict()                    # dict of index: Indexable
-        self.__references = set()                       # set of scalar
-
         self.__logger = Logging.getLogger()
 
 
@@ -86,8 +84,6 @@ class Dataset(object):
 
 
     def update_with(self, item: DatasetItem):
-        self.__references.add(item.index)
-
         try:
             retrieved_item = self.__items[item.index]
 
@@ -95,29 +91,22 @@ class Dataset(object):
             if item == retrieved_item:
                 return
 
-            # AWS item is newer - discard MFR item...
+            # AWS item is newer - discard old-world item...
             if retrieved_item.last_updated > self.latest_import:
-                self.__logger.info('WARNING: item update discarded: %s' % item)
+                self.__logger.info('WARNING: old-world item discarded: %s' % item)
                 return
 
             # old-world item is newer...
             item.copy_id(retrieved_item)
             item.save(self.db_user)
-            self.__logger.info('updated: %s: %s' % (item.index, item))
+            self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
             # no AWS item...
             item.save(self.db_user)
-            self.__logger.info('inserted: %s: %s' % (item.index, item))
+            self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
-
-
-    def delete_unreferenced(self):
-        for index, item in self.__items.items():
-            if index not in self.references:
-                item.delete(self.db_user)
-                self.__logger.info('deleted: %s: %s' % (item.index, item))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -144,13 +133,8 @@ class Dataset(object):
         return self.__items.items()
 
 
-    @property
-    def references(self):
-        return self.__references
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{db_user:%s, latest_import:%s, items:%s, references:%s}" % \
-               (self.db_user, self.latest_import, Str.collection(self.__items), self.references)
+        return "Dataset:{db_user:%s, latest_import:%s, items:%s}" % \
+               (self.db_user, self.latest_import, Str.collection(self.__items))
