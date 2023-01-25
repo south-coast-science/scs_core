@@ -20,18 +20,6 @@ class DatasetItem(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    @abstractmethod
-    def index(self):                            # a scalar that is unique within the dataset
-        return None
-
-
-    @property
-    @abstractmethod
-    def latest_update(self):                    # LocalizedDatetime
-        return None
-
-
     @abstractmethod
     def copy_id(self, other):
         pass
@@ -40,6 +28,25 @@ class DatasetItem(ABC):
     @abstractmethod
     def save(self, db_user):
         pass
+
+
+    @abstractmethod
+    def delete(self, db_user):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    @abstractmethod
+    def index(self):                                    # a scalar that is unique within the dataset
+        return None
+
+
+    @property
+    @abstractmethod
+    def last_updated(self):                            # LocalizedDatetime
+        return None
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -54,11 +61,15 @@ class Dataset(object):
         """
         Constructor
         """
-        self.__db_user = db_user                            # string
-        self.__latest_import = latest_import                # LocalizedDatetime
-        self.__items = OrderedDict()                        # dict of index: Indexable
+        self.__db_user = db_user                        # string
+        self.__latest_import = latest_import            # LocalizedDatetime
 
+        self.__items = OrderedDict()                    # dict of index: Indexable
         self.__logger = Logging.getLogger()
+
+
+    def __len__(self):
+        return len(self.__items)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -76,28 +87,26 @@ class Dataset(object):
         try:
             retrieved_item = self.__items[item.index]
 
+            # no changes...
             if item == retrieved_item:
                 return
 
-            self.__logger.error('retrieved: %s' % retrieved_item)
-            self.__logger.error('    given: %s' % item)
-
-            if retrieved_item.latest_update > self.latest_import:
-                self.__logger.error('WARNING: item discarded: %s' % item)
+            # AWS item is newer - discard old-world item...
+            if retrieved_item.last_updated > self.latest_import:
+                self.__logger.info('WARNING: old-world item discarded: %s' % item)
                 return
 
+            # old-world item is newer...
             item.copy_id(retrieved_item)
             item.save(self.db_user)
-            self.__logger.error('saved: %s' % item)
+            self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
+            # no AWS item...
             item.save(self.db_user)
-            self.__logger.error('saved: %s' % item)
+            self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
-
-
-    # TODO: check for items in retrieved set that are not in the old-world set
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -114,6 +123,10 @@ class Dataset(object):
 
     def item(self, index):
         return self.__items[index]                  # may raise KeyError
+
+
+    def keys(self):
+        return self.__items.keys()
 
 
     def items(self):

@@ -7,7 +7,7 @@ example document (credentials):
 {"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
 
 example document (identity):
-{"username": "scs-ap1-343", "creation_date": "2022-04-07T13:37:56Z"}
+{"username": "scs-ap1-343", "created": "2022-04-07T13:37:56Z"}
 """
 
 from collections import OrderedDict
@@ -91,10 +91,10 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
             return None
 
         tag = res.get('Username')
-        creation_date = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
+        created = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
 
         try:
-            return cls(tag, None, creation_date)
+            return cls(tag, None, created)
         except KeyError:
             return None
 
@@ -106,20 +106,20 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
         tag = jdict.get('Username')
         shared_secret = jdict.get('password')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('UserCreateDate'))
+        created = LocalizedDatetime.construct_from_iso8601(jdict.get('UserCreateDate'))
 
-        return cls(tag, shared_secret, creation_date)
+        return cls(tag, shared_secret, created)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, shared_secret, creation_date):
+    def __init__(self, tag, shared_secret, created):
         """
         Constructor
         """
         super().__init__(tag, shared_secret)
 
-        self._creation_date = creation_date                         # LocalisedDatetime
+        self._created = created                             # LocalisedDatetime
 
 
     def __eq__(self, other):
@@ -145,8 +145,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if self.shared_secret is not None:
             jdict['Password'] = self.shared_secret
 
-        if self.creation_date is not None:
-            jdict['UserCreateDate'] = self.creation_date.as_iso8601()
+        if self.created is not None:
+            jdict['UserCreateDate'] = self.created.as_iso8601()
 
         return jdict
 
@@ -154,12 +154,12 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def creation_date(self):
-        return self._creation_date
+    def created(self):
+        return self._created
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, shared_secret:%s, creation_date:%s}" % \
-               (self.tag, self.shared_secret, self.creation_date)
+        return "CognitoDeviceIdentity:{tag:%s, shared_secret:%s, created:%s}" % \
+               (self.tag, self.shared_secret, self.created)

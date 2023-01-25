@@ -235,7 +235,7 @@ class CognitoUserIdentity(JSONable):
             return cls(None, None, None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
+        created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         confirmation_status = jdict.get('confirmation_status')
         enabled = jdict.get('enabled')
         email = jdict.get('email')
@@ -244,19 +244,19 @@ class CognitoUserIdentity(JSONable):
         password = jdict.get('password')
         is_super = jdict.get('is_super') == 'True'
 
-        return cls(username, creation_date, confirmation_status, enabled,
+        return cls(username, created, confirmation_status, enabled,
                    email, given_name, family_name, password, is_super=is_super)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, creation_date, confirmation_status, enabled,
+    def __init__(self, username, created, confirmation_status, enabled,
                  email, given_name, family_name, password, is_super=False):
         """
         Constructor
         """
         self.__username = Datum.int(username)                   # int
-        self._creation_date = creation_date                     # LocalisedDatetime
+        self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
         self.__enabled = Datum.bool(enabled)                    # bool or None
         self.__email = email                                    # string
@@ -335,8 +335,8 @@ class CognitoUserIdentity(JSONable):
         if self.username is not None:
             jdict['username'] = self.username
 
-        if self.creation_date is not None:
-            jdict['creation_date'] = self.creation_date.as_iso8601()
+        if self.created is not None:
+            jdict['created'] = self.created.as_iso8601()
 
         if self.confirmation_status is not None:
             jdict['confirmation_status'] = self.confirmation_status
@@ -364,8 +364,8 @@ class CognitoUserIdentity(JSONable):
 
 
     @property
-    def creation_date(self):
-        return self._creation_date
+    def created(self):
+        return self._created
 
 
     @property
@@ -406,7 +406,7 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, creation_date:%s, confirmation_status:%s, enabled:%s, " \
+        return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, enabled:%s, " \
                "email:%s, given_name:%s, family_name:%s, is_super:%s}" % \
-               (self.username, self.creation_date, self.confirmation_status, self.enabled,
+               (self.username, self.created, self.confirmation_status, self.enabled,
                 self.email, self.given_name, self.family_name, self.is_super)
