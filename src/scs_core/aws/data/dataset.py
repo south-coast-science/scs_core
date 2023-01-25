@@ -123,6 +123,10 @@ class Dataset(object):
         return self.__items[index]                  # may raise KeyError
 
 
+    def keys(self):
+        return self.__items.keys()
+
+
     def items(self):
         return self.__items.items()
 
