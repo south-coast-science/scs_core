@@ -96,7 +96,7 @@ class Dataset(object):
                 return
 
             # AWS item is newer - discard MFR item...
-            if retrieved_item.latest_update > self.latest_import:
+            if retrieved_item.last_updated > self.latest_import:
                 self.__logger.info('WARNING: item update discarded: %s' % item)
                 return
 
