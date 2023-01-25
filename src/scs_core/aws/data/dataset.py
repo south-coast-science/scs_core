@@ -82,19 +82,23 @@ class Dataset(object):
         try:
             retrieved_item = self.__items[item.index]
 
+            # equal...
             if item == retrieved_item:
                 return
 
+            # AWS item is newer, discard MFR item...
             if retrieved_item.latest_update > self.latest_import:
                 self.__logger.info('WARNING: item update discarded: %s' % item)
                 return
 
+            # MFR item is newer...
             item.copy_id(retrieved_item)
             item.save(self.db_user)
             self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
+            # no AWS item...
             item.save(self.db_user)
             self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
