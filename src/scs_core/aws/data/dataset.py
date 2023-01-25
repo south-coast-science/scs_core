@@ -34,13 +34,13 @@ class DatasetItem(ABC):
 
     @property
     @abstractmethod
-    def index(self):                            # a scalar that is unique within the dataset
+    def index(self):                                    # a scalar that is unique within the dataset
         return None
 
 
     @property
     @abstractmethod
-    def latest_update(self):                    # LocalizedDatetime
+    def latest_update(self):                            # LocalizedDatetime
         return None
 
 
@@ -56,11 +56,15 @@ class Dataset(object):
         """
         Constructor
         """
-        self.__db_user = db_user                            # string
-        self.__latest_import = latest_import                # LocalizedDatetime
-        self.__items = OrderedDict()                        # dict of index: Indexable
+        self.__db_user = db_user                        # string
+        self.__latest_import = latest_import            # LocalizedDatetime
+        self.__items = OrderedDict()                    # dict of index: Indexable
 
         self.__logger = Logging.getLogger()
+
+
+    def __len__(self):
+        return len(self.__items)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,21 +85,18 @@ class Dataset(object):
             if item == retrieved_item:
                 return
 
-            self.__logger.error('retrieved: %s' % retrieved_item)
-            self.__logger.error('    given: %s' % item)
-
             if retrieved_item.latest_update > self.latest_import:
-                self.__logger.error('WARNING: item discarded: %s' % item)
+                self.__logger.info('WARNING: item update discarded: %s' % item)
                 return
 
             item.copy_id(retrieved_item)
             item.save(self.db_user)
-            self.__logger.error('updated: %s' % item)
+            self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
             item.save(self.db_user)
-            self.__logger.error('inserted: %s' % item)
+            self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
 
 
