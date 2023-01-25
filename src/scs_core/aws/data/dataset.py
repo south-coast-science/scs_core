@@ -40,7 +40,7 @@ class DatasetItem(ABC):
 
     @property
     @abstractmethod
-    def latest_update(self):                            # LocalizedDatetime
+    def last_updated(self):                            # LocalizedDatetime
         return None
 
 
