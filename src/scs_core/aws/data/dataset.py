@@ -91,9 +91,9 @@ class Dataset(object):
             if item == retrieved_item:
                 return
 
-            # AWS item is newer - discard old-world item...
+            # AWS item is newer - ignore old-world item...
             if retrieved_item.last_updated > self.latest_import:
-                self.__logger.info('WARNING: old-world item discarded: %s' % item)
+                self.__logger.info('WARNING: old-world item ignored: %s' % item)
                 return
 
             # old-world item is newer...

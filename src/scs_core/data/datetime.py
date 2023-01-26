@@ -331,7 +331,7 @@ class LocalizedDatetime(JSONable):
         raise TypeError(other)
 
 
-    def __round__(self, n=0):
+    def __round__(self, n=3):
         if not 0 <= n <= 3:
             raise ValueError(n)
 
