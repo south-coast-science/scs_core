@@ -243,19 +243,21 @@ class CognitoUserIdentity(JSONable):
         family_name = jdict.get('family_name')
         password = jdict.get('password')
         is_super = jdict.get('is_super') == 'True'
+        is_tester = jdict.get('is_tester') == 'True'
 
         return cls(username, created, confirmation_status, enabled,
-                   email, given_name, family_name, password, is_super=is_super)
+                   email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, username, created, confirmation_status, enabled,
-                 email, given_name, family_name, password, is_super=False):
+                 email, given_name, family_name, password, is_super=False, is_tester=False):
         """
         Constructor
         """
-        self.__username = Datum.int(username)                   # int
+        # TODO: Why force int?
+        self.__username = username
         self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
         self.__enabled = Datum.bool(enabled)                    # bool or None
@@ -264,6 +266,7 @@ class CognitoUserIdentity(JSONable):
         self.__family_name = family_name                        # string
         self.__password = password                              # string
         self.__is_super = bool(is_super)                        # bool
+        self.__is_tester = bool(is_tester)
 
 
     def __eq__(self, other):
@@ -352,6 +355,7 @@ class CognitoUserIdentity(JSONable):
         jdict['given_name'] = self.given_name
         jdict['family_name'] = self.family_name
         jdict['is_super'] = self.is_super
+        jdict['is_tester'] = self.is_tester
 
         return jdict
 
@@ -402,11 +406,14 @@ class CognitoUserIdentity(JSONable):
     def is_super(self):
         return self.__is_super
 
+    @property
+    def is_tester(self):
+        return self.__is_tester
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, enabled:%s, " \
-               "email:%s, given_name:%s, family_name:%s, is_super:%s}" % \
+               "email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s}" % \
                (self.username, self.created, self.confirmation_status, self.enabled,
-                self.email, self.given_name, self.family_name, self.is_super)
+                self.email, self.given_name, self.family_name, self.is_super, self.is_tester)
