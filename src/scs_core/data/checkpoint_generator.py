@@ -3,7 +3,7 @@ Created on 24 Oct 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-A tool to specify time intervals that are aligned to the clock - a little bit like crontab.
+A tool to specify time intervals that are aligned to the clock - a bit like crontab.
 
 Checkpoints are specified in the form HH:MM:SS, in a format similar to that for crontab:
 
