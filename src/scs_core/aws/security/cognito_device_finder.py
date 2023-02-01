@@ -40,7 +40,7 @@ class CognitoDeviceFinder(object):
 
         # print("response: %s" % response.json())
 
-        return (CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
+        return [CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     def find_by_tag(self, token, tag):
@@ -50,7 +50,7 @@ class CognitoDeviceFinder(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return (CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
+        return [CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json()]
 
 
     # ----------------------------------------------------------------------------------------------------------------

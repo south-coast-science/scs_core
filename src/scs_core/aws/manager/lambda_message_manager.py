@@ -3,7 +3,7 @@ Created on 26 Nov 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-This version of MessageManager for AWS lambda function with multi-part response.
+This version of MessageManager for AWS lambda function with multipart response.
 
 Equivalent to cURL:
 curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
