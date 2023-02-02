@@ -800,6 +800,11 @@ class DeviceDeployment(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def index(self):
+        return '+'.join((str(self.device_tag), str(self.org_id), self.device_path, self.location_path))
+
+
+    @property
     def device_tag(self):
         return self._device_tag
 
