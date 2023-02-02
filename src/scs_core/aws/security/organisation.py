@@ -755,6 +755,11 @@ class OrganisationDevice(JSONable):
         self.__deployment_label = deployment_label
 
 
+    @property
+    def deployment(self):
+        return DeviceDeployment(self.device_tag, self.org_id, self.device_path, self.location_path)
+
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
@@ -762,3 +767,60 @@ class OrganisationDevice(JSONable):
                "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
             (self.device_tag, self.org_id, self.device_path, self.location_path,
              self.start_datetime, self.end_datetime, self.deployment_label)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceDeployment(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device_tag, org_id, device_path, location_path):
+        """
+        Constructor
+        """
+        self._device_tag = device_tag                   # PK: string
+        self._org_id = int(org_id)                      # PK: int
+        self.__device_path = device_path                # string
+        self.__location_path = location_path            # string
+
+
+    def __eq__(self, other):
+        try:
+            return self.device_tag == other.device_tag and self.org_id == other.org_id \
+                   and self.device_path == other.device_path and self.location_path == other.location_path
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device_tag(self):
+        return self._device_tag
+
+
+    @property
+    def org_id(self):
+        return self._org_id
+
+
+    @property
+    def device_path(self):
+        return self.__device_path
+
+
+    @property
+    def location_path(self):
+        return self.__location_path
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DeviceDeployment:{device_tag:%s, org_id:%s, device_path:%s, location_path:%s}" % \
+            (self.device_tag, self.org_id, self.device_path, self.location_path)
