@@ -57,12 +57,13 @@ class Dataset(object):
     """
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, db_user, latest_import):
+    def __init__(self, db_user, latest_import, simulate=False):
         """
         Constructor
         """
         self.__db_user = db_user                        # string
         self.__latest_import = latest_import            # LocalizedDatetime
+        self.__simulate = simulate                      # bool
 
         self.__items = OrderedDict()                    # dict of index: Indexable
         self.__logger = Logging.getLogger()
@@ -98,13 +99,18 @@ class Dataset(object):
 
             # old-world item is newer...
             item.copy_id(retrieved_item)
-            item.save(self.db_user)
+
+            if not self.__simulate:
+                item.save(self.db_user)
+
             self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
 
         except KeyError:
             # no AWS item...
-            item.save(self.db_user)
+            if not self.__simulate:
+                item.save(self.db_user)
+
             self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
 
@@ -119,6 +125,11 @@ class Dataset(object):
     @property
     def latest_import(self):
         return self.__latest_import
+
+
+    @property
+    def simulate(self):
+        return self.__simulate
 
 
     def item(self, index):
@@ -136,5 +147,5 @@ class Dataset(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{db_user:%s, latest_import:%s, items:%s}" % \
-               (self.db_user, self.latest_import, Str.collection(self.__items))
+        return "Dataset:{db_user:%s, latest_import:%s, simulate:%s, items:%s}" % \
+               (self.db_user, self.latest_import, self.simulate, Str.collection(self.__items))
