@@ -26,12 +26,12 @@ class DatasetItem(ABC):
 
 
     @abstractmethod
-    def save(self, db_user):
+    def save(self, db_username):
         pass
 
 
     @abstractmethod
-    def delete(self, db_user):
+    def delete(self, db_username):
         pass
 
 
@@ -57,15 +57,15 @@ class Dataset(object):
     """
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, db_user, latest_import, simulate=False):
+    def __init__(self, db_username, latest_import, simulate=False):
         """
         Constructor
         """
-        self.__db_user = db_user                        # string
-        self.__latest_import = latest_import            # LocalizedDatetime
-        self.__simulate = simulate                      # bool
+        self.__db_username = db_username                    # string
+        self.__latest_import = latest_import                # LocalizedDatetime
+        self.__simulate = simulate                          # bool
 
-        self.__items = OrderedDict()                    # dict of index: Indexable
+        self.__items = OrderedDict()                        # dict of index: Indexable
         self.__logger = Logging.getLogger()
 
 
@@ -101,7 +101,7 @@ class Dataset(object):
             item.copy_id(retrieved_item)
 
             if not self.__simulate:
-                item.save(self.db_user)
+                item.save(self.db_username)
 
             self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
@@ -109,7 +109,7 @@ class Dataset(object):
         except KeyError:
             # no AWS item...
             if not self.__simulate:
-                item.save(self.db_user)
+                item.save(self.db_username)
 
             self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
@@ -118,8 +118,8 @@ class Dataset(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def db_user(self):
-        return self.__db_user
+    def db_username(self):
+        return self.__db_username
 
 
     @property
@@ -147,5 +147,5 @@ class Dataset(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Dataset:{db_user:%s, latest_import:%s, simulate:%s, items:%s}" % \
-               (self.db_user, self.latest_import, self.simulate, Str.collection(self.__items))
+        return "Dataset:{db_username:%s, latest_import:%s, simulate:%s, items:%s}" % \
+               (self.db_username, self.latest_import, self.simulate, Str.collection(self.__items))
