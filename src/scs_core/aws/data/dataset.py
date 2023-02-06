@@ -39,13 +39,13 @@ class DatasetItem(ABC):
 
     @property
     @abstractmethod
-    def index(self):                                    # a scalar that is unique within the dataset
+    def index(self):                                        # a scalar that is unique within the dataset
         return None
 
 
     @property
     @abstractmethod
-    def last_updated(self):                            # LocalizedDatetime
+    def last_updated(self):                                 # LocalizedDatetime
         return None
 
 
@@ -133,7 +133,7 @@ class Dataset(object):
 
 
     def item(self, index):
-        return self.__items[index]                  # may raise KeyError
+        return self.__items[index]                          # may raise KeyError
 
 
     def keys(self):
