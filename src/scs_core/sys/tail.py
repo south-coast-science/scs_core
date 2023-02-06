@@ -5,11 +5,11 @@ Created on 20 Jan 2020
 
 The Tail class provides similar functionality to the Unix tail CLU, but with significant differences.
 
-The Tail readlines() method yields successive lines as they are added to to the file being tailed. When the file
+The Tail readlines() method yields successive lines as they are added to the file being tailed. When the file
 is closed by the writer process, and following the next read by the client, the readlines() method exits
 with a RuntimeError (caused by a StopIteration).
 
-Important note: readlines() ends irrespective of whether the client has read all of the lines in the file!
+Important note: readlines() ends irrespective of whether the client has read all the lines in the file!
 
 https://stackoverflow.com/questions/16175745/read-new-line-with-pynotify
 https://www.linode.com/docs/development/monitor-filesystem-events-with-pyinotify/

@@ -102,7 +102,7 @@ class Organisation(JSONable):
         if not jdict:
             return None
 
-        org_id = jdict.get(cls.ORG_ID, 0)
+        org_id = jdict.get(cls.ORG_ID)
         label = jdict.get(cls.LABEL)
         long_name = jdict.get(cls.LONG_NAME)
         url = jdict.get(cls.URL)
@@ -117,11 +117,20 @@ class Organisation(JSONable):
         """
         Constructor
         """
-        self.__org_id = int(org_id) if org_id else 0    # AUTO PK: int
+        self._org_id = Datum.int(org_id)                # AUTO PK: int
         self.__label = label                            # UNIQUE: string
         self.__long_name = long_name                    # string
         self.__url = url                                # string
         self.__owner = owner                            # INDEX: string (email address)
+
+
+    def __eq__(self, other):
+        try:
+            return self.label == other.label and self.long_name == other.long_name \
+                   and self.url == other.url and self.owner == other.owner
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
@@ -134,8 +143,6 @@ class Organisation(JSONable):
         return self.is_valid_label(self.label) and self.is_valid_long_name(self.long_name) and \
                self.is_valid_url(self.url) and self.is_valid_owner(self.owner)
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     def organisation_path_root(self, aws_opr_id, path_root):
         return OrganisationPathRoot(aws_opr_id, self.org_id, path_root)
@@ -159,11 +166,7 @@ class Organisation(JSONable):
 
     @property
     def org_id(self):
-        return self.__org_id
-
-    @org_id.setter
-    def org_id(self, org_id):
-        self.__org_id = org_id
+        return self._org_id
 
 
     @property
@@ -189,9 +192,7 @@ class Organisation(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
+        return "Organisation:{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
             (self.org_id, self.label, self.long_name, self.url, self.owner)
 
 
@@ -240,9 +241,17 @@ class OrganisationPathRoot(JSONable):
         """
         Constructor
         """
-        self._opr_id = opr_id                           # AUTO PK: int
+        self._opr_id = Datum.int(opr_id)                # AUTO PK: int
         self.__org_id = int(org_id)                     # INDEX: int
         self.__path_root = path_root                    # UNIQUE: string
+
+
+    def __eq__(self, other):
+        try:
+            return self.org_id == other.org_id and self.path_root == other.path_root
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
@@ -251,12 +260,19 @@ class OrganisationPathRoot(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def index(self):
+        return self.path_root
+
+
     def is_valid(self):             # WARNING: does not test for path root uniqueness
         if self.org_id is None:
             return False
 
         return self.is_valid_path_root(self.path_root)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
@@ -292,9 +308,7 @@ class OrganisationPathRoot(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{opr_id:%s, org_id:%s, path_root:%s}" % \
+        return "OrganisationPathRoot:{opr_id:%s, org_id:%s, path_root:%s}" % \
             (self.opr_id, self.org_id, self.path_root)
 
 
@@ -333,11 +347,21 @@ class OrganisationUser(JSONable):
         """
         Constructor
         """
-        self.__username = username                      # PK: int
-        self.__org_id = org_id                          # PK: int
-        self.__is_org_admin = bool(is_org_admin)        # INDEX: bool
-        self.__is_device_admin = bool(is_device_admin)  # INDEX: bool
-        self.__is_suspended = bool(is_suspended)        # INDEX: bool
+        self.__username = int(username)                         # PK: int
+        self.__org_id = int(org_id)                             # PK: int
+        self.__is_org_admin = bool(is_org_admin)                # INDEX: bool
+        self.__is_device_admin = bool(is_device_admin)          # INDEX: bool
+        self.__is_suspended = bool(is_suspended)                # INDEX: bool
+
+
+    def __eq__(self, other):
+        try:
+            return self.username == other.username and self.org_id == other.org_id \
+                   and self.is_org_admin == other.is_org_admin and self.is_device_admin == other.is_device_admin \
+                   and self.is_suspended == other.is_suspended
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):                    # requires join with Cognito to do useful sort
@@ -411,9 +435,7 @@ class OrganisationUser(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
+        return "OrganisationUser:{username:%s, org_id:%s, is_org_admin:%s, is_device_admin:%s, is_suspended:%s}" % \
             (self.username, self.org_id, self.is_org_admin, self.is_device_admin, self.is_suspended)
 
 
@@ -462,9 +484,18 @@ class OrganisationUserPath(JSONable):
         """
         Constructor
         """
-        self.__username = int(username)                 # PK: int
-        self.__opr_id = int(opr_id)                     # PK: int
-        self.__path_extension = path_extension          # PK: string
+        self._username = int(username)                  # PK: int
+        self._opr_id = int(opr_id)                      # PK: int
+        self._path_extension = path_extension           # PK: string
+
+
+    def __eq__(self, other):
+        try:
+            return self.username == other.username and self.opr_id == other.opr_id \
+                   and self.path_extension == other.path_extension
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
@@ -506,25 +537,23 @@ class OrganisationUserPath(JSONable):
 
     @property
     def username(self):
-        return self.__username
+        return self._username
 
 
     @property
     def opr_id(self):
-        return self.__opr_id
+        return self._opr_id
 
 
     @property
     def path_extension(self):
-        return self.__path_extension
+        return self._path_extension
 
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{username:%s, opr_id:%s, path_extension:%s}" %  \
+        return "OrganisationUserPath:{username:%s, opr_id:%s, path_extension:%s}" %  \
             (self.username, self.opr_id, self.path_extension)
 
 
@@ -613,14 +642,25 @@ class OrganisationDevice(JSONable):
         """
         Constructor
         """
-        self.__device_tag = device_tag                  # PK: string
-        self.__org_id = int(org_id)                     # PK: int
-        self.__device_path = device_path                # PK: string
-        self.__location_path = location_path            # PK: string
+        self._device_tag = device_tag                   # PK: string
+        self._org_id = int(org_id)                      # PK: int
+        self.__device_path = device_path                # string
+        self.__location_path = location_path            # string
 
-        self.__start_datetime = start_datetime          # NOT NONE: LocalizedDatetime
+        self._start_datetime = start_datetime           # PK: LocalizedDatetime
         self.__end_datetime = end_datetime              # LocalizedDatetime
         self.__deployment_label = deployment_label      # INDEX: string
+
+
+    def __eq__(self, other):
+        try:
+            return self.device_tag == other.device_tag and self.org_id == other.org_id \
+                and self.device_path == other.device_path and self.location_path == other.location_path \
+                and self.start_datetime == other.start_datetime and self.end_datetime == other.end_datetime \
+                and self.deployment_label == other.deployment_label
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
@@ -649,6 +689,12 @@ class OrganisationDevice(JSONable):
             self.is_valid_path(self.device_path) and self.is_valid_path(self.location_path)
 
 
+    def has_unix_era_start(self):
+        return self.start_datetime == LocalizedDatetime.unix_era_start()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -668,12 +714,12 @@ class OrganisationDevice(JSONable):
 
     @property
     def device_tag(self):
-        return self.__device_tag
+        return self._device_tag
 
 
     @property
     def org_id(self):
-        return self.__org_id
+        return self._org_id
 
 
     @property
@@ -688,7 +734,7 @@ class OrganisationDevice(JSONable):
 
     @property
     def start_datetime(self):
-        return self.__start_datetime
+        return self._start_datetime
 
 
     @property
@@ -702,7 +748,7 @@ class OrganisationDevice(JSONable):
 
     @start_datetime.setter
     def start_datetime(self, start_datetime):
-        self.__start_datetime = start_datetime
+        self._start_datetime = start_datetime
 
 
     @property
@@ -718,9 +764,7 @@ class OrganisationDevice(JSONable):
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        name = self.__class__.__name__
-
-        return name + ":{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
-                      "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
+        return "OrganisationDevice:{device_tag:%s, org_id:%s, device_path:%s, location_path:%s, " \
+               "start_datetime:%s, end_datetime:%s, deployment_label:%s}" % \
             (self.device_tag, self.org_id, self.device_path, self.location_path,
              self.start_datetime, self.end_datetime, self.deployment_label)

@@ -13,9 +13,16 @@ example document (credentials):
 example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
 "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
+
+example AWS response:
+{'Username': '1092', 'Attributes': [{'Name': 'sub', 'Value': '332351ef-f74f-4cb4-aec8-664a3a9abae3'},
+{'Name': 'custom:tester', 'Value': 'False'}, {'Name': 'custom:super', 'Value': 'False'},
+{'Name': 'email', 'Value': 'adrian@em-monitors.co.uk'}],
+'UserCreateDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
+'UserLastModifiedDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
+'Enabled': True, 'UserStatus': 'FORCE_CHANGE_PASSWORD'}
 """
 
-import ast
 import json
 import re
 import sys
@@ -223,74 +230,61 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, res, multiples=False):
-        if not res:
-            return None
-
-        username = res['Username']
-
-        final_d = {}
-        attrs = res['Attributes'] if multiples else res['UserAttributes']
-
-        for attr in attrs:
-            nk = None
-            for value in attr.values():
-                if nk:
-                    final_d[nk] = value
-                    break
-
-                nk = value
-
-        creation_date = LocalizedDatetime.construct_from_aws(str(res["UserCreateDate"]))
-        confirmation_status = res["UserStatus"]
-        enabled = res["Enabled"]
-
-        try:
-            return cls(username, creation_date, confirmation_status, enabled, final_d['email'], final_d['given_name'],
-                       final_d['family_name'], None, ast.literal_eval(final_d['custom:super']))
-        except KeyError:
-            return None
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
-        creation_date = LocalizedDatetime.construct_from_iso8601(jdict.get('creation_date'))
+        created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         confirmation_status = jdict.get('confirmation_status')
         enabled = jdict.get('enabled')
         email = jdict.get('email')
         given_name = jdict.get('given_name')
         family_name = jdict.get('family_name')
         password = jdict.get('password')
-        is_super = jdict.get('is_super')
+        is_super = jdict.get('is_super') == 'True'
+        is_tester = jdict.get('is_tester') == 'True'
 
-        return cls(username, creation_date, confirmation_status, enabled,
-                   email, given_name, family_name, password, is_super=is_super)
+        return cls(username, created, confirmation_status, enabled,
+                   email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, creation_date, confirmation_status, enabled,
-                 email, given_name, family_name, password, is_super=False):
+    def __init__(self, username, created, confirmation_status, enabled,
+                 email, given_name, family_name, password, is_super=False, is_tester=False):
         """
         Constructor
         """
-        self.__username = username                              # string (int)
-        self.__creation_date = creation_date                    # LocalisedDatetime
+        # TODO: Why force int?
+        self.__username = username
+        self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
-        self.__enabled = enabled                                # bool or None
+        self.__enabled = Datum.bool(enabled)                    # bool or None
         self.__email = email                                    # string
         self.__given_name = given_name                          # string
         self.__family_name = family_name                        # string
         self.__password = password                              # string
         self.__is_super = bool(is_super)                        # bool
+        self.__is_tester = bool(is_tester)
+
+
+    def __eq__(self, other):
+        try:
+            return self.username == other.username and self.confirmation_status == other.confirmation_status \
+                   and self.enabled == other.enabled and self.email == other.email \
+                   and self.given_name == other.given_name and self.family_name == other.family_name \
+                   and self.is_super == other.is_super
+
+        except (TypeError, AttributeError):
+            return False
 
 
     def __lt__(self, other):
         if self.family_name is not None:
+            if other.family_name is None:
+                return False
+
             if self.family_name.lower() < other.family_name.lower():
                 return True
 
@@ -298,6 +292,9 @@ class CognitoUserIdentity(JSONable):
                 return False
 
         if self.given_name is not None:
+            if other.given_name is None:
+                return False
+
             if self.given_name.lower() < other.given_name.lower():
                 return True
 
@@ -315,14 +312,34 @@ class CognitoUserIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def index(self):
+        return self.email
+
+
+    @property
+    def latest_update(self):                    # LocalizedDatetime
+        return None
+
+
+    def copy_id(self, other):
+        pass
+
+
+    def save(self, db_user):
+        raise NotImplementedError
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
         if self.username is not None:
             jdict['username'] = self.username
 
-        if self.creation_date is not None:
-            jdict['creation_date'] = self.creation_date.as_iso8601()
+        if self.created is not None:
+            jdict['created'] = self.created.as_iso8601()
 
         if self.confirmation_status is not None:
             jdict['confirmation_status'] = self.confirmation_status
@@ -338,6 +355,7 @@ class CognitoUserIdentity(JSONable):
         jdict['given_name'] = self.given_name
         jdict['family_name'] = self.family_name
         jdict['is_super'] = self.is_super
+        jdict['is_tester'] = self.is_tester
 
         return jdict
 
@@ -350,8 +368,8 @@ class CognitoUserIdentity(JSONable):
 
 
     @property
-    def creation_date(self):
-        return self.__creation_date
+    def created(self):
+        return self._created
 
 
     @property
@@ -388,11 +406,14 @@ class CognitoUserIdentity(JSONable):
     def is_super(self):
         return self.__is_super
 
+    @property
+    def is_tester(self):
+        return self.__is_tester
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, creation_date:%s, confirmation_status:%s, enabled:%s, " \
-               "email:%s, given_name:%s, family_name:%s, is_super:%s}" % \
-               (self.username, self.creation_date, self.confirmation_status, self.enabled,
-                self.email, self.given_name, self.family_name, self.is_super)
+        return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, enabled:%s, " \
+               "email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s}" % \
+               (self.username, self.created, self.confirmation_status, self.enabled,
+                self.email, self.given_name, self.family_name, self.is_super, self.is_tester)
