@@ -707,6 +707,12 @@ class OrganisationDevice(JSONable):
             self.is_valid_path(self.device_path) and self.is_valid_path(self.location_path)
 
 
+    def has_unix_era_start(self):
+        return self.start_datetime == LocalizedDatetime.unix_era_start()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
