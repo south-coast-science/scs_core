@@ -663,24 +663,6 @@ class OrganisationDevice(JSONable):
             return False
 
 
-    # def __eq__(self, other):
-    #     try:
-    #         unix_era_start = LocalizedDatetime.unix_era_start()
-    #
-    #         if self.start_datetime == unix_era_start or other.start_datetime == unix_era_start:
-    #             start_equal = True
-    #         else:
-    #             start_equal = self.start_datetime == other.start_datetime
-    #
-    #         return self.device_tag == other.device_tag and self.org_id == other.org_id \
-    #             and self.device_path == other.device_path and self.location_path == other.location_path \
-    #             and start_equal and self.end_datetime == other.end_datetime \
-    #             and self.deployment_label == other.deployment_label
-    #
-    #     except (TypeError, AttributeError):
-    #         return False
-
-
     def __lt__(self, other):
         if self.device_tag < other.device_tag:
             return True
