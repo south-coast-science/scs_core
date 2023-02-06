@@ -140,6 +140,10 @@ class Dataset(object):
         return self.__items.keys()
 
 
+    def values(self):
+        return self.__items.values()
+
+
     def items(self):
         return self.__items.items()
 
