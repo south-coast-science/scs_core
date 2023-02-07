@@ -120,7 +120,7 @@ class Dataset(object):
 
 
     def delete_unreferenced(self, references):
-        for index in list(self.__items.keys()):
+        for index in list(self.__items):
             if self.__items[index] in references:
                 continue
 
