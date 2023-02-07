@@ -107,16 +107,16 @@ class Dataset(object):
             if not self.simulate:
                 item.save(self.db_username)
 
-            self.__logger.info('updated: %s' % item)
             self.__items[item.index] = item
+            self.__logger.info('updated: %s' % item)
 
         except KeyError:
             # no AWS item...
             if not self.simulate:
                 item.save(self.db_username)
 
-            self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
+            self.__logger.info('inserted: %s' % item)
 
 
     def delete_unreferenced(self, references):
@@ -126,8 +126,8 @@ class Dataset(object):
 
             if not self.simulate:
                 self.__items[index].delete(self.db_username)
-                del self.__items[index]
 
+            del self.__items[index]
             print("deleted: %s" % self.__items[index])
 
 
