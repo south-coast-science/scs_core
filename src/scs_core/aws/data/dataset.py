@@ -75,6 +75,10 @@ class Dataset(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def clear(self):
+        self.__items = OrderedDict()
+
+
     def add(self, item: DatasetItem):
         self.__items[item.index] = item
 
@@ -100,7 +104,7 @@ class Dataset(object):
             # old-world item is newer...
             item.copy_id(retrieved_item)
 
-            if not self.__simulate:
+            if not self.simulate:
                 item.save(self.db_username)
 
             self.__logger.info('updated: %s' % item)
@@ -108,11 +112,23 @@ class Dataset(object):
 
         except KeyError:
             # no AWS item...
-            if not self.__simulate:
+            if not self.simulate:
                 item.save(self.db_username)
 
             self.__logger.info('inserted: %s' % item)
             self.__items[item.index] = item
+
+
+    def delete_unreferenced(self, references):
+        for index in list(self.__items.keys()):
+            if self.__items[index] in references:
+                continue
+
+            if not self.simulate:
+                self.__items[index].delete(self.db_username)
+                del self.__items[index]
+
+            print("deleted: %s" % self.__items[index])
 
 
     # ----------------------------------------------------------------------------------------------------------------
