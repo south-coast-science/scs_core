@@ -49,7 +49,7 @@ class CSVDict(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def row(self, paths):
-        return (self.__path_dict.node(path) if self.__path_dict.has_path(path) else None for path in paths)
+        return list(self.__path_dict.node(path) if self.__path_dict.has_path(path) else None for path in paths)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ class CSVHeader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def paths(self):
-        return (cell.path for cell in self.__cells)
+        return list(cell.path for cell in self.__cells)
 
 
     # ----------------------------------------------------------------------------------------------------------------

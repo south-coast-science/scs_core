@@ -49,7 +49,7 @@ class AWSDeploymentReporter(object):
 
 
     def get_group_names(self, group_ids, matching=None, currency=None):
-        return (deployment.group_name for deployment in
+        return list(deployment.group_name for deployment in
                 self.get_deployments(group_ids, matching=matching, currency=currency))
 
 
