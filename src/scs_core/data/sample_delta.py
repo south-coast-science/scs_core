@@ -16,7 +16,8 @@ class SampleDelta(object):
 
     @classmethod
     def deltas(cls, domain_lower, domain_upper, delta, name=None):
-        return (cls(lower_bound, lower_bound + delta, name) for lower_bound in range(domain_lower, domain_upper, delta))
+        return list(cls(lower_bound, lower_bound + delta, name) for lower_bound
+                    in range(domain_lower, domain_upper, delta))
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -32,7 +32,7 @@ class JSONify(json.JSONEncoder):
             return {key: cls.as_dynamo_json(value) for key, value in obj.items()}
 
         if isinstance(obj, list):
-            return (cls.as_dynamo_json(value) for value in obj)
+            return list(cls.as_dynamo_json(value) for value in obj)
 
         if Datum.is_numeric(obj):
             return Decimal(str(obj))
@@ -179,8 +179,8 @@ class JSONCatalogueEntry(JSONReport):
 
     @classmethod
     def list(cls):
-        return (cls.__filename_to_name(item) for item in sorted(os.listdir(cls.catalogue_location()))
-                if item.endswith('.json'))
+        return list(cls.__filename_to_name(item) for item in sorted(os.listdir(cls.catalogue_location()))
+                    if item.endswith('.json'))
 
 
     @classmethod
@@ -393,7 +393,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
         suffix_len = len(filename) + 1
         items = manager.list(manager.scs_path(), dirname)
 
-        return (item[:-suffix_len] for item in items if item.endswith(filename))
+        return list(item[:-suffix_len] for item in items if item.endswith(filename))
 
 
     @classmethod

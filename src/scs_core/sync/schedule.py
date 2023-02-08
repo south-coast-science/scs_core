@@ -83,6 +83,10 @@ class Schedule(PersistentJSONable):
             return False
 
 
+    def __contains__(self, item):
+        return item in self.__items
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
@@ -134,10 +138,6 @@ class Schedule(PersistentJSONable):
     @property
     def items(self):
         return self.__items.values()
-
-
-    def contains(self, name):
-        return name in self.__items
 
 
     def item(self, name):
