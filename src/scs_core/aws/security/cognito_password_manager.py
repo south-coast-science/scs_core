@@ -4,6 +4,9 @@ Created on 9 Feb 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://docs.python.org/3/howto/enum.html#planet
+
+document example:
+"EmailSent"
 """
 
 import logging
