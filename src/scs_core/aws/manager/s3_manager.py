@@ -233,7 +233,7 @@ class S3PersistenceManager(PersistenceManager):
         prefix_len = len(dirname) + 1
         objects = self.__manager.list_objects(container, 1, True, prefix=dirname)
 
-        return list(obj.key[prefix_len:] for obj in objects)
+        return tuple(obj.key[prefix_len:] for obj in objects)
 
 
     def exists(self, dirname, filename):

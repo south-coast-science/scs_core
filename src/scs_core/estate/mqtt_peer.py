@@ -224,7 +224,7 @@ class MQTTPeerSet(PersistentJSONable):
 
     @property
     def peers(self):
-        return list(self.__peers.values())
+        return tuple(self.__peers.values())
 
 
     # ----------------------------------------------------------------------------------------------------------------

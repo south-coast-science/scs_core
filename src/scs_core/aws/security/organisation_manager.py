@@ -15,6 +15,7 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
+# TODO: replace [] with list()
 # --------------------------------------------------------------------------------------------------------------------
 
 class OrganisationManager(object):
@@ -41,7 +42,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [Organisation.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(Organisation.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def get_organisation_by_label(self, token, label):
@@ -90,7 +91,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def get_opr_by_path_root(self, token, path_root):
@@ -131,7 +132,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUser.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def find_users_by_username(self, token, username):
@@ -141,7 +142,9 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUser.construct_from_jdict(jdict) for jdict in response.json()]
+        self.__logger.info("find_users_by_username: %s" % response.text)
+
+        return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def get_user(self, token, username, org_id):
@@ -180,7 +183,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def assert_oup(self, token, oup):
@@ -209,7 +212,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def find_devices_by_organisation(self, token, org_id):
@@ -219,7 +222,7 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
         self.__check_response(response)
 
-        return [OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json()]
+        return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def get_device(self, token, device_tag, org_id, device_path, environment_path):
