@@ -177,7 +177,7 @@ class AuthenticationStatus(JSONable, Enum):
 
     Ok = (True, 'OK.')
     InvalidCredentials = (False, 'Invalid credentials.')
-    AuthenticationChallenge = (False, 'Authentication challenge.')
+    Challenge = (False, 'Authentication challenge.')
     UserUnconfirmed = (False, 'User is unconfirmed.')
 
 
