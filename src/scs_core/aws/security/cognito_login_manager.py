@@ -34,6 +34,8 @@ class CognitoLoginManager(object):
         headers = {'Authorization': self.__AUTHORIZATION}
         response = self.__http_client.post(self.url, headers=headers, json=credentials.as_json())
 
+        print(response.json())
+
         return CognitoAuthenticationResult.construct_from_response(response)
 
 
@@ -119,21 +121,21 @@ class CognitoAuthenticationResult(HTTPResponse):
             return None
 
         authentication_status = CognitoAuthenticationStatus.construct_from_jdict(result.get('authentication-status'))
-        session = CognitoSession.construct_from_jdict(result.get('session'))
+        content = CognitoSession.construct_from_jdict(result.get('content'))
 
-        return cls(status, authentication_status, session)
+        return cls(status, authentication_status, content)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_status, authentication_status, session):
+    def __init__(self, http_status, authentication_status, content):
         """
         Constructor
         """
         super().__init__(http_status)
 
         self.__authentication_status = authentication_status            # CognitoAuthenticationStatus
-        self.__session = session                                        # CognitoSession or None
+        self.__content = content                                        # CognitoSession or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -142,7 +144,7 @@ class CognitoAuthenticationResult(HTTPResponse):
         jdict = OrderedDict()
 
         jdict['authentication-status'] = self.authentication_status
-        jdict['session'] = self.session
+        jdict['content'] = self.content
 
         return jdict
 
@@ -155,15 +157,15 @@ class CognitoAuthenticationResult(HTTPResponse):
 
 
     @property
-    def session(self):
-        return self.__session
+    def content(self):
+        return self.__content
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoAuthenticationResult:{http_status:%s, authentication_status:%s, session:%s}" % \
-               (self.status, self.authentication_status, self.session)
+        return "CognitoAuthenticationResult:{http_status:%s, authentication_status:%s, content:%s}" % \
+               (self.status, self.authentication_status, self.content)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -175,7 +177,7 @@ class CognitoAuthenticationStatus(JSONable, Enum):
 
     Ok = (True, 'OK.')
     InvalidCredentials = (False, 'Invalid credentials.')
-    NewPasswordRequired = (False, 'New password required.')
+    AuthenticationChallenge = (False, 'Authentication challenge.')
     UserUnconfirmed = (False, 'User is unconfirmed.')
 
 
@@ -215,6 +217,65 @@ class CognitoAuthenticationStatus(JSONable, Enum):
 
     def __str__(self, *args, **kwargs):
         return "CognitoAuthenticationStatus:{ok:%s, description:%s}" %  (self.ok, self.description)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CognitoChallenge(JSONable):
+    """
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        challenge_name = jdict.get('ChallengeName')
+        session = jdict.get('session')
+
+        return cls(challenge_name, session)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, challenge_name, session):
+        """
+        Constructor
+        """
+        self.__challenge_name = challenge_name                  # string
+        self.__session = session                                # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['ChallengeName'] = self.challenge_name
+        jdict['Session'] = self.session
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def challenge_name(self):
+        return self.__challenge_name
+
+
+    @property
+    def session(self):
+        return self.__session
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CognitoChallenge:{challenge_name:%s, session:%s}" % \
+               (self.challenge_name, self.session)
 
 
 # --------------------------------------------------------------------------------------------------------------------
