@@ -34,8 +34,6 @@ class CognitoLoginManager(object):
         headers = {'Authorization': self.__AUTHORIZATION}
         response = self.__http_client.post(self.url, headers=headers, json=credentials.as_json())
 
-        print(response.json())
-
         return AuthenticationResult.construct_from_response(response)
 
 
@@ -115,13 +113,16 @@ class AuthenticationResult(HTTPResponse):
         if not jdict:
             return None
 
-        result = jdict.get('AuthenticationResult')
+        authentication_status = AuthenticationStatus.construct_from_jdict(jdict.get('authentication-status'))
 
-        if not result:
-            return None
+        if authentication_status == AuthenticationStatus.Ok:
+            content = Session.construct_from_jdict(jdict.get('content').get('AuthenticationResult'))
 
-        authentication_status = AuthenticationStatus.construct_from_jdict(result.get('authentication-status'))
-        content = Session.construct_from_jdict(result.get('content'))
+        elif authentication_status == AuthenticationStatus.Challenge:
+            content = Challenge.construct_from_jdict(jdict.get('content'))
+
+        else:
+            content = None
 
         return cls(status, authentication_status, content)
 
@@ -134,8 +135,8 @@ class AuthenticationResult(HTTPResponse):
         """
         super().__init__(http_status)
 
-        self.__authentication_status = authentication_status            # CognitoAuthenticationStatus
-        self.__content = content                                        # CognitoSession or None
+        self.__authentication_status = authentication_status            # AuthenticationStatus
+        self.__content = content                                        # Session, Challenge or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -147,6 +148,20 @@ class AuthenticationResult(HTTPResponse):
         jdict['content'] = self.content
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_ok(self):
+        return self.authentication_status == AuthenticationStatus.Ok
+
+
+    @property
+    def id_token(self):
+        if not self.is_ok():
+            raise ValueError(self.authentication_status)
+
+        return self.content.id_token
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -233,7 +248,7 @@ class Challenge(JSONable):
             return None
 
         challenge_name = jdict.get('ChallengeName')
-        session = jdict.get('session')
+        session = jdict.get('Session')
 
         return cls(challenge_name, session)
 

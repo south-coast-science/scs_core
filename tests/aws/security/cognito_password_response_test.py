@@ -27,3 +27,8 @@ print("jstr: %s" % jstr)
 
 response = CognitoPasswordResponse.construct_from_jdict(json.loads(jstr))
 print("object: %s" % response)
+
+print("hello")
+
+print("equals: %s" % str(response == CognitoPasswordResponse.EmailSent))
+
