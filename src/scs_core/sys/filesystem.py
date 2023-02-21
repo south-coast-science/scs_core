@@ -68,7 +68,7 @@ class Filesystem(object):
         if not path or not os.path.exists(path):
             return None
 
-        return list(File.construct(path, name) for name in sorted(os.listdir(path)))
+        return tuple(File.construct(path, name) for name in sorted(os.listdir(path)))
 
 
     @classmethod

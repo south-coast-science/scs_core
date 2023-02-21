@@ -124,7 +124,7 @@ class TopicManager(object):
 
             sorted_topics = OrderedDict(sorted(topics.items()))
 
-            return list(sorted_topics.values())
+            return tuple(sorted_topics.values())
 
         finally:
             self.__rest_client.close()

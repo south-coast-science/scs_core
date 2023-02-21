@@ -44,7 +44,7 @@ class AWSGroupConfiguration(PersistentJSONable):
 
     @classmethod
     def templates(cls):
-        return list(item.name for item in Filesystem.ls(cls.catalogue_location()) if item.is_directory)
+        return tuple(item.name for item in Filesystem.ls(cls.catalogue_location()) if item.is_directory)
 
 
     @classmethod
