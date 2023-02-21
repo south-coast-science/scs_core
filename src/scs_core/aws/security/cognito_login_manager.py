@@ -36,7 +36,7 @@ class CognitoLoginManager(object):
 
         print(response.json())
 
-        return CognitoAuthenticationResult.construct_from_response(response)
+        return AuthenticationResult.construct_from_response(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class CognitoDeviceLoginManager(CognitoLoginManager):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoAuthenticationResult(HTTPResponse):
+class AuthenticationResult(HTTPResponse):
     """
     {"AccessToken": "...",
     "ExpiresIn": 3600,
@@ -120,8 +120,8 @@ class CognitoAuthenticationResult(HTTPResponse):
         if not result:
             return None
 
-        authentication_status = CognitoAuthenticationStatus.construct_from_jdict(result.get('authentication-status'))
-        content = CognitoSession.construct_from_jdict(result.get('content'))
+        authentication_status = AuthenticationStatus.construct_from_jdict(result.get('authentication-status'))
+        content = Session.construct_from_jdict(result.get('content'))
 
         return cls(status, authentication_status, content)
 
@@ -164,13 +164,13 @@ class CognitoAuthenticationResult(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoAuthenticationResult:{http_status:%s, authentication_status:%s, content:%s}" % \
+        return "AuthenticationResult:{http_status:%s, authentication_status:%s, content:%s}" % \
                (self.status, self.authentication_status, self.content)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoAuthenticationStatus(JSONable, Enum):
+class AuthenticationStatus(JSONable, Enum):
     """
     classdocs
     """
@@ -185,7 +185,7 @@ class CognitoAuthenticationStatus(JSONable, Enum):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        return CognitoAuthenticationStatus[jdict]
+        return AuthenticationStatus[jdict]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -216,12 +216,12 @@ class CognitoAuthenticationStatus(JSONable, Enum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoAuthenticationStatus:{ok:%s, description:%s}" %  (self.ok, self.description)
+        return "AuthenticationStatus:{ok:%s, description:%s}" %  (self.ok, self.description)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoChallenge(JSONable):
+class Challenge(JSONable):
     """
     """
 
@@ -274,13 +274,13 @@ class CognitoChallenge(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoChallenge:{challenge_name:%s, session:%s}" % \
+        return "Challenge:{challenge_name:%s, session:%s}" % \
                (self.challenge_name, self.session)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoSession(JSONable):
+class Session(JSONable):
     """
     {"AccessToken": "...",
     "ExpiresIn": 3600,
@@ -362,5 +362,5 @@ class CognitoSession(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoSession:{access_token:%s, expires_in:%s, token_type:%s, refresh_token:%s, id_token:%s}" % \
+        return "Session:{access_token:%s, expires_in:%s, token_type:%s, refresh_token:%s, id_token:%s}" % \
                (self.access_token, self.expires_in, self.token_type, self.refresh_token, self.id_token)
