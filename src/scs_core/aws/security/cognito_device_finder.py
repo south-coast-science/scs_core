@@ -53,6 +53,16 @@ class CognitoDeviceFinder(object):
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
 
 
+    def get_by_tag(self, token, tag):
+        url = '/'.join((self.__URL, 'exact'))
+        payload = json.dumps({"username": tag})
+
+        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return CognitoDeviceIdentity.construct_from_jdict(response.json())
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __headers(self, token):
