@@ -21,7 +21,7 @@ class ProjectClient(object):
 
     @classmethod
     def tags(cls):
-        return list('SCS', )
+        return tuple('SCS', )
 
 
     @classmethod

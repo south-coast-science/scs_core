@@ -139,7 +139,7 @@ class TailEventHandler(ProcessEvent):
         if self.__terminate:
             return True
 
-        return list(line.strip() for line in self.__file.readlines())
+        return tuple(line.strip() for line in self.__file.readlines())
 
 
     # ----------------------------------------------------------------------------------------------------------------

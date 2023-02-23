@@ -225,7 +225,7 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return [byline.as_json() for byline in self.bylines]        # matches the structure of the API response
+        return tuple(byline.as_json() for byline in self.bylines)       # matches the structure of the API response
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -311,4 +311,4 @@ class TopicBylineGroup(BylineGroup):
 
     @property
     def devices(self):
-        return list(self._device_bylines.keys())
+        return tuple(self._device_bylines.keys())

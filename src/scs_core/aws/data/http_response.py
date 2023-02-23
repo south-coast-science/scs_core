@@ -31,7 +31,7 @@ class HTTPResponse(JSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, response):      # response: requests.Response
+    def construct_from_response(cls, response):         # response: requests.Response
         status = HTTPStatus(response.status_code)
 
         if status != HTTPStatus.OK:

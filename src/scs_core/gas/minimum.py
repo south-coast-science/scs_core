@@ -45,7 +45,7 @@ class Minimum(JSONable):
     @classmethod
     def find_minimums(cls, data, field_selection):
         if not data:
-            return list()
+            return tuple()
 
         # minimums...
         field_group = cls.FIELD_SELECTIONS[field_selection]
@@ -63,7 +63,7 @@ class Minimum(JSONable):
                 if minimums[path] is None or value < minimums[path].value:
                     minimums[path] = cls(path, i, value, data[i])
 
-        return list(minimums[path] for path in sorted(minimums.keys()))
+        return tuple(minimums[path] for path in sorted(minimums.keys()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
