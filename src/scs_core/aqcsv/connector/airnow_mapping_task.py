@@ -233,7 +233,7 @@ class MappingTask(JSONable):
 
 
     def mappings(self):
-        return list(DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
+        return tuple(DatumMapping(self.topic, species, self.site_code) for species in self.parameters)
 
 
     def file_prefix(self):

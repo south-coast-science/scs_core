@@ -79,7 +79,7 @@ class Histogram(object):
 
     @property
     def bins(self):
-        return list(self.__bin(i) for i in range(self.__bin_count))
+        return tuple(self.__bin(i) for i in range(self.__bin_count))
 
 
     @property
