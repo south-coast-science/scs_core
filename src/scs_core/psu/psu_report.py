@@ -28,6 +28,10 @@ class PSUReport(JSONReport, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_null_datum(self):
+        return False
+
+
     @abstractmethod
     def below_power_threshold(self, charge_min):
         pass
