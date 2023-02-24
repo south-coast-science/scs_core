@@ -180,7 +180,7 @@ class JSONCatalogueEntry(JSONReport):
     @classmethod
     def list(cls):
         return tuple(cls.__filename_to_name(item) for item in sorted(os.listdir(cls.catalogue_location()))
-                    if item.endswith('.json'))
+                     if item.endswith('.json'))
 
 
     @classmethod

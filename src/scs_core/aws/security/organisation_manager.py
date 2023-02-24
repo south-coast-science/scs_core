@@ -15,7 +15,6 @@ from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
-# TODO: replace [] with list()
 # --------------------------------------------------------------------------------------------------------------------
 
 class OrganisationManager(object):
@@ -49,7 +48,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'organisation'))
         payload = JSONify.dumps({"Label": label})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return Organisation.construct_from_jdict(response.json())
@@ -59,7 +58,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__EXECUTIVE_URL, 'organisation'))
         payload = JSONify.dumps(organisation)
 
-        response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.post(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return Organisation.construct_from_jdict(response.json())
@@ -69,7 +68,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'organisation'))
         payload = JSONify.dumps(organisation)
 
-        response = self.__http_client.patch(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.patch(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -77,7 +76,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__EXECUTIVE_URL, 'organisation'))
         payload = JSONify.dumps({"OrgID": org_id})
 
-        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.delete(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -88,7 +87,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'opr'))
         payload = JSONify.dumps({"OrgID": org_id})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return tuple(OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json())
@@ -98,7 +97,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'opr'))
         payload = JSONify.dumps({"PathRoot": path_root})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return OrganisationPathRoot.construct_from_jdict(response.json())
@@ -108,7 +107,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__EXECUTIVE_URL, 'opr'))
         payload = JSONify.dumps(opr)
 
-        response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.post(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return OrganisationPathRoot.construct_from_jdict(response.json())
@@ -118,7 +117,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__EXECUTIVE_URL, 'opr'))
         payload = JSONify.dumps({"OPRID": opr_id})
 
-        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.delete(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -129,7 +128,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'user'))
         payload = JSONify.dumps({"OrgID": org_id})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
@@ -139,7 +138,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'user'))
         payload = JSONify.dumps({"Username": username})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         self.__logger.info("find_users_by_username: %s" % response.text)
@@ -151,7 +150,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'user'))
         payload = JSONify.dumps({"Username": username, "OrgID": org_id})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return OrganisationUser.construct_from_jdict(response.json())
@@ -161,7 +160,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'user'))
         payload = JSONify.dumps(user)
 
-        response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.post(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -169,7 +168,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__EXECUTIVE_URL, 'user'))
         payload = JSONify.dumps({"Username": username, "OrgID": org_id})
 
-        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.delete(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -180,7 +179,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
         payload = JSONify.dumps({"Username": username, "OPRID": opr_id})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return tuple(OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json())
@@ -190,7 +189,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
         payload = JSONify.dumps(oup)
 
-        response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.post(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -198,7 +197,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
         payload = JSONify.dumps(oup)
 
-        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.delete(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
@@ -209,7 +208,7 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'device'))
         payload = JSONify.dumps({"DeviceTag": device_tag})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
@@ -219,37 +218,25 @@ class OrganisationManager(object):
         url = '/'.join((self.__MANAGER_URL, 'device'))
         payload = JSONify.dumps({"OrgID": org_id})
 
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
         return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
-
-
-    def get_device(self, token, device_tag, org_id, device_path, environment_path):
-        url = '/'.join((self.__MANAGER_URL, 'device'))
-        payload = JSONify.dumps({"DeviceTag": device_tag, "OrgID": org_id, "DevicePath": device_path,
-                                 "EnvironmentPath": environment_path})
-
-        response = self.__http_client.get(url, data=payload, headers=self.__headers(token))
-        self.__check_response(response)
-
-        return OrganisationDevice.construct_from_jdict(response.json())
 
 
     def assert_device(self, token, device):
         url = '/'.join((self.__EXECUTIVE_URL, 'device'))
         payload = JSONify.dumps(device)
 
-        response = self.__http_client.post(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.post(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 
-    def delete_device(self, token, device_tag, org_id, device_path, environment_path):
-        url = '/'.join((self.__EXECUTIVE_URL, 'organisation'))
-        payload = JSONify.dumps({"DeviceTag": device_tag, "OrgID": org_id, "DevicePath": device_path,
-                                 "EnvironmentPath": environment_path})
+    def delete_device(self, token, device_tag):
+        url = '/'.join((self.__EXECUTIVE_URL, 'device'))
+        payload = JSONify.dumps({"DeviceTag": device_tag})
 
-        response = self.__http_client.delete(url, data=payload, headers=self.__headers(token))
+        response = self.__http_client.delete(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
 

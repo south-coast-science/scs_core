@@ -37,7 +37,7 @@ class ClientAuth(PersistentJSONable):
         if auth is None:
             return None
 
-        auth.manager = manager
+        auth.device_manager = manager
 
         return auth
 
