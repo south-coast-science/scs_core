@@ -5,15 +5,15 @@ Created on 20 Sep 2022
 
 Helper class for the bylines lambda
 """
-# ----------------------------------------------------------------------------------------------------------------
 
 import json
+
 from collections import OrderedDict
 from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
-
 from scs_core.sys.http_exception import HTTPException
+
 
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -34,9 +34,11 @@ class BylineExclusiveStartKey(object):
 
         return cls(device, topic)
 
+
     @classmethod
     def construct_from_jdict(cls, jdict):
         return cls.construct_from_qsp(jdict)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -44,8 +46,9 @@ class BylineExclusiveStartKey(object):
         """
         Constructor
         """
-        self.__device = device  # string
-        self.__topic = topic  # string
+        self.__device = device                                      # string
+        self.__topic = topic                                        # string
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -57,11 +60,13 @@ class BylineExclusiveStartKey(object):
 
         return params
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def device(self):
         return self.__device
+
 
     @property
     def topic(self):
@@ -94,6 +99,7 @@ class BylineRequest(object):
 
         return cls(tag_filter, topic_filter, exclusive_start_key=exclusive_start_key)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, tag_filter, topic_filter, exclusive_start_key=None):
@@ -104,6 +110,7 @@ class BylineRequest(object):
         self.__topic_filter = topic_filter  # string
 
         self.__exclusive_start_key = exclusive_start_key  # ExclusiveStartKey
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -127,17 +134,21 @@ class BylineRequest(object):
     def tag_filter(self):
         return self.__tag_filter
 
+
     @property
     def topic_filter(self):
         return self.__topic_filter
+
 
     @property
     def exclusive_start_key(self):
         return self.__exclusive_start_key
 
+
     @exclusive_start_key.setter
     def exclusive_start_key(self, exclusive_start_key):
         self.__exclusive_start_key = exclusive_start_key
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -170,6 +181,7 @@ class BylinesResponse(HTTPResponse):
 
         return cls(status, items, next_url=next_url)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, status, items, next_url=None):
@@ -181,8 +193,10 @@ class BylinesResponse(HTTPResponse):
         self.__items = items  # list of string
         self.__next_url = next_url  # URL string
 
+
     def __len__(self):
         return len(self.items)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -200,22 +214,21 @@ class BylinesResponse(HTTPResponse):
 
         return jdict
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def items(self):
         return self.__items
 
+
     @property
     def next_url(self):
         return self.__next_url
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
         return "BylinesResponse:{status:%s, items:%s, next_url:%s}" % \
                (self.status, self.items, self.next_url)
-
-    # --------------------------------------------------------------------------------------------------------------------
-
-
