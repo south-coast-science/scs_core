@@ -29,6 +29,7 @@ class AccessKey(PersistentJSONable):
 
     __FILENAME = "access_key.json"
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -53,7 +54,7 @@ class AccessKey(PersistentJSONable):
     @classmethod
     def from_user(cls):
         try:
-            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)  # flush stdin
         except termios.error:
             pass
 
@@ -69,7 +70,7 @@ class AccessKey(PersistentJSONable):
     @staticmethod
     def password_from_user():
         try:
-            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)  # flush stdin
         except termios.error:
             pass
 
@@ -102,8 +103,8 @@ class AccessKey(PersistentJSONable):
         """
         super().__init__()
 
-        self.__id = id                              # string
-        self.__secret = secret                      # string
+        self.__id = id  # string
+        self.__secret = secret  # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -138,4 +139,4 @@ class AccessKey(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AccessKey:{id:%s, secret:%s}" %  (self.id, self.secret)
+        return "AccessKey:{id:%s, secret:%s}" % (self.id, self.secret)
