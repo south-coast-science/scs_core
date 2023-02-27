@@ -28,6 +28,7 @@ class PSUReport(JSONReport, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # noinspection PyMethodMayBeStatic
     def is_null_datum(self):
         return False
 
