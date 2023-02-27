@@ -134,11 +134,11 @@ class Datum(object):
             return None
 
         try:
-            value = int(number)
+            value = int(float(number))              # because int('123.000') raises ValueError!!
         except ValueError:
             return None
 
-        return int(value)
+        return value
 
 
     @staticmethod
