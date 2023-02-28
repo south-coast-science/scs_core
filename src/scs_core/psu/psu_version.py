@@ -96,8 +96,8 @@ class PSUVersion(JSONReport):
         jdict['id'] = self.id
         jdict['tag'] = self.tag
 
-        jdict['c-date'] = self.compile_date
-        jdict['c-time'] = self.compile_time
+        # jdict['c-date'] = self.compile_date
+        # jdict['c-time'] = self.compile_time
 
         return jdict
 
