@@ -74,7 +74,9 @@ class SensorBaseline(JSONable):
 
         jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601()
         jdict['offset'] = self.offset
-        jdict['env'] = self.sample
+
+        if self.sample is not None:
+            jdict['env'] = self.sample
 
         return jdict
 
