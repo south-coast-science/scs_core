@@ -237,7 +237,8 @@ class CognitoUserIdentity(JSONable):
         attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
         attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
 
-        print("username: %s attrs: %s" % (res.get('Username'), attrs))
+        # print("username: %s attrs: %s" % (res.get('Username'), attrs))
+        print("res: %s" % res)
 
         username = res.get('Username')
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3)
@@ -251,10 +252,8 @@ class CognitoUserIdentity(JSONable):
         is_super = attrs.get('custom:super') == 'True'
         is_tester = attrs.get('custom:tester') == 'True'
 
-        last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3)
-
         return cls(username, created, confirmation_status, enabled, email_verified,
-                   email, given_name, family_name, None, last_updated, is_super=is_super, is_tester=is_tester)
+                   email, given_name, family_name, None, is_super=is_super, is_tester=is_tester)
 
 
     @classmethod
@@ -314,9 +313,6 @@ class CognitoUserIdentity(JSONable):
 
 
     def __lt__(self, other):
-        print("lt - self: %s" % self)
-        print("lt - other: %s" % other)
-
         if self.family_name is not None:
             if other.family_name is None:
                 return False
