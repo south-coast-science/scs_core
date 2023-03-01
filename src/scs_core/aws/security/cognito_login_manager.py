@@ -34,7 +34,7 @@ class CognitoLoginManager(object):
         headers = {'Authorization': self.__AUTHORIZATION}
         response = self.__http_client.post(self.url, headers=headers, json=credentials.as_json())
 
-        return AuthenticationResult.construct_from_response(response)
+        return AuthenticationResult.construct_from_res(response)
 
 
     # ----------------------------------------------------------------------------------------------------------------

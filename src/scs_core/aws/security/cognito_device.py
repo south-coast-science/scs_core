@@ -86,7 +86,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, res):
+    def construct_from_res(cls, res):
         if not res:
             return None
 
