@@ -282,6 +282,9 @@ class CognitoUserIdentity(JSONable):
 
 
     def __lt__(self, other):
+        print("lt - self: %s" % self)
+        print("lt - other: %s" % other)
+
         if self.family_name is not None:
             if other.family_name is None:
                 return False
