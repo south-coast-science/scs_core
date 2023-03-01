@@ -182,6 +182,8 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
 
+        print("response: %s" % response.json())
+
         return tuple(OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json())
 
 
