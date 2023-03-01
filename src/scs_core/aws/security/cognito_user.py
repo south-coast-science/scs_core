@@ -237,7 +237,7 @@ class CognitoUserIdentity(JSONable):
         username = jdict.get('username')
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         confirmation_status = jdict.get('confirmation-status')
-        email_confirmed = jdict.get('email-confirmed')
+        email_verified = jdict.get('email-verified')
         enabled = jdict.get('enabled')
         email = jdict.get('email')
         given_name = jdict.get('given-name')
@@ -246,13 +246,13 @@ class CognitoUserIdentity(JSONable):
         is_super = jdict.get('is-super')
         is_tester = jdict.get('is-tester')
 
-        return cls(username, created, confirmation_status, email_confirmed, enabled,
+        return cls(username, created, confirmation_status, email_verified, enabled,
                    email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, created, confirmation_status, email_confirmed, enabled,
+    def __init__(self, username, created, confirmation_status, email_verified, enabled,
                  email, given_name, family_name, password, is_super=False, is_tester=False):
         """
         Constructor
@@ -260,7 +260,7 @@ class CognitoUserIdentity(JSONable):
         self.__username = username                              # TODO: force int?
         self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
-        self.__email_confirmed = bool(email_confirmed)          # bool
+        self.__email_verified = bool(email_verified)            # bool
         self.__enabled = Datum.bool(enabled)                    # bool or None
         self.__email = email                                    # string
         self.__given_name = given_name                          # string
@@ -273,7 +273,7 @@ class CognitoUserIdentity(JSONable):
     def __eq__(self, other):
         try:
             return self.username == other.username and self.confirmation_status == other.confirmation_status \
-                   and self.email_confirmed == other.email_confirmed and self.enabled == other.enabled \
+                   and self.email_verified == other.email_verified and self.enabled == other.enabled \
                    and self.email == other.email and self.given_name == other.given_name \
                    and self.family_name == other.family_name and self.is_super == other.is_super
 
@@ -348,7 +348,7 @@ class CognitoUserIdentity(JSONable):
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
 
-        jdict['email-confirmed'] = self.email_confirmed
+        jdict['email-verified'] = self.email_verified
 
         if self.enabled is not None:
             jdict['enabled'] = self.enabled
@@ -384,8 +384,8 @@ class CognitoUserIdentity(JSONable):
 
 
     @property
-    def email_confirmed(self):
-        return self.__email_confirmed
+    def email_verified(self):
+        return self.__email_verified
 
 
     @property
@@ -426,7 +426,7 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, email_confirmed:%s, " \
+        return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, email_verified:%s, " \
                "enabled:%s, email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s}" % \
-               (self.username, self.created, self.confirmation_status, self.email_confirmed,
+               (self.username, self.created, self.confirmation_status, self.email_verified,
                 self.enabled, self.email, self.given_name, self.family_name, self.is_super, self.is_tester)
