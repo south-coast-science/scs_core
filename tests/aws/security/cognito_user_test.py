@@ -28,9 +28,6 @@ password = 'ABCxyz123!'
 is_super = True
 is_tester = False
 
-#     def __init__(self, username, created, confirmation_status, enabled,
-#                  email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated):
-
 identity1 = CognitoUserIdentity(username, created, confirmation_status, enabled,
                                 email_verified, email, given_name, family_name, password,
                                 is_super, is_tester, None)
