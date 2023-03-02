@@ -234,8 +234,6 @@ class CognitoUserIdentity(JSONable):
         if not res:
             return None
 
-        print("res: %s" % res)
-
         attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
         attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
 
