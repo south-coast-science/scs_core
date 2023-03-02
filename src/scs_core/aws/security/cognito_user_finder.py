@@ -38,7 +38,7 @@ class CognitoUserFinder(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        # print("response: %s" % response.json())
+        print("response: %s" % response.json())
 
         return tuple(CognitoUserIdentity.construct_from_res(jdict) for jdict in response.json())
 

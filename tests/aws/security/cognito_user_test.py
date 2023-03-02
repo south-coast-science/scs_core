@@ -28,8 +28,12 @@ password = 'ABCxyz123!'
 is_super = True
 is_tester = False
 
-identity1 = CognitoUserIdentity(username, created, confirmation_status, enabled, email_verified,
-                                email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
+#     def __init__(self, username, created, confirmation_status, enabled,
+#                  email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated):
+
+identity1 = CognitoUserIdentity(username, created, confirmation_status, enabled,
+                                email_verified, email, given_name, family_name, password,
+                                is_super, is_tester, None)
 print(identity1)
 
 jstr = JSONify.dumps(identity1)
