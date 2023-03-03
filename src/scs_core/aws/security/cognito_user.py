@@ -261,8 +261,6 @@ class CognitoUserIdentity(JSONable):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
 
-        print("jdict: %s" % jdict)
-
         username = jdict.get('username')
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         confirmation_status = jdict.get('confirmation-status')
@@ -289,7 +287,7 @@ class CognitoUserIdentity(JSONable):
         """
         Constructor
         """
-        self.__username = username                              # TODO: force int?
+        self.__username = username                              # int or string
         self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
         self.__enabled = Datum.bool(enabled)                    # bool or None
