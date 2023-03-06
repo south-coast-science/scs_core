@@ -202,6 +202,15 @@ class CognitoUserIdentity(JSONable):
         return cls.__STATUSES[code]
 
 
+    __EMAIL_FUNCTIONS = {
+        'UNCONFIRMED': 'RESEND_CONFIRMATION',
+        'CONFIRMED': 'REQUEST_PASSWORD_RESET',
+        'PASSWORD_RESET_REQUIRED': 'REQUEST_PASSWORD_RESET',
+        'FORCE_CHANGE_PASSWORD': 'RESEND_TEMPORARY_PASSWORD',
+        'DISABLED': None
+    }
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
@@ -260,6 +269,8 @@ class CognitoUserIdentity(JSONable):
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
+
+        print("jdict: %s" % jdict)
 
         username = jdict.get('username')
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
@@ -358,6 +369,16 @@ class CognitoUserIdentity(JSONable):
 
     def save(self, db_user):
         raise NotImplementedError
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def email_function(self):
+        try:
+            return self.__EMAIL_FUNCTIONS[self.confirmation_status]
+
+        except KeyError:
+            raise ValueError(self.confirmation_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
