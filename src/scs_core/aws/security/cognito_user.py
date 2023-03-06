@@ -373,6 +373,7 @@ class CognitoUserIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def email_function(self):
         try:
             return self.__EMAIL_FUNCTIONS[self.confirmation_status]
