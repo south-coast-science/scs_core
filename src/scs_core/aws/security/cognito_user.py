@@ -244,14 +244,14 @@ class CognitoUserIdentity(JSONable):
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
 
         username = jdict.get('username')
-        confirmation_status = jdict.get('confirmation-status')
-        enabled = jdict.get('enabled')
-
-        email_verified = jdict.get('email-verified')
         email = jdict.get('email')
+        password = jdict.get('password')
         given_name = jdict.get('given-name')
         family_name = jdict.get('family-name')
-        password = jdict.get('password')
+
+        confirmation_status = jdict.get('confirmation-status')
+        enabled = jdict.get('enabled')
+        email_verified = jdict.get('email-verified')
         is_super = jdict.get('is-super')
         is_tester = jdict.get('is-tester')
 
@@ -361,14 +361,6 @@ class CognitoUserIdentity(JSONable):
         if self.username is not None:
             jdict['username'] = self.username
 
-        if self.confirmation_status is not None:
-            jdict['confirmation-status'] = self.confirmation_status
-
-        if self.enabled is not None:
-            jdict['enabled'] = self.enabled
-
-        jdict['email-verified'] = self.email_verified
-
         jdict['email'] = self.email
 
         if self.password is not None:
@@ -376,6 +368,14 @@ class CognitoUserIdentity(JSONable):
 
         jdict['given-name'] = self.given_name
         jdict['family-name'] = self.family_name
+
+        if self.confirmation_status is not None:
+            jdict['confirmation-status'] = self.confirmation_status
+
+        if self.enabled is not None:
+            jdict['enabled'] = self.enabled
+
+        jdict['email-verified'] = self.email_verified
         jdict['is-super'] = self.is_super
         jdict['is-tester'] = self.is_tester
 
