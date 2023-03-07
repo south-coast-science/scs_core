@@ -202,6 +202,15 @@ class CognitoUserIdentity(JSONable):
         return cls.__STATUSES[code]
 
 
+    __EMAIL_FUNCTIONS = {
+        'UNCONFIRMED': 'RESEND_CONFIRMATION',
+        'CONFIRMED': 'REQUEST_PASSWORD_RESET',
+        'PASSWORD_RESET_REQUIRED': 'REQUEST_PASSWORD_RESET',
+        'FORCE_CHANGE_PASSWORD': 'RESEND_TEMPORARY_PASSWORD',
+        'DISABLED': None
+    }
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @staticmethod
@@ -230,15 +239,45 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_res(cls, res, multiples=False):
+        if not res:
+            return None
+
+        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
+        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
+
+        username = res.get('Username')
+        created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3)
+        confirmation_status = res.get('UserStatus')
+        enabled = res.get('Enabled')
+
+        email_verified = attrs.get('email_verified') == 'True'
+        email = attrs.get('email')
+        given_name = attrs.get('given_name')
+        family_name = attrs.get('family_name')
+        is_super = attrs.get('custom:super') == 'True'
+        is_tester = attrs.get('custom:tester') == 'True'
+
+        last_updated_full = LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate')))
+        last_updated = None if last_updated_full is None else round(last_updated_full, 3)
+
+        return cls(username, created, confirmation_status, enabled, email_verified,
+                   email, given_name, family_name, None, is_super, is_tester, last_updated)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None, None, None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
+
+        print("jdict: %s" % jdict)
 
         username = jdict.get('username')
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         confirmation_status = jdict.get('confirmation-status')
-        email_confirmed = jdict.get('email-confirmed')
         enabled = jdict.get('enabled')
+
+        email_verified = jdict.get('email-verified')
         email = jdict.get('email')
         given_name = jdict.get('given-name')
         family_name = jdict.get('family-name')
@@ -246,36 +285,42 @@ class CognitoUserIdentity(JSONable):
         is_super = jdict.get('is-super')
         is_tester = jdict.get('is-tester')
 
-        return cls(username, created, confirmation_status, email_confirmed, enabled,
-                   email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
+        last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
+
+        return cls(username, created, confirmation_status, enabled,
+                   email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, created, confirmation_status, email_confirmed, enabled,
-                 email, given_name, family_name, password, is_super=False, is_tester=False):
+    def __init__(self, username, created, confirmation_status, enabled,
+                 email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated):
         """
         Constructor
         """
-        self.__username = username                              # TODO: force int?
+        self.__username = username                              # int or string
         self._created = created                                 # LocalisedDatetime
         self.__confirmation_status = confirmation_status        # string
-        self.__email_confirmed = bool(email_confirmed)          # bool
         self.__enabled = Datum.bool(enabled)                    # bool or None
+
+        self.__email_verified = bool(email_verified)            # bool
         self.__email = email                                    # string
         self.__given_name = given_name                          # string
         self.__family_name = family_name                        # string
         self.__password = password                              # string
         self.__is_super = bool(is_super)                        # bool
-        self.__is_tester = bool(is_tester)
+        self.__is_tester = bool(is_tester)                      # bool
+
+        self._last_updated = last_updated                       # LocalizedDatetime
 
 
     def __eq__(self, other):
         try:
             return self.username == other.username and self.confirmation_status == other.confirmation_status \
-                   and self.email_confirmed == other.email_confirmed and self.enabled == other.enabled \
+                   and self.enabled == other.enabled and self.email_verified == other.email_verified \
                    and self.email == other.email and self.given_name == other.given_name \
-                   and self.family_name == other.family_name and self.is_super == other.is_super
+                   and self.family_name == other.family_name and self.is_super == other.is_super \
+                   and self.is_tester == other.is_tester
 
         except (TypeError, AttributeError):
             return False
@@ -318,17 +363,23 @@ class CognitoUserIdentity(JSONable):
         return self.email
 
 
-    @property
-    def latest_update(self):                    # LocalizedDatetime
-        return None
-
-
     def copy_id(self, other):
         pass
 
 
     def save(self, db_user):
         raise NotImplementedError
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def email_function(self):
+        try:
+            return self.__EMAIL_FUNCTIONS[self.confirmation_status]
+
+        except KeyError:
+            raise ValueError(self.confirmation_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -345,10 +396,10 @@ class CognitoUserIdentity(JSONable):
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
 
-        jdict['email-confirmed'] = self.email_confirmed
-
         if self.enabled is not None:
             jdict['enabled'] = self.enabled
+
+        jdict['email-verified'] = self.email_verified
 
         jdict['email'] = self.email
 
@@ -359,6 +410,8 @@ class CognitoUserIdentity(JSONable):
         jdict['family-name'] = self.family_name
         jdict['is-super'] = self.is_super
         jdict['is-tester'] = self.is_tester
+
+        jdict['last-updated'] = None if self.last_updated is None else self.last_updated.as_iso8601()
 
         return jdict
 
@@ -381,13 +434,13 @@ class CognitoUserIdentity(JSONable):
 
 
     @property
-    def email_confirmed(self):
-        return self.__email_confirmed
+    def enabled(self):
+        return self.__enabled
 
 
     @property
-    def enabled(self):
-        return self.__enabled
+    def email_verified(self):
+        return self.__email_verified
 
 
     @property
@@ -420,10 +473,17 @@ class CognitoUserIdentity(JSONable):
         return self.__is_tester
 
 
+    @property
+    def last_updated(self):
+        return self._last_updated
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserIdentity:{username:%s, created:%s, confirmation_status:%s, email_confirmed:%s, " \
-               "enabled:%s, email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s}" % \
-               (self.username, self.created, self.confirmation_status, self.email_confirmed,
-                self.enabled, self.email, self.given_name, self.family_name, self.is_super, self.is_tester)
+        return self.__class__.__name__ + ":{username:%s, created:%s, confirmation_status:%s, enabled:%s, " \
+               "email_verified:%s, email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s, " \
+               "last_updated:%s}" % \
+               (self.username, self.created, self.confirmation_status, self.enabled,
+                self.email_verified, self.email, self.given_name, self.family_name, self.is_super, self.is_tester,
+                self.last_updated)

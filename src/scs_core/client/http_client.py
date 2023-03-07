@@ -80,7 +80,7 @@ class HTTPClient(object):
 
         # error...
         if response.status != HTTPStatus.OK:
-            raise HTTPException.construct_from_response(response, data)
+            raise HTTPException.construct_from_res(response, data)
 
         # print("response: %s " % data.decode())
 
@@ -94,7 +94,7 @@ class HTTPClient(object):
 
         # error...
         if response.status != HTTPStatus.OK and response.status != HTTPStatus.CREATED:
-            raise HTTPException.construct_from_response(response, data)
+            raise HTTPException.construct_from_res(response, data)
 
         return data.decode()
 
@@ -106,7 +106,7 @@ class HTTPClient(object):
 
         # error...
         if response.status != HTTPStatus.OK and response.status != HTTPStatus.NO_CONTENT:
-            raise HTTPException.construct_from_response(response, data)
+            raise HTTPException.construct_from_res(response, data)
 
         return data.decode()
 
@@ -118,7 +118,7 @@ class HTTPClient(object):
 
         # error...
         if response.status != HTTPStatus.OK and response.status != HTTPStatus.NO_CONTENT:
-            raise HTTPException.construct_from_response(response, data)
+            raise HTTPException.construct_from_res(response, data)
 
         return data.decode()
 

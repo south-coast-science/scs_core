@@ -19,8 +19,8 @@ from scs_core.data.json import JSONify
 username = 123
 created = round(LocalizedDatetime.now(), 3)
 confirmation_status = CognitoUserIdentity.status('C')
-email_confirmed = True
 enabled = True
+email_verified = False
 email = 'bruno.beloff@southcoastscience.com'
 given_name = 'Bruno'
 family_name = 'Beloff'
@@ -28,8 +28,9 @@ password = 'ABCxyz123!'
 is_super = True
 is_tester = False
 
-identity1 = CognitoUserIdentity(username, created, confirmation_status, email_confirmed, enabled,
-                                email, given_name, family_name, password, is_super=is_super, is_tester=is_tester)
+identity1 = CognitoUserIdentity(username, created, confirmation_status, enabled,
+                                email_verified, email, given_name, family_name, password,
+                                is_super, is_tester, None)
 print(identity1)
 
 jstr = JSONify.dumps(identity1)
