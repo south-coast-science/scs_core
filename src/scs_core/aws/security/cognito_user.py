@@ -239,33 +239,6 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_res(cls, res, multiples=False):
-        if not res:
-            return None
-
-        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
-        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
-
-        username = res.get('Username')
-        created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3)
-        confirmation_status = res.get('UserStatus')
-        enabled = res.get('Enabled')
-
-        email_verified = attrs.get('email_verified') == 'True'
-        email = attrs.get('email')
-        given_name = attrs.get('given_name')
-        family_name = attrs.get('family_name')
-        is_super = attrs.get('custom:super') == 'True'
-        is_tester = attrs.get('custom:tester') == 'True'
-
-        last_updated_full = LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate')))
-        last_updated = None if last_updated_full is None else round(last_updated_full, 3)
-
-        return cls(username, created, confirmation_status, enabled, email_verified,
-                   email, given_name, family_name, None, is_super, is_tester, last_updated)
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
