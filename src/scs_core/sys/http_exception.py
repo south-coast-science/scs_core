@@ -19,7 +19,7 @@ class HTTPException(RuntimeError, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_response(cls, response, encoded_data):
+    def construct_from_res(cls, response, encoded_data):
         status = None if response.status is None else int(response.status)
         reason = response.reason
         data = encoded_data.decode()
