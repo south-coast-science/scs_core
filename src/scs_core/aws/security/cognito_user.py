@@ -384,7 +384,8 @@ class CognitoUserIdentity(JSONable):
         jdict['is-super'] = self.is_super
         jdict['is-tester'] = self.is_tester
 
-        jdict['last-updated'] = None if self.last_updated is None else self.last_updated.as_iso8601()
+        if self.last_updated is not None:
+            jdict['last-updated'] = self.last_updated.as_iso8601()
 
         return jdict
 
