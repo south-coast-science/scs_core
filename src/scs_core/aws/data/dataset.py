@@ -102,6 +102,9 @@ class Dataset(object):
                 return
 
             # old-world item is newer...
+            print("copy_id -           item: %s" % item)
+            print("copy_id - retrieved_item: %s" % retrieved_item)
+
             item.copy_id(retrieved_item)
 
             if not self.simulate:
