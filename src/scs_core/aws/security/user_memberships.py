@@ -10,16 +10,25 @@ from collections import OrderedDict
 
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
+from scs_core.data.array_dict import ArrayDict
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class User(JSONable):
+class UserMemberships(JSONable):
     """
     classdocs
     """
+
+    @classmethod
+    def merge(cls, cognito_users, org_users):
+        org_user_dict = ArrayDict([(org_user.username, org_user) for org_user in org_users])
+
+        # Users...
+        return [cls(cognito_user, org_user_dict.get(cognito_user.username)) for cognito_user in cognito_users]
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -61,5 +70,5 @@ class User(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "User:{identity:%s, memberships:%s}" % \
+        return "UserMemberships:{identity:%s, memberships:%s}" % \
                (self.identity, Str.collection(self.memberships))
