@@ -243,6 +243,8 @@ class CognitoUserIdentity(JSONable):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
 
+        print("jdict: %s" % jdict)
+
         username = jdict.get('username')
         email = jdict.get('email')
         password = jdict.get('password')

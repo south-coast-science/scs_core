@@ -14,6 +14,7 @@ import json
 
 from collections import OrderedDict
 
+from scs_core.data.array_dict import ArrayDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
@@ -170,13 +171,7 @@ class BylineGroup(JSONable):
                 bylines.append(byline)
 
         # device_bylines...
-        device_bylines = OrderedDict()
-
-        for byline in sorted(bylines):
-            if byline.device not in device_bylines:
-                device_bylines[byline.device] = []
-
-            device_bylines[byline.device].append(byline)
+        device_bylines = ArrayDict([(byline.device, byline) for byline in sorted(bylines)])
 
         return cls(device_bylines)
 

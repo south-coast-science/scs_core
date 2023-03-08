@@ -73,8 +73,8 @@ class CognitoUserEditor(object):
         response = self.__http_client.patch(self.__URL, headers=headers, data=JSONify.dumps(identity))
         status = HTTPStatus(response.status_code)
 
-        # print("status_code: %s" % response.status_code)
-        # print("text: %s" % response.text)
+        print("status_code: %s" % response.status_code)
+        print("text: %s" % response.text)
 
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())
