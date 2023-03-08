@@ -625,12 +625,12 @@ class OrganisationDevice(JSONable):
 
         device_tag = jdict.get(cls.DEVICE_TAG)
         org_id = jdict.get(cls.ORG_ID)
+        deployment_label = jdict.get(cls.DEPLOYMENT_LABEL)
         device_path = jdict.get(cls.DEVICE_PATH)
         location_path = jdict.get(cls.LOCATION_PATH)
 
         start_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.START_DATETIME))
         end_datetime = LocalizedDatetime.construct_from_iso8601(jdict.get(cls.END_DATETIME))
-        deployment_label = jdict.get(cls.DEPLOYMENT_LABEL)
 
         return cls(device_tag, org_id, device_path, location_path, start_datetime, end_datetime, deployment_label)
 
@@ -700,12 +700,12 @@ class OrganisationDevice(JSONable):
 
         jdict[self.DEVICE_TAG] = self.device_tag
         jdict[self.ORG_ID] = self.org_id
+        jdict[self.DEPLOYMENT_LABEL] = self.deployment_label
         jdict[self.DEVICE_PATH] = self.device_path
         jdict[self.LOCATION_PATH] = self.location_path
 
         jdict[self.START_DATETIME] = self.start_datetime.as_iso8601()
         jdict[self.END_DATETIME] = None if self.end_datetime is None else self.end_datetime.as_iso8601()
-        jdict[self.DEPLOYMENT_LABEL] = self.deployment_label
 
         return jdict
 

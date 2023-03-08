@@ -219,8 +219,6 @@ class OrganisationManager(object):
         response = self.__http_client.get(url, headers=self.__headers(token))
         self.__check_response(response)
 
-        print("response.json:" % response.json())
-
         return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
 
 
