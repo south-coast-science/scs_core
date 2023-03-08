@@ -124,6 +124,15 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
     # OrganisationUser...
 
+    def find_users(self, token):
+        url = '/'.join((self.__MANAGER_URL, 'user'))
+
+        response = self.__http_client.get(url, headers=self.__headers(token))
+        self.__check_response(response)
+
+        return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
+
+
     def find_users_by_organisation(self, token, org_id):
         url = '/'.join((self.__MANAGER_URL, 'user'))
         payload = JSONify.dumps({"OrgID": org_id})
@@ -140,8 +149,6 @@ class OrganisationManager(object):
 
         response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
         self.__check_response(response)
-
-        self.__logger.info("find_users_by_username: %s" % response.text)
 
         return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
 
