@@ -75,6 +75,7 @@ class CognitoUserEditor(object):
 
         print("status_code: %s" % response.status_code)
         print("text: %s" % response.text)
+        print("json: %s" % response.json())
 
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())

@@ -213,6 +213,17 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
     # OrganisationDevice...
 
+    def find_devices(self, token):
+        url = '/'.join((self.__MANAGER_URL, 'device'))
+
+        response = self.__http_client.get(url, headers=self.__headers(token))
+        self.__check_response(response)
+
+        print("response.json:" % response.json())
+
+        return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
+
+
     def find_devices_by_tag(self, token, device_tag):
         url = '/'.join((self.__MANAGER_URL, 'device'))
         payload = JSONify.dumps({"DeviceTag": device_tag})
