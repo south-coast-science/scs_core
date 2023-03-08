@@ -60,6 +60,11 @@ class CognitoDeviceCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def username(self):
+        return self.tag
+
+
+    @property
     def tag(self):
         return self._tag
 
