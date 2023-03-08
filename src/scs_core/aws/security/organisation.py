@@ -347,8 +347,8 @@ class OrganisationUser(JSONable):
         """
         Constructor
         """
-        self.__username = int(username)                         # PK: int
-        self.__org_id = int(org_id)                             # PK: int
+        self._username = int(username)                          # PK: int
+        self._org_id = int(org_id)                              # PK: int
         self.__is_org_admin = bool(is_org_admin)                # INDEX: bool
         self.__is_device_admin = bool(is_device_admin)          # INDEX: bool
         self.__is_suspended = bool(is_suspended)                # INDEX: bool
@@ -404,12 +404,12 @@ class OrganisationUser(JSONable):
 
     @property
     def username(self):
-        return self.__username
+        return self._username
 
 
     @property
     def org_id(self):
-        return self.__org_id
+        return self._org_id
 
 
     @property
