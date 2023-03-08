@@ -334,7 +334,7 @@ class CognitoUserIdentity(JSONable):
         return self.email
 
 
-    def copy_id(self, other):
+    def copy_pk(self, other):
         pass
 
 
