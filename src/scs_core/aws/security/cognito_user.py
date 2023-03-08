@@ -270,24 +270,20 @@ class CognitoUserIdentity(JSONable):
         Constructor
         """
 
-        try:
-            self.__username = int(username)                     # int, string or None
-        except (TypeError, ValueError):
-            self.__username = username
+        self.__username = Datum.int(username, default=username)     # int, string or None
+        self._created = created                                     # LocalisedDatetime
+        self.__confirmation_status = confirmation_status            # string
+        self.__enabled = Datum.bool(enabled)                        # bool or None
 
-        self._created = created                                 # LocalisedDatetime
-        self.__confirmation_status = confirmation_status        # string
-        self.__enabled = Datum.bool(enabled)                    # bool or None
+        self.__email_verified = bool(email_verified)                # bool
+        self.__email = email                                        # string
+        self.__given_name = given_name                              # string
+        self.__family_name = family_name                            # string
+        self.__password = password                                  # string
+        self.__is_super = bool(is_super)                            # bool
+        self.__is_tester = bool(is_tester)                          # bool
 
-        self.__email_verified = bool(email_verified)            # bool
-        self.__email = email                                    # string
-        self.__given_name = given_name                          # string
-        self.__family_name = family_name                        # string
-        self.__password = password                              # string
-        self.__is_super = bool(is_super)                        # bool
-        self.__is_tester = bool(is_tester)                      # bool
-
-        self._last_updated = last_updated                       # LocalizedDatetime
+        self._last_updated = last_updated                           # LocalizedDatetime
 
 
     def __eq__(self, other):

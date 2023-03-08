@@ -116,40 +116,40 @@ class Datum(object):
     # cast or None...
 
     @staticmethod
-    def bool(field):
+    def bool(field, default=None):
         if field is None:
-            return None
+            return default
 
         try:
             value = bool(field)
         except ValueError:
-            return None
+            return default
 
         return value
 
 
     @staticmethod
-    def int(number):
+    def int(number, default=None):
         if number is None:
-            return None
+            return default
 
         try:
             value = int(float(number))              # because int('123.000') raises ValueError!!
         except ValueError:
-            return None
+            return default
 
         return value
 
 
     @staticmethod
-    def float(number, ndigits=None):
+    def float(number, ndigits=None, default=None):
         if number is None:
-            return None
+            return default
 
         try:
             value = float(number)
         except ValueError:
-            return None
+            return default
 
         return value if ndigits is None else round(value, ndigits)      # warning: round(123, 0) returns 123.0
 
