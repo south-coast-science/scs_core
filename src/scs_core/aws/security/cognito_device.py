@@ -52,8 +52,8 @@ class CognitoDeviceCredentials(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['Username'] = self.tag
-        jdict['Password'] = self.shared_secret
+        jdict['username'] = self.tag
+        jdict['password'] = self.shared_secret
 
         return jdict
 
