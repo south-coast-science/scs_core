@@ -73,12 +73,10 @@ class CognitoUserEditor(object):
         response = self.__http_client.patch(self.__URL, headers=headers, data=JSONify.dumps(identity))
         status = HTTPStatus(response.status_code)
 
-        print("status_code: %s" % response.status_code)
-        print("text: %s" % response.text)
-        print("json: %s" % response.json())
-
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())
+
+        return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -111,9 +109,6 @@ class CognitoUserDeleter(object):
 
         response = self.__http_client.delete(url, headers=headers)
         status = HTTPStatus(response.status_code)
-
-        # print("status_code: %s" % response.status_code)
-        # print("text: %s" % response.text)
 
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())

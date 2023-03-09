@@ -15,14 +15,14 @@ from scs_core.data.str import Str
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoMemberships(JSONable):
+class CognitoMembership(JSONable):
     """
     classdocs
     """
 
     @classmethod
     def merge(cls, cognito_accounts, org_memberships):
-        org_dict = ArrayDict([(org_membership.username, org_membership) for org_membership in org_memberships])
+        org_dict = ArrayDict([(org_membership.username, org_membership) for org_membership in sorted(org_memberships)])
 
         # Users...
         return [cls(cognito_account, org_dict.get(cognito_account.username)) for cognito_account in cognito_accounts]
@@ -68,5 +68,5 @@ class CognitoMemberships(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoMemberships:{cognito_account:%s, memberships:%s}" % \
+        return "CognitoMembership:{cognito_account:%s, memberships:%s}" % \
                (self.cognito_account, Str.collection(self.memberships))

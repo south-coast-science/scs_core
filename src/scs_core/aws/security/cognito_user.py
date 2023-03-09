@@ -8,7 +8,7 @@ https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-pol
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
 example document (credentials):
-{"email": "bruno.beloff@southcoastscience.com", "password": "pass"}
+{"email": "production@southcoastscience.com", "password": "scs_admin_Password_123!", "retrieval-password": "beloff"}
 
 example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
@@ -242,8 +242,6 @@ class CognitoUserIdentity(JSONable):
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
-
-        print("jdict: %s" % jdict)
 
         username = jdict.get('username')
         email = jdict.get('email')
