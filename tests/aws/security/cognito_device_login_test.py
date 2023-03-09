@@ -8,7 +8,7 @@ Created on 21 Apr 2022
 
 import requests
 
-from scs_core.aws.security.cognito_login_manager import CognitoDeviceLoginManager
+from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
 from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
 
 from scs_core.sys.http_exception import HTTPException
@@ -20,10 +20,10 @@ credentials = CognitoDeviceCredentials('scs-opc-1', 'Ytzglk6oYpzJY0FB')
 print(credentials)
 print("-")
 
-manager = CognitoDeviceLoginManager(requests)
+manager = CognitoLoginManager(requests)
 
 try:
-    response = manager.login(credentials)
+    response = manager.device_login(credentials)
     print(response)
 except HTTPException as ex:
     print(ex.data)
@@ -34,10 +34,10 @@ credentials = CognitoDeviceCredentials('scs-opc-x', 'Ytzglk6oYpzJY0FB')
 print(credentials)
 print("-")
 
-manager = CognitoDeviceLoginManager(requests)
+manager = CognitoLoginManager(requests)
 
 try:
-    response = manager.login(credentials)
+    response = manager.device_login(credentials)
     print(response)
 except HTTPException as ex:
     print(ex.data)
