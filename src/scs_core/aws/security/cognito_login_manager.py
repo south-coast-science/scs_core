@@ -4,6 +4,8 @@ Created on 23 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
+
 from abc import abstractmethod
 from collections import OrderedDict
 from enum import Enum
@@ -112,6 +114,8 @@ class AuthenticationResult(HTTPResponse):
     def construct_from_response_jdict(cls, status, jdict):
         if not jdict:
             return None
+
+        print(json.dumps(jdict, indent=4))
 
         authentication_status = AuthenticationStatus.construct_from_jdict(jdict.get('authentication-status'))
 
