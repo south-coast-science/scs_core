@@ -153,8 +153,6 @@ class AlertStatusFinderResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        # print("AlertStatusFinderResponse - jdict: %s" % jdict)
-
         if not jdict:
             return None
 

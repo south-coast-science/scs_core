@@ -29,8 +29,12 @@ class ArrayDict(JSONable):
             self.append(key, value)
 
 
-    def __contains__(self, item):
-        return item in self.__data
+    def __len__(self):
+        return len(self.__data)
+
+
+    def __contains__(self, key):
+        return key in self.__data
 
 
     # ----------------------------------------------------------------------------------------------------------------
