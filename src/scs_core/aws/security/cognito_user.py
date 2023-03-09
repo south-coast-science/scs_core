@@ -8,19 +8,16 @@ https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-pol
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
 example document (credentials):
-{"email": "production@southcoastscience.com", "password": "scs_admin_Password_123!", "retrieval-password": "beloff"}
+{"email": "production@southcoastscience.com", "password": "###", "retrieval-password": "###"}
 
 example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
 "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
 
 example AWS response:
-{'Username': '1092', 'Attributes': [{'Name': 'sub', 'Value': '332351ef-f74f-4cb4-aec8-664a3a9abae3'},
-{'Name': 'custom:tester', 'Value': 'False'}, {'Name': 'custom:super', 'Value': 'False'},
-{'Name': 'email', 'Value': 'adrian@em-monitors.co.uk'}],
-'UserCreateDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
-'UserLastModifiedDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
-'Enabled': True, 'UserStatus': 'FORCE_CHANGE_PASSWORD'}
+{"username": 22, "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff",
+"confirmation-status": "FORCE_CHANGE_PASSWORD", "enabled": true, "email-verified": false, "is-super": false,
+"is-tester": false, "created": "2023-03-07T15:32:17Z", "last-updated": "2023-03-08T14:12:00Z"}
 """
 
 import json
