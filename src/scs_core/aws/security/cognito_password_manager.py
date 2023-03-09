@@ -15,8 +15,6 @@ document example:
 "EmailSent"
 """
 
-import logging
-
 from enum import Enum
 from http import HTTPStatus
 
