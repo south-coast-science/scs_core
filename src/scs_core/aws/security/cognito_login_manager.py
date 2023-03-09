@@ -74,7 +74,7 @@ class AuthenticationResult(HTTPResponse):
         if not jdict:
             return None
 
-        print(json.dumps(jdict, indent=4))
+        # print(json.dumps(jdict, indent=4))
 
         authentication_status = AuthenticationStatus.construct_from_jdict(jdict.get('authentication-status'))
 
