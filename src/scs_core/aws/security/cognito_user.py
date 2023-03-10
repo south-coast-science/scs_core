@@ -267,7 +267,7 @@ class CognitoUserIdentity(JSONable):
         Constructor
         """
 
-        self.__username = Datum.int(username, default=username)     # int, string or None
+        self._username = Datum.int(username, default=username)      # int, string or None
         self._created = created                                     # LocalisedDatetime
         self.__confirmation_status = confirmation_status            # string
         self.__enabled = Datum.bool(enabled)                        # bool or None
@@ -390,7 +390,7 @@ class CognitoUserIdentity(JSONable):
 
     @property
     def username(self):
-        return self.__username
+        return self._username
 
 
     @property
