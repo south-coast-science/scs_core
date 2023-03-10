@@ -4,8 +4,6 @@ Created on 23 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
-
 from collections import OrderedDict
 from enum import Enum
 
