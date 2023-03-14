@@ -30,7 +30,7 @@ class MQTTClient(object):
     """
     classdocs
     """
-    # __KEEP_ALIVE_INTERVAL =         30                     # recommended: 30 default: 600 (sec)
+    __KEEP_ALIVE_INTERVAL =         30000                   # recommended: 30 default: 600 (milliseconds)
 
     __PORT =                        8883
 
@@ -102,7 +102,7 @@ class MQTTClient(object):
 
         # connect...
         try:
-            return self.__client.connectAsync()          # was connect / self.__KEEP_ALIVE_INTERVAL - default is 600
+            return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
 
         except (connectError, connectTimeoutException) as ex:
             raise OSError(repr(ex))
