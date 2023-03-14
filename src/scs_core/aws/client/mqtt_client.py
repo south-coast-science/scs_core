@@ -11,6 +11,7 @@ https://github.com/aws/aws-iot-device-sdk-python/issues/57
 https://stackoverflow.com/questions/20083858/how-to-extract-value-from-bound-method-in-python
 
 https://github.com/aws/aws-iot-device-sdk-python-V2
+https://github.com/aws/aws-iot-device-sdk-java/issues/2
 """
 
 import logging
@@ -30,7 +31,7 @@ class MQTTClient(object):
     """
     classdocs
     """
-    __KEEP_ALIVE_INTERVAL =         30000                   # recommended: 30 default: 600 (milliseconds)
+    __KEEP_ALIVE_INTERVAL =         1200                   # recommended: 30 default: 600 (seconds)
 
     __PORT =                        8883
 
@@ -39,11 +40,11 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  5                       # recommended: 32 or 128 (sec), was 5
+    __RECONN_MAX =                  10                      # recommended: 32 or 128 (sec), was 5
     __RECONN_STABLE =               5                       # recommended: 20 (sec), was 10
 
     __DISCONNECT_TIMEOUT =          60                      # recommended: 10 (sec), was 40
-    __OPERATION_TIMEOUT =           60                       # recommended: 5 (sec), was 20
+    __OPERATION_TIMEOUT =           60                      # recommended: 5 (sec), was 20
 
     __PUB_QOS =                     1
     __SUB_QOS =                     1
@@ -102,7 +103,7 @@ class MQTTClient(object):
 
         # connect...
         try:
-            return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
+            return self.__client.connect(keepAliveIntervalSecond=self.__KEEP_ALIVE_INTERVAL)
 
         except (connectError, connectTimeoutException) as ex:
             raise OSError(repr(ex))
