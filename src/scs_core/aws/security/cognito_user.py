@@ -8,19 +8,16 @@ https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-pol
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
 example document (credentials):
-{"email": "bruno.beloff@southcoastscience.com", "password": "pass"}
+{"email": "production@southcoastscience.com", "password": "###", "retrieval-password": "###"}
 
 example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
 "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
 
 example AWS response:
-{'Username': '1092', 'Attributes': [{'Name': 'sub', 'Value': '332351ef-f74f-4cb4-aec8-664a3a9abae3'},
-{'Name': 'custom:tester', 'Value': 'False'}, {'Name': 'custom:super', 'Value': 'False'},
-{'Name': 'email', 'Value': 'adrian@em-monitors.co.uk'}],
-'UserCreateDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
-'UserLastModifiedDate': datetime.datetime(2023, 1, 20, 9, 14, 22, 821000, tzinfo=tzlocal()),
-'Enabled': True, 'UserStatus': 'FORCE_CHANGE_PASSWORD'}
+{"username": 22, "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff",
+"confirmation-status": "FORCE_CHANGE_PASSWORD", "enabled": true, "email-verified": false, "is-super": false,
+"is-tester": false, "created": "2023-03-07T15:32:17Z", "last-updated": "2023-03-08T14:12:00Z"}
 """
 
 import json
@@ -56,14 +53,18 @@ class CognitoUserCredentials(MultiPersistentJSONable):
 
 
     @classmethod
-    def from_user(cls, name):
+    def from_user(cls, name, existing_email=None):
         try:
             termios.tcflush(sys.stdin, termios.TCIOFLUSH)               # flush stdin
         except termios.error:
             pass
 
-        print("Enter email address: ", end="", file=sys.stderr)
-        email = input().strip()
+        if existing_email:
+            email = existing_email
+
+        else:
+            print("Enter email address: ", end="", file=sys.stderr)
+            email = input().strip()
 
         print("Enter password: ", end="", file=sys.stderr)
         password = input().strip()
@@ -239,52 +240,23 @@ class CognitoUserIdentity(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_res(cls, res, multiples=False):
-        if not res:
-            return None
-
-        attrs_jdict = res.get('Attributes') if multiples else res.get('UserAttributes')
-        attrs = {jdict.get('Name'): jdict.get('Value') for jdict in attrs_jdict}
-
-        username = res.get('Username')
-        created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3)
-        confirmation_status = res.get('UserStatus')
-        enabled = res.get('Enabled')
-
-        email_verified = attrs.get('email_verified') == 'True'
-        email = attrs.get('email')
-        given_name = attrs.get('given_name')
-        family_name = attrs.get('family_name')
-        is_super = attrs.get('custom:super') == 'True'
-        is_tester = attrs.get('custom:tester') == 'True'
-
-        last_updated_full = LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate')))
-        last_updated = None if last_updated_full is None else round(last_updated_full, 3)
-
-        return cls(username, created, confirmation_status, enabled, email_verified,
-                   email, given_name, family_name, None, is_super, is_tester, last_updated)
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
 
-        print("jdict: %s" % jdict)
-
         username = jdict.get('username')
-        created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
-        confirmation_status = jdict.get('confirmation-status')
-        enabled = jdict.get('enabled')
-
-        email_verified = jdict.get('email-verified')
         email = jdict.get('email')
+        password = jdict.get('password')
         given_name = jdict.get('given-name')
         family_name = jdict.get('family-name')
-        password = jdict.get('password')
+
+        confirmation_status = jdict.get('confirmation-status')
+        enabled = jdict.get('enabled')
+        email_verified = jdict.get('email-verified')
         is_super = jdict.get('is-super')
         is_tester = jdict.get('is-tester')
 
+        created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
         return cls(username, created, confirmation_status, enabled,
@@ -298,20 +270,21 @@ class CognitoUserIdentity(JSONable):
         """
         Constructor
         """
-        self.__username = username                              # int or string
-        self._created = created                                 # LocalisedDatetime
-        self.__confirmation_status = confirmation_status        # string
-        self.__enabled = Datum.bool(enabled)                    # bool or None
 
-        self.__email_verified = bool(email_verified)            # bool
-        self.__email = email                                    # string
-        self.__given_name = given_name                          # string
-        self.__family_name = family_name                        # string
-        self.__password = password                              # string
-        self.__is_super = bool(is_super)                        # bool
-        self.__is_tester = bool(is_tester)                      # bool
+        self._username = Datum.int(username, default=username)      # int, string or None
+        self._created = created                                     # LocalisedDatetime
+        self.__confirmation_status = confirmation_status            # string
+        self.__enabled = Datum.bool(enabled)                        # bool or None
 
-        self._last_updated = last_updated                       # LocalizedDatetime
+        self.__email_verified = bool(email_verified)                # bool
+        self.__email = email                                        # string
+        self.__given_name = given_name                              # string
+        self.__family_name = family_name                            # string
+        self.__password = password                                  # string
+        self.__is_super = bool(is_super)                            # bool
+        self.__is_tester = bool(is_tester)                          # bool
+
+        self._last_updated = last_updated                           # LocalizedDatetime
 
 
     def __eq__(self, other):
@@ -390,8 +363,13 @@ class CognitoUserIdentity(JSONable):
         if self.username is not None:
             jdict['username'] = self.username
 
-        if self.created is not None:
-            jdict['created'] = self.created.as_iso8601()
+        jdict['email'] = self.email
+
+        if self.password is not None:
+            jdict['password'] = self.password
+
+        jdict['given-name'] = self.given_name
+        jdict['family-name'] = self.family_name
 
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
@@ -400,18 +378,14 @@ class CognitoUserIdentity(JSONable):
             jdict['enabled'] = self.enabled
 
         jdict['email-verified'] = self.email_verified
-
-        jdict['email'] = self.email
-
-        if self.password is not None:
-            jdict['password'] = self.password
-
-        jdict['given-name'] = self.given_name
-        jdict['family-name'] = self.family_name
         jdict['is-super'] = self.is_super
         jdict['is-tester'] = self.is_tester
 
-        jdict['last-updated'] = None if self.last_updated is None else self.last_updated.as_iso8601()
+        if self.created is not None:
+            jdict['created'] = self.created.as_iso8601()
+
+        if self.last_updated is not None:
+            jdict['last-updated'] = self.last_updated.as_iso8601()
 
         return jdict
 
@@ -420,7 +394,7 @@ class CognitoUserIdentity(JSONable):
 
     @property
     def username(self):
-        return self.__username
+        return self._username
 
 
     @property

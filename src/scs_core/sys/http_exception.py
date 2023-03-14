@@ -38,6 +38,9 @@ class HTTPException(RuntimeError, JSONable):
         if status == HTTPNotFoundException.STATUS:
             return HTTPNotFoundException(status, reason, data)
 
+        if status == HTTPNotAllowedException.STATUS:
+            return HTTPNotAllowedException(status, reason, data)
+
         if status == HTTPConflictException.STATUS:
             return HTTPConflictException(status, reason, data)
 
@@ -127,6 +130,20 @@ class HTTPNotFoundException(HTTPException):
     classdocs
     """
     STATUS = 404
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPNotAllowedException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 405
 
     # ----------------------------------------------------------------------------------------------------------------
 
