@@ -39,7 +39,7 @@ class MQTTClient(object):
     __QUEUE_DRAINING_FREQUENCY =    2                       # recommended: 2 (Hz)
 
     __RECONN_BASE =                 1                       # recommended: 1 (sec)
-    __RECONN_MAX =                  5                       # recommended: 32 or 128 (sec), was 10
+    __RECONN_MAX =                  128                     # recommended: 32 or 128 (sec), was 5
     __RECONN_STABLE =               20                      # recommended: 20 (sec), was 10
 
     __DISCONNECT_TIMEOUT =          10                      # recommended: 10 (sec), was 40
@@ -102,7 +102,7 @@ class MQTTClient(object):
 
         # connect...
         try:
-            return self.__client.connect(self.__KEEP_ALIVE_INTERVAL)
+            return self.__client.connect()          # was self.__KEEP_ALIVE_INTERVAL - default is 600
 
         except (connectError, connectTimeoutException) as ex:
             raise OSError(repr(ex))
