@@ -1,21 +1,21 @@
 {
-    "Name": "RESOURCE_CONTAINER_NAME",
-    "InitialVersion": {
-        "Resources": [
-            {
-                "Id": "SYSTEM_ID-data-volume",
-                "Name": "SCS",
-                "ResourceDataContainer": {
-                    "LocalVolumeResourceData": {
-                        "SourcePath": "SCS_DIR",
-                        "DestinationPath": "/SCS",
-                        "GroupOwnerSetting": {
-                            "AutoAddGroupOwner": false,
-                            "GroupOwner": "UNIX_GROUP_OWNER_NAME"
-                        }
-                    }
-                }
+  "Name": "RESOURCE_CONTAINER_NAME",
+  "InitialVersion": {
+    "Resources": [
+      {
+        "Id": "SYSTEM_ID-data-volume",
+        "Name": "SCS",
+        "ResourceDataContainer": {
+          "LocalVolumeResourceData": {
+            "SourcePath": "SCS_DIR",
+            "DestinationPath": "/SCS",
+            "GroupOwnerSetting": {
+              "AutoAddGroupOwner": false,
+              "GroupOwner": "UNIX_GROUP_OWNER_NAME"
             }
-        ]
-    }
+          }
+        }
+      }
+    ]
+  }
 }

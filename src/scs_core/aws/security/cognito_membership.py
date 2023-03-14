@@ -8,31 +8,38 @@ example document:
 
 from collections import OrderedDict
 
-from scs_core.aws.security.cognito_user import CognitoUserIdentity
-
+from scs_core.data.array_dict import ArrayDict
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class User(JSONable):
+class CognitoMembership(JSONable):
     """
     classdocs
     """
 
+    @classmethod
+    def merge(cls, cognito_accounts, org_memberships):
+        org_dict = ArrayDict([(org_membership.username, org_membership) for org_membership in sorted(org_memberships)])
+
+        # Users...
+        return [cls(cognito_account, org_dict.get(cognito_account.username)) for cognito_account in cognito_accounts]
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, identity: CognitoUserIdentity, memberships):
+    def __init__(self, cognito_account, memberships):
         """
         Constructor
         """
-        self.__identity = identity                          # CognitoUserIdentity
+        self.__cognito_account = cognito_account            # CognitoUserIdentity or CognitoDeviceIdentity
         self.__memberships = memberships                    # array of OrganisationUser
 
 
     def __lt__(self, other):
-        return self.identity < other.identity
+        return self.cognito_account < other.cognito_account
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -40,7 +47,7 @@ class User(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['identity'] = self.identity
+        jdict['account'] = self.cognito_account
         jdict['memberships'] = self.memberships
 
         return jdict
@@ -49,8 +56,8 @@ class User(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def identity(self):
-        return self.__identity
+    def cognito_account(self):
+        return self.__cognito_account
 
 
     @property
@@ -61,5 +68,5 @@ class User(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "User:{identity:%s, memberships:%s}" % \
-               (self.identity, Str.collection(self.memberships))
+        return "CognitoMembership:{cognito_account:%s, memberships:%s}" % \
+               (self.cognito_account, Str.collection(self.memberships))

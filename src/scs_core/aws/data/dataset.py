@@ -21,7 +21,7 @@ class DatasetItem(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def copy_id(self, other):
+    def copy_pk(self, other):
         pass
 
 
@@ -102,7 +102,7 @@ class Dataset(object):
                 return
 
             # old-world item is newer...
-            item.copy_id(retrieved_item)
+            item.copy_pk(retrieved_item)
 
             if not self.simulate:
                 item.save(self.db_username)

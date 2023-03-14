@@ -39,7 +39,7 @@ class CognitoDeviceCredentials(JSONable):
         """
         Constructor
         """
-        self.__tag = tag                                # string
+        self._tag = tag                                # PK: string
         self.__shared_secret = shared_secret            # string
 
 
@@ -52,16 +52,21 @@ class CognitoDeviceCredentials(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['Username'] = self.tag
-        jdict['Password'] = self.shared_secret
+        jdict['username'] = self.tag
+        jdict['password'] = self.shared_secret
 
         return jdict
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def username(self):
+        return self.tag
+
+
+    @property
     def tag(self):
-        return self.__tag
+        return self._tag
 
 
     @property
@@ -86,40 +91,28 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_res(cls, res):
-        if not res:
-            return None
-
-        tag = res.get('Username')
-        created = LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate')))
-
-        try:
-            return cls(tag, None, created)
-        except KeyError:
-            return None
-
-
-    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None) if skeleton else None
+            return cls(None, None, None, None) if skeleton else None
 
-        tag = jdict.get('Username')
+        tag = jdict.get('username')
         shared_secret = jdict.get('password')
-        created = LocalizedDatetime.construct_from_iso8601(jdict.get('UserCreateDate'))
+        created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
+        last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, shared_secret, created)
+        return cls(tag, shared_secret, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, shared_secret, created):
+    def __init__(self, tag, shared_secret, created, last_updated):
         """
         Constructor
         """
         super().__init__(tag, shared_secret)
 
-        self._created = created                             # LocalisedDatetime
+        self._created = created                                 # LocalisedDatetime
+        self._last_updated = last_updated                       # LocalizedDatetime
 
 
     def __eq__(self, other):
@@ -140,13 +133,16 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         jdict = OrderedDict()
 
         if self.tag is not None:
-            jdict['Username'] = self.tag
+            jdict['username'] = self.tag
 
         if self.shared_secret is not None:
-            jdict['Password'] = self.shared_secret
+            jdict['password'] = self.shared_secret
 
         if self.created is not None:
-            jdict['UserCreateDate'] = self.created.as_iso8601()
+            jdict['created'] = self.created.as_iso8601()
+
+        if self.last_updated is not None:
+            jdict['last-updated'] = self.last_updated.as_iso8601()
 
         return jdict
 
@@ -158,8 +154,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         return self._created
 
 
+    @property
+    def last_updated(self):
+        return self._last_updated
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, shared_secret:%s, created:%s}" % \
-               (self.tag, self.shared_secret, self.created)
+        return self.__class__.__name__ + ":{tag:%s, shared_secret:%s, created:%s, last_updated:%s}" % \
+               (self.tag, self.shared_secret, self.created, self.last_updated)

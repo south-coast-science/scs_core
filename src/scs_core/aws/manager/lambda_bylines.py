@@ -166,8 +166,6 @@ class BylinesResponse(HTTPResponse):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        # print("ConfigurationResponse - jdict: %s" % jdict, file=sys.stderr)
-
         if not jdict:
             return None
 
