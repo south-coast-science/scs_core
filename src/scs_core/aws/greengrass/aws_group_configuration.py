@@ -229,42 +229,39 @@ class AWSGroupConfigurator(object):
         temp = host.home_path()
         group_owner_name = temp.split("/")[2]
         scs_path = host.scs_path()
-        r_data["Name"] = ("Resources-" + system_id)  # Edit resources name
+        r_data["Name"] = ("Resources-" + system_id)
+        r_data_resources = r_data["InitialVersion"]["Resources"]
 
-        r_data["InitialVersion"]["Resources"][0]["Id"] = (
-                system_id + "-data-volume")  # Edit resource name
-        r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
+        r_data_resources[0]["Id"] = (system_id + "-data-volume")
+        r_data_resources[0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "GroupOwnerSetting"]["AutoAddGroupOwner"] = False
-        r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
+        r_data_resources[0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "SourcePath"] = scs_path
-        r_data["InitialVersion"]["Resources"][0]["ResourceDataContainer"]["LocalVolumeResourceData"][
+        r_data_resources[0]["ResourceDataContainer"]["LocalVolumeResourceData"][
             "GroupOwnerSetting"]["GroupOwner"] = group_owner_name
 
         if self.config.ml:
-            r_data["InitialVersion"]["Resources"][1]["Id"] = (
-                (system_id + "-ml-pm1"))  # Edit resource name
-            r_data["InitialVersion"]["Resources"][2]["Id"] = (
-                (system_id + "-ml-pm2p5"))  # Edit resource name
-            r_data["InitialVersion"]["Resources"][3]["Id"] = (
-                (system_id + "-ml-pm10"))  # Edit resource name
-            r_data["InitialVersion"]["Resources"][4]["Id"] = (
-                (system_id + "-ml-no2"))  # Edit resource name
+            r_data_resources[1]["Id"] = (system_id + "-ml-pm1")
+            r_data_resources[2]["Id"] = (system_id + "-ml-pm2p5")
+            r_data_resources[3]["Id"] = (system_id + "-ml-pm10")
 
             try:
-                r_data["InitialVersion"]["Resources"][5]["Id"] = (
-                    (system_id + "-ml-no"))  # Edit resource name
+                r_data_resources[4]["Id"] = (system_id + "-ml-no2")
             except IndexError:
                 pass
 
             try:
-                r_data["InitialVersion"]["Resources"][6]["Id"] = (
-                    (system_id + "-ml-o3"))  # Edit resource name
+                r_data_resources[5]["Id"] = (system_id + "-ml-no")
             except IndexError:
                 pass
 
             try:
-                r_data["InitialVersion"]["Resources"][7]["Id"] = (
-                    (system_id + "-ml-so2"))  # Edit resource name
+                r_data_resources[6]["Id"] = (system_id + "-ml-o3")
+            except IndexError:
+                pass
+
+            try:
+                r_data_resources[7]["Id"] = (system_id + "-ml-so2")
             except IndexError:
                 pass
 
@@ -287,45 +284,58 @@ class AWSGroupConfigurator(object):
         # Update JSON for device
         system_id = str(self.__aws_info.node("SystemID"))
         data_volume_name = (system_id + "-data-volume")
-        f_data["InitialVersion"]["Functions"][0]["Id"] = (system_id + "-ControlSubscriber")
-        f_data["InitialVersion"]["Functions"][1]["Id"] = (system_id + "-TopicPublisher")
+        f_data_functions = f_data["InitialVersion"]["Functions"]
 
-        f_data["InitialVersion"]["Functions"][0]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
+        f_data_functions[0]["Id"] = (system_id + "-ControlSubscriber")
+        f_data_functions[1]["Id"] = (system_id + "-TopicPublisher")
+
+        f_data_functions[0]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
             "ResourceId"] = data_volume_name
-        f_data["InitialVersion"]["Functions"][1]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
+        f_data_functions[1]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][0][
             "ResourceId"] = data_volume_name
 
         if self.config.ml:
-            f_data["InitialVersion"]["Functions"][2]["Id"] = (system_id + "-PMxInference")
-            f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+            f_data_functions[2]["Id"] = (system_id + "-PMxInference")
+            f_data_functions[2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 0]["ResourceId"] = data_volume_name
-            f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+            f_data_functions[2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 1]["ResourceId"] = (system_id + "-ml-pm1")
-            f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+            f_data_functions[2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 2]["ResourceId"] = (system_id + "-ml-pm2p5")
-            f_data["InitialVersion"]["Functions"][2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
+            f_data_functions[2]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
                 3]["ResourceId"] = (system_id + "-ml-pm10")
 
-            f_data["InitialVersion"]["Functions"][3]["Id"] = (system_id + "-GasInference")
-            f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
-                0]["ResourceId"] = data_volume_name
-            f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"]["ResourceAccessPolicies"][
-                1]["ResourceId"] = (system_id + "-ml-no2")
+            try:
+                f_data_functions[3]["Id"] = (system_id + "-GasInference")
+            except IndexError:
+                pass
 
             try:
-                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                f_data_functions[3]["FunctionConfiguration"]["Environment"][
+                    "ResourceAccessPolicies"][0]["ResourceId"] = data_volume_name
+            except IndexError:
+                pass
+
+            try:
+                f_data_functions[3]["FunctionConfiguration"]["Environment"][
+                    "ResourceAccessPolicies"][1]["ResourceId"] = (system_id + "-ml-no2")
+            except IndexError:
+                pass
+
+            try:
+                f_data_functions[3]["FunctionConfiguration"]["Environment"][
                     "ResourceAccessPolicies"][2]["ResourceId"] = (system_id + "-ml-no")
             except IndexError:
                 pass
 
             try:
-                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                f_data_functions[3]["FunctionConfiguration"]["Environment"][
                     "ResourceAccessPolicies"][3]["ResourceId"] = (system_id + "-ml-o3")
             except IndexError:
                 pass
 
             try:
-                f_data["InitialVersion"]["Functions"][3]["FunctionConfiguration"]["Environment"][
+                f_data_functions[3]["FunctionConfiguration"]["Environment"][
                     "ResourceAccessPolicies"][4]["ResourceId"] = (system_id + "-ml-so2")
             except IndexError:
                 pass
@@ -347,20 +357,20 @@ class AWSGroupConfigurator(object):
 
         # Edit for device
         system_id = str(self.__aws_info.node("SystemID"))
-        s_data["InitialVersion"]["Subscriptions"][0]["Id"] = (system_id + "-particulates-subscription")
-        s_data["InitialVersion"]["Subscriptions"][1]["Id"] = (system_id + "-control-from-cloud-subscription")
-        s_data["InitialVersion"]["Subscriptions"][2]["Id"] = (system_id + "-climate-subscription")
-        s_data["InitialVersion"]["Subscriptions"][3]["Id"] = (system_id + "-status-subscription")
-        s_data["InitialVersion"]["Subscriptions"][4]["Id"] = (system_id + "-control-to-cloud-subscription")
-        s_data["InitialVersion"]["Subscriptions"][5]["Id"] = (system_id + "-gases-subscription")
+        s_data_subs = s_data["InitialVersion"]["Subscriptions"]
+        s_data_subs[0]["Id"] = (system_id + "-particulates-subscription")
+        s_data_subs[1]["Id"] = (system_id + "-control-from-cloud-subscription")
+        s_data_subs[2]["Id"] = (system_id + "-climate-subscription")
+        s_data_subs[3]["Id"] = (system_id + "-status-subscription")
+        s_data_subs[4]["Id"] = (system_id + "-control-to-cloud-subscription")
+        s_data_subs[5]["Id"] = (system_id + "-gases-subscription")
 
-        s_data["InitialVersion"]["Subscriptions"][0]["Subject"] = (
-                self.__aws_info.node("LocationPath") + "/particulates")
-        s_data["InitialVersion"]["Subscriptions"][1]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
-        s_data["InitialVersion"]["Subscriptions"][2]["Subject"] = (self.__aws_info.node("LocationPath") + "/climate")
-        s_data["InitialVersion"]["Subscriptions"][3]["Subject"] = (self.__aws_info.node("DevicePath") + "/status")
-        s_data["InitialVersion"]["Subscriptions"][4]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
-        s_data["InitialVersion"]["Subscriptions"][5]["Subject"] = (self.__aws_info.node("LocationPath") + "/gases")
+        s_data_subs[0]["Subject"] = (self.__aws_info.node("LocationPath") + "/particulates")
+        s_data_subs[1]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
+        s_data_subs[2]["Subject"] = (self.__aws_info.node("LocationPath") + "/climate")
+        s_data_subs[3]["Subject"] = (self.__aws_info.node("DevicePath") + "/status")
+        s_data_subs[4]["Subject"] = (self.__aws_info.node("DevicePath") + "/control")
+        s_data_subs[5]["Subject"] = (self.__aws_info.node("LocationPath") + "/gases")
 
         self.__logger.info("Creating sub definition")
         self.__logger.info(s_data)
