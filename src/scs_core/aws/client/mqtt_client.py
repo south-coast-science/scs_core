@@ -45,8 +45,8 @@ class MQTTClient(object):
     __DISCONNECT_TIMEOUT =          60                      # recommended: 10 (sec), was 40
     __OPERATION_TIMEOUT =           60                       # recommended: 5 (sec), was 20
 
-    __PUB_QOS =                     2
-    __SUB_QOS =                     2
+    __PUB_QOS =                     1
+    __SUB_QOS =                     1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ class MQTTClient(object):
 
         # connect...
         try:
-            return self.__client.connect()          # was self.__KEEP_ALIVE_INTERVAL - default is 600
+            return self.__client.connectAsync()          # was connect / self.__KEEP_ALIVE_INTERVAL - default is 600
 
         except (connectError, connectTimeoutException) as ex:
             raise OSError(repr(ex))
