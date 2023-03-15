@@ -146,6 +146,7 @@ class MQTTDevicePoller(object):
 
         # go
         client.connect(auth)
+
         # datum...
         now = LocalizedDatetime.now().utc()
         datum = ControlDatum.construct(host_tag, device_tag, now, token, self.__TIMEOUT, d_ss)
