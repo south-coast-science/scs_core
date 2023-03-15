@@ -43,3 +43,8 @@ class Logging(object):
     @classmethod
     def level(cls):
         return cls.__LEVEL
+
+
+    @classmethod
+    def degugging_on(cls):
+        return cls.__LEVEL == logging.DEBUG
