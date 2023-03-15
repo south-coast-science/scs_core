@@ -76,7 +76,7 @@ class MQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self, auth, debug):
+    def connect(self, auth, debug=False):
         # logging...
         if debug:
             self.__assert_logger(logging.DEBUG)
