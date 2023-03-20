@@ -112,7 +112,7 @@ class CSVHeader(object):
 
     def as_dict(self, row):
         if len(row) != len(self):
-            raise ValueError("unmatched lengths: header: %s row: %s" % (self, row))
+            raise ValueError("unmatched lengths: header: %s row: %s" % (list(self.paths()), row))
 
         dictionary = OrderedDict()
 
