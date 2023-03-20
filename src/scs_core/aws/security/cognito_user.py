@@ -53,14 +53,18 @@ class CognitoUserCredentials(MultiPersistentJSONable):
 
 
     @classmethod
-    def from_user(cls, name):
+    def from_user(cls, name, existing_email=None):
         try:
             termios.tcflush(sys.stdin, termios.TCIOFLUSH)               # flush stdin
         except termios.error:
             pass
 
-        print("Enter email address: ", end="", file=sys.stderr)
-        email = input().strip()
+        if existing_email:
+            email = existing_email
+
+        else:
+            print("Enter email address: ", end="", file=sys.stderr)
+            email = input().strip()
 
         print("Enter password: ", end="", file=sys.stderr)
         password = input().strip()

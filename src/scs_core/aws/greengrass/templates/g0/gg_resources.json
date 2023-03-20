@@ -1,0 +1,51 @@
+{
+  "Name": "RESOURCE_CONTAINER_NAME",
+  "InitialVersion": {
+    "Resources": [
+      {
+        "Id": "SYSTEM_ID-data-volume",
+        "Name": "SCS",
+        "ResourceDataContainer": {
+          "LocalVolumeResourceData": {
+            "SourcePath": "SCS_DIR",
+            "DestinationPath": "/SCS",
+            "GroupOwnerSetting": {
+              "AutoAddGroupOwner": false,
+              "GroupOwner": "UNIX_GROUP_OWNER_NAME"
+            }
+          }
+        }
+      },
+      {
+        "Id": "SYSTEM_ID-ml-pm1",
+        "Name": "ML-PM1",
+        "ResourceDataContainer": {
+          "S3MachineLearningModelResourceData": {
+            "DestinationPath": "/trained-models/rn20/pm1",
+            "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm1/single-xgboost/rnpl-pm1-xgboost-regression-2021-02-02-12-46-07/output/model.tar.gz"
+          }
+        }
+      },
+      {
+        "Id": "SYSTEM_ID-ml-pm2p5",
+        "Name": "ML-PM2P5",
+        "ResourceDataContainer": {
+          "S3MachineLearningModelResourceData": {
+            "DestinationPath": "/trained-models/rn20/pm2p5",
+            "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm2p5/single-xgboost/rnpl-pm2p5-xgboost-regression-2021-02-02-14-39-27/output/model.tar.gz"
+          }
+        }
+      },
+      {
+        "Id": "SYSTEM_ID-ml-pm10",
+        "Name": "ML-PM10",
+        "ResourceDataContainer": {
+          "S3MachineLearningModelResourceData": {
+            "DestinationPath": "/trained-models/rn20/pm10",
+            "S3Uri": "s3://scs-sagemaker-automl-2/xgboost-models/PMs/Ricardo-NPL/pm10/single-xgboost/rnpl-pm10-xgboost-regression-2021-02-02-15-13-42/output/model.tar.gz"
+          }
+        }
+      }
+    ]
+  }
+}
