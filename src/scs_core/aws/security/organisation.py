@@ -242,7 +242,7 @@ class OrganisationPathRoot(JSONable):
         Constructor
         """
         self._opr_id = Datum.int(opr_id)                # AUTO PK: int
-        self.__org_id = int(org_id)                     # INDEX: int
+        self.__org_id = Datum.int(org_id)               # INDEX: int
         self.__path_root = path_root                    # UNIQUE: string
 
 
@@ -347,11 +347,11 @@ class OrganisationUser(JSONable):
         """
         Constructor
         """
-        self._username = int(username)                          # PK: int
-        self._org_id = int(org_id)                              # PK: int
-        self.__is_org_admin = bool(is_org_admin)                # INDEX: bool
-        self.__is_device_admin = bool(is_device_admin)          # INDEX: bool
-        self.__is_suspended = bool(is_suspended)                # INDEX: bool
+        self._username = Datum.int(username, default=username)      # PK: int
+        self._org_id = Datum.int(org_id)                            # PK: int
+        self.__is_org_admin = bool(is_org_admin)                    # INDEX: bool
+        self.__is_device_admin = bool(is_device_admin)              # INDEX: bool
+        self.__is_suspended = bool(is_suspended)                    # INDEX: bool
 
 
     def __eq__(self, other):
@@ -484,9 +484,9 @@ class OrganisationUserPath(JSONable):
         """
         Constructor
         """
-        self._username = int(username)                  # PK: int
-        self._opr_id = int(opr_id)                      # PK: int
-        self._path_extension = path_extension           # PK: string
+        self._username = Datum.int(username, default=username)      # PK: int
+        self._opr_id = Datum.int(opr_id)                            # PK: int
+        self._path_extension = path_extension                       # PK: string
 
 
     def __eq__(self, other):
@@ -643,7 +643,7 @@ class OrganisationDevice(JSONable):
         Constructor
         """
         self._device_tag = device_tag                   # PK: string
-        self._org_id = int(org_id)                      # PK: int
+        self._org_id = Datum.int(org_id)                # PK: int
         self.__device_path = device_path                # string
         self.__location_path = location_path            # string
 
