@@ -39,7 +39,7 @@ class CognitoDeviceCredentials(JSONable):
         """
         Constructor
         """
-        self._tag = tag                                # PK: string
+        self._tag = tag                                 # PK: string
         self.__shared_secret = shared_secret            # string
 
 
