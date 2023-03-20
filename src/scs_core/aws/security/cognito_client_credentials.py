@@ -1,23 +1,12 @@
 """
-Created on 22 Nov 2021
+Created on 20 Mar 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html
-https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
 
-example document (credentials):
+example document:
 {"email": "production@southcoastscience.com", "password": "###", "retrieval-password": "###"}
-
-example document (identity):
-{"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
-"email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff", "is-super": true}
-
-example AWS response:
-{"username": 22, "email": "bruno.beloff@southcoastscience.com", "given-name": "Bruno", "family-name": "Beloff",
-"confirmation-status": "FORCE_CHANGE_PASSWORD", "enabled": true, "email-verified": false, "is-super": false,
-"is-tester": false, "created": "2023-03-07T15:32:17Z", "last-updated": "2023-03-08T14:12:00Z"}
 """
 
 import json
@@ -35,7 +24,7 @@ from scs_core.data.json import MultiPersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoClientUser(CognitoUserCredentials, MultiPersistentJSONable):
+class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
     """
     classdocs
     """
@@ -158,5 +147,5 @@ class CognitoClientUser(CognitoUserCredentials, MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserCredentials:{name:%s, email:%s, password:%s, retrieval_password:%s}" %  \
+        return "CognitoClientCredentials:{name:%s, email:%s, password:%s, retrieval_password:%s}" %  \
                (self.name, self.email, self.password, self.retrieval_password)
