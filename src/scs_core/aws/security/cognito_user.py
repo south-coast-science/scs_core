@@ -5,10 +5,6 @@ Created on 22 Nov 2021
 
 https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html
 https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
-https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
-
-example document (credentials):
-{"email": "production@southcoastscience.com", "password": "###", "retrieval-password": "###"}
 
 example document (identity):
 {"username": "8", "creation-date": "2021-11-24T12:51:12Z", "confirmation-status": "CONFIRMED", "enabled": true,
