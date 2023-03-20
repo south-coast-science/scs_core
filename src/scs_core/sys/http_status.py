@@ -7,7 +7,6 @@ https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 """
 
 
-# TODO: remove, and replace with httpstatus package
 # --------------------------------------------------------------------------------------------------------------------
 
 class HTTPStatus(object):
