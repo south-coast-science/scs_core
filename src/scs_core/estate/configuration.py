@@ -403,7 +403,7 @@ class Configuration(JSONable):
 
 
     @classmethod
-    def load(cls, manager, psu_version=None):
+    def load(cls, manager, psu_version=None, exclude_sim=False):
         csv_logger_conf = CSVLoggerConf.load(manager)
 
         hostname = socket.gethostname()
@@ -438,7 +438,7 @@ class Configuration(JSONable):
         sht_conf = SHTConf.load(manager)
         networks = manager.networks()
         modem = manager.modem()
-        sim = manager.sim()
+        sim = None if exclude_sim else manager.sim()
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
