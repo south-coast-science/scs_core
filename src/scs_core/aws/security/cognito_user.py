@@ -270,8 +270,8 @@ class CognitoUserIdentity(JSONable):
         if self.password is not None:
             jdict['password'] = self.password
 
-        jdict['given-name'] = self.given_name if self.given_name else " "
-        jdict['family-name'] = self.family_name if self.family_name else " "
+        jdict['given-name'] = self.given_name if self.given_name else "-"
+        jdict['family-name'] = self.family_name if self.family_name else "-"
 
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
