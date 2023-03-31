@@ -139,6 +139,16 @@ class CognitoUserIdentity(JSONable):
         return True
 
 
+    @staticmethod
+    def ext_name(name):
+        return '-' if not name else name
+
+
+    @staticmethod
+    def int_name(name):
+        return None if name == '-' else name
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -149,8 +159,8 @@ class CognitoUserIdentity(JSONable):
         username = jdict.get('username')
         email = jdict.get('email')
         password = jdict.get('password')
-        given_name = jdict.get('given-name')
-        family_name = jdict.get('family-name')
+        given_name = cls.int_name(jdict.get('given-name'))
+        family_name = cls.int_name(jdict.get('family-name'))
 
         confirmation_status = jdict.get('confirmation-status')
         enabled = jdict.get('enabled')
@@ -270,8 +280,8 @@ class CognitoUserIdentity(JSONable):
         if self.password is not None:
             jdict['password'] = self.password
 
-        jdict['given-name'] = self.given_name if self.given_name else "-"
-        jdict['family-name'] = self.family_name if self.family_name else "-"
+        jdict['given-name'] = self.ext_name(self.given_name)
+        jdict['family-name'] = self.ext_name(self.family_name)
 
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
