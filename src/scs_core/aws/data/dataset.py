@@ -89,8 +89,13 @@ class Dataset(object):
 
 
     def update_with(self, item: DatasetItem):
+        print("update_with - item: %s" % item)
+
         try:
             retrieved_item = self.__items[item.index]
+
+            print("update_with - retrieved_item: %s" % retrieved_item)
+            print("-")
 
             # no changes...
             if item == retrieved_item:
