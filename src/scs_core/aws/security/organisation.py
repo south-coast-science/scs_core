@@ -347,7 +347,7 @@ class OrganisationUser(JSONable):
         """
         Constructor
         """
-        self._username = Datum.int(username, default=username)      # PK: int
+        self._username = username                                   # PK: string
         self._org_id = Datum.int(org_id)                            # PK: int
         self.__is_org_admin = bool(is_org_admin)                    # INDEX: bool
         self.__is_device_admin = bool(is_device_admin)              # INDEX: bool
@@ -484,7 +484,7 @@ class OrganisationUserPath(JSONable):
         """
         Constructor
         """
-        self._username = Datum.int(username, default=username)      # PK: int
+        self._username = username                                   # PK: string
         self._opr_id = Datum.int(opr_id)                            # PK: int
         self._path_extension = path_extension                       # PK: string
 
