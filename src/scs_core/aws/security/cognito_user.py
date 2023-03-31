@@ -141,7 +141,7 @@ class CognitoUserIdentity(JSONable):
 
     @staticmethod
     def ext_name(name):
-        return '-' if not name else name
+        return '-' if not name.strip() else name
 
 
     @staticmethod
