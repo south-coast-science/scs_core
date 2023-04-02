@@ -141,7 +141,7 @@ class CognitoUserIdentity(JSONable):
 
     @staticmethod
     def ext_name(name):
-        return '-' if not name.strip() else name
+        return '-' if name is None or name.strip() == '' else name
 
 
     @staticmethod
@@ -212,26 +212,27 @@ class CognitoUserIdentity(JSONable):
 
 
     def __lt__(self, other):
-        if self.family_name is not None:
-            if other.family_name is None:
-                return False
+        # family_name...
+        self_name = self.ext_name(self.family_name)
+        other_name = self.ext_name(other.family_name)
 
-            if self.family_name.lower() < other.family_name.lower():
-                return True
+        if self_name.lower() < other_name.lower():
+            return True
 
-            if self.family_name.lower() > other.family_name.lower():
-                return False
+        if self_name.lower() > other_name.lower():
+            return False
 
-        if self.given_name is not None:
-            if other.given_name is None:
-                return False
+        # given_name...
+        self_name = self.ext_name(self.given_name)
+        other_name = self.ext_name(other.given_name)
 
-            if self.given_name.lower() < other.given_name.lower():
-                return True
+        if self_name.lower() < other_name.lower():
+            return True
 
-            if self.given_name.lower() > other.given_name.lower():
-                return False
+        if self_name.lower() > other_name.lower():
+            return False
 
+        # email...
         if self.email.lower() < other.email.lower():
             return True
 

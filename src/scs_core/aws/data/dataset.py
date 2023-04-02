@@ -88,21 +88,19 @@ class Dataset(object):
             self.add(item)
 
 
-    def update_with(self, item: DatasetItem):
-        print("update_with - item: %s" % item)
-
+    def update_with(self, item: DatasetItem, insert_only=False):
         try:
             retrieved_item = self.__items[item.index]
 
-            print("update_with - retrieved_item: %s" % retrieved_item)
-            print("-")
+            if insert_only:
+                return
 
             # no changes...
             if item == retrieved_item:
                 return
 
             # AWS item is newer - ignore old-world item...
-            if retrieved_item.last_updated > self.latest_import:
+            if self.latest_import and retrieved_item.last_updated > self.latest_import:
                 self.__logger.info('WARNING: old-world item ignored: %s' % item)
                 return
 
