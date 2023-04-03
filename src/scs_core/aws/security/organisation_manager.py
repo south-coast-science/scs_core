@@ -184,9 +184,15 @@ class OrganisationManager(object):
 
     def find_oups(self, token, username, opr_id):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
-        payload = JSONify.dumps({"Username": username, "OPRID": opr_id})
+        payload = {}
 
-        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
+        if username:
+            payload['Username'] = username
+
+        if opr_id:
+            payload['OPRID'] = opr_id
+
+        response = self.__http_client.get(url, headers=self.__headers(token), data=JSONify.dumps(payload))
         self.__check_response(response)
 
         print("response: %s" % response.json())
