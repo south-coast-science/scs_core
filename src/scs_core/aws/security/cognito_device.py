@@ -35,12 +35,12 @@ class CognitoDeviceCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, shared_secret):
+    def __init__(self, tag, password):
         """
         Constructor
         """
         self._tag = tag                                 # PK: string
-        self.__shared_secret = shared_secret            # string
+        self.__password = password                      # string
 
 
     def __lt__(self, other):
@@ -53,7 +53,7 @@ class CognitoDeviceCredentials(JSONable):
         jdict = OrderedDict()
 
         jdict['username'] = self.tag
-        jdict['password'] = self.shared_secret
+        jdict['password'] = self.password
 
         return jdict
 
@@ -70,15 +70,15 @@ class CognitoDeviceCredentials(JSONable):
 
 
     @property
-    def shared_secret(self):
-        return self.__shared_secret
+    def password(self):
+        return self.__password
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceCredentials:{tag:%s, shared_secret:%s}" % \
-               (self.tag, self.shared_secret)
+        return "CognitoDeviceCredentials:{tag:%s, password:%s}" % \
+               (self.tag, self.password)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -96,20 +96,20 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
             return cls(None, None, None, None) if skeleton else None
 
         tag = jdict.get('username')
-        shared_secret = jdict.get('password')
+        password = jdict.get('password')
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, shared_secret, created, last_updated)
+        return cls(tag, password, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, shared_secret, created, last_updated):
+    def __init__(self, tag, password, created, last_updated):
         """
         Constructor
         """
-        super().__init__(tag, shared_secret)
+        super().__init__(tag, password)
 
         self._created = created                                 # LocalisedDatetime
         self._last_updated = last_updated                       # LocalizedDatetime
@@ -135,8 +135,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if self.tag is not None:
             jdict['username'] = self.tag
 
-        if self.shared_secret is not None:
-            jdict['password'] = self.shared_secret
+        if self.password is not None:
+            jdict['password'] = self.password
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
@@ -162,5 +162,5 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{tag:%s, shared_secret:%s, created:%s, last_updated:%s}" % \
-               (self.tag, self.shared_secret, self.created, self.last_updated)
+        return "CognitoDeviceIdentity:{tag:%s, password:%s, created:%s, last_updated:%s}" % \
+               (self.tag, self.password, self.created, self.last_updated)
