@@ -51,10 +51,6 @@ class CognitoPasswordManager(object):
         response = self.__http_client.post(url, headers=self.__HEADERS, data=JSONify.dumps(payload))
         status = HTTPStatus(response.status_code)
 
-        print("send_email - status_code: %s" % response.status_code)
-        print("send_email - text: %s" % response.text)
-        print("send_email - json: %s" % response.json())
-
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())
 
