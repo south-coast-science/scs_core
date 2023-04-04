@@ -7,7 +7,7 @@ example document (credentials):
 {"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
 
 example document (identity):
-{"username": "scs-ap1-343", "created": "2022-04-07T13:37:56Z"}
+{"username": "scs-ph1-28", "created": "2023-04-04T09:08:55Z", "last-updated": "2023-04-04T09:08:56Z"}
 """
 
 from collections import OrderedDict
