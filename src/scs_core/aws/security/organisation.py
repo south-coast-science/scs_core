@@ -713,6 +713,13 @@ class OrganisationDevice(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def control_path(self):
+        return self.device_path + 'control'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
     def username(self):
         return self.device_tag
 
