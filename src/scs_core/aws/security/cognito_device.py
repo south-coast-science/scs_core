@@ -91,6 +91,20 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def construct_from_res(cls, res):
+        if not res:
+            return None
+
+        tag = res.get('Username')
+        password = res.get('password')
+
+        created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
+        last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
+
+        return cls(tag, password, created, last_updated)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls(None, None, None, None) if skeleton else None
