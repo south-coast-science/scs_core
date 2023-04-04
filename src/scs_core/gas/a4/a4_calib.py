@@ -93,6 +93,22 @@ class A4Calib(SensorCalib):
         self.__we_sens_mv = Datum.float(we_sens_mv, 3)              # WE sensitivity                        mV / ppb
         self.__we_no2_x_sens_mv = Datum.float(we_no2_x_sens_mv, 3)  # WE cross-sensitivity                  mV / ppb
 
+        # validate...
+        if self.we_sens_na == 0.0:
+            raise ValueError('we_sensitivity_na_ppb: zero sensitivity.')
+
+        if self.we_x_sens_na == 0.0:
+            raise ValueError('we_cross_sensitivity_no2_na_ppb: zero sensitivity.')
+
+        if self.pcb_gain == 0.0:
+            raise ValueError('pcb_gain: zero sensitivity.')
+
+        if self.we_sens_mv == 0.0:
+            raise ValueError('we_sensitivity_mv_ppb: zero sensitivity.')
+
+        if self.we_no2_x_sens_mv == 0.0:
+            raise ValueError('we_cross_sensitivity_no2_mv_ppb: zero sensitivity.')
+
 
     def __eq__(self, other):
         try:
