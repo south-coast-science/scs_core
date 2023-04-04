@@ -167,12 +167,12 @@ class A4Calib(SensorCalib):
         jdict['ae_total_zero_mv'] = self.ae_tot_mv
 
         jdict['we_sensitivity_na_ppb'] = self.we_sens_na
-        jdict['we_cross_sensitivity_no2_na_ppb'] = self.we_x_sens_na if self.we_x_sens_na else "n/a"
+        jdict['we_cross_sensitivity_no2_na_ppb'] = self.we_x_sens_na if self.we_x_sens_na is None else "n/a"
 
         jdict['pcb_gain'] = self.pcb_gain
 
         jdict['we_sensitivity_mv_ppb'] = self.we_sens_mv
-        jdict['we_cross_sensitivity_no2_mv_ppb'] = self.we_no2_x_sens_mv if self.we_no2_x_sens_mv else "n/a"
+        jdict['we_cross_sensitivity_no2_mv_ppb'] = self.we_no2_x_sens_mv if self.we_no2_x_sens_mv is None else "n/a"
 
         return jdict
 
