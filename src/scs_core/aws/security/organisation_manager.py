@@ -83,11 +83,15 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
     # OrganisationPathRoot...
 
-    def find_oprs_by_organisation(self, token, org_id):
-        url = '/'.join((self.__MANAGER_URL, 'opr'))
-        payload = JSONify.dumps({"OrgID": org_id})
 
-        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
+    def find_oprs(self, token, org_id=None):
+        url = '/'.join((self.__MANAGER_URL, 'opr'))
+        payload = {}
+
+        if org_id:
+            payload['OrgID'] = org_id
+
+        response = self.__http_client.get(url, headers=self.__headers(token), data=JSONify.dumps(payload))
         self.__check_response(response)
 
         return tuple(OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json())
@@ -182,14 +186,18 @@ class OrganisationManager(object):
     # ----------------------------------------------------------------------------------------------------------------
     # OrganisationUserPath...
 
-    def find_oups(self, token, username, opr_id):
+    def find_oups(self, token, username=None, opr_id=None):
         url = '/'.join((self.__MANAGER_URL, 'oup'))
-        payload = JSONify.dumps({"Username": username, "OPRID": opr_id})
+        payload = {}
 
-        response = self.__http_client.get(url, headers=self.__headers(token), data=payload)
+        if username:
+            payload['Username'] = username
+
+        if opr_id:
+            payload['OPRID'] = opr_id
+
+        response = self.__http_client.get(url, headers=self.__headers(token), data=JSONify.dumps(payload))
         self.__check_response(response)
-
-        print("response: %s" % response.json())
 
         return tuple(OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json())
 

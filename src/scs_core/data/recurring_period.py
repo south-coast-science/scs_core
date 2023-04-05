@@ -158,7 +158,7 @@ class RecurringDay(RecurringPeriod):
 
     @classmethod
     def valid_intervals(cls):
-        return (1, )
+        return 1,
 
 
     # ----------------------------------------------------------------------------------------------------------------

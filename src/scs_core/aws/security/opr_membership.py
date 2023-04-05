@@ -1,5 +1,5 @@
 """
-Created on 2 Feb 2023
+Created on 3 Apr 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -15,31 +15,31 @@ from scs_core.data.str import Str
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoMembership(JSONable):
+class OPRMembership(JSONable):
     """
     classdocs
     """
 
     @classmethod
-    def merge(cls, cognito_accounts, org_memberships):
-        org_dict = ArrayDict([(org_membership.username, org_membership) for org_membership in sorted(org_memberships)])
+    def merge(cls, oprs, oups):
+        org_dict = ArrayDict([(oup.opr_id, oup) for oup in sorted(oups)])
 
-        # Accounts...
-        return [cls(cognito_account, org_dict.get(cognito_account.username)) for cognito_account in cognito_accounts]
+        # OrganisationPathRoots...
+        return [cls(opr, org_dict.get(opr.opr_id)) for opr in oprs]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, cognito_account, memberships):
+    def __init__(self, opr, memberships):
         """
         Constructor
         """
-        self.__cognito_account = cognito_account            # CognitoUserIdentity or CognitoDeviceIdentity
-        self.__memberships = memberships                    # array of OrganisationUser
+        self.__opr = opr                                    # OrganisationPathRoot
+        self.__memberships = memberships                    # array of OrganisationUserPath
 
 
     def __lt__(self, other):
-        return self.cognito_account < other.cognito_account
+        return self.opr < other.opr
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ class CognitoMembership(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['account'] = self.cognito_account
+        jdict['opr'] = self.opr
         jdict['memberships'] = self.memberships
 
         return jdict
@@ -56,8 +56,8 @@ class CognitoMembership(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def cognito_account(self):
-        return self.__cognito_account
+    def opr(self):
+        return self.__opr
 
 
     @property
@@ -68,5 +68,5 @@ class CognitoMembership(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoMembership:{cognito_account:%s, memberships:%s}" % \
-               (self.cognito_account, Str.collection(self.memberships))
+        return "OPRMembership:{opr:%s, memberships:%s}" % \
+               (self.opr, Str.collection(self.memberships))
