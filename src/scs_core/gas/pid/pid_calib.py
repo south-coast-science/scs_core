@@ -58,7 +58,7 @@ class PIDCalib(SensorCalib):
 
         # validate...
         if self.pid_sens_mv_ppm == 0.0:
-            raise ValueError('pid_sensitivity_mv_ppm: zero sensitivity.')
+            raise ValueError('%s - pid_sensitivity_mv_ppm: zero sensitivity.' % sensor_type)
 
 
     def __eq__(self, other):

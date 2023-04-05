@@ -95,19 +95,19 @@ class A4Calib(SensorCalib):
 
         # validate...
         if self.we_sens_na == 0.0:
-            raise ValueError('we_sensitivity_na_ppb: zero sensitivity.')
+            raise ValueError('%s - we_sensitivity_na_ppb: zero sensitivity.' % sensor_type)
 
         if self.we_x_sens_na == 0.0:
-            raise ValueError('we_cross_sensitivity_no2_na_ppb: zero sensitivity.')
+            raise ValueError('%s - we_cross_sensitivity_no2_na_ppb: zero sensitivity.' % sensor_type)
 
         if self.pcb_gain == 0.0:
-            raise ValueError('pcb_gain: zero sensitivity.')
+            raise ValueError('%s - pcb_gain: zero sensitivity.' % sensor_type)
 
         if self.we_sens_mv == 0.0:
-            raise ValueError('we_sensitivity_mv_ppb: zero sensitivity.')
+            raise ValueError('%s - we_sensitivity_mv_ppb: zero sensitivity.' % sensor_type)
 
         if self.we_no2_x_sens_mv == 0.0:
-            raise ValueError('we_cross_sensitivity_no2_mv_ppb: zero sensitivity.')
+            raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: zero sensitivity.' % sensor_type)
 
 
     def __eq__(self, other):
@@ -183,12 +183,12 @@ class A4Calib(SensorCalib):
         jdict['ae_total_zero_mv'] = self.ae_tot_mv
 
         jdict['we_sensitivity_na_ppb'] = self.we_sens_na
-        jdict['we_cross_sensitivity_no2_na_ppb'] = self.we_x_sens_na if self.we_x_sens_na is None else "n/a"
+        jdict['we_cross_sensitivity_no2_na_ppb'] = "n/a" if self.we_x_sens_na is None else self.we_x_sens_na
 
         jdict['pcb_gain'] = self.pcb_gain
 
         jdict['we_sensitivity_mv_ppb'] = self.we_sens_mv
-        jdict['we_cross_sensitivity_no2_mv_ppb'] = self.we_no2_x_sens_mv if self.we_no2_x_sens_mv is None else "n/a"
+        jdict['we_cross_sensitivity_no2_mv_ppb'] = "n/a" if self.we_no2_x_sens_mv is None else self.we_no2_x_sens_mv
 
         return jdict
 
