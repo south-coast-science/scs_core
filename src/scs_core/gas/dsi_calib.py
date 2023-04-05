@@ -41,15 +41,15 @@ class DSICalib(AFECalib):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def download(cls, serial_number):
+    def download(cls, serial_number, parse=True):
         http_client = HTTPClient()
         http_client.connect(AFECalib.ALPHASENSE_HOST)
 
         try:
             path = SensorCalib.ALPHASENSE_PATH + serial_number
-            jstr = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
+            jdict = json.loads(http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER))
 
-            return cls.construct_from_jdict(json.loads(jstr))
+            return cls.construct_from_jdict(jdict) if parse else jdict
 
         finally:
             http_client.close()

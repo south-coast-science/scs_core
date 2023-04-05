@@ -139,6 +139,16 @@ class CognitoUserIdentity(JSONable):
         return True
 
 
+    @staticmethod
+    def ext_name(name):
+        return '-' if name is None or name.strip() == '' else name
+
+
+    @staticmethod
+    def int_name(name):
+        return None if name == '-' else name
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -149,8 +159,8 @@ class CognitoUserIdentity(JSONable):
         username = jdict.get('username')
         email = jdict.get('email')
         password = jdict.get('password')
-        given_name = jdict.get('given-name')
-        family_name = jdict.get('family-name')
+        given_name = cls.int_name(jdict.get('given-name'))
+        family_name = cls.int_name(jdict.get('family-name'))
 
         confirmation_status = jdict.get('confirmation-status')
         enabled = jdict.get('enabled')
@@ -173,7 +183,7 @@ class CognitoUserIdentity(JSONable):
         Constructor
         """
 
-        self._username = Datum.int(username, default=username)      # int, string or None
+        self._username = username                                   # string email address or hash
         self._created = created                                     # LocalisedDatetime
         self.__confirmation_status = confirmation_status            # string
         self.__enabled = Datum.bool(enabled)                        # bool or None
@@ -202,26 +212,27 @@ class CognitoUserIdentity(JSONable):
 
 
     def __lt__(self, other):
-        if self.family_name is not None:
-            if other.family_name is None:
-                return False
+        # family_name...
+        self_name = self.ext_name(self.family_name)
+        other_name = self.ext_name(other.family_name)
 
-            if self.family_name.lower() < other.family_name.lower():
-                return True
+        if self_name.lower() < other_name.lower():
+            return True
 
-            if self.family_name.lower() > other.family_name.lower():
-                return False
+        if self_name.lower() > other_name.lower():
+            return False
 
-        if self.given_name is not None:
-            if other.given_name is None:
-                return False
+        # given_name...
+        self_name = self.ext_name(self.given_name)
+        other_name = self.ext_name(other.given_name)
 
-            if self.given_name.lower() < other.given_name.lower():
-                return True
+        if self_name.lower() < other_name.lower():
+            return True
 
-            if self.given_name.lower() > other.given_name.lower():
-                return False
+        if self_name.lower() > other_name.lower():
+            return False
 
+        # email...
         if self.email.lower() < other.email.lower():
             return True
 
@@ -270,8 +281,8 @@ class CognitoUserIdentity(JSONable):
         if self.password is not None:
             jdict['password'] = self.password
 
-        jdict['given-name'] = self.given_name
-        jdict['family-name'] = self.family_name
+        jdict['given-name'] = self.ext_name(self.given_name)
+        jdict['family-name'] = self.ext_name(self.family_name)
 
         if self.confirmation_status is not None:
             jdict['confirmation-status'] = self.confirmation_status
