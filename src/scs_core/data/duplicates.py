@@ -4,6 +4,8 @@ Created on 2 Mar 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -25,16 +27,18 @@ class Duplicates(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def test(self, index, key, value):
-        # test...
-        if key not in self.__matches:
-            self.__matches[key] = {}
-            is_duplicate = False
+        jstr = json.dumps(key)
 
-        else:
+        # test...
+        if jstr in self.__matches:
             is_duplicate = True
 
+        else:
+            self.__matches[jstr] = {}
+            is_duplicate = False
+
         # store..
-        self.__matches[key][index] = value
+        self.__matches[jstr][index] = value
 
         if index > self.__max_index:
             self.__max_index = index
@@ -80,6 +84,17 @@ class Duplicates(object):
         for key in self.__matches:
             if len(self.__matches[key]) > 1:
                 count += 1
+
+        return count
+
+
+    @property
+    def total_matches(self):
+        count = 0
+
+        for key in self.__matches:
+            if len(self.__matches[key]) > 1:
+                count += len(self.__matches[key])
 
         return count
 
