@@ -26,7 +26,7 @@ class CognitoDeviceManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, id_token):
-        self.__http_client = http_client                    # requests package
+        self._http_client = http_client                    # requests package
         self.__id_token = id_token                          # string
 
         self.__logger = Logging.getLogger()
@@ -37,7 +37,7 @@ class CognitoDeviceManager(object):
     def create(self, identity):
         headers = {'Token': self.__id_token}
 
-        response = self.__http_client.post(self.__URL, headers=headers, data=JSONify.dumps(identity))
+        response = self._http_client.post(self.__URL, headers=headers, data=JSONify.dumps(identity))
         status = HTTPStatus(response.status_code)
 
         self.__logger.debug("create: %s" % response.text)
@@ -51,7 +51,7 @@ class CognitoDeviceManager(object):
     def update(self, identity):
         headers = {'Token': self.__id_token}
 
-        response = self.__http_client.patch(self.__URL, headers=headers, data=JSONify.dumps(identity))
+        response = self._http_client.patch(self.__URL, headers=headers, data=JSONify.dumps(identity))
         status = HTTPStatus(response.status_code)
 
         self.__logger.debug("update: %s" % response.text)
@@ -64,7 +64,7 @@ class CognitoDeviceManager(object):
         headers = {'Token': self.__id_token}
         payload = {"DeviceTag": device_tag}
 
-        response = self.__http_client.delete(self.__URL, headers=headers, data=JSONify.dumps(payload))
+        response = self._http_client.delete(self.__URL, headers=headers, data=JSONify.dumps(payload))
         status = HTTPStatus(response.status_code)
 
         self.__logger.debug("delete: %s" % response.text)

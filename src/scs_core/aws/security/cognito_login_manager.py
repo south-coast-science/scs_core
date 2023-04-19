@@ -7,6 +7,7 @@ Created on 23 Nov 2021
 from collections import OrderedDict
 from enum import Enum
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.data.json import JSONable
@@ -14,44 +15,41 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoLoginManager(object):
+class CognitoLoginManager(APIClient):
     """
     classdocs
     """
 
-    __AUTHORIZATION = '@southcoastscience.com'
     __URL = 'https://lnh2y9ip75.execute-api.us-west-2.amazonaws.com/default/CognitoLogin'
+    __AUTH = '@southcoastscience.com'
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def user_login(self, credentials):
         url = '/'.join((self.__URL, 'user'))
-        headers = {'Authorization': self.__AUTHORIZATION}
+        headers = self._auth_headers(self.__AUTH)
 
-        response = self.__http_client.post(url, headers=headers, json=credentials.as_json())
+        response = self._http_client.post(url, headers=headers, json=credentials.as_json())
+        self._check_response(response)
 
         return AuthenticationResult.construct_from_res(response)
 
 
     def device_login(self, credentials):
         url = '/'.join((self.__URL, 'device'))
-        headers = {'Authorization': self.__AUTHORIZATION}
+        headers = self._auth_headers(self.__AUTH)
 
-        response = self.__http_client.post(url, headers=headers, json=credentials.as_json())
+        response = self._http_client.post(url, headers=headers, json=credentials.as_json())
+        self._check_response(response)
 
         return AuthenticationResult.construct_from_res(response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoLoginManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

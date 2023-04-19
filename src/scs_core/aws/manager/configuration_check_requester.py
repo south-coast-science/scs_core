@@ -9,13 +9,15 @@ https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 from collections import OrderedDict
 from http import HTTPStatus
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
+
 from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationCheckRequester(object):
+class ConfigurationCheckRequester(APIClient):
     """
     classdocs
     """
@@ -25,7 +27,8 @@ class ConfigurationCheckRequester(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
+
         self.__auth = auth
 
 
@@ -33,9 +36,10 @@ class ConfigurationCheckRequester(object):
 
     def request(self, tag):
         params = {'tag': tag}
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=params)
+        response = self._http_client.get(self.__URL, headers=headers, params=params)
+        self._check_response(response)
 
         return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
 

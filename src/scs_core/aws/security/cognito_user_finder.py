@@ -30,7 +30,7 @@ class CognitoUserFinder(APIClient):
     def find_all(self, token):
         url = '/'.join((self.__URL, 'all'))
 
-        response = self.__http_client.get(url, headers=self._headers(token))
+        response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -39,7 +39,7 @@ class CognitoUserFinder(APIClient):
     def find_by_status(self, token, confirmation_status):
         url = '/'.join((self.__URL, confirmation_status.lower()))
 
-        response = self.__http_client.get(url, headers=self._headers(token))
+        response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -48,7 +48,7 @@ class CognitoUserFinder(APIClient):
     def find_by_enabled(self, token, enabled):
         url = '/'.join((self.__URL, 'enabled' if enabled else 'disabled'))
 
-        response = self.__http_client.get(url, headers=self._headers(token))
+        response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -58,7 +58,7 @@ class CognitoUserFinder(APIClient):
         url = '/'.join((self.__URL, 'in'))
         payload = JSONify.dumps({"Email": email})
 
-        response = self.__http_client.get(url, data=payload, headers=self._headers(token))
+        response = self._http_client.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -68,7 +68,7 @@ class CognitoUserFinder(APIClient):
         url = '/'.join((self.__URL, 'usernames'))
         payload = JSONify.dumps(usernames)
 
-        response = self.__http_client.get(url, data=payload, headers=self._headers(token))
+        response = self._http_client.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -78,7 +78,7 @@ class CognitoUserFinder(APIClient):
         url = '/'.join((self.__URL, 'exact'))
         payload = JSONify.dumps({"Email": email})
 
-        response = self.__http_client.get(url, data=payload, headers=self._headers(token))
+        response = self._http_client.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
@@ -87,7 +87,7 @@ class CognitoUserFinder(APIClient):
     def get_self(self, token):
         url = '/'.join((self.__URL, 'self'))
 
-        response = self.__http_client.get(url, headers=self._headers(token))
+        response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())

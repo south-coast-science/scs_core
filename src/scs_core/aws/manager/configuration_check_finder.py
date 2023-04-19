@@ -10,7 +10,9 @@ from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
+
 from scs_core.data.str import Str
 from scs_core.estate.configuration_check import ConfigurationCheck
 from scs_core.sys.http_exception import HTTPException
@@ -18,7 +20,7 @@ from scs_core.sys.http_exception import HTTPException
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationCheckFinder(object):
+class ConfigurationCheckFinder(APIClient):
     """
     classdocs
     """
@@ -28,7 +30,8 @@ class ConfigurationCheckFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
+
         self.__auth = auth
 
 
@@ -36,9 +39,10 @@ class ConfigurationCheckFinder(object):
 
     def find(self, tag_filter, exact_match, result_code, response_mode):
         request = ConfigurationCheckRequest(tag_filter, exact_match, result_code, response_mode)
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        self._check_response(response)
 
         return ConfigurationCheckResponse.construct_from_jdict(response.json())
 
