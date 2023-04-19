@@ -29,16 +29,16 @@ class DeviceControlClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                    # requests package
+        self.__http_client = http_client                        # requests package
         self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interrogate(self, token, device_tag, message):
+    def interrogate(self, token, device_tag, cmd_tokens):
         payload = {
             'device-tag': device_tag,
-            'message': message
+            'message': [str(token) for token in cmd_tokens]
         }
 
         response = self.__http_client.post(self.__URL, headers=self.__headers(token), data=JSONify.dumps(payload))
@@ -62,4 +62,4 @@ class DeviceControlClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoUserFinder:{}"
+        return "DeviceControlClient:{}"
