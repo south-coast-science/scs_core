@@ -29,8 +29,15 @@ class APIClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def _auth_headers(self, auth):
+        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Authorization": auth}
+        self.__logger.debug('headers: %s' % header)
+
+        return header
+
+
     def _token_headers(self, token):
-        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
+        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "Token": token}
         self.__logger.debug('headers: %s' % header)
 
         return header
