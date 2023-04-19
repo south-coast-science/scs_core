@@ -35,7 +35,7 @@ class DeviceControlClient(APIClient):
             'message': [str(token) for token in cmd_tokens]
         }
 
-        response = self._http_client.post(self.__URL, headers=self._headers(token), data=JSONify.dumps(payload))
+        response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
         return ControlReceipt.construct_from_jdict(json.loads(response.json()))

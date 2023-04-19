@@ -29,15 +29,15 @@ class APIClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def _headers(self, token):
-        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-        self.__logger.debug('headers: %s' % headers)
+    def _token_headers(self, token):
+        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
+        self.__logger.debug('headers: %s' % header)
 
-        return headers
+        return header
 
 
     def _check_response(self, response):
-        self.__logger.debug('response: %s' % response.json())
+        self.__logger.debug('response.json: %s' % response.json())
 
         status = HTTPStatus(response.status_code)
 

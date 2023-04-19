@@ -30,7 +30,7 @@ class CognitoDeviceFinder(APIClient):
     def find_all(self, token):
         url = '/'.join((self.__URL, 'all'))
 
-        response = self.__http_client.get(url, headers=self._headers(token))
+        response = self.__http_client.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -40,7 +40,7 @@ class CognitoDeviceFinder(APIClient):
         url = '/'.join((self.__URL, 'in'))
         payload = json.dumps({"username": tag})
 
-        response = self.__http_client.get(url, data=payload, headers=self._headers(token))
+        response = self.__http_client.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -50,7 +50,7 @@ class CognitoDeviceFinder(APIClient):
         url = '/'.join((self.__URL, 'exact'))
         payload = json.dumps({"username": tag})
 
-        response = self.__http_client.get(url, data=payload, headers=self._headers(token))
+        response = self.__http_client.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
