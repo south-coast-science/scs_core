@@ -6,19 +6,14 @@ Created on 17 Apr 2023
 
 import json
 
-from http import HTTPStatus
-
+from scs_core.aws.client.api_client import APIClient
 from scs_core.control.control_receipt import ControlReceipt
-
 from scs_core.data.json import JSONify
-
-from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceControlClient(object):
+class DeviceControlClient(APIClient):
     """
     classdocs
     """
@@ -29,8 +24,7 @@ class DeviceControlClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                        # requests package
-        self.__logger = Logging.getLogger()
+        super().__init__(http_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -41,25 +35,7 @@ class DeviceControlClient(object):
             'message': [str(token) for token in cmd_tokens]
         }
 
-        response = self.__http_client.post(self.__URL, headers=self.__headers(token), data=JSONify.dumps(payload))
-        status = HTTPStatus(response.status_code)
-
-        if status != HTTPStatus.OK:
-            raise HTTPException.construct(status.value, response.reason, response.json())
+        response = self._http_client.post(self.__URL, headers=self._headers(token), data=JSONify.dumps(payload))
+        self._check_response(response)
 
         return ControlReceipt.construct_from_jdict(json.loads(response.json()))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __headers(self, token):
-        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Token": token}
-        self.__logger.debug('headers: %s' % headers)
-
-        return headers
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "DeviceControlClient:{}"
