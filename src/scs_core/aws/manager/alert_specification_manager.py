@@ -7,6 +7,7 @@ Created on 17 Jun 2021
 from collections import OrderedDict
 from http import HTTPStatus
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.alert import AlertSpecification
 from scs_core.aws.data.http_response import HTTPResponse
 
@@ -17,17 +18,19 @@ from scs_core.sys.http_exception import HTTPException
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertSpecificationManager(object):
+class AlertSpecificationManager(APIClient):
     """
     classdocs
     """
 
     __URL = "https://a066wbide8.execute-api.us-west-2.amazonaws.com/default/AlertSpecification"
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
+
         self.__auth = auth
 
 
@@ -35,27 +38,32 @@ class AlertSpecificationManager(object):
 
     def find(self, topic_filter, path_filter, creator_filter):
         request = AlertSpecificationManagerRequest(topic_filter, path_filter, creator_filter)
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        self._check_response(response)
 
         return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
 
     def retrieve(self, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self.__http_client.get(url, headers=headers)
+        http_response = self._http_client.get(url, headers=headers)
+        self._check_response(http_response)
+
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
 
     def create(self, alert):
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self.__http_client.post(self.__URL, headers=headers, json=alert.as_json())
+        http_response = self._http_client.post(self.__URL, headers=headers, json=alert.as_json())
+        self._check_response(http_response)
+
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
@@ -63,9 +71,11 @@ class AlertSpecificationManager(object):
 
     def update(self, alert):
         url = '/'.join((self.__URL, str(alert.id)))
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self.__http_client.post(url, headers=headers, json=alert.as_json())
+        http_response = self._http_client.post(url, headers=headers, json=alert.as_json())
+        self._check_response(http_response)
+
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
@@ -73,9 +83,9 @@ class AlertSpecificationManager(object):
 
     def delete(self, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        self.__http_client.delete(url, headers=headers)
+        self._http_client.delete(url, headers=headers)
 
 
     # ----------------------------------------------------------------------------------------------------------------

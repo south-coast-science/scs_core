@@ -42,7 +42,7 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'send-email'))
         payload = {'email': email}
 
-        response = self.__http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
@@ -50,7 +50,7 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'reset'))
         payload = {'email': email, 'reset_code': code, 'new_password': new_password}
 
-        response = self.__http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
@@ -58,5 +58,5 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'respond'))
         payload = {'email': email, 'new_password': new_password, 'session': session}
 
-        response = self.__http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
