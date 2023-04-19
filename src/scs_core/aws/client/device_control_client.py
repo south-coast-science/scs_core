@@ -35,7 +35,7 @@ class DeviceControlClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interrogate(self, token, device_tag, cmd_tokens):
+    def interact(self, token, device_tag, cmd_tokens):
         payload = {
             'device-tag': device_tag,
             'message': [str(token) for token in cmd_tokens]
