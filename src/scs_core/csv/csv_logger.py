@@ -41,7 +41,7 @@ class CSVLogger(object):
         """
         Constructor
         """
-        self.__host = host                              # Host
+        self.__host = host                              # PersistenceManager
         self.__log = log                                # CSVLog
         self.__manager = manager                        # CSVSpaceManager
         self.__write_interval = write_interval          # int
@@ -191,7 +191,7 @@ class CSVSpaceManager(object):
     def __init__(self, host, log, delete_oldest, min_free_space, check_interval):
         self.__logger = Logging.getLogger()
 
-        self.__host = host                                          # Host
+        self.__host = host                                          # PersistenceManager
         self.__log = log                                            # CSVLog
         self.__delete_oldest = delete_oldest                        # bool
         self.__min_free_space = min_free_space                      # int

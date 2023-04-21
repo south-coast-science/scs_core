@@ -49,7 +49,7 @@ class MQTTDevicePoller(object):
         """
         Constructor
         """
-        self.__host = host
+        self.__host = host                                          # PersistenceManager
         self.__s3_manager = s3_manager
         self.__dynamo_manager = DynamoManager(dynamo_client, dynamo_resource) if dynamo_client and dynamo_resource \
             else None
