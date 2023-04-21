@@ -2,6 +2,8 @@
 Created on 30 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 """
 
 from collections import OrderedDict
@@ -43,6 +45,15 @@ class HTTPException(RuntimeError, JSONable):
 
         if status == HTTPConflictException.STATUS:
             return HTTPConflictException(status, reason, data)
+
+        if status == HTTPBadGatewayException.STATUS:
+            return HTTPBadGatewayException(status, reason, data)
+
+        if status == HTTPServiceUnavailableException.STATUS:
+            return HTTPServiceUnavailableException(status, reason, data)
+
+        if status == HTTPGatewayTimeoutException.STATUS:
+            return HTTPGatewayTimeoutException(status, reason, data)
 
         return cls(status, reason, data)
 
@@ -96,6 +107,7 @@ class HTTPException(RuntimeError, JSONable):
 
 
 # --------------------------------------------------------------------------------------------------------------------
+# 400 client errors...
 
 class HTTPBadRequestException(HTTPException):
     """
@@ -158,6 +170,49 @@ class HTTPConflictException(HTTPException):
     classdocs
     """
     STATUS = 409
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# 500 server errors...
+
+class HTTPBadGatewayException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 502
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPServiceUnavailableException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 503
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPGatewayTimeoutException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 504
 
     # ----------------------------------------------------------------------------------------------------------------
 

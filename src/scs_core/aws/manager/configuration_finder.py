@@ -13,6 +13,7 @@ from enum import Enum
 from http import HTTPStatus
 from urllib.parse import parse_qs, urlparse
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.data.str import Str
@@ -20,12 +21,11 @@ from scs_core.data.str import Str
 from scs_core.sample.configuration_sample import ConfigurationSample
 
 from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationFinder(object):
+class ConfigurationFinder(APIClient):
     """
     classdocs
     """
@@ -35,11 +35,10 @@ class ConfigurationFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth, reporter=None):
-        self.__http_client = http_client                        # requests package
+        super().__init__(http_client)
+
         self.__auth = auth
         self.__reporter = reporter                              # BatchDownloadReporter
-
-        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -49,20 +48,20 @@ class ConfigurationFinder(object):
             self.__reporter.reset()
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
         params = request.params()
 
         while True:
-            self.__logger.debug("*** url: %s" % self.__URL)
-            self.__logger.debug("*** params: %s" % params)
+            self._logger.debug("*** url: %s" % self.__URL)
+            self._logger.debug("*** params: %s" % params)
 
-            response = self.__http_client.get(self.__URL, headers=headers, params=params)
-            self.__logger.debug(response.json())
+            response = self._http_client.get(self.__URL, headers=headers, params=params)
+            self._check_response(response)
 
             # messages...
             block = ConfigurationResponse.construct_from_jdict(response.json())
-            # self.__logger.debug(block)
+            # self._logger.debug(block)
 
             for item in block.items:
                 yield item

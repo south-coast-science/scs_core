@@ -15,31 +15,25 @@ document example:
 "EmailSent"
 """
 
-from http import HTTPStatus
-
+from scs_core.aws.client.api_client import APIClient
 from scs_core.data.json import JSONify
-from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoPasswordManager(object):
+class CognitoPasswordManager(APIClient):
     """
     classdocs
     """
 
     __URL = "https://df46l72wl7.execute-api.us-west-2.amazonaws.com/default/CognitoUserPassword"
-
-    __HEADERS = {'Content-type': 'application/x-www-form-urlencoded',
-                 'Accept': 'text/plain', 'Authorization': '@southcoastscience.com'}
+    __AUTH = "@southcoastscience.com"
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
-        self.__http_client = http_client                # requests package
-        self.__logger = Logging.getLogger()
+        super().__init__(http_client)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -48,38 +42,21 @@ class CognitoPasswordManager(object):
         url = '/'.join((self.__URL, 'send-email'))
         payload = {'email': email}
 
-        response = self.__http_client.post(url, headers=self.__HEADERS, data=JSONify.dumps(payload))
-        status = HTTPStatus(response.status_code)
-
-        if status != HTTPStatus.OK:
-            raise HTTPException.construct(status.value, response.reason, response.json())
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        self._check_response(response)
 
 
     def do_reset_password(self, email, code, new_password):
         url = '/'.join((self.__URL, 'reset'))
         payload = {'email': email, 'reset_code': code, 'new_password': new_password}
 
-        response = self.__http_client.post(url, headers=self.__HEADERS, data=JSONify.dumps(payload))
-        status = HTTPStatus(response.status_code)
-
-        if status != HTTPStatus.OK:
-            raise HTTPException.construct(status.value, response.reason, response.json())
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        self._check_response(response)
 
 
     def do_set_password(self, email, new_password, session):
         url = '/'.join((self.__URL, 'respond'))
         payload = {'email': email, 'new_password': new_password, 'session': session}
 
-        response = self.__http_client.post(url, headers=self.__HEADERS, data=JSONify.dumps(payload))
-        status = HTTPStatus(response.status_code)
-
-        if status != HTTPStatus.OK:
-            ex = HTTPException.construct(status.value, response.reason, response.json())
-            print("raising: %s" % ex)
-            raise ex
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoPasswordManager:{}"
+        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        self._check_response(response)

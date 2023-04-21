@@ -44,7 +44,7 @@ class SystemTemp(JSONable):
         Constructor
         """
         self.__board = board
-        self.__host = host
+        self.__host = host                                          # PersistenceManager
 
 
     # ----------------------------------------------------------------------------------------------------------------

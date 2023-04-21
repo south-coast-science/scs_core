@@ -72,13 +72,17 @@ class NetworkMonitor(object):
 
 
     def run(self):
-        Network.wait()
+        try:
+            Network.wait()
 
-        while True:
-            if not Network.is_available():
-                self.__network_unavailable_handler()
+            while True:
+                if not Network.is_available():
+                    self.__network_unavailable_handler()
 
-            time.sleep(self.__interval)
+                time.sleep(self.__interval)
+
+        except KeyboardInterrupt:
+            pass
 
 
     def join(self):

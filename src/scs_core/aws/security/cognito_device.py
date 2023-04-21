@@ -143,6 +143,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def index(self):
+        return self.username
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 

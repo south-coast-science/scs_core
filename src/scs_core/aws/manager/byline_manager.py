@@ -10,12 +10,13 @@ curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 
 from urllib.parse import parse_qs, urlparse
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BylineManager(object):
+class BylineManager(APIClient):
     """
     classdocs
     """
@@ -30,10 +31,8 @@ class BylineManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, reporter=None):
-        """
-        Constructor
-        """
-        self.__http_client = http_client                        # requests package
+        super().__init__(http_client)
+
         self.__reporter = reporter                              # BatchDownloadReporter
 
 
@@ -42,7 +41,7 @@ class BylineManager(object):
     def find_latest_byline_for_topic(self, topic):
         params = {self.__TOPIC: topic}
 
-        response = self.__http_client.get(self.__URL, params=params)
+        response = self._http_client.get(self.__URL, params=params)
         jdict = response.json()
 
         # bylines...
@@ -65,7 +64,7 @@ class BylineManager(object):
         items_jdict = []
 
         while True:
-            response = self.__http_client.get(self.__URL, params=params)
+            response = self._http_client.get(self.__URL, params=params)
             jdict = response.json()
 
             block = jdict.get('Items')
@@ -89,7 +88,9 @@ class BylineManager(object):
     def find_bylines_for_topic(self, topic, excluded=None):
         params = {self.__TOPIC: topic}
 
-        response = self.__http_client.get(self.__URL, params=params)
+        response = self._http_client.get(self.__URL, params=params)
+        self._check_response(response)
+
         jdict = response.json()
 
         # bylines...
@@ -99,7 +100,9 @@ class BylineManager(object):
     def find_bylines_for_device(self, device, excluded=None):
         params = {self.__DEVICE: device}
 
-        response = self.__http_client.get(self.__URL, params=params)
+        response = self._http_client.get(self.__URL, params=params)
+        self._check_response(response)
+
         jdict = response.json()
 
         # bylines...
@@ -109,7 +112,9 @@ class BylineManager(object):
     def find_byline_for_device_topic(self, device, topic):
         params = {self.__DEVICE: device}
 
-        response = self.__http_client.get(self.__URL, params=params)
+        response = self._http_client.get(self.__URL, params=params)
+        self._check_response(response)
+
         jdict = response.json()
 
         # bylines...
