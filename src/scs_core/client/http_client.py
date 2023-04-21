@@ -41,6 +41,8 @@ class HTTPClient(object):
     def connect(self, host, secure=True, verified=True, timeout=None):
         # print("connect: host: {}, timeout: {}".format(host, timeout), file=sys.stderr)
 
+        self.__host = host                                          # PersistenceManager
+
         if secure:
             # noinspection PyProtectedMember,PyUnresolvedReferences
             context = None if verified else ssl._create_unverified_context()
@@ -55,8 +57,6 @@ class HTTPClient(object):
                 self.__conn = http.client.HTTPConnection(host, timeout=timeout)
             else:
                 self.__conn = http.client.HTTPConnection(host)
-
-        self.__host = host
 
 
     def close(self):

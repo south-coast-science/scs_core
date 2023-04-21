@@ -8,6 +8,7 @@ from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.alert import AlertStatus
 from scs_core.aws.data.http_response import HTTPResponse
 
@@ -19,7 +20,7 @@ from scs_core.sys.http_exception import HTTPException
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusFinder(object):
+class AlertStatusFinder(APIClient):
     """
     classdocs
     """
@@ -29,7 +30,8 @@ class AlertStatusFinder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client, auth):
-        self.__http_client = http_client                # requests package
+        super().__init__(http_client)
+
         self.__auth = auth
 
 
@@ -37,9 +39,10 @@ class AlertStatusFinder(object):
 
     def find(self, id_filter, cause_filter, response_mode):
         request = AlertStatusFinderRequest(id_filter, cause_filter, response_mode)
-        headers = {'Authorization': self.__auth.email_address}
+        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self.__http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        self._check_response(response)
 
         return AlertStatusFinderResponse.construct_from_jdict(response.json())
 
