@@ -53,15 +53,15 @@ class ConfigurationFinder(APIClient):
         params = request.params()
 
         while True:
-            self.__logger.debug("*** url: %s" % self.__URL)
-            self.__logger.debug("*** params: %s" % params)
+            self._logger.debug("*** url: %s" % self.__URL)
+            self._logger.debug("*** params: %s" % params)
 
             response = self._http_client.get(self.__URL, headers=headers, params=params)
             self._check_response(response)
 
             # messages...
             block = ConfigurationResponse.construct_from_jdict(response.json())
-            # self.__logger.debug(block)
+            # self._logger.debug(block)
 
             for item in block.items:
                 yield item
