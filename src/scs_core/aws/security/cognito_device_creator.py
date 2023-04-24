@@ -36,8 +36,6 @@ class CognitoDeviceCreator(APIClient):
                                           data=JSONify.dumps(identity))
         self._check_response(response)
 
-        print("response.json: %s" % response.json())
-
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
 
 
