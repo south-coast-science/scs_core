@@ -10,6 +10,8 @@ example document (identity):
 {"username": "scs-ph1-28", "created": "2023-04-04T09:08:55Z", "last-updated": "2023-04-04T09:08:56Z"}
 """
 
+import re
+
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -25,12 +27,20 @@ class CognitoDeviceCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def is_valid_tag(cls, tag):
+        if not isinstance(tag, str):
+            return False
+
+        return re.search(r'^\w+-\w+-\d+$', tag) is not None
+
+
     @staticmethod
     def is_valid_password(password):
         if not isinstance(password, str):
             return False
 
-        return len(password) > 15
+        return re.search(r'^\S{16,255}$', password) is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
