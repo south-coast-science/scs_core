@@ -89,14 +89,8 @@ class Dataset(object):
 
 
     def update_with(self, item: DatasetItem, insert_only=False):
-        if item.index == 'bruno.beloff@southcoastscience.com':
-            print("item: %s" % item)
-
         try:
             retrieved_item = self.__items[item.index]
-
-            if retrieved_item.index == 'bruno.beloff@southcoastscience.com':
-                print("retrieved_item: %s" % item)
 
             if insert_only:
                 return
