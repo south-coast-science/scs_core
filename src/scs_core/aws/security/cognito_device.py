@@ -40,7 +40,7 @@ class CognitoDeviceCredentials(JSONable):
         if not isinstance(password, str):
             return False
 
-        return re.search(r'^\S{16}$', password) is not None
+        return re.search(r'^\S{16,255}$', password) is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
