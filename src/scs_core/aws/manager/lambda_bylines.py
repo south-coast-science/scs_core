@@ -12,7 +12,7 @@ from collections import OrderedDict
 from http import HTTPStatus
 
 from scs_core.aws.data.http_response import HTTPResponse
-from scs_core.sys.http_exception import HTTPException
+from scs_core.client.http_exception import HTTPException
 
 
 # ----------------------------------------------------------------------------------------------------------------

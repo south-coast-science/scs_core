@@ -13,10 +13,9 @@ import urllib.parse
 
 from socket import gaierror, timeout as timeout_error
 
+from scs_core.client.http_exception import HTTPException
+from scs_core.client.http_status import HTTPStatus
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
-
-from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.http_status import HTTPStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------

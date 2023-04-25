@@ -10,9 +10,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 from abc import ABC
 from http import HTTPStatus
 
+from scs_core.client.http_exception import HTTPException
 from scs_core.data.json import JSONable, JSONify
-
-from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
