@@ -26,3 +26,6 @@ print("-")
 creator = CognitoDeviceCreator(requests)
 response = creator.create(credentials)
 print(response)
+print("-")
+
+print(JSONify.dumps(response))
