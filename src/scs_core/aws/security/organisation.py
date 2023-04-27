@@ -704,7 +704,7 @@ class OrganisationDevice(JSONable):
         jdict[self.DEVICE_PATH] = self.device_path
         jdict[self.LOCATION_PATH] = self.location_path
 
-        jdict[self.START_DATETIME] = self.start_datetime.as_iso8601()
+        jdict[self.START_DATETIME] = None if self.start_datetime is None else self.start_datetime.as_iso8601()
         jdict[self.END_DATETIME] = None if self.end_datetime is None else self.end_datetime.as_iso8601()
 
         return jdict
