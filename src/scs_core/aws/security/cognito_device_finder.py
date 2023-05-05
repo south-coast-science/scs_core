@@ -60,3 +60,32 @@ class CognitoDeviceFinder(APIClient):
 
     def __str__(self, *args, **kwargs):
         return "CognitoDeviceFinder:{}"
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CognitoDeviceIntrospector(APIClient):
+    """
+    classdocs
+    """
+
+    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/CognitoDevices/self'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, http_client):
+        super().__init__(http_client)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    def find_self(self, token):
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token))
+        self._check_response(response)
+
+        return CognitoDeviceIdentity.construct_from_jdict(response.json())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "CognitoDeviceIntrospector:{}"
