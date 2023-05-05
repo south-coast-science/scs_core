@@ -13,9 +13,9 @@ from http import HTTPStatus
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
 
+from scs_core.client.http_exception import HTTPException
 from scs_core.data.str import Str
 from scs_core.estate.configuration_check import ConfigurationCheck
-from scs_core.sys.http_exception import HTTPException
 
 
 # --------------------------------------------------------------------------------------------------------------------
