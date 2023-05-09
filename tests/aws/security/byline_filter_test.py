@@ -22,6 +22,6 @@ bylines = [
     {'topic': 'ricardo/luton/loc/1/gases'}
 ]
 
-for visible in guardian.filter(bylines):
+for visible in guardian.byline_filter(bylines):
     print(visible)
 
