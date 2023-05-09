@@ -32,6 +32,13 @@ class BylineFilter(object):
                     yield byline
                     break
 
+    def device_filter(self, pod):
+        for user_path in self.__user_paths:
+            if pod.device_path.startswith(user_path):
+                return True
+
+        return False
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
