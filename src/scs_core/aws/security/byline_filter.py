@@ -35,7 +35,7 @@ class BylineFilter(object):
 
     def device_is_visible(self, pod):
         for user_path in self.__user_paths:
-            if pod.device_path.startswith(user_path):
+            if pod.device_path.startswith(user_path):       # TODO: environment also
                 return True
 
         return False
