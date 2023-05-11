@@ -6,12 +6,12 @@ Created on 31 Oct 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.security.byline_filter import BylineFilter
+from scs_core.aws.security.path_filter import PathFilter
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-guardian = BylineFilter(['ricardo/heathrow/loc/1/', 'ricardo/gatwick/'])
+guardian = PathFilter(['ricardo/heathrow/loc/1/', 'ricardo/gatwick/'])
 print(guardian)
 
 bylines = [
