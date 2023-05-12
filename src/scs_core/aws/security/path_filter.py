@@ -7,7 +7,7 @@ Created on 31 Oct 2022
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BylineFilter(object):
+class PathFilter(object):
     """
     classdocs
     """
@@ -23,7 +23,7 @@ class BylineFilter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def filter(self, bylines):
+    def byline_filter(self, bylines):
         for byline in bylines:
             topic = byline['topic']
 
@@ -31,6 +31,30 @@ class BylineFilter(object):
                 if topic.startswith(user_path):
                     yield byline
                     break
+
+
+    def device_is_visible(self, pod):
+        for user_path in self.__user_paths:
+            if pod.device_path.startswith(user_path) or pod.location_path.startswith(user_path):
+                return True
+
+        return False
+
+
+    def path_is_visible(self, path):
+        for user_path in self.__user_paths:
+            if path.startswith(user_path):
+                return True
+
+        return False
+
+
+    def configuration_is_visible(self, configuration):
+        for user_path in self.__user_paths:
+            if configuration['topic'].startswith(user_path):
+                return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,4 +67,4 @@ class BylineFilter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BylineFilter:{user_paths:%s}" % self.user_paths
+        return "PathFilter:{user_paths:%s}" % self.user_paths
