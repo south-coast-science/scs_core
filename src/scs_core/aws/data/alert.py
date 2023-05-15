@@ -330,7 +330,8 @@ class AlertSpecification(JSONable):
         jdict['aggregation-period'] = self.aggregation_period.as_json()
         jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
-        jdict['creator-email-address'] = self.creator_email_address
+        if self.creator_email_address is not None:
+            jdict['creator-email-address'] = self.creator_email_address
 
         jdict['to'] = self.to
         jdict['cc-list'] = self.cc_list
