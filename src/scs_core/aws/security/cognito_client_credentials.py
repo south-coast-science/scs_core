@@ -21,6 +21,8 @@ from scs_core.aws.security.cognito_user import CognitoUserCredentials, CognitoUs
 from scs_core.data.datum import Datum
 from scs_core.data.json import MultiPersistentJSONable
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -32,6 +34,23 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
     __FILENAME = "cognito_user_credentials.json"
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load_for_user(cls, host, credentials_name):
+        logger = Logging.getLogger()
+
+        if not cls.exists(host, name=credentials_name):
+            logger.error("Cognito credentials not available.")
+            return None
+
+        try:
+            password = cls.password_from_user()
+            return CognitoClientCredentials.load(host, name=credentials_name, encryption_key=password)
+
+        except (KeyError, ValueError):
+            logger.error("incorrect password.")
+            return None
+
 
     @classmethod
     def from_stdin(cls, name):
