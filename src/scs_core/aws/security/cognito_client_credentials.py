@@ -36,16 +36,16 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load_for_user(cls, host, credentials_name):
+    def load_for_user(cls, host, name=None):
         logger = Logging.getLogger()
 
-        if not cls.exists(host, name=credentials_name):
+        if not cls.exists(host, name=name):
             logger.error("Cognito credentials not available.")
             return None
 
         try:
             password = cls.password_from_user()
-            return CognitoClientCredentials.load(host, name=credentials_name, encryption_key=password)
+            return CognitoClientCredentials.load(host, name=name, encryption_key=password)
 
         except (KeyError, ValueError):
             logger.error("incorrect password.")
