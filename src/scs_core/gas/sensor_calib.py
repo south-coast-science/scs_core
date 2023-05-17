@@ -4,7 +4,7 @@ Created on 30 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from scs_core.data.json import JSONable
 from scs_core.gas.sensor import Sensor
@@ -43,7 +43,7 @@ class SensorCalib(ABC, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def reports_no2_cross_sensitivity(cls):                     # the default - override as necessary
+    def has_no2_sensitivity(cls):                               # the default - override as necessary
         return False
 
 
@@ -63,6 +63,13 @@ class SensorCalib(ABC, JSONable):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def validate(self):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
