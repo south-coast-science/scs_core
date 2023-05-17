@@ -2,11 +2,18 @@
 Created on 24 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+document example:
+{"serial_number": "212810464", "sensor_type": "NOGA4", "we_electronic_zero_mv": 300, "we_sensor_zero_mv": 0,
+"we_total_zero_mv": 300, "ae_electronic_zero_mv": 300, "ae_sensor_zero_mv": 0, "ae_total_zero_mv": 300,
+"we_sensitivity_na_ppb": -0.445, "we_cross_sensitivity_no2_na_ppb": "n/a", "pcb_gain": -0.7,
+"we_sensitivity_mv_ppb": 0.325, "we_cross_sensitivity_no2_mv_ppb": 0.324}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
+
 from scs_core.gas.sensor_calib import SensorCalib
 
 
@@ -16,6 +23,7 @@ class A4Calib(SensorCalib):
     """
     classdocs
     """
+    __NO2_SENSITIVITY_TYPES = ['NO2A43F', 'OXA431']
 
     __OX_SENSOR_PREFIX = 'OX'
 
@@ -93,21 +101,7 @@ class A4Calib(SensorCalib):
         self.__we_sens_mv = Datum.float(we_sens_mv, 3)              # WE sensitivity                        mV / ppb
         self.__we_no2_x_sens_mv = Datum.float(we_no2_x_sens_mv, 3)  # WE cross-sensitivity                  mV / ppb
 
-        # validate...
-        if self.we_sens_na == 0.0:
-            raise ValueError('%s - we_sensitivity_na_ppb: zero sensitivity.' % sensor_type)
-
-        if self.we_x_sens_na == 0.0:
-            raise ValueError('%s - we_cross_sensitivity_no2_na_ppb: zero sensitivity.' % sensor_type)
-
-        if self.pcb_gain == 0.0:
-            raise ValueError('%s - pcb_gain: zero sensitivity.' % sensor_type)
-
-        if self.we_sens_mv == 0.0:
-            raise ValueError('%s - we_sensitivity_mv_ppb: zero sensitivity.' % sensor_type)
-
-        if self.we_no2_x_sens_mv == 0.0:
-            raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: zero sensitivity.' % sensor_type)
+        self.validate()
 
 
     def __eq__(self, other):
@@ -123,6 +117,35 @@ class A4Calib(SensorCalib):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def validate(self):
+        # sensitivity...
+        if self.we_sens_na == 0.0:
+            raise ValueError('%s - we_sensitivity_na_ppb: zero sensitivity' % self.sensor_type)
+
+        if self.pcb_gain == 0.0:
+            raise ValueError('%s - pcb_gain: zero sensitivity' % self.sensor_type)
+
+        if self.we_sens_mv == 0.0:
+            raise ValueError('%s - we_sensitivity_mv_ppb: zero sensitivity' % self.sensor_type)
+
+        # cross-sensitivity...
+        if self.has_no2_sensitivity():
+            if self.we_x_sens_na is None or self.we_x_sens_na == 0.0:
+                raise ValueError('%s - we_cross_sensitivity_no2_na_ppb: zero sensitivity' % self.sensor_type)
+
+            if self.we_no2_x_sens_mv is None or self.we_no2_x_sens_mv == 0.0:
+                raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: zero sensitivity' % self.sensor_type)
+
+        else:
+            if self.we_x_sens_na is not None and self.we_x_sens_na > 0.0:
+                raise ValueError('%s - we_cross_sensitivity_no2_na_ppb: non-zero sensitivity' % self.sensor_type)
+
+            if self.we_no2_x_sens_mv is not None and self.we_no2_x_sens_mv > 0.0:
+                raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: non-zero sensitivity' % self.sensor_type)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -158,8 +181,8 @@ class A4Calib(SensorCalib):
         self.__we_sens_mv = round(we_sens_mv, 3)
 
 
-    def reports_no2_cross_sensitivity(self):
-        return self.__we_no2_x_sens_mv is not None
+    def has_no2_sensitivity(self):
+        return self.sensor_type in self.__NO2_SENSITIVITY_TYPES
 
 
     def is_ox_sensor(self):

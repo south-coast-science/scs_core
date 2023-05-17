@@ -39,7 +39,6 @@ class Sensor(ABC):
 
     SENSORS =       {}
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -77,7 +76,7 @@ class Sensor(ABC):
         if self.calib is None:
             return False
 
-        return self.calib.reports_no2_cross_sensitivity() and self.gas_name != 'NO2'
+        return self.calib.has_no2_sensitivity() and self.gas_name != 'NO2'
 
 
     @abstractmethod
