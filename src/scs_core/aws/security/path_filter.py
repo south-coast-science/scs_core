@@ -6,7 +6,6 @@ Created on 31 Oct 2022
 
 
 # --------------------------------------------------------------------------------------------------------------------
-
 class PathFilter(object):
     """
     classdocs
@@ -44,14 +43,6 @@ class PathFilter(object):
     def path_is_visible(self, path):
         for user_path in self.__user_paths:
             if path.startswith(user_path):
-                return True
-
-        return False
-
-
-    def configuration_is_visible(self, configuration):
-        for user_path in self.__user_paths:
-            if configuration['topic'].startswith(user_path):
                 return True
 
         return False
