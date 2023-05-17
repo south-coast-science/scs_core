@@ -21,7 +21,6 @@ from scs_core.gas.sensor_calib import SensorCalib
 class PIDCalib(SensorCalib):
     """
     classdocs
-
     """
 
     @classmethod
@@ -56,9 +55,7 @@ class PIDCalib(SensorCalib):
         self.__pid_elc_mv = Datum.float(pid_elc_mv, 3)                  # PID electronic zero           mV
         self.__pid_sens_mv_ppm = Datum.float(pid_sens_mv_ppm, 6)        # PID sensitivity               mV / ppm
 
-        # validate...
-        if self.pid_sens_mv_ppm == 0.0:
-            raise ValueError('%s - pid_sensitivity_mv_ppm: zero sensitivity.' % sensor_type)
+        self.validate()
 
 
     def __eq__(self, other):
@@ -68,6 +65,13 @@ class PIDCalib(SensorCalib):
 
         except (TypeError, AttributeError):
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def validate(self):
+        if self.pid_sens_mv_ppm == 0.0:
+            raise ValueError('%s - pid_sensitivity_mv_ppm: zero sensitivity' % self.sensor_type)
 
 
     # ----------------------------------------------------------------------------------------------------------------
