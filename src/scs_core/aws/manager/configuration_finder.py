@@ -34,30 +34,29 @@ class ConfigurationFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth, reporter=None):
+    def __init__(self, http_client, reporter=None):
         super().__init__(http_client)
 
-        self.__auth = auth
         self.__reporter = reporter                              # BatchDownloadReporter
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, tag_filter, exact_match, response_mode):
+    def find(self, token, tag_filter, exact_match, response_mode):
         if self.__reporter:
             self.__reporter.reset()
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
-        headers = self._auth_headers(self.__auth.email_address)
-
         params = request.params()
 
         while True:
             self._logger.debug("*** url: %s" % self.__URL)
             self._logger.debug("*** params: %s" % params)
 
-            response = self._http_client.get(self.__URL, headers=headers, params=params)
+            response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=params)
             self._check_response(response)
+
+            self._logger.info("response: %s" % response.json())
 
             # messages...
             block = ConfigurationResponse.construct_from_jdict(response.json())
@@ -81,7 +80,7 @@ class ConfigurationFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationFinder:{auth:%s}" % self.__auth
+        return "ConfigurationFinder:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
