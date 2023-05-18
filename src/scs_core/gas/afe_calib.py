@@ -29,6 +29,8 @@ from scs_core.gas.afe.pt1000_calib import Pt1000Calib
 from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -106,7 +108,12 @@ class AFECalib(PersistentJSONable):
 
         try:
             path = AFECalib.ALPHASENSE_PATH + serial_number
-            jdict = json.loads(http_client.get(path, None, AFECalib.ALPHASENSE_HEADER))
+            response = http_client.get(path, None, AFECalib.ALPHASENSE_HEADER)
+
+            logger = Logging.getLogger()
+            logger.info("response: %s" % response)
+
+            jdict = json.loads(response)
 
             return cls.construct_from_jdict(jdict) if parse else jdict
 
