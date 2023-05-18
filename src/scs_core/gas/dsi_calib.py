@@ -52,7 +52,7 @@ class DSICalib(AFECalib):
             response = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
 
             logger = Logging.getLogger()
-            logger.info("dsi response: %s" % response)
+            logger.debug("dsi response: %s" % response)
 
             jdict = json.loads(response)
 

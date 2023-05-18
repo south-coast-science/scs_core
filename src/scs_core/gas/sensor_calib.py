@@ -43,7 +43,7 @@ class SensorCalib(ABC, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def has_no2_sensitivity(cls):                               # the default - override as necessary
+    def has_no2_cross_sensitivity(cls):                     # the default - override as necessary
         return False
 
 

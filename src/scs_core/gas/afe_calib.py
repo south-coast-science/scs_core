@@ -111,7 +111,7 @@ class AFECalib(PersistentJSONable):
             response = http_client.get(path, None, AFECalib.ALPHASENSE_HEADER)
 
             logger = Logging.getLogger()
-            logger.info("afe response: %s" % response)
+            logger.debug("afe response: %s" % response)
 
             jdict = json.loads(response)
 
