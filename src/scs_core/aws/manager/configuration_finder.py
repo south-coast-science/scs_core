@@ -56,8 +56,6 @@ class ConfigurationFinder(APIClient):
             response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=params)
             self._check_response(response)
 
-            self._logger.info("response: %s" % response.json())
-
             # messages...
             block = ConfigurationResponse.construct_from_jdict(response.json())
             # self._logger.debug(block)

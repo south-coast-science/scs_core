@@ -26,19 +26,16 @@ class ConfigurationCheckRequester(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
+    def __init__(self, http_client):
         super().__init__(http_client)
-
-        self.__auth = auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def request(self, tag):
+    def request(self, token, tag):
         params = {'tag': tag}
-        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self._http_client.get(self.__URL, headers=headers, params=params)
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
@@ -47,7 +44,7 @@ class ConfigurationCheckRequester(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationCheckRequester:{auth:%s}" % self.__auth
+        return "ConfigurationCheckRequester:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
