@@ -140,13 +140,6 @@ class A4Calib(SensorCalib):
             if self.we_no2_x_sens_mv is None or self.we_no2_x_sens_mv == 0.0:
                 raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: zero sensitivity' % self.sensor_type)
 
-        else:
-            if self.we_x_sens_na is not None and self.we_x_sens_na > 0.0:
-                raise ValueError('%s - we_cross_sensitivity_no2_na_ppb: non-zero sensitivity' % self.sensor_type)
-
-            if self.we_no2_x_sens_mv is not None and self.we_no2_x_sens_mv > 0.0:
-                raise ValueError('%s - we_cross_sensitivity_no2_mv_ppb: non-zero sensitivity' % self.sensor_type)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
