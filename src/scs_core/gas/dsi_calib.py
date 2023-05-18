@@ -18,6 +18,8 @@ from scs_core.client.http_client import HTTPClient
 from scs_core.gas.afe_calib import AFECalib
 from scs_core.gas.sensor_calib import SensorCalib
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -47,7 +49,12 @@ class DSICalib(AFECalib):
 
         try:
             path = SensorCalib.ALPHASENSE_PATH + serial_number
-            jdict = json.loads(http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER))
+            response = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
+
+            logger = Logging.getLogger()
+            logger.info("dsi response: %s" % response)
+
+            jdict = json.loads(response)
 
             return cls.construct_from_jdict(jdict) if parse else jdict
 
