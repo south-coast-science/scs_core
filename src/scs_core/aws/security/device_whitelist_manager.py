@@ -16,7 +16,7 @@ class DeviceWhitelistManager(APIClient):
     classdocs
     """
 
-    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/DeviceWhitelist'
+    __URL = 'https://i8lwsjuksc.execute-api.us-west-2.amazonaws.com/default/DeviceWhitelist'
 
     # ----------------------------------------------------------------------------------------------------------------
 

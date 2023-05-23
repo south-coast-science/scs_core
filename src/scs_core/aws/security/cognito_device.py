@@ -35,12 +35,27 @@ class CognitoDeviceCredentials(JSONable):
         return re.search(r'^\w+-\w+-\d+$', tag) is not None
 
 
-    @staticmethod
-    def is_valid_password(password):
+    @classmethod
+    def is_valid_password(cls, password):
         if not isinstance(password, str):
             return False
 
         return re.search(r'^\S{16,255}$', password) is not None
+
+
+    @classmethod
+    def multiple_tags(cls, prototype_tag, number):
+        if not cls.is_valid_tag(prototype_tag):
+            raise ValueError(prototype_tag)
+
+        pieces = prototype_tag.split('-')
+
+        vendor_id = pieces[0]
+        model_id = pieces[1]
+        system_serial = int(pieces[2])
+
+        for system_serial_number in range(system_serial, system_serial + number):
+            yield '-'.join((vendor_id, model_id, str(system_serial_number)))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -49,8 +64,8 @@ class CognitoDeviceCredentials(JSONable):
         """
         Constructor
         """
-        self._tag = tag                                 # PK: string
-        self.__password = password                      # string
+        self._tag = tag                                         # PK: string
+        self.__password = password                              # string
 
 
     def __lt__(self, other):
