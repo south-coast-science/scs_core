@@ -6,7 +6,7 @@ Created on 17 Feb 2017
 Note: The system_serial_number is independent of both dfe serial number and host serial number. It is typically
 associated with the hostname. The combination vendor-id + model-id + system-sn must be universally unique.
 
-example:
+examples:
 {"vendor-id": "scs", "model-id": "ap1", "model": "Alpha Pi Eng", "config": "V1", "system-sn": 6}
 {"vendor-id": "SCS", "model-id": "BGB", "model": "Praxis", "config": "BGB", "system-sn": 406}
 """
@@ -61,13 +61,13 @@ class SystemID(PersistentJSONable):
         """
         super().__init__(last_modified=last_modified)
 
-        self.__vendor_id = vendor_id                # string (3 chars)
-        self.__model_id = model_id                  # string (3 chars)
+        self.__vendor_id = vendor_id                                # string (3 chars)
+        self.__model_id = model_id                                  # string (3 chars)
 
-        self.__model_name = model_name              # string
-        self.__configuration = configuration        # string
+        self.__model_name = model_name                              # string
+        self.__configuration = configuration                        # string
 
-        self.__system_serial_number = system_serial_number        # string (by convention, int)
+        self.__system_serial_number = system_serial_number          # string (by convention, int)
 
 
     def __eq__(self, other):
