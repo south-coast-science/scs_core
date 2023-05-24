@@ -3,11 +3,13 @@ Created on 27 Jan 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+    VERSION = 1.3
+
 example document:
 {
     "rec": "2023-02-28T12:25:24Z",
     "tag": "scs-bgx-431",
-    "ver": 1.2,
+    "ver": 1.3,
     "val": {
         "hostname": "scs-bbe-431",
         "os": {
@@ -327,7 +329,7 @@ class Configuration(JSONable):
     classdocs
     """
 
-    VERSION = 1.2
+    VERSION = 1.3
 
     # ----------------------------------------------------------------------------------------------------------------
 
