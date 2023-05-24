@@ -54,7 +54,7 @@ class AccessKey(PersistentJSONable):
     @classmethod
     def from_user(cls):
         try:
-            termios.tcflush(sys.stdin, termios.TCIOFLUSH)  # flush stdin
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
         except termios.error:
             pass
 
