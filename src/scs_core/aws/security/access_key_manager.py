@@ -6,6 +6,9 @@ Created on 24 May 2023
 document example:
 """
 
+import json
+
+from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.api_client import APIClient
 
 from scs_core.data.json import JSONable, JSONify
@@ -31,7 +34,8 @@ class AccessKeyManager(APIClient):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token))
         self._check_response(response)
 
-        return response.json()
+        for id, secret in json.loads(response.json()).items():
+            return AccessKey(id, secret)
 
 
     # ----------------------------------------------------------------------------------------------------------------
