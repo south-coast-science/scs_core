@@ -11,8 +11,6 @@ import json
 from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.api_client import APIClient
 
-from scs_core.data.json import JSONable, JSONify
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
