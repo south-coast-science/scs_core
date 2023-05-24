@@ -59,6 +59,17 @@ class CognitoUserCredentials(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['username'] = self.email
+        jdict['password'] = self.password
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def email(self):
         return self.__email
