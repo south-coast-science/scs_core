@@ -4,6 +4,7 @@ Created on 24 May 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
+{"key-id": "ABC", "secret-key": "123"}
 """
 
 import json
@@ -33,7 +34,7 @@ class AccessKeyManager(APIClient):
         self._check_response(response)
 
         for id, secret in json.loads(response.json()).items():
-            return AccessKey(id, secret)
+            return AccessKey(id, secret)                                # only one key
 
 
     # ----------------------------------------------------------------------------------------------------------------
