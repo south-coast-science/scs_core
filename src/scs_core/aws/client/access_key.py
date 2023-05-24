@@ -4,6 +4,9 @@ Created on 16 Oct 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://stackoverflow.com/questions/2520893/how-to-flush-the-input-stream-in-python
+
+document example:
+{"key-id": "ABC", "secret-key": "123"}
 """
 
 import json
@@ -54,7 +57,7 @@ class AccessKey(PersistentJSONable):
     @classmethod
     def from_user(cls):
         try:
-            termios.tcflush(sys.stdin, termios.TCIOFLUSH)  # flush stdin
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
         except termios.error:
             pass
 

@@ -17,6 +17,10 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
+from scs_core.sys.logging import Logging
+from scs_core.sys.shared_secret import SharedSecret
+from scs_core.sys.system_id import SystemID
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -24,6 +28,29 @@ class CognitoDeviceCredentials(JSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def load_credentials_for_device(cls, host):
+        logger = Logging.getLogger()
+
+        # SystemID...
+        system_id = SystemID.load(host)
+
+        if not system_id:
+            logger.error("SystemID not available.")
+            exit(1)
+
+        # SharedSecret...
+        shared_secret = SharedSecret.load(host)
+
+        if not shared_secret:
+            logger.error("SharedSecret not available.")
+            exit(1)
+
+        return cls(system_id.message_tag(), shared_secret.key)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
