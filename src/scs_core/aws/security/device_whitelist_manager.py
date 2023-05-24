@@ -36,14 +36,14 @@ class DeviceWhitelistManager(APIClient):
         return sorted([DeviceWhitelistItem.construct_from_jdict(jdict) for jdict in response.json()])
 
 
-    def create(self, device_tag, token):
+    def create(self, token, device_tag):
         payload = DeviceWhitelistItem(device_tag)
 
         response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
-    def delete(self, device_tag, token):
+    def delete(self, token, device_tag):
         payload = DeviceWhitelistItem(device_tag)
 
         response = self._http_client.delete(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))

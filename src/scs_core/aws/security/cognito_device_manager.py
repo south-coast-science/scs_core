@@ -27,25 +27,25 @@ class CognitoDeviceManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def create(self, identity, token):
+    def create(self, token, identity):
         response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
 
 
-    def update(self, identity, token):
+    def update(self, token, identity):
         response = self._http_client.patch(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
 
 
-    def delete(self, device_tag, token):
+    def delete(self, token, device_tag):
         payload = {"DeviceTag": device_tag}
 
         response = self._http_client.delete(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
-        # TODO: delete device from organisations
+        # TODO: delete device from organisations?
 
 
     # ----------------------------------------------------------------------------------------------------------------
