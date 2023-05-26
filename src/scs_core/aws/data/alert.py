@@ -386,6 +386,11 @@ class AlertSpecification(JSONable):
         return self.__creator_email_address
 
 
+    @creator_email_address.setter
+    def creator_email_address(self, creator_email_address):
+        self.__creator_email_address = creator_email_address
+
+
     @property
     def to(self):
         return self.__to
