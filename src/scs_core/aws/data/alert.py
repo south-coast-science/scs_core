@@ -228,8 +228,7 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.topic is None or self.field is None or self.aggregation_period is None or \
-                self.creator_email_address is None or self.to is None:
+        if self.topic is None or self.field is None or self.aggregation_period is None or self.to is None:
             return False
 
         if not self.has_trigger():

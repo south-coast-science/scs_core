@@ -28,29 +28,25 @@ class AlertSpecificationManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
+    def __init__(self, http_client):
         super().__init__(http_client)
-
-        self.__auth = auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, topic_filter, path_filter, creator_filter):
+    def find(self, token, topic_filter, path_filter, creator_filter):
         request = AlertSpecificationManagerRequest(topic_filter, path_filter, creator_filter)
-        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
 
-    def retrieve(self, id):
+    def retrieve(self, token, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self._http_client.get(url, headers=headers)
+        http_response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -58,10 +54,8 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def create(self, alert):
-        headers = self._auth_headers(self.__auth.email_address)
-
-        http_response = self._http_client.post(self.__URL, headers=headers, json=alert.as_json())
+    def create(self, token, alert):
+        http_response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -69,11 +63,10 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def update(self, alert):
+    def update(self, token, alert):
         url = '/'.join((self.__URL, str(alert.id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self._http_client.post(url, headers=headers, json=alert.as_json())
+        http_response = self._http_client.post(url, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -81,17 +74,16 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def delete(self, id):
+    def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        self._http_client.delete(url, headers=headers)
+        self._http_client.delete(url, headers=self._token_headers(token))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManager:{auth:%s}" % self.__auth
+        return "AlertSpecificationManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
