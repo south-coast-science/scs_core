@@ -29,19 +29,16 @@ class AlertStatusFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
+    def __init__(self, http_client):
         super().__init__(http_client)
-
-        self.__auth = auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, id_filter, cause_filter, response_mode):
+    def find(self, token, id_filter, cause_filter, response_mode):
         request = AlertStatusFinderRequest(id_filter, cause_filter, response_mode)
-        headers = self._auth_headers(self.__auth.email_address)
 
-        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return AlertStatusFinderResponse.construct_from_jdict(response.json())
@@ -50,7 +47,7 @@ class AlertStatusFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFinder:{auth:%s}" % self.__auth
+        return "AlertStatusFinder:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
