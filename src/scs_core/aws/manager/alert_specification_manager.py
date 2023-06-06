@@ -81,8 +81,6 @@ class AlertSpecificationManager(APIClient):
         http_response = self._http_client.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)
 
-        print("done delete: %s" % http_response)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
