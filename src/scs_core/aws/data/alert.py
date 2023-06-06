@@ -166,7 +166,7 @@ class AlertSpecification(JSONable):
         creator_email_address = jdict.get('creator-email-address')
 
         to = jdict.get('to')
-        cc_list = jdict.get('cc-list')
+        cc_list = {cc for cc in jdict.get('cc-list')}
         suspended = jdict.get('suspended')
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
@@ -197,7 +197,7 @@ class AlertSpecification(JSONable):
         self.__creator_email_address = creator_email_address        # string
 
         self.__to = to                                              # string                updatable
-        self.__cc_list = cc_list                                    # array of string       updatable
+        self.__cc_list = cc_list                                    # set of string         updatable
         self.__suspended = bool(suspended)                          # bool                  updatable
 
 
@@ -325,6 +325,19 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def add_cc(self, cc):
+        self.__cc_list.add(cc)
+
+
+    def remove_cc(self, cc):
+        try:
+            self.__cc_list.remove(cc)
+        except KeyError:
+            pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -416,7 +429,7 @@ class AlertSpecification(JSONable):
 
     @property
     def cc_list(self):
-        return self.__cc_list
+        return sorted(self.__cc_list)
 
 
     @property
@@ -453,4 +466,4 @@ class AlertSpecification(JSONable):
                "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
-                self.creator_email_address, self.to, self.cc_list, self.suspended)
+                self.creator_email_address, self.to, self.__cc_list, self.suspended)
