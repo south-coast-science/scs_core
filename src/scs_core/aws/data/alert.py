@@ -151,6 +151,8 @@ class AlertSpecification(JSONable):
 
         id = jdict.get('id')
 
+        description = jdict.get('description', '')
+
         topic = jdict.get('topic')
         field = jdict.get('field')
 
@@ -167,18 +169,20 @@ class AlertSpecification(JSONable):
         cc_list = jdict.get('cc-list')
         suspended = jdict.get('suspended')
 
-        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
+        return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id, topic, field, lower_threshold, upper_threshold, alert_on_none,
+    def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                  aggregation_period, test_interval, creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
         self.__id = Datum.int(id)                                   # int
+
+        self.__description = description                            # string
 
         self.__topic = topic                                        # string topic
         self.__field = field                                        # string path
@@ -205,6 +209,12 @@ class AlertSpecification(JSONable):
             return False
 
         if self.field < other.field:
+            return True
+
+        if self.description > other.description:
+            return False
+
+        if self.description < other.description:
             return True
 
         if self.field > other.field:
@@ -312,12 +322,15 @@ class AlertSpecification(JSONable):
         # return self.test_interval.end_datetime(origin) if self.test_interval else \
         #     self.aggregation_period.end_datetime(origin)
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
+
+        jdict['description'] = self.description
 
         jdict['topic'] = self.topic
         jdict['field'] = self.field
@@ -344,6 +357,11 @@ class AlertSpecification(JSONable):
     @property
     def id(self):
         return self.__id
+
+
+    @property
+    def description(self):
+        return self.__description
 
 
     @property
@@ -430,9 +448,9 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecification:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, " \
-               "alert_on_none:%s, aggregation_period:%s, test_interval:%s, creator_email_address:%s, " \
-               "to:%s, cc_list:%s, suspended:%s}" %  \
-               (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold,
-                self.alert_on_none, self.aggregation_period, self.test_interval, self.creator_email_address,
-                self.to, self.cc_list, self.suspended)
+        return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
+               "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
+               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               (self.id, self.description, self.topic, self.field, self.lower_threshold,
+                self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
+                self.creator_email_address, self.to, self.cc_list, self.suspended)
