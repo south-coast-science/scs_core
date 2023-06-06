@@ -178,11 +178,10 @@ class DynamoManager(object):
 
         # Filter on second key - filter on second key keys only - filter on second key batched
         if pk and sk and sk_val and fosk:
-            kwargs['ProjectionExpression'] = pk
             if exact:
-                kwargs['KeyConditionExpression'] = Key(sk).eq(sk_val)
+                kwargs['FilterExpression'] = Key(sk).eq(sk_val)
             else:
-                kwargs['KeyConditionExpression'] = Attr(sk).contains(sk_val)
+                kwargs['FilterExpression'] = Attr(sk).contains(sk_val)
             if limit:
                 kwargs['Limit'] = limit
             if keys_only:
@@ -190,6 +189,7 @@ class DynamoManager(object):
                 kwargs['ExpressionAttributeNames'] = {'#pk': pk}
 
             return kwargs
+
 
     def do_query(self, table_name, query, limited=False):
         exact_match = False
