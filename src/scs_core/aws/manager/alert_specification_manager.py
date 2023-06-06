@@ -78,8 +78,10 @@ class AlertSpecificationManager(APIClient):
     def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
 
-        response = self._http_client.delete(url, headers=self._token_headers(token))
-        print("done delete: %s" % response)
+        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        self._check_response(http_response)
+
+        print("done delete: %s" % http_response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
