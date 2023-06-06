@@ -25,7 +25,6 @@ class AlertSpecificationManager(APIClient):
 
     __URL = "https://a066wbide8.execute-api.us-west-2.amazonaws.com/default/AlertSpecification"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, http_client):
@@ -39,6 +38,8 @@ class AlertSpecificationManager(APIClient):
 
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
+
+        # TODO: use filters here?
 
         return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
@@ -66,8 +67,6 @@ class AlertSpecificationManager(APIClient):
     def update(self, token, alert):
         url = '/'.join((self.__URL, str(alert.id)))
 
-        print(alert.as_json())
-
         http_response = self._http_client.post(url, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
@@ -79,7 +78,10 @@ class AlertSpecificationManager(APIClient):
     def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
 
-        self._http_client.delete(url, headers=self._token_headers(token))
+        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        self._check_response(http_response)
+
+        print("done delete: %s" % http_response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -180,8 +182,6 @@ class AlertSpecificationManagerResponse(HTTPResponse):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
-
-        print("jdict: %s" % jdict)
 
         status = HTTPStatus(jdict.get('statusCode'))
 

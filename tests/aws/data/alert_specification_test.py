@@ -10,8 +10,8 @@ import json
 
 from scs_core.aws.data.alert import AlertSpecification, AlertStatus
 
-from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.json import JSONify
+from scs_core.data.recurring_period import RecurringPeriod
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,8 +21,8 @@ test_interval = RecurringPeriod.construct(1, 'M')
 
 print("1...")
 
-alert = AlertSpecification(None, 'my/topic', 'my.field', None, 100, True, aggregation_period, test_interval,
-                           'bruno.beloff@southcoastscience.com', 'bruno.beloff@southcoastscience.com',
+alert = AlertSpecification(None, 'description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
+                           test_interval, 'bruno.beloff@southcoastscience.com', 'bruno.beloff@southcoastscience.com',
                            ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 
