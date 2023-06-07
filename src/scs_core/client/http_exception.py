@@ -8,6 +8,7 @@ https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
@@ -99,6 +100,12 @@ class HTTPException(RuntimeError, JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def error_report(self):
+        now = LocalizedDatetime.now().utc().as_iso8601()
+        return "%s: HTTP response: %s (%s) %s" % (now, self.status, self.reason, self.data)
+
 
     def __str__(self, *args, **kwargs):
         name = self.__class__.__name__
