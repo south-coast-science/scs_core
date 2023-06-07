@@ -8,12 +8,14 @@ https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto
 
 https://github.com/boto/botocore/issues/1688
 
+https://stackoverflow.com/questions/46616282/dynamodb-query-filterexpression-multiple-condition-chaining-python
+
 A single manager for all required dynamoDB related functions.
 
 """
 
-from boto3.dynamodb.conditions import Key, Attr
-
+from boto3.dynamodb.conditions import Key, Attr, And
+from functools import reduce
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -125,9 +127,31 @@ class DynamoManager(object):
         to_return.extend(response['Items'])
         return to_return
 
+    def multi_scan(self, table_name, key_value_pairs, limited):
+        kwargs = {}
+
+        if not table_name:
+            return kwargs
+
+        table = self.__dynamo_resource.Table(table_name)
+
+        to_return = []
+        q = table.scan(FilterExpression=reduce(And, ([Key(k).eq(v) for k, v in key_value_pairs])))
+        to_return.extend(q['Items'])
+        if not limited:
+            while 'LastEvaluatedKey' in q:
+                esk = q['LastEvaluatedKey']
+                q = table.scan(FilterExpression=reduce(And, ([Key(k).eq(v) for k, v in key_value_pairs.items()])),
+                               ExclusiveStartKey=esk)
+                to_return.extend(q['Items'])
+        return to_return
+
     # ----------------------------------------------------------------------------------------------------------------
     # MAIN FUNCTIONALITY
     # ----------------------------------------------------------------------------------------------------------------
+
+
+
 
     @staticmethod
     def build_query(table_name, pk=None, pk_val=None, sk=None, sk_val=None, keys_only=False, exact=False,
