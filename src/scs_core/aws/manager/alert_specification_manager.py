@@ -39,8 +39,6 @@ class AlertSpecificationManager(APIClient):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
-        # TODO: use filters here?
-
         return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
 
@@ -80,8 +78,6 @@ class AlertSpecificationManager(APIClient):
 
         http_response = self._http_client.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)
-
-        # TODO: delete history?
 
 
     # ----------------------------------------------------------------------------------------------------------------
