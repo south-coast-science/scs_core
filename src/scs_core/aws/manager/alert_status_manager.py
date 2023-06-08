@@ -25,7 +25,7 @@ class AlertStatusManager(APIClient):
     classdocs
     """
 
-    __URL = "https://nssnahspkj.execute-api.us-west-2.amazonaws.com/default/AlertStatus"    # TODO: fix this URL
+    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/AlertStatus"
 
     # ----------------------------------------------------------------------------------------------------------------
 
