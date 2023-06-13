@@ -30,6 +30,16 @@ class OPCConf(MultiPersistentJSONable):
         return cls.conf_dir(), filename
 
 
+    @classmethod
+    def load(cls, manager, name=None, encryption_key=None, skeleton=False):
+        conf = super().load(manager, name=name, encryption_key=encryption_key, skeleton=skeleton)
+
+        if conf:
+            conf.__dev_path = manager.opc_spi_dev_path()
+
+        return conf
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -76,25 +86,18 @@ class OPCConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def opc_monitor(self, interface, host):
+    def opc_monitor(self, interface):
         return None
 
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def opc(self, interface, host):
+    def opc(self, interface):
         return None
 
 
     # noinspection PyMethodMayBeStatic
     def uses_spi(self):
         return True
-
-    def opc_dev_path(self, host):
-        try:
-            return int(self.__dev_path)
-
-        except TypeError:
-            return host.opc_spi_dev_path()
 
 
     # ----------------------------------------------------------------------------------------------------------------
