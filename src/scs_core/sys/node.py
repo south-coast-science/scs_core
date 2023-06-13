@@ -195,22 +195,12 @@ class IoTNode(Node):
     # SPI...
 
     @abstractmethod
-    def ndir_spi_bus(self):
+    def ndir_spi_dev_path(self):
         pass
 
 
     @abstractmethod
-    def ndir_spi_device(self):
-        pass
-
-
-    @abstractmethod
-    def opc_spi_bus(self):
-        pass
-
-
-    @abstractmethod
-    def opc_spi_device(self):
+    def opc_spi_dev_path(self):
         pass
 
 
