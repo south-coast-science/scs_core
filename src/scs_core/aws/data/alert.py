@@ -18,10 +18,10 @@ https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-prima
 
 from collections import OrderedDict
 
-from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
+from scs_core.data.recurring_period import RecurringPeriod
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -34,11 +34,11 @@ class AlertStatus(JSONable):
     BELOW_LOWER_THRESHOLD =     '<L'
     ABOVE_UPPER_THRESHOLD =     '>U'
     NULL_VALUE =                'NV'
-
+    OK =                        'OK'
 
     @classmethod
     def causes(cls):
-        return cls.BELOW_LOWER_THRESHOLD, cls.ABOVE_UPPER_THRESHOLD, cls.NULL_VALUE
+        return cls.BELOW_LOWER_THRESHOLD, cls.ABOVE_UPPER_THRESHOLD, cls.NULL_VALUE, cls.OK
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -151,6 +151,8 @@ class AlertSpecification(JSONable):
 
         id = jdict.get('id')
 
+        description = jdict.get('description', '')
+
         topic = jdict.get('topic')
         field = jdict.get('field')
 
@@ -164,21 +166,23 @@ class AlertSpecification(JSONable):
         creator_email_address = jdict.get('creator-email-address')
 
         to = jdict.get('to')
-        cc_list = jdict.get('cc-list')
+        cc_list = {cc for cc in jdict.get('cc-list')}
         suspended = jdict.get('suspended')
 
-        return cls(id, topic, field, lower_threshold, upper_threshold, alert_on_none,
+        return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id, topic, field, lower_threshold, upper_threshold, alert_on_none,
+    def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                  aggregation_period, test_interval, creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
         self.__id = Datum.int(id)                                   # int
+
+        self.__description = description                            # string
 
         self.__topic = topic                                        # string topic
         self.__field = field                                        # string path
@@ -193,7 +197,7 @@ class AlertSpecification(JSONable):
         self.__creator_email_address = creator_email_address        # string
 
         self.__to = to                                              # string                updatable
-        self.__cc_list = cc_list                                    # array of string       updatable
+        self.__cc_list = cc_list                                    # set of string         updatable
         self.__suspended = bool(suspended)                          # bool                  updatable
 
 
@@ -205,6 +209,12 @@ class AlertSpecification(JSONable):
             return False
 
         if self.field < other.field:
+            return True
+
+        if self.description > other.description:
+            return False
+
+        if self.description < other.description:
             return True
 
         if self.field > other.field:
@@ -228,8 +238,7 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.topic is None or self.field is None or self.aggregation_period is None or \
-                self.creator_email_address is None or self.to is None:
+        if self.topic is None or self.field is None or self.aggregation_period is None or self.to is None:
             return False
 
         if not self.has_trigger():
@@ -313,12 +322,28 @@ class AlertSpecification(JSONable):
         # return self.test_interval.end_datetime(origin) if self.test_interval else \
         #     self.aggregation_period.end_datetime(origin)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def add_cc(self, cc):
+        self.__cc_list.add(cc)
+
+
+    def remove_cc(self, cc):
+        try:
+            self.__cc_list.remove(cc)
+        except KeyError:
+            pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
+
+        jdict['description'] = self.description
 
         jdict['topic'] = self.topic
         jdict['field'] = self.field
@@ -345,6 +370,11 @@ class AlertSpecification(JSONable):
     @property
     def id(self):
         return self.__id
+
+
+    @property
+    def description(self):
+        return self.__description
 
 
     @property
@@ -387,6 +417,11 @@ class AlertSpecification(JSONable):
         return self.__creator_email_address
 
 
+    @creator_email_address.setter
+    def creator_email_address(self, creator_email_address):
+        self.__creator_email_address = creator_email_address
+
+
     @property
     def to(self):
         return self.__to
@@ -394,7 +429,7 @@ class AlertSpecification(JSONable):
 
     @property
     def cc_list(self):
-        return self.__cc_list
+        return sorted(self.__cc_list)
 
 
     @property
@@ -426,9 +461,9 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecification:{id:%s, topic:%s, field:%s, lower_threshold:%s, upper_threshold:%s, " \
-               "alert_on_none:%s, aggregation_period:%s, test_interval:%s, creator_email_address:%s, " \
-               "to:%s, cc_list:%s, suspended:%s}" %  \
-               (self.id, self.topic, self.field, self.lower_threshold, self.upper_threshold,
-                self.alert_on_none, self.aggregation_period, self.test_interval, self.creator_email_address,
-                self.to, self.cc_list, self.suspended)
+        return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
+               "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
+               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               (self.id, self.description, self.topic, self.field, self.lower_threshold,
+                self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
+                self.creator_email_address, self.to, self.__cc_list, self.suspended)

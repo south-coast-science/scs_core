@@ -20,42 +20,46 @@ from scs_core.data.str import Str
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusFinder(APIClient):
+class AlertStatusManager(APIClient):
     """
     classdocs
     """
 
-    __URL = "https://nssnahspkj.execute-api.us-west-2.amazonaws.com/default/AlertHistoryLatestFinder"
+    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/AlertStatus"
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
+    def __init__(self, http_client):
         super().__init__(http_client)
 
-        self.__auth = auth
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, id_filter, cause_filter, response_mode):
-        request = AlertStatusFinderRequest(id_filter, cause_filter, response_mode)
-        headers = self._auth_headers(self.__auth.email_address)
+    def find(self, token, id_filter, cause_filter, response_mode):
+        request = AlertStatusFindRequest(id_filter, cause_filter, response_mode)
 
-        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
-        return AlertStatusFinderResponse.construct_from_jdict(response.json())
+        return AlertStatusFindResponse.construct_from_jdict(response.json())
+
+
+    def delete(self, token, id):
+        url = '/'.join((self.__URL, str(id)))
+
+        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        self._check_response(http_response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFinder:{auth:%s}" % self.__auth
+        return "AlertStatusManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusFinderRequest(object):
+class AlertStatusFindRequest(object):
     """
     classdocs
     """
@@ -141,13 +145,13 @@ class AlertStatusFinderRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFinderRequest:{id_filter:%s, cause_filter:%s, response_mode:%s}" % \
+        return "AlertStatusFindRequest:{id_filter:%s, cause_filter:%s, response_mode:%s}" % \
                (self.id_filter, self.cause_filter, self.response_mode)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusFinderResponse(HTTPResponse):
+class AlertStatusFindResponse(HTTPResponse):
     """
     classdocs
     """
@@ -164,7 +168,7 @@ class AlertStatusFinderResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, status.phrase, status.description)
 
-        mode = AlertStatusFinderRequest.Mode[jdict.get('mode')]
+        mode = AlertStatusFindRequest.Mode[jdict.get('mode')]
 
         alert_statuses = []
         if jdict.get('alert-statuses'):
@@ -232,5 +236,5 @@ class AlertStatusFinderResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFinderResponse:{status:%s, mode:%s, alert_statuses:%s, next_url:%s}" % \
+        return "AlertStatusFindResponse:{status:%s, mode:%s, alert_statuses:%s, next_url:%s}" % \
                (self.status, self.mode, Str.collection(self.alert_statuses), self.next_url)

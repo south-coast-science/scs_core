@@ -25,32 +25,27 @@ class AlertSpecificationManager(APIClient):
 
     __URL = "https://a066wbide8.execute-api.us-west-2.amazonaws.com/default/AlertSpecification"
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, auth):
+    def __init__(self, http_client):
         super().__init__(http_client)
 
-        self.__auth = auth
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, topic_filter, path_filter, creator_filter):
-        request = AlertSpecificationManagerRequest(topic_filter, path_filter, creator_filter)
-        headers = self._auth_headers(self.__auth.email_address)
+    def find(self, token, description_filter, topic_filter, path_filter, creator_filter):
+        request = AlertSpecificationManagerRequest(description_filter, topic_filter, path_filter, creator_filter)
 
-        response = self._http_client.get(self.__URL, headers=headers, params=request.params())
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
 
 
-    def retrieve(self, id):
+    def retrieve(self, token, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self._http_client.get(url, headers=headers)
+        http_response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -58,10 +53,8 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def create(self, alert):
-        headers = self._auth_headers(self.__auth.email_address)
-
-        http_response = self._http_client.post(self.__URL, headers=headers, json=alert.as_json())
+    def create(self, token, alert):
+        http_response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -69,11 +62,10 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def update(self, alert):
+    def update(self, token, alert):
         url = '/'.join((self.__URL, str(alert.id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        http_response = self._http_client.post(url, headers=headers, json=alert.as_json())
+        http_response = self._http_client.post(url, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
@@ -81,17 +73,17 @@ class AlertSpecificationManager(APIClient):
         return response.alerts[0] if response.alerts else None
 
 
-    def delete(self, id):
+    def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
-        headers = self._auth_headers(self.__auth.email_address)
 
-        self._http_client.delete(url, headers=headers)
+        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        self._check_response(http_response)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManager:{auth:%s}" % self.__auth
+        return "AlertSpecificationManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -101,6 +93,7 @@ class AlertSpecificationManagerRequest(object):
     classdocs
     """
 
+    DESCRIPTION_FILTER = 'description'
     TOPIC_FILTER = 'topic'
     PATH_FILTER = 'path'
     CREATOR_FILTER = 'creator'
@@ -112,19 +105,21 @@ class AlertSpecificationManagerRequest(object):
         if not qsp:
             return None
 
+        description_filter = qsp.get(cls.DESCRIPTION_FILTER)
         topic_filter = qsp.get(cls.TOPIC_FILTER)
         path_filter = qsp.get(cls.PATH_FILTER)
         creator_filter = qsp.get(cls.CREATOR_FILTER)
 
-        return cls(topic_filter, path_filter, creator_filter)
+        return cls(description_filter, topic_filter, path_filter, creator_filter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic_filter, path_filter, creator_filter):
+    def __init__(self, description_filter, topic_filter, path_filter, creator_filter):
         """
         Constructor
         """
+        self.__description_filter = description_filter              # string
         self.__topic_filter = topic_filter                          # string
         self.__path_filter = path_filter                            # string
         self.__creator_filter = creator_filter                      # string
@@ -140,7 +135,10 @@ class AlertSpecificationManagerRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def params(self):
+        description_filter = self.description_filter if self.description_filter else None
+
         params = {
+            self.DESCRIPTION_FILTER: description_filter,
             self.TOPIC_FILTER: self.topic_filter,
             self.PATH_FILTER: self.path_filter,
             self.CREATOR_FILTER: self.creator_filter
@@ -150,6 +148,11 @@ class AlertSpecificationManagerRequest(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def description_filter(self):
+        return self.__description_filter
+
 
     @property
     def topic_filter(self):
@@ -169,8 +172,10 @@ class AlertSpecificationManagerRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManagerRequest:{topic_filter:%s, path_filter:%s, creator_filter:%s}" % \
-               (self.topic_filter, self.path_filter, self.creator_filter)
+        return "AlertSpecificationManagerRequest:{description_filter:%s, topic_filter:%s, path_filter:%s, " \
+               "creator_filter:%s}" % \
+               (self.description_filter, self.topic_filter, self.path_filter,
+                self.creator_filter)
 
 
 # --------------------------------------------------------------------------------------------------------------------

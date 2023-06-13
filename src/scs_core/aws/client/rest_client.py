@@ -61,15 +61,15 @@ class RESTClient(object):
             # print("response_jstr: %s" % response_jstr, file=sys.stderr)
             # print("-", file=sys.stderr)
 
-        except HTTPException as exc:
+        except HTTPException as ex:
             # print("exc: %s" % exc, file=sys.stderr)
             # print("-", file=sys.stderr)
 
-            if exc.status == HTTPStatus.NOT_FOUND:
+            if ex.status == HTTPStatus.NOT_FOUND:
                 return None
 
             else:
-                raise exc
+                raise ex
 
         try:
             response = json.loads(response_jstr)
