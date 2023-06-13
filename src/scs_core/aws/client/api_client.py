@@ -4,6 +4,7 @@ Created on 19 Apr 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from abc import ABC
 from http import HTTPStatus
 
 from scs_core.client.http_exception import HTTPException
@@ -12,7 +13,7 @@ from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class APIClient(object):
+class APIClient(ABC):
     """
     classdocs
     """
