@@ -4,10 +4,11 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Alert example:
-{"id": 77, "topic": "south-coast-science-dev/development/loc/1/gases", "field": "val.CO.cnc", "lower-threshold": null,
-"upper-threshold": 1000.0, "alert-on-none": true, "aggregation-period": {"interval": 1, "units": "M"},
-"test-interval": null, "creator-email-address": "authorization@southcoastscience.com",
-"to": "someone@me.com", "cc-list": [], "suspended": false}
+{"id": 88, "description": "warm", "topic": "south-coast-science-dev/development/loc/1/climate", "field": "val.tmp",
+"lower-threshold": null, "upper-threshold": 30.0, "alert-on-none": false,
+"aggregation-period": {"interval": 1, "units": "M"}, "test-interval": null, "json-message": false,
+"creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
+"cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
 
 AlertStatus example:
 {"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": null, "val": 589.6}
@@ -89,7 +90,7 @@ class AlertStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_excursion(self):
-        return self.cause is not None
+        return self.cause != 'OK'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -478,3 +479,63 @@ class AlertSpecification(JSONable):
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
                 self.json_message, self.creator_email_address, self.to, self.__cc_list, self.suspended)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AlertMessage(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        alert_specification = AlertSpecification.construct_from_jdict(jdict.get('specification'))
+        alert_status = AlertStatus.construct_from_jdict(jdict.get('status'))
+
+        return cls(alert_specification, alert_status)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, alert_specification: AlertSpecification, alert_status: AlertStatus):
+        """
+        Constructor
+        """
+        self.__alert_specification = alert_specification                    # AlertSpecification
+        self.__alert_status = alert_status                                  # AlertStatus
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['specification'] = self.alert_specification
+        jdict['status'] = self.alert_status
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def alert_specification(self):
+        return self.__alert_specification
+
+
+    @property
+    def alert_status(self):
+        return self.__alert_status
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AlertMessage:{alert_specification:%s, alert_status:%s}" %  \
+               (self.alert_specification, self.alert_status)
