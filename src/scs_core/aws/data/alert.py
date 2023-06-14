@@ -11,7 +11,7 @@ Alert example:
 "cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
 
 AlertStatus example:
-{"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": null, "val": 589.6}
+{"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": "OK", "val": 589.6}
 
 https://martinstapel.com/how-to-autoincrement-in-dynamo-db-if-you-really-need-to/
 https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-primary-key-id-in-dynamodb
@@ -21,7 +21,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 
 
@@ -520,6 +520,12 @@ class AlertMessage(JSONable):
         jdict['status'] = self.alert_status
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def subject(self):
+        return JSONify.dumps(self.alert_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
