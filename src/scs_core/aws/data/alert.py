@@ -163,6 +163,8 @@ class AlertSpecification(JSONable):
         aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
+        json_message = jdict.get('json-message', False)
+
         creator_email_address = jdict.get('creator-email-address')
 
         to = jdict.get('to')
@@ -170,13 +172,13 @@ class AlertSpecification(JSONable):
         suspended = jdict.get('suspended')
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, creator_email_address, to, cc_list, suspended)
+                   aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                 aggregation_period, test_interval, creator_email_address, to, cc_list, suspended):
+                 aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
@@ -193,6 +195,8 @@ class AlertSpecification(JSONable):
 
         self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
         self.__test_interval = test_interval                        # RecurringPeriod       updatable
+
+        self.__json_message = bool(json_message)                    # bool
 
         self.__creator_email_address = creator_email_address        # string
 
@@ -355,6 +359,8 @@ class AlertSpecification(JSONable):
         jdict['aggregation-period'] = self.aggregation_period.as_json()
         jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
+        jdict['json-message'] = self.json_message
+
         if self.creator_email_address is not None:
             jdict['creator-email-address'] = self.creator_email_address
 
@@ -413,6 +419,11 @@ class AlertSpecification(JSONable):
 
 
     @property
+    def json_message(self):
+        return self.__json_message
+
+
+    @property
     def creator_email_address(self):
         return self.__creator_email_address
 
@@ -463,7 +474,7 @@ class AlertSpecification(JSONable):
     def __str__(self, *args, **kwargs):
         return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
                "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
-               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               "json_message:%s, creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
-                self.creator_email_address, self.to, self.__cc_list, self.suspended)
+                self.json_message, self.creator_email_address, self.to, self.__cc_list, self.suspended)
