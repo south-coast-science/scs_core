@@ -168,7 +168,7 @@ class AlertSpecification(JSONable):
         creator_email_address = jdict.get('creator-email-address')
 
         to = jdict.get('to')
-        cc_list = {cc for cc in jdict.get('cc-list')}
+        cc_list = {cc for cc in jdict.get('cc-list', [])}
         suspended = jdict.get('suspended')
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
