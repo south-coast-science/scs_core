@@ -30,6 +30,16 @@ class OPCConf(MultiPersistentJSONable):
         return cls.conf_dir(), filename
 
 
+    @classmethod
+    def load(cls, manager, name=None, encryption_key=None, skeleton=False):
+        conf = super().load(manager, name=name, encryption_key=encryption_key, skeleton=skeleton)
+
+        if conf:
+            conf.__dev_path = manager.opc_spi_dev_path()
+
+        return conf
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -42,15 +52,14 @@ class OPCConf(MultiPersistentJSONable):
         restart_on_zeroes = jdict.get('restart-on-zeroes', True)
         power_saving = jdict.get('power-saving')
 
-        bus = jdict.get('bus')
-        address = jdict.get('address')
+        dev_path = jdict.get('dev_path')
 
-        return cls(model, sample_period, restart_on_zeroes, power_saving, bus, address, name=name)
+        return cls(model, sample_period, restart_on_zeroes, power_saving, dev_path, name=name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, sample_period, restart_on_zeroes, power_saving, bus, address, name=None):
+    def __init__(self, model, sample_period, restart_on_zeroes, power_saving, dev_path, name=None):
         """
         Constructor
         """
@@ -61,15 +70,14 @@ class OPCConf(MultiPersistentJSONable):
         self.__restart_on_zeroes = bool(restart_on_zeroes)          # bool
         self.__power_saving = bool(power_saving)                    # bool
 
-        self.__bus = bus                                            # int
-        self.__address = address                                    # int
+        self.__dev_path = dev_path                                  # string
 
 
     def __eq__(self, other):                            # ignore name
         try:
             return self.model == other.model and self.sample_period == other.sample_period and \
                    self.restart_on_zeroes == other.restart_on_zeroes and self.power_saving == other.power_saving and \
-                   self.bus == other.bus and self.address == other.address
+                   self.dev_path == other.dev_path
 
         except (TypeError, AttributeError):
             return False
@@ -78,34 +86,18 @@ class OPCConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def opc_monitor(self, interface, host):
+    def opc_monitor(self, interface):
         return None
 
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def opc(self, interface, host):
+    def opc(self, interface):
         return None
 
 
     # noinspection PyMethodMayBeStatic
     def uses_spi(self):
         return True
-
-
-    def opc_bus(self, host):
-        try:
-            return int(self.__bus)
-
-        except TypeError:
-            return host.opc_spi_bus()
-
-
-    def opc_address(self, host):
-        try:
-            return int(self.__address)
-
-        except TypeError:
-            return host.opc_spi_device()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -131,13 +123,8 @@ class OPCConf(MultiPersistentJSONable):
 
 
     @property
-    def bus(self):
-        return self.__bus
-
-
-    @property
-    def address(self):
-        return self.__address
+    def dev_path(self):
+        return self.__dev_path
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -150,11 +137,8 @@ class OPCConf(MultiPersistentJSONable):
         jdict['restart-on-zeroes'] = self.restart_on_zeroes
         jdict['power-saving'] = self.power_saving
 
-        if self.__bus is not None:
-            jdict['bus'] = self.bus
-
-        if self.__address is not None:
-            jdict['address'] = self.address
+        if self.__dev_path is not None:
+            jdict['dev_path'] = self.dev_path
 
         return jdict
 
@@ -163,6 +147,6 @@ class OPCConf(MultiPersistentJSONable):
 
     def __str__(self, *args, **kwargs):
         return "OPCConf(core):{name:%s, model:%s, sample_period:%s, restart_on_zeroes:%s, power_saving:%s, " \
-               "bus:%s, address:%s}" %  \
+               "dev_path:%s}" %  \
                (self.name, self.model, self.sample_period, self.restart_on_zeroes, self.power_saving,
-                self.bus, self.address)
+                self.dev_path)
