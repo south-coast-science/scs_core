@@ -62,7 +62,7 @@ if not AccessKey.exists(Host):
     exit(1)
 
 try:
-    key = AccessKey.load(Host, encryption_key='beloff')     # AccessKey.password_from_user()
+    key = AccessKey.load(Host, encryption_key=AccessKey.password_from_user())     # AccessKey.password_from_user()
 except (KeyError, ValueError):
     print("device_monitor: incorrect password", file=sys.stderr)
     exit(1)
