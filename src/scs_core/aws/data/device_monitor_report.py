@@ -20,6 +20,18 @@ class DeviceStatus(JSONable):
     """
     classdocs
     """
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def delta(cls, report, prev_report):
+        if report is None or prev_report is None:
+            return None
+
+        if report == prev_report:
+            return None
+
+        return report.is_ok
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -102,29 +114,42 @@ class DeviceUptime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
+    def delta(cls, report, prev_report):
+        if report is None or prev_report is None:
             return None
 
-        uptime = Timedelta.construct_from_jdict(jdict.get('since'))
+        if report.period is None or prev_report.period is None:
+            return None
 
-        return cls(uptime)
+        return report.period < prev_report.period
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uptime: Timedelta):
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        period = Timedelta.construct_from_jdict(jdict.get('since'))
+
+        return cls(period)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, period: Timedelta):
         """
         Constructor
         """
         super().__init__()
 
-        self.__uptime = uptime                                      # Timedelta
+        self.__period = period                                      # Timedelta
 
 
     def __eq__(self, other):
         try:
-            return self.uptime == other.uptime
+            return self.period == other.period
 
         except AttributeError:
             return False
@@ -135,7 +160,7 @@ class DeviceUptime(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['uptime'] = self.uptime
+        jdict['period'] = self.period
 
         return jdict
 
@@ -143,14 +168,14 @@ class DeviceUptime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def uptime(self):
-        return self.__uptime
+    def period(self):
+        return self.__period
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceUptime:{uptime:%s}" %  self.uptime
+        return "DeviceUptime:{period:%s}" %  self.period
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -184,7 +209,7 @@ class TopicStatus(JSONable):
         self.__topic_dict = topic_dict                                      # dict of string: DeviceStatus
 
 
-    def __len(self):
+    def __len__(self):
         return len(self.__topic_dict.items())
 
 
@@ -205,6 +230,14 @@ class TopicStatus(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def status(self, topic):
+        try:
+            return self.__topic_dict[topic]
+
+        except KeyError:
+            return None
+
 
     @property
     def topic_dict(self):
@@ -299,19 +332,9 @@ class DeviceReport(JSONable):
         return self.__availability
 
 
-    @availability.setter
-    def availability(self, is_ok: bool):
-        self.__availability = DeviceStatus.construct_for_state(is_ok)
-
-
     @property
     def data(self):
         return self.__data
-
-
-    @data.setter
-    def data(self, is_ok: bool):
-        self.__data = DeviceStatus.construct_for_state(is_ok)
 
 
     @property
@@ -319,19 +342,9 @@ class DeviceReport(JSONable):
         return self.__power
 
 
-    @power.setter
-    def power(self, is_ok: bool):
-        self.__power = DeviceStatus.construct_for_state(is_ok)
-
-
     @property
     def uptime(self):
         return self.__uptime
-
-
-    @uptime.setter
-    def uptime(self, is_ok: bool):
-        self.__uptime = DeviceStatus.construct_for_state(is_ok)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -393,7 +406,7 @@ class DeviceMonitorReport(PersistentJSONable):
         self.__device_dict[report.device_tag] = report
 
 
-    def report(self, device_tag):
+    def device(self, device_tag):
         try:
             return self.__device_dict[device_tag]
         except KeyError:
