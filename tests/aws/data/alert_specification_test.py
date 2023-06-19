@@ -22,8 +22,8 @@ test_interval = RecurringPeriod.construct(1, 'M')
 print("1...")
 
 alert = AlertSpecification(None, 'description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, 'bruno.beloff@southcoastscience.com', 'bruno.beloff@southcoastscience.com',
-                           ["bbeloff@me.com", "hhopton@me.com"], False)
+                           test_interval, True, 'bruno.beloff@southcoastscience.com',
+                           'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 
 jstr = JSONify.dumps(alert)

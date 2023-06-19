@@ -1,12 +1,15 @@
 """
-Created on 09 Nov 2020
+Created on 14 Jun 2023
 
-@author: Jade Page (jade.page@southcoastscience.com)
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+document example:
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,117 +33,79 @@ class DeviceMonitorEmailList(PersistentJSONable):
         if not jdict:
             return None
 
-        email_list = jdict.get('email_list')
+        device_dict = {device_tag: set(recipients) for device_tag, recipients in jdict.items()}
 
-        return cls(email_list)
-
-
-    @staticmethod
-    def __item_contains_address(addresses, email_address):
-        if addresses is None:
-            return False
-
-        return email_address in addresses
+        return cls(device_dict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, email_list):
+    def __init__(self, device_dict):
         """
         Constructor
         """
         super().__init__()
 
-        self.__email_list = email_list                      # dict of device-tag: set of emails
+        self.__device_dict = device_dict                            # dict of device-tag: set of emails
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def append(self, device_tag, email_address):
-        if device_tag not in self.__email_list:
-            return False
+    def add(self, device_tag, email_address):
+        if device_tag not in self.__device_dict:
+            self.__device_dict[device_tag] = set()
 
-        if self.__email_list[device_tag] is None:
-            self.__email_list[device_tag] = email_address
-            return True
-
-        if device_tag in self.__email_list[device_tag]:
-            return True
-
-        try:
-            self.__email_list[device_tag].append(email_address)
-            self.__email_list[device_tag].sort()
-
-        except AttributeError:
-            self.__email_list[device_tag] = sorted([email_address, self.__email_list[device_tag]])
-
-        return True
+        self.__device_dict[device_tag].add(email_address)
 
 
-    def remove(self, device_tag, email_address):
+    def discard(self, device_tag, email_address):
         # all devices...
         if device_tag is None:
-            for listed_tag in self.__email_list:
-                self.__remove_for_device(listed_tag, email_address)
-
-            return True
-
-        # specific device...
-        if device_tag not in self.__email_list:
-            return False
-
-        self.__remove_for_device(device_tag, email_address)
-
-        return True
-
-
-    def __remove_for_device(self, device_tag, email_address):
-        if self.__email_list[device_tag] is None:
+            for device_tag in self.__device_dict:
+                self.__device_dict[device_tag].discard(email_address)
             return
 
-        try:
-            try:
-                self.__email_list[device_tag].remove(email_address)
-            except ValueError:
-                pass
+        # specific device...
+        if device_tag not in self.__device_dict:
+            return
 
-        except AttributeError:
-            if self.__email_list[device_tag] == email_address:
-                self.__email_list[device_tag] = None
+        self.__device_dict[device_tag].discard(email_address)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def subset(self, email_address):
-        email_list = {device_tag: addresses for device_tag, addresses in self.__email_list.items()
-                      if self.__item_contains_address(addresses, email_address)}
+        device_dict = {device_tag: recipients for device_tag, recipients in self.__device_dict.items()
+                       if email_address in recipients}
 
-        return EmailList(email_list)
+        return DeviceMonitorEmailList(device_dict)
 
 
-    def emails(self, device_tag):
+    def recipients(self, device_tag):
         try:
-            return self.__email_list[device_tag]
+            return self.__device_dict[device_tag]
         except KeyError:
             return None
 
 
-    @property
-    def email_list(self):
-        email_list = OrderedDict()
-        for device_tag in sorted(self.__email_list):
-            email_list[device_tag] = self.__email_list[device_tag]
+    # ----------------------------------------------------------------------------------------------------------------
 
-        return email_list
+    @property
+    def device_dict(self):
+        device_dict = OrderedDict()
+        for device_tag in sorted(self.__device_dict):
+            device_dict[device_tag] = sorted(self.__device_dict[device_tag])
+
+        return device_dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return {'email_list': self.email_list}
+        return self.device_dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceMonitorEmailList:{email_list:%s}" %  self.email_list
+        return "DeviceMonitorEmailList:{device_dict:%s}" %  Str.collection(self.device_dict)
