@@ -121,7 +121,7 @@ class DeviceUptime(JSONable):
         if report.period is None or prev_report.period is None:
             return None
 
-        return report.period < prev_report.period
+        return report.period > prev_report.period
 
 
     # ----------------------------------------------------------------------------------------------------------------
