@@ -20,6 +20,18 @@ class DeviceStatus(JSONable):
     """
     classdocs
     """
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def delta(cls, report, prev_report):
+        if report is None or prev_report is None:
+            return None
+
+        if report == prev_report:
+            return None
+
+        return report.is_ok
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
