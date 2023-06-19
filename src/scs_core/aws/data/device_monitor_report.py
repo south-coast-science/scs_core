@@ -184,7 +184,7 @@ class TopicStatus(JSONable):
         self.__topic_dict = topic_dict                                      # dict of string: DeviceStatus
 
 
-    def __len(self):
+    def __len__(self):
         return len(self.__topic_dict.items())
 
 

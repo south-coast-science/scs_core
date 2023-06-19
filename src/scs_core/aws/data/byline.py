@@ -191,7 +191,7 @@ class BylineGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def latest_topic(self, suffix):
+    def latest_topic(self, suffix=''):
         latest_rec = None
         topic = None
 
