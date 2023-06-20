@@ -269,7 +269,7 @@ class DeviceBylineGroup(BylineGroup):
     @property
     def device(self):
         for device in self._device_bylines.keys():
-            return device                                       # return the first device
+            return device                                       # return the first device tag
 
         return None
 

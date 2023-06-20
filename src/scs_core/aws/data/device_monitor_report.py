@@ -32,19 +32,6 @@ class DeviceStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def delta(cls, report, prev_report):
-        if report is None or prev_report is None:
-            return None
-
-        if report == prev_report:
-            return None
-
-        return report.is_ok
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -78,6 +65,18 @@ class DeviceStatus(JSONable):
 
         except AttributeError:
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def delta(self, prev_report):
+        if prev_report is None:
+            return None
+
+        if self.is_ok == prev_report.is_ok:
+            return None
+
+        return self.is_ok
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -119,22 +118,6 @@ class DeviceUptime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def delta(cls, report, prev_report):
-        if report is None or prev_report is None:
-            return None
-
-        if report.period is None or prev_report.period is None:
-            return None
-
-        if report.period < prev_report.period:
-            return False
-
-        return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -161,6 +144,21 @@ class DeviceUptime(JSONable):
 
         except AttributeError:
             return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def delta(self, prev_report):
+        if prev_report is None:
+            return None
+
+        if prev_report.period is None:
+            return None
+
+        if self.period < prev_report.period:
+            return False
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
