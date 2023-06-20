@@ -34,7 +34,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'exact': exact
         }
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), data=payload)
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorEmailList(response.json())
@@ -46,7 +46,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'device_tag': device_tag
         }
 
-        response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=payload)
+        response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorEmailList(response.json())      # only the updated entry is returned
@@ -58,7 +58,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'device_tag': device_tag
         }
 
-        response = self._http_client.delete(self.__URL, headers=self._token_headers(token), data=payload)
+        response = self._http_client.delete(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
 

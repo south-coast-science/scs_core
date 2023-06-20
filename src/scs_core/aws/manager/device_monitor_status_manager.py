@@ -33,7 +33,7 @@ class DeviceMonitorStatusManager(APIClient):
             'exact': exact
         }
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), data=payload)
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         report = DeviceMonitorReport(response.json())
