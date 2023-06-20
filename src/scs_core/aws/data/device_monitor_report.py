@@ -4,6 +4,15 @@ Created on 17 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example (DeviceReport):
+{"device-tag": "scs-be2-3",
+"availability": {"is-ok": true, "since": "2023-06-19T16:57:25Z"},
+"data": {"south-coast-science-dev/development/device/alpha-bb-eng-000003/status":
+{"is-ok": true, "since": "2023-06-19T16:57:25Z"},
+"south-coast-science-dev/development/loc/1/climate": {"is-ok": true, "since": "2023-06-19T16:57:25Z"},
+"south-coast-science-dev/development/loc/1/gases": {"is-ok": true, "since": "2023-06-19T16:57:25Z"},
+"south-coast-science-dev/development/loc/1/particulates": {"is-ok": true, "since": "2023-06-19T16:57:25Z"}},
+"power": {"is-ok": null, "since": "2023-06-19T16:57:25Z"},
+"uptime": {"period": "00-03:34:00"}}
 """
 
 from collections import OrderedDict
@@ -71,17 +80,13 @@ class DeviceStatus(JSONable):
             return False
 
 
-    def __bool__(self):
-        return self.is_ok
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['is-ok'] = self.is_ok
-        jdict['since'] = self.since
+        jdict['since'] = self.since.utc()
 
         return jdict
 
@@ -121,7 +126,10 @@ class DeviceUptime(JSONable):
         if report.period is None or prev_report.period is None:
             return None
 
-        return report.period > prev_report.period
+        if report.period < prev_report.period:
+            return False
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -272,11 +280,6 @@ class DeviceReport(JSONable):
         uptime = DeviceUptime.construct_from_jdict(jdict.get('uptime'))
 
         return cls(device_tag, availability, data, power, uptime)
-
-
-    @classmethod
-    def construct_for_device(cls, device_tag):
-        return cls(device_tag, None, None, None, None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
