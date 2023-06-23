@@ -5,7 +5,7 @@ Created on 5 Apr 2022
 """
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
+from scs_core.aws.security.cognito_device_v1 import CognitoDeviceIdentity
 
 from scs_core.data.json import JSONify
 

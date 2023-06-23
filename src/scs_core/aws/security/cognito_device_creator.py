@@ -7,7 +7,7 @@ Enables a device to register itself as a CognitoDevice
 """
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.security.cognito_device import CognitoDeviceCredentials, CognitoDeviceIdentity
+from scs_core.aws.security.cognito_device_v1 import CognitoDeviceCredentials, CognitoDeviceIdentity
 
 from scs_core.data.json import JSONify
 
