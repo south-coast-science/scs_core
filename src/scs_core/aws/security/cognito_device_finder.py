@@ -78,6 +78,7 @@ class CognitoDeviceIntrospector(APIClient):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
     def find_self(self, token):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token))
         self._check_response(response)

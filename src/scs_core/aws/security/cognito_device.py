@@ -32,22 +32,28 @@ class CognitoDeviceCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load_credentials_for_device(cls, host):
+    def load_credentials_for_device(cls, host, strict=True):
         logger = Logging.getLogger()
 
         # SystemID...
         system_id = SystemID.load(host)
 
         if not system_id:
-            logger.error("SystemID not available.")
-            exit(1)
+            if strict:
+                logger.error("SystemID not available.")
+                exit(1)
+            else:
+                return None
 
         # SharedSecret...
         shared_secret = SharedSecret.load(host)
 
         if not shared_secret:
-            logger.error("SharedSecret not available.")
-            exit(1)
+            if strict:
+                logger.error("SharedSecret not available.")
+                exit(1)
+            else:
+                return None
 
         return cls(system_id.message_tag(), shared_secret.key)
 
