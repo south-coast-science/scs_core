@@ -8,7 +8,7 @@ Created on 24 Apr 2023
 
 import requests
 
-from scs_core.aws.security.cognito_device_v1 import CognitoDeviceCredentials
+from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
 from scs_core.aws.security.cognito_device_creator import CognitoDeviceCreator
 
 from scs_core.data.json import JSONify
