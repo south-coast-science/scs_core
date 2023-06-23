@@ -218,8 +218,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if self.password is not None:
             jdict['password'] = self.password
 
-        if self.invoice_number is not None:
-            jdict['invoice'] = self.invoice_number
+        jdict['invoice'] = self.invoice_number
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
