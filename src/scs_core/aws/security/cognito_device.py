@@ -218,8 +218,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.tag is not None:
-            jdict['username'] = self.tag
+        jdict['username'] = self.tag
 
         if self.password is not None:
             jdict['password'] = self.password
@@ -238,12 +237,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def created(self):
-        return self._created
-
-    @property
     def invoice_number(self):
         return self._invoice_number
+
+
+    @property
+    def created(self):
+        return self._created
 
 
     @property
