@@ -150,32 +150,39 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         tag = res.get('Username')
         password = res.get('password')
 
+        invoice_number = res.get('invoice')
+
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
         last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
 
-        return cls(tag, password, created, last_updated)
+        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
 
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None) if skeleton else None
 
         tag = jdict.get('username')
         password = jdict.get('password')
+
+        invoice_number = jdict.get('invoice')
+
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, password, created, last_updated)
+        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, password, created, last_updated):
+    def __init__(self, tag, password, invoice_number, created, last_updated):
         """
         Constructor
         """
         super().__init__(tag, password)
+
+        self._invoice_number = invoice_number                   # string
 
         self._created = created                                 # LocalisedDatetime
         self._last_updated = last_updated                       # LocalizedDatetime
@@ -211,6 +218,8 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         if self.password is not None:
             jdict['password'] = self.password
 
+        jdict['invoice'] = self.invoice_number
+
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
 
@@ -226,6 +235,10 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     def created(self):
         return self._created
 
+    @property
+    def invoice_number(self):
+        return self._invoice_number
+
 
     @property
     def last_updated(self):
@@ -235,5 +248,5 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, password:%s, created:%s, last_updated:%s}" % \
-               (self.tag, self.password, self.created, self.last_updated)
+        return "CognitoDeviceIdentity:{tag:%s, password:%s, invoice_number:%s, created:%s, last_updated:%s}" % \
+               (self.tag, self.password, self.invoice_number, self.created, self.last_updated)
