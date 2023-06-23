@@ -171,7 +171,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, password, invoice_number, created, last_updated)
+        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
             jdict['password'] = self.password
 
         if self.invoice_number is not None:
-            jdict['invoice'] = self.password
+            jdict['invoice'] = self.invoice_number
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
