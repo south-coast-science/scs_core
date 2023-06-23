@@ -161,7 +161,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
         last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
 
-        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     @classmethod
@@ -177,7 +177,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
