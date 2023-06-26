@@ -33,22 +33,28 @@ class CognitoDeviceCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load_credentials_for_device(cls, host):
+    def load_credentials_for_device(cls, host, strict=True):
         logger = Logging.getLogger()
 
         # SystemID...
         system_id = SystemID.load(host)
 
         if not system_id:
-            logger.error("SystemID not available.")
-            exit(1)
+            if strict:
+                logger.error("SystemID not available.")
+                exit(1)
+            else:
+                return None
 
         # SharedSecret...
         shared_secret = SharedSecret.load(host)
 
         if not shared_secret:
-            logger.error("SharedSecret not available.")
-            exit(1)
+            if strict:
+                logger.error("SharedSecret not available.")
+                exit(1)
+            else:
+                return None
 
         return cls(system_id.message_tag(), shared_secret.key)
 
@@ -156,7 +162,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
         last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
 
-        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     @classmethod
@@ -172,7 +178,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return CognitoDeviceIdentity(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------

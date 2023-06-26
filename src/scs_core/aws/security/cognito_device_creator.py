@@ -31,7 +31,6 @@ class CognitoDeviceCreator(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, identity: CognitoDeviceCredentials):
-
         response = self._http_client.post(self.__URL, headers=self._auth_headers(self.__AUTH),
                                           data=JSONify.dumps(identity))
         self._check_response(response)
