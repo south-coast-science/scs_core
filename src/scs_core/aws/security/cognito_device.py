@@ -7,7 +7,8 @@ example document (credentials):
 {"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
 
 example document (identity):
-{"username": "scs-ph1-28", "created": "2023-04-04T09:08:55Z", "last-updated": "2023-04-04T09:08:56Z"}
+{"username": "scs-bgx-401", "password": "CiykHTLjdmE4Oqxa", "invoice": "INV-000123",
+"created": "2023-06-23T10:32:52+01:00", "last-updated": "2023-06-23T10:32:52+01:00"}
 """
 
 import re
@@ -32,22 +33,28 @@ class CognitoDeviceCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def load_credentials_for_device(cls, host):
+    def load_credentials_for_device(cls, host, strict=True):
         logger = Logging.getLogger()
 
         # SystemID...
         system_id = SystemID.load(host)
 
         if not system_id:
-            logger.error("SystemID not available.")
-            exit(1)
+            if strict:
+                logger.error("SystemID not available.")
+                exit(1)
+            else:
+                return None
 
         # SharedSecret...
         shared_secret = SharedSecret.load(host)
 
         if not shared_secret:
-            logger.error("SharedSecret not available.")
-            exit(1)
+            if strict:
+                logger.error("SharedSecret not available.")
+                exit(1)
+            else:
+                return None
 
         return cls(system_id.message_tag(), shared_secret.key)
 
@@ -150,32 +157,39 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         tag = res.get('Username')
         password = res.get('password')
 
+        invoice_number = res.get('invoice')
+
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
         last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
 
-        return cls(tag, password, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None) if skeleton else None
 
         tag = jdict.get('username')
         password = jdict.get('password')
+
+        invoice_number = jdict.get('invoice')
+
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, password, created, last_updated)
+        return cls(tag, password, invoice_number, created, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, password, created, last_updated):
+    def __init__(self, tag, password, invoice_number, created, last_updated):
         """
         Constructor
         """
         super().__init__(tag, password)
+
+        self._invoice_number = invoice_number                   # string
 
         self._created = created                                 # LocalisedDatetime
         self._last_updated = last_updated                       # LocalizedDatetime
@@ -205,11 +219,12 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     def as_json(self):
         jdict = OrderedDict()
 
-        if self.tag is not None:
-            jdict['username'] = self.tag
+        jdict['username'] = self.tag
 
         if self.password is not None:
             jdict['password'] = self.password
+
+        jdict['invoice'] = self.invoice_number
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
@@ -221,6 +236,11 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def invoice_number(self):
+        return self._invoice_number
+
 
     @property
     def created(self):
@@ -235,5 +255,5 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIdentity:{tag:%s, password:%s, created:%s, last_updated:%s}" % \
-               (self.tag, self.password, self.created, self.last_updated)
+        return "CognitoDeviceIdentity:{tag:%s, password:%s, invoice_number:%s, created:%s, last_updated:%s}" % \
+               (self.tag, self.password, self.invoice_number, self.created, self.last_updated)

@@ -1,26 +1,23 @@
 """
-Created on 24 Apr 2023
+Created on 17 Jun 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-Enables a device to register itself as a CognitoDevice
 """
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.security.cognito_device import CognitoDeviceCredentials, CognitoDeviceIdentity
 
-from scs_core.data.json import JSONify
+from scs_core.aws.data.device_monitor_report import DeviceMonitorReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoDeviceCreator(APIClient):
+class DeviceMonitorStatusManager(APIClient):
     """
     classdocs
     """
 
-    __URL = 'https://bf32xbgymi.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceCreator'
-    __AUTH = "@southcoastscience.com"
+    # TODO: update URL
+    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -30,15 +27,21 @@ class CognitoDeviceCreator(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def create(self, identity: CognitoDeviceCredentials):
-        response = self._http_client.post(self.__URL, headers=self._auth_headers(self.__AUTH),
-                                          data=JSONify.dumps(identity))
+    def find(self, token, device_tag_filter=None, exact=False):
+        payload = {
+            'device_tag': device_tag_filter,
+            'exact': exact
+        }
+
+        response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        return CognitoDeviceIdentity.construct_from_jdict(response.json())
+        report = DeviceMonitorReport(response.json())
+
+        return report.device(device_tag_filter) if exact else report
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CognitoDeviceCreator:{}"
+        return "DeviceMonitorStatusManager:{}"

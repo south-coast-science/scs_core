@@ -4,13 +4,14 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Alert example:
-{"id": 77, "topic": "south-coast-science-dev/development/loc/1/gases", "field": "val.CO.cnc", "lower-threshold": null,
-"upper-threshold": 1000.0, "alert-on-none": true, "aggregation-period": {"interval": 1, "units": "M"},
-"test-interval": null, "creator-email-address": "authorization@southcoastscience.com",
-"to": "someone@me.com", "cc-list": [], "suspended": false}
+{"id": 88, "description": "warm", "topic": "south-coast-science-dev/development/loc/1/climate", "field": "val.tmp",
+"lower-threshold": null, "upper-threshold": 30.0, "alert-on-none": false,
+"aggregation-period": {"interval": 1, "units": "M"}, "test-interval": null, "json-message": false,
+"creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
+"cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
 
 AlertStatus example:
-{"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": null, "val": 589.6}
+{"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": "OK", "val": 589.6}
 
 https://martinstapel.com/how-to-autoincrement-in-dynamo-db-if-you-really-need-to/
 https://stackoverflow.com/questions/37072341/how-to-use-auto-increment-for-primary-key-id-in-dynamodb
@@ -20,7 +21,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
+from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 
 
@@ -89,7 +90,7 @@ class AlertStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_excursion(self):
-        return self.cause is not None
+        return self.cause != 'OK'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -163,20 +164,22 @@ class AlertSpecification(JSONable):
         aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
+        json_message = jdict.get('json-message', False)
+
         creator_email_address = jdict.get('creator-email-address')
 
         to = jdict.get('to')
-        cc_list = {cc for cc in jdict.get('cc-list')}
+        cc_list = set(jdict.get('cc-list', []))
         suspended = jdict.get('suspended')
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, creator_email_address, to, cc_list, suspended)
+                   aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                 aggregation_period, test_interval, creator_email_address, to, cc_list, suspended):
+                 aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
@@ -193,6 +196,8 @@ class AlertSpecification(JSONable):
 
         self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
         self.__test_interval = test_interval                        # RecurringPeriod       updatable
+
+        self.__json_message = bool(json_message)                    # bool
 
         self.__creator_email_address = creator_email_address        # string
 
@@ -355,6 +360,8 @@ class AlertSpecification(JSONable):
         jdict['aggregation-period'] = self.aggregation_period.as_json()
         jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
+        jdict['json-message'] = self.json_message
+
         if self.creator_email_address is not None:
             jdict['creator-email-address'] = self.creator_email_address
 
@@ -413,6 +420,11 @@ class AlertSpecification(JSONable):
 
 
     @property
+    def json_message(self):
+        return self.__json_message
+
+
+    @property
     def creator_email_address(self):
         return self.__creator_email_address
 
@@ -463,7 +475,73 @@ class AlertSpecification(JSONable):
     def __str__(self, *args, **kwargs):
         return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
                "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
-               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               "json_message:%s, creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
-                self.creator_email_address, self.to, self.__cc_list, self.suspended)
+                self.json_message, self.creator_email_address, self.to, self.__cc_list, self.suspended)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AlertMessage(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        alert_specification = AlertSpecification.construct_from_jdict(jdict.get('specification'))
+        alert_status = AlertStatus.construct_from_jdict(jdict.get('status'))
+
+        return cls(alert_specification, alert_status)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, alert_specification: AlertSpecification, alert_status: AlertStatus):
+        """
+        Constructor
+        """
+        self.__alert_specification = alert_specification                    # AlertSpecification
+        self.__alert_status = alert_status                                  # AlertStatus
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['specification'] = self.alert_specification
+        jdict['status'] = self.alert_status
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def subject(self):
+        return JSONify.dumps(self.alert_status)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def alert_specification(self):
+        return self.__alert_specification
+
+
+    @property
+    def alert_status(self):
+        return self.__alert_status
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AlertMessage:{alert_specification:%s, alert_status:%s}" %  \
+               (self.alert_specification, self.alert_status)

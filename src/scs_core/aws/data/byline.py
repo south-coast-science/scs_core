@@ -191,7 +191,17 @@ class BylineGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def latest_topic(self, suffix):
+    def latest_byline(self, suffix=''):
+        latest_byline = None
+
+        for byline in self.bylines:
+            if byline.topic.endswith(suffix) and (latest_byline is None or byline.rec > latest_byline.rec):
+                latest_byline = byline
+
+        return latest_byline
+
+
+    def latest_topic(self, suffix=''):
         latest_rec = None
         topic = None
 
@@ -259,7 +269,7 @@ class DeviceBylineGroup(BylineGroup):
     @property
     def device(self):
         for device in self._device_bylines.keys():
-            return device                                       # return the first device
+            return device                                       # return the first device tag
 
         return None
 
