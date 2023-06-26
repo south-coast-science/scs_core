@@ -34,12 +34,12 @@ class AlertSpecificationManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, token, description_filter, topic_filter, path_filter, creator_filter):
-        request = AlertSpecificationManagerRequest(description_filter, topic_filter, path_filter, creator_filter)
+        request = AlertSpecificationFindRequest(description_filter, topic_filter, path_filter, creator_filter)
 
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
-        return AlertSpecificationManagerResponse.construct_from_jdict(response.json())
+        return AlertSpecificationFindResponse.construct_from_jdict(response.json())
 
 
     def retrieve(self, token, id):
@@ -48,7 +48,7 @@ class AlertSpecificationManager(APIClient):
         http_response = self._http_client.get(url, headers=self._token_headers(token))
         self._check_response(http_response)
 
-        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
+        response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
@@ -57,7 +57,7 @@ class AlertSpecificationManager(APIClient):
         http_response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
-        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
+        response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
@@ -68,7 +68,7 @@ class AlertSpecificationManager(APIClient):
         http_response = self._http_client.post(url, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
-        response = AlertSpecificationManagerResponse.construct_from_jdict(http_response.json())
+        response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
 
         return response.alerts[0] if response.alerts else None
 
@@ -88,7 +88,7 @@ class AlertSpecificationManager(APIClient):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertSpecificationManagerRequest(object):
+class AlertSpecificationFindRequest(object):
     """
     classdocs
     """
@@ -172,7 +172,7 @@ class AlertSpecificationManagerRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManagerRequest:{description_filter:%s, topic_filter:%s, path_filter:%s, " \
+        return "AlertSpecificationFindRequest:{description_filter:%s, topic_filter:%s, path_filter:%s, " \
                "creator_filter:%s}" % \
                (self.description_filter, self.topic_filter, self.path_filter,
                 self.creator_filter)
@@ -180,7 +180,7 @@ class AlertSpecificationManagerRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertSpecificationManagerResponse(HTTPResponse):
+class AlertSpecificationFindResponse(HTTPResponse):
     """
     classdocs
     """
@@ -254,5 +254,5 @@ class AlertSpecificationManagerResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManagerResponse:{status:%s, alerts:%s, next_url:%s}" % \
+        return "AlertSpecificationFindResponse:{status:%s, alerts:%s, next_url:%s}" % \
                (self.status, Str.collection(self.alerts), self.next_url)

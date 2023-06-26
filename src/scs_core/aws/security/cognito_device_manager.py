@@ -38,6 +38,9 @@ class CognitoDeviceManager(APIClient):
         response = self._http_client.patch(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
 
+        return CognitoDeviceIdentity.construct_from_jdict(response.json())
+
+
 
     def delete(self, token, device_tag):
         payload = {"DeviceTag": device_tag}

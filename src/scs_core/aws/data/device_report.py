@@ -9,6 +9,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable
 
 
+# TODO: delete this class
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceReport(JSONable):
