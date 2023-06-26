@@ -154,7 +154,8 @@ class CognitoUserIdentity(JSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None, None, None, None, None, None, None, None, None) if skeleton else None
+            return cls(None, None, None, None, None, None, None, None, None, None, None, None, None) if skeleton \
+                else None
 
         username = jdict.get('username')
         email = jdict.get('email')
@@ -167,18 +168,19 @@ class CognitoUserIdentity(JSONable):
         email_verified = jdict.get('email-verified')
         is_super = jdict.get('is-super')
         is_tester = jdict.get('is-tester')
+        is_financial = jdict.get('is-financial')
 
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(username, created, confirmation_status, enabled,
-                   email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated)
+        return cls(username, created, confirmation_status, enabled, email_verified, email,
+                   given_name, family_name, password, is_super, is_tester, is_financial, last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, username, created, confirmation_status, enabled,
-                 email_verified, email, given_name, family_name, password, is_super, is_tester, last_updated):
+    def __init__(self, username, created, confirmation_status, enabled, email_verified, email,
+                 given_name, family_name, password, is_super, is_tester, is_financial, last_updated):
         """
         Constructor
         """
@@ -195,6 +197,7 @@ class CognitoUserIdentity(JSONable):
         self.__password = password                                  # string
         self.__is_super = bool(is_super)                            # bool
         self.__is_tester = bool(is_tester)                          # bool
+        self.__is_financial = bool(is_financial)                    # bool
 
         self._last_updated = last_updated                           # LocalizedDatetime
 
@@ -293,6 +296,7 @@ class CognitoUserIdentity(JSONable):
         jdict['email-verified'] = self.email_verified
         jdict['is-super'] = self.is_super
         jdict['is-tester'] = self.is_tester
+        jdict['is-financial'] = self.is_financial
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()
@@ -361,6 +365,11 @@ class CognitoUserIdentity(JSONable):
 
 
     @property
+    def is_financial(self):
+        return self.__is_financial
+
+
+    @property
     def last_updated(self):
         return self._last_updated
 
@@ -370,7 +379,7 @@ class CognitoUserIdentity(JSONable):
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__ + ":{username:%s, created:%s, confirmation_status:%s, enabled:%s, " \
                "email_verified:%s, email:%s, given_name:%s, family_name:%s, is_super:%s, is_tester:%s, " \
-               "last_updated:%s}" % \
+               "is_financial:%s, last_updated:%s}" % \
                (self.username, self.created, self.confirmation_status, self.enabled,
                 self.email_verified, self.email, self.given_name, self.family_name, self.is_super, self.is_tester,
-                self.last_updated)
+                self.is_financial, self.last_updated)

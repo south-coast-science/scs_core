@@ -7,7 +7,8 @@ example document (credentials):
 {"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
 
 example document (identity):
-{"username": "scs-ph1-28", "created": "2023-04-04T09:08:55Z", "last-updated": "2023-04-04T09:08:56Z"}
+{"username": "scs-bgx-401", "password": "CiykHTLjdmE4Oqxa", "invoice": "INV-000123",
+"created": "2023-06-23T10:32:52+01:00", "last-updated": "2023-06-23T10:32:52+01:00"}
 """
 
 import re
