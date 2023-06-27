@@ -4,10 +4,10 @@ Created on 5 Apr 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document (credentials):
-{"username": "scs-opc-1", "password": "Ytzglk6oYpzJY0FB"}
+{"username": "scs-opc-1", "password": "########"}
 
 example document (identity):
-{"username": "scs-bgx-401", "password": "CiykHTLjdmE4Oqxa", "invoice": "INV-000123",
+{"username": "scs-bgx-401", "password": "########", "invoice": "INV-000123",
 "created": "2023-06-23T10:32:52+01:00", "last-updated": "2023-06-23T10:32:52+01:00"}
 """
 
@@ -146,6 +146,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     """
     classdocs
     """
+
+    @classmethod
+    def is_valid_invoice_number(cls, invoice_number):
+        match = re.match(r'INV-\d{4,}', invoice_number)
+
+        return match is not None
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
