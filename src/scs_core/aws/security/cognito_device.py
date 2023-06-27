@@ -149,12 +149,12 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
     @classmethod
     def is_valid_invoice_number(cls, invoice_number):
-        if not invoice_number:
+        try:
+            match = re.match(r'INV-\d{4,}', invoice_number)
+            return match is not None
+
+        except TypeError:
             return False
-
-        match = re.match(r'INV-\d{4,}', invoice_number)
-
-        return match is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
