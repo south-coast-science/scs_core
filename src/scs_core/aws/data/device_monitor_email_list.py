@@ -141,7 +141,8 @@ class DeviceMonitorEmailList(PersistentJSONable):
     def device_dict(self):
         device_dict = OrderedDict()
         for device_tag in sorted(self.__device_dict):
-            device_dict[device_tag] = sorted(self.__device_dict[device_tag])
+            if self.__device_dict[device_tag]:
+                device_dict[device_tag] = sorted(self.__device_dict[device_tag])
 
         return device_dict
 
