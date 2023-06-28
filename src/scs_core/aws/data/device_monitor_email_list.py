@@ -77,7 +77,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
 
     def filter(self, email_address=None, device_tag=None, exact=False):
-        filtered = DeviceMonitorEmailList({})
+        device_dict = {}
 
         for key in self.__device_dict.keys():
             if device_tag is not None and not self.__tag_in_key(key, device_tag, exact):
@@ -86,9 +86,15 @@ class DeviceMonitorEmailList(PersistentJSONable):
             if email_address is not None and not self.__email_in_list(self.__device_dict[key], email_address, exact):
                 continue
 
-            filtered.__device_dict[key] = self.__device_dict[key]
+            device_dict[key] = self.__device_dict[key]
 
-        return filtered
+        return DeviceMonitorEmailList(device_dict)
+
+
+    def filter_devices(self, device_tags):
+        device_dict = {key: self.__device_dict[key] for key in self.__device_dict.keys() & device_tags}
+
+        return DeviceMonitorEmailList(device_dict)
 
 
     @staticmethod
