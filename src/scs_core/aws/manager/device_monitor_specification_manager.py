@@ -36,8 +36,6 @@ class DeviceMonitorSpecificationManager(APIClient):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        print("response: %s" % response.json())
-
         return DeviceMonitorEmailList.construct_from_jdict(response.json())
 
 
