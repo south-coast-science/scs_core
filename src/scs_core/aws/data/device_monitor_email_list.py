@@ -88,10 +88,10 @@ class DeviceMonitorEmailList(PersistentJSONable):
         device_dict = {}
 
         for key in self.__device_dict.keys():
-            if device_tag is not None and not self.__tag_in_key(key, device_tag, exact):
+            if not self.__matches_tag(key, device_tag, exact):
                 continue
 
-            if email_address is not None and not self.__email_in_list(self.__device_dict[key], email_address, exact):
+            if not self.__matches_email(self.__device_dict[key], email_address, exact):
                 continue
 
             device_dict[key] = self.__device_dict[key]
@@ -105,13 +105,21 @@ class DeviceMonitorEmailList(PersistentJSONable):
         return DeviceMonitorEmailList(device_dict)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @staticmethod
-    def __tag_in_key(key, device_tag, exact):
+    def __matches_tag(key, device_tag, exact):
+        if device_tag is None:
+            return True
+
         return (exact and device_tag == key) or (not exact and device_tag in key)
 
 
     @staticmethod
-    def __email_in_list(email_list, email_address, exact):
+    def __matches_email(email_list, email_address, exact):
+        if email_address is None:
+            return True
+
         for email in email_list:
             if (exact and email_address == email) or (not exact and email_address in email):
                 return True
