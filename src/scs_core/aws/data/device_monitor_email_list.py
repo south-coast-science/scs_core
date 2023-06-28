@@ -76,6 +76,35 @@ class DeviceMonitorEmailList(PersistentJSONable):
         self.__device_dict[device_tag].discard(email_address)
 
 
+    def filter(self, email_address=None, device_tag=None, exact=False):
+        filtered = DeviceMonitorEmailList({})
+
+        for key in self.__device_dict.keys():
+            if device_tag is not None and not self.__tag_in_key(key, device_tag, exact):
+                continue
+
+            if email_address is not None and not self.__email_in_list(self.__device_dict[key], email_address, exact):
+                continue
+
+            filtered.__device_dict[key] = self.__device_dict[key]
+
+        return filtered
+
+
+    @staticmethod
+    def __tag_in_key(key, device_tag, exact):
+        return (exact and device_tag == key) or (not exact and device_tag in key)
+
+
+    @staticmethod
+    def __email_in_list(email_list, email_address, exact):
+        for email in email_list:
+            if (exact and email_address == email) or (not exact and email_address in email):
+                return True
+
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def subset(self, email_address):
