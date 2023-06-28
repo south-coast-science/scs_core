@@ -65,19 +65,23 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
 
     def discard(self, device_tag, email_address):
+        device_dict = {}
+
         # all devices...
         if device_tag is None:
             for device_tag in self.__device_dict:
                 self.__device_dict[device_tag].discard(email_address)
-            return
+                device_dict[device_tag] = self.__device_dict[device_tag]
 
         # specific device...
-        if device_tag not in self.__device_dict:
-            return
+        elif device_tag not in self.__device_dict:
+            device_dict = {}
 
-        self.__device_dict[device_tag].discard(email_address)
+        else:
+            self.__device_dict[device_tag].discard(email_address)
+            device_dict = {device_tag: sorted(self.__device_dict[device_tag])}
 
-        return {device_tag: sorted(self.__device_dict[device_tag])}
+        return DeviceMonitorEmailList(device_dict)
 
 
     def filter(self, email_address=None, device_tag=None, exact=False):
