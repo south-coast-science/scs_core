@@ -61,6 +61,8 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
         self.__device_dict[device_tag].add(email_address)
 
+        return {device_tag: self.__device_dict[device_tag]}
+
 
     def discard(self, device_tag, email_address):
         # all devices...
@@ -74,6 +76,8 @@ class DeviceMonitorEmailList(PersistentJSONable):
             return
 
         self.__device_dict[device_tag].discard(email_address)
+
+        return {device_tag: self.__device_dict[device_tag]}
 
 
     def filter(self, email_address=None, device_tag=None, exact=False):
