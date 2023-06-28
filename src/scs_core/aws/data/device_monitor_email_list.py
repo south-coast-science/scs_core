@@ -94,6 +94,14 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def device(self, device_tag):
+        try:
+            return self.__device_dict[device_tag]
+
+        except KeyError:
+            return None
+
+
     @property
     def device_dict(self):
         device_dict = OrderedDict()
