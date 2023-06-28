@@ -85,7 +85,7 @@ class DeviceStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['is-ok'] = self.is_ok
-        jdict['since'] = self.since.utc()
+        jdict['since'] = None if self.since is None else self.since.utc()
 
         return jdict
 
