@@ -16,8 +16,7 @@ class DeviceMonitorStatusManager(APIClient):
     classdocs
     """
 
-    # TODO: update URL
-    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus"
+    __URL = "https://0l7fwqkzr8.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus"
 
     # ----------------------------------------------------------------------------------------------------------------
 

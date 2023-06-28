@@ -49,6 +49,10 @@ class DeviceMonitorEmailList(PersistentJSONable):
         self.__device_dict = device_dict                            # dict of device-tag: set of emails
 
 
+    def __len__(self):
+        return len(self.__device_dict)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, device_tag, email_address):
