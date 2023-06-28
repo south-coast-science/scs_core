@@ -61,7 +61,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
         self.__device_dict[device_tag].add(email_address)
 
-        return {device_tag: sorted(self.__device_dict[device_tag])}
+        return DeviceMonitorEmailList({device_tag: sorted(self.__device_dict[device_tag])})
 
 
     def discard(self, device_tag, email_address):
