@@ -30,7 +30,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        if not jdict:
+        if jdict is None:
             return None
 
         device_dict = {device_tag: set(recipients) for device_tag, recipients in jdict.items()}
@@ -61,7 +61,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
         self.__device_dict[device_tag].add(email_address)
 
-        return {device_tag: self.__device_dict[device_tag]}
+        return {device_tag: sorted(self.__device_dict[device_tag])}
 
 
     def discard(self, device_tag, email_address):
@@ -77,7 +77,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
         self.__device_dict[device_tag].discard(email_address)
 
-        return {device_tag: self.__device_dict[device_tag]}
+        return {device_tag: sorted(self.__device_dict[device_tag])}
 
 
     def filter(self, email_address=None, device_tag=None, exact=False):

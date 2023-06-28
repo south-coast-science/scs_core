@@ -3,6 +3,7 @@ Created on 17 Jun 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
+import json
 
 from scs_core.aws.client.api_client import APIClient
 
@@ -48,7 +49,10 @@ class DeviceMonitorSpecificationManager(APIClient):
         response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        return DeviceMonitorEmailList.construct_from_jdict(response.json())      # only the updated entry is returned
+        print("response: %s" % response.json())
+
+        return response.json()
+        # return DeviceMonitorEmailList.construct_from_jdict(response.json())      # only the updated entry is returned
 
 
     def remove(self, token, email_address, device_tag=None):
@@ -59,6 +63,10 @@ class DeviceMonitorSpecificationManager(APIClient):
 
         response = self._http_client.delete(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
+
+        print("response: %s" % response)
+
+        return response.json()
 
 
     # ----------------------------------------------------------------------------------------------------------------
