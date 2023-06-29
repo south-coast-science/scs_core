@@ -3,7 +3,6 @@ Created on 17 Jun 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
-import json
 
 from scs_core.aws.client.api_client import APIClient
 
