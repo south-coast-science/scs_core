@@ -16,8 +16,7 @@ class DeviceMonitorSpecificationManager(APIClient):
     classdocs
     """
 
-    # TODO: update URL
-    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorSpecification"
+    __URL = "https://psnunpg4gb.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorSpecification"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -27,17 +26,17 @@ class DeviceMonitorSpecificationManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, token, email_address=None, device_tag_filter=None, exact=False):
+    def find(self, token, email_address=None, device_tag=None, exact=False):
         payload = {
             'email_address': email_address,
-            'device_tag': device_tag_filter,
+            'device_tag': device_tag,
             'exact': exact
         }
 
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        return DeviceMonitorEmailList(response.json())
+        return DeviceMonitorEmailList.construct_from_jdict(response.json())
 
 
     def add(self, token, email_address, device_tag):
@@ -49,7 +48,7 @@ class DeviceMonitorSpecificationManager(APIClient):
         response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        return DeviceMonitorEmailList(response.json())      # only the updated entry is returned
+        return DeviceMonitorEmailList.construct_from_jdict(response.json())
 
 
     def remove(self, token, email_address, device_tag=None):
@@ -60,6 +59,8 @@ class DeviceMonitorSpecificationManager(APIClient):
 
         response = self._http_client.delete(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
+
+        return DeviceMonitorEmailList.construct_from_jdict(response.json())
 
 
     # ----------------------------------------------------------------------------------------------------------------

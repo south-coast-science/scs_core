@@ -4,6 +4,7 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
+{"scs-opc-109": ["somebody@somewhere.com", "somebody@somewhere-else.com"], ...}
 """
 
 from collections import OrderedDict
@@ -30,7 +31,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        if not jdict:
+        if jdict is None:
             return None
 
         device_dict = {device_tag: set(recipients) for device_tag, recipients in jdict.items()}
@@ -49,6 +50,10 @@ class DeviceMonitorEmailList(PersistentJSONable):
         self.__device_dict = device_dict                            # dict of device-tag: set of emails
 
 
+    def __len__(self):
+        return len(self.__device_dict)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, device_tag, email_address):
@@ -57,19 +62,70 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
         self.__device_dict[device_tag].add(email_address)
 
+        return DeviceMonitorEmailList({device_tag: sorted(self.__device_dict[device_tag])})
+
 
     def discard(self, device_tag, email_address):
+        device_dict = {}
+
         # all devices...
         if device_tag is None:
             for device_tag in self.__device_dict:
                 self.__device_dict[device_tag].discard(email_address)
-            return
+                device_dict[device_tag] = self.__device_dict[device_tag]
 
         # specific device...
-        if device_tag not in self.__device_dict:
-            return
+        elif device_tag not in self.__device_dict:
+            device_dict = {}
 
-        self.__device_dict[device_tag].discard(email_address)
+        else:
+            self.__device_dict[device_tag].discard(email_address)
+            device_dict = {device_tag: sorted(self.__device_dict[device_tag])}
+
+        return DeviceMonitorEmailList(device_dict)
+
+
+    def filter(self, email_address=None, device_tag=None, exact=False):
+        device_dict = {}
+
+        for key in self.__device_dict.keys():
+            if not self.__matches_tag(key, device_tag, exact):
+                continue
+
+            if not self.__matches_email(self.__device_dict[key], email_address, exact):
+                continue
+
+            device_dict[key] = self.__device_dict[key]
+
+        return DeviceMonitorEmailList(device_dict)
+
+
+    def filter_devices(self, device_tags):
+        device_dict = {key: self.__device_dict[key] for key in self.__device_dict.keys() & device_tags}
+
+        return DeviceMonitorEmailList(device_dict)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def __matches_tag(key, device_tag, exact):
+        if device_tag is None:
+            return True
+
+        return (exact and device_tag == key) or (not exact and device_tag in key)
+
+
+    @staticmethod
+    def __matches_email(email_list, email_address, exact):
+        if email_address is None:
+            return True
+
+        for email in email_list:
+            if (exact and email_address == email) or (not exact and email_address in email):
+                return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -90,11 +146,20 @@ class DeviceMonitorEmailList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def device(self, device_tag):
+        try:
+            return self.__device_dict[device_tag]
+
+        except KeyError:
+            return None
+
+
     @property
     def device_dict(self):
         device_dict = OrderedDict()
         for device_tag in sorted(self.__device_dict):
-            device_dict[device_tag] = sorted(self.__device_dict[device_tag])
+            if self.__device_dict[device_tag]:
+                device_dict[device_tag] = sorted(self.__device_dict[device_tag])
 
         return device_dict
 
