@@ -47,6 +47,9 @@ class HTTPException(RuntimeError, JSONable):
         if status == HTTPConflictException.STATUS:
             return HTTPConflictException(status, reason, data)
 
+        if status == HTTPGoneException.STATUS:
+            return HTTPGoneException(status, reason, data)
+
         if status == HTTPBadGatewayException.STATUS:
             return HTTPBadGatewayException(status, reason, data)
 
@@ -177,6 +180,20 @@ class HTTPConflictException(HTTPException):
     classdocs
     """
     STATUS = 409
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, status, reason, data):
+        super().__init__(status, reason, data)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class HTTPGoneException(HTTPException):
+    """
+    classdocs
+    """
+    STATUS = 410
 
     # ----------------------------------------------------------------------------------------------------------------
 

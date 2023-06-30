@@ -29,6 +29,7 @@ class DeviceStatus(JSONable):
     """
     classdocs
     """
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -85,7 +86,7 @@ class DeviceStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['is-ok'] = self.is_ok
-        jdict['since'] = self.since.utc()
+        jdict['since'] = None if self.since is None else self.since.utc()
 
         return jdict
 
@@ -308,6 +309,15 @@ class DeviceReport(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def matches(self, device_tag, exact):
+        if device_tag is None:
+            return True
+
+        return (exact and device_tag == self.device_tag) or (not exact and device_tag in self.device_tag)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -412,6 +422,18 @@ class DeviceMonitorReport(PersistentJSONable):
             return self.__device_dict[device_tag]
         except KeyError:
             return None
+
+
+    def filter(self, device_tag=None, exact=False):
+        device_dict = {key: report for key, report in self.__device_dict.items() if report.matches(device_tag, exact)}
+
+        return DeviceMonitorReport(device_dict)
+
+
+    def filter_devices(self, device_tags):
+        device_dict = {key: self.__device_dict[key] for key in self.__device_dict.keys() & device_tags}
+
+        return DeviceMonitorReport(device_dict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

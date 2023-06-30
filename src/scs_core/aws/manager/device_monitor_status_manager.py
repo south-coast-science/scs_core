@@ -16,8 +16,7 @@ class DeviceMonitorStatusManager(APIClient):
     classdocs
     """
 
-    # TODO: update URL
-    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus"
+    __URL = "https://0l7fwqkzr8.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -36,9 +35,9 @@ class DeviceMonitorStatusManager(APIClient):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        report = DeviceMonitorReport(response.json())
+        return DeviceMonitorReport(response.json())
 
-        return report.device(device_tag_filter) if exact else report
+        # return report.device(device_tag_filter) if exact else report
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -38,6 +38,17 @@ class CognitoUserCreator(APIClient):
         return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
+    def confirm(self, email, confirmation_code):
+        headers = self._auth_headers(self.__AUTH)
+        payload = {
+            'email': email,
+            'confirmation': confirmation_code
+        }
+
+        response = self._http_client.patch(self.__URL, headers=headers, json=payload)
+        self._check_response(response)
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CognitoUserEditor(APIClient):

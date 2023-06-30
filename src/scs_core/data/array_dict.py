@@ -37,6 +37,10 @@ class ArrayDict(JSONable):
         return key in self.__data
 
 
+    def __getitem__(self, key):
+        return self.__data[key]                 # may raise KeyError
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def append(self, key, value):

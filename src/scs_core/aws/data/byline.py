@@ -17,7 +17,6 @@ from collections import OrderedDict
 from scs_core.data.array_dict import ArrayDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
-from scs_core.data.str import Str
 from scs_core.data.topic_path import TopicPath
 
 from scs_core.sys.logging import Logging
@@ -245,7 +244,7 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{device_bylines:%s}" % Str.collection(self._device_bylines)
+        return self.__class__.__name__ + ":{device_bylines:%s}" % self._device_bylines
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -295,7 +294,7 @@ class TopicBylineGroup(BylineGroup):
     # ----------------------------------------------------------------------------------------------------------------
 
     def bylines_for_device(self, device):
-        return self._device_bylines[device]                     # may raise KeyError
+        return self._device_bylines[device]
 
 
     def topic_roots(self):
@@ -317,3 +316,4 @@ class TopicBylineGroup(BylineGroup):
     @property
     def devices(self):
         return tuple(self._device_bylines.keys())
+        # return self._device_bylines.keys()
