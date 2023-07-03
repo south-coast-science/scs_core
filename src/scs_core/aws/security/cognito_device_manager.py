@@ -27,6 +27,17 @@ class CognitoDeviceManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def update_self(self, token, credentials):
+        url = '/'.join((self.__URL, 'self'))
+
+        response = self._http_client.patch(url, headers=self._token_headers(token), data=JSONify.dumps(credentials))
+        self._check_response(response)
+
+        return CognitoDeviceIdentity.construct_from_jdict(response.json())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def create(self, token, identity):
         response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
@@ -39,7 +50,6 @@ class CognitoDeviceManager(APIClient):
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
-
 
 
     def delete(self, token, device_tag):
