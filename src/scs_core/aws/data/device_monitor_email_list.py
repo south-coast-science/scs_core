@@ -4,6 +4,7 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
+{"scs-opc-109": ["somebody@somewhere.com", "somebody@somewhere-else.com"], ...}
 """
 
 from collections import OrderedDict
