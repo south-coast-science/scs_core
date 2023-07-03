@@ -300,6 +300,10 @@ class TopicBylineGroup(BylineGroup):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def device_byline_group(self, device):
+        return DeviceBylineGroup({device: self._device_bylines[device]})
+
+
     def bylines_for_device(self, device):
         return self._device_bylines[device]
 
@@ -322,5 +326,5 @@ class TopicBylineGroup(BylineGroup):
 
     @property
     def devices(self):
-        return tuple(self._device_bylines.keys())
+        return list(self._device_bylines.keys())
         # return self._device_bylines.keys()
