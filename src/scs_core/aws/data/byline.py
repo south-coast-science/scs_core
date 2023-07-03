@@ -14,6 +14,8 @@ import json
 
 from collections import OrderedDict
 
+from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
+
 from scs_core.data.array_dict import ArrayDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
@@ -156,7 +158,7 @@ class BylineGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, excluded=None, skeleton=False):
+    def construct_from_jdict(cls, jdict, excluded=None, strict_tags=False, skeleton=False):
         if not jdict:
             return cls({}) if skeleton else None
 
@@ -166,8 +168,13 @@ class BylineGroup(JSONable):
         for byline_jdict in jdict:
             byline = Byline.construct_from_jdict(byline_jdict)
 
-            if not excluded or not byline.topic.endswith(excluded):
-                bylines.append(byline)
+            if excluded is not None and byline.topic.endswith(excluded):
+                continue
+
+            if strict_tags and not CognitoDeviceCredentials.is_valid_tag(byline.device):
+                continue
+
+            bylines.append(byline)
 
         # device_bylines...
         device_bylines = ArrayDict([(byline.device, byline) for byline in sorted(bylines)])
