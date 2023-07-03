@@ -59,7 +59,7 @@ class BylineManager(APIClient):
         return latest_byline
 
 
-    def find_bylines(self, excluded=None):
+    def find_bylines(self, excluded=None, strict_tags=False):
         params = {}
         items_jdict = []
 
@@ -82,10 +82,11 @@ class BylineManager(APIClient):
             params = parse_qs(next_url.query)
 
         # bylines...
-        return TopicBylineGroup.construct_from_jdict(items_jdict, excluded=excluded, skeleton=True)
+        return TopicBylineGroup.construct_from_jdict(items_jdict, excluded=excluded, strict_tags=strict_tags,
+                                                     skeleton=True)
 
 
-    def find_bylines_for_topic(self, topic, excluded=None):
+    def find_bylines_for_topic(self, topic, excluded=None, strict_tags=False):
         params = {self.__TOPIC: topic}
 
         response = self._http_client.get(self.__URL, params=params)
@@ -94,7 +95,7 @@ class BylineManager(APIClient):
         jdict = response.json()
 
         # bylines...
-        return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
+        return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, strict_tags=strict_tags, skeleton=True)
 
 
     def find_bylines_for_device(self, device, excluded=None):
