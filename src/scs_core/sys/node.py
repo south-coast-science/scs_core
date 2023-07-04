@@ -234,6 +234,11 @@ class IoTNode(Node):
     # filesystem paths...
 
     @abstractmethod
+    def hostname_prefix(self):
+        pass
+
+
+    @abstractmethod
     def command_path(self):
         pass
 
