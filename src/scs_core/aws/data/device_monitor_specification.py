@@ -4,7 +4,7 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"scs-opc-109": ["somebody@somewhere.com", "somebody@somewhere-else.com"], ...}
+{"device-tag": "scs-ph1-43", "recipients": ["someone@somewhere.com"], "suspended": false}
 """
 
 from collections import OrderedDict
@@ -74,19 +74,15 @@ class DeviceMonitorSpecification(JSONable):
         if email_address is None:
             return True
 
-        for email in self.__recipients:
-            if (exact and email_address == email) or (not exact and email_address in email):
+        for recipient in self.__recipients:
+            if (exact and email_address == recipient) or (not exact and email_address in recipient):
                 return True
 
         return False
 
 
     def contains_email(self, email_address):
-        for email in self.__recipients:
-            if email_address == email:
-                return True
-
-        return False
+        return email_address in self.__recipients
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -243,6 +239,12 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_json(self):
+        return self.device_dict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def specification(self, device_tag):
         try:
             return self.__device_dict[device_tag]
@@ -256,12 +258,6 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
                        if len(specification)}
 
         return device_dict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        return self.device_dict
 
 
     # ----------------------------------------------------------------------------------------------------------------
