@@ -57,5 +57,5 @@ print(device_specification_list)
 print("-")
 
 device_specification_list = DeviceMonitorSpecificationList.load(persistence_manager)
-print(JSONify.dumps(device_specification_list, indent=4))
+print(JSONify.dumps(device_specification_list))
 
