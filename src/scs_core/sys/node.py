@@ -140,6 +140,11 @@ class IoTNode(Node):
     # ----------------------------------------------------------------------------------------------------------------
     # identity...
 
+    @abstractmethod
+    def hostname_prefix(self):
+        pass
+
+
     @classmethod
     def numeric_component_of_name(cls):
         hostname = socket.gethostname()
@@ -232,11 +237,6 @@ class IoTNode(Node):
 
     # ----------------------------------------------------------------------------------------------------------------
     # filesystem paths...
-
-    @abstractmethod
-    def hostname_prefix(self):
-        pass
-
 
     @abstractmethod
     def command_path(self):
