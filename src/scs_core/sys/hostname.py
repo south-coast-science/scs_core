@@ -34,7 +34,7 @@ class Hostname(object):
         Constructor
         """
         self.__prefix = prefix                              # string
-        self.__serial_number = serial_number                # int-like string
+        self.__serial_number = serial_number                # int-like string (may have leading zeroes)
 
 
     # ----------------------------------------------------------------------------------------------------------------
