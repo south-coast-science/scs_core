@@ -6,7 +6,8 @@ Created on 11 Jul 2017
 settings for OPCMonitor
 
 example JSON:
-{"model": "N3", "sample-period": 10, "restart-on-zeroes": true, "power-saving": false}
+{"model": "N3", "sample-period": 10, "restart-on-zeroes": true, "power-saving": false,
+"custom-dev-path": "/dev/spi/by-connector/H3"}
 """
 
 from collections import OrderedDict
@@ -35,7 +36,7 @@ class OPCConf(MultiPersistentJSONable):
         conf = super().load(manager, name=name, encryption_key=encryption_key, skeleton=skeleton)
 
         if conf:
-            conf.__dev_path = manager.opc_spi_dev_path()
+            conf.__default_dev_path = manager.opc_spi_dev_path()
 
         return conf
 
@@ -52,14 +53,14 @@ class OPCConf(MultiPersistentJSONable):
         restart_on_zeroes = jdict.get('restart-on-zeroes', True)
         power_saving = jdict.get('power-saving')
 
-        dev_path = jdict.get('dev_path')
+        custom_dev_path = jdict.get('custom-dev-path')
 
-        return cls(model, sample_period, restart_on_zeroes, power_saving, dev_path, name=name)
+        return cls(model, sample_period, restart_on_zeroes, power_saving, custom_dev_path, name=name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, sample_period, restart_on_zeroes, power_saving, dev_path, name=None):
+    def __init__(self, model, sample_period, restart_on_zeroes, power_saving, custom_dev_path, name=None):
         """
         Constructor
         """
@@ -70,14 +71,15 @@ class OPCConf(MultiPersistentJSONable):
         self.__restart_on_zeroes = bool(restart_on_zeroes)          # bool
         self.__power_saving = bool(power_saving)                    # bool
 
-        self.__dev_path = dev_path                                  # string
+        self.__default_dev_path = None                              # string
+        self.__custom_dev_path = custom_dev_path                    # string
 
 
     def __eq__(self, other):                            # ignore name
         try:
             return self.model == other.model and self.sample_period == other.sample_period and \
                    self.restart_on_zeroes == other.restart_on_zeroes and self.power_saving == other.power_saving and \
-                   self.dev_path == other.dev_path
+                   self.custom_dev_path == other.custom_dev_path
 
         except (TypeError, AttributeError):
             return False
@@ -124,7 +126,17 @@ class OPCConf(MultiPersistentJSONable):
 
     @property
     def dev_path(self):
-        return self.__dev_path
+        return self.default_dev_path if self.custom_dev_path is None else self.custom_dev_path
+
+
+    @property
+    def default_dev_path(self):
+        return self.__default_dev_path
+
+
+    @property
+    def custom_dev_path(self):
+        return self.__custom_dev_path
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -137,8 +149,8 @@ class OPCConf(MultiPersistentJSONable):
         jdict['restart-on-zeroes'] = self.restart_on_zeroes
         jdict['power-saving'] = self.power_saving
 
-        if self.__dev_path is not None:
-            jdict['dev_path'] = self.dev_path
+        if self.custom_dev_path is not None:
+            jdict['custom-dev-path'] = self.custom_dev_path
 
         return jdict
 
@@ -147,6 +159,6 @@ class OPCConf(MultiPersistentJSONable):
 
     def __str__(self, *args, **kwargs):
         return "OPCConf(core):{name:%s, model:%s, sample_period:%s, restart_on_zeroes:%s, power_saving:%s, " \
-               "dev_path:%s}" %  \
+               "default_dev_path:%s, custom_dev_path:%s}" %  \
                (self.name, self.model, self.sample_period, self.restart_on_zeroes, self.power_saving,
-                self.dev_path)
+                self.default_dev_path, self.custom_dev_path)
