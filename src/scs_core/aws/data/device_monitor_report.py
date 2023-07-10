@@ -123,7 +123,7 @@ class DeviceUptime(JSONable):
         if not jdict:
             return None
 
-        period = Timedelta.construct_from_jdict(jdict.get('since'))
+        period = Timedelta.construct_from_jdict(jdict.get('period'))
 
         return cls(period)
 
