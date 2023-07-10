@@ -383,7 +383,7 @@ class DeviceMonitorReport(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
-        if not jdict:
+        if jdict is None:
             return None
 
         device_dict = {device_tag: DeviceReport.construct_from_jdict(report_jdict)
