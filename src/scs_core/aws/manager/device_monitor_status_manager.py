@@ -35,7 +35,7 @@ class DeviceMonitorStatusManager(APIClient):
         response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
-        return DeviceMonitorReport(response.json())
+        return DeviceMonitorReport.construct_from_jdict(response.json())
 
         # return report.device(device_tag_filter) if exact else report
 
