@@ -446,7 +446,10 @@ class DeviceMonitorReport(PersistentJSONable):
 
     @property
     def device_dict(self):
-        return dict(sorted(self.__device_dict.items()))
+        return dict(sorted(self.__device_dict))
+
+        # return dict(sorted({device_tag: report for device_tag, report in self.__device_dict.items()
+        #                     if report is not None}))
 
 
     # ----------------------------------------------------------------------------------------------------------------
