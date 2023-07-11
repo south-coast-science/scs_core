@@ -3,12 +3,21 @@ Created on 17 Jun 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Alert example:
-{"id": 88, "description": "warm", "topic": "south-coast-science-dev/development/loc/1/climate", "field": "val.tmp",
-"lower-threshold": null, "upper-threshold": 30.0, "alert-on-none": false,
-"aggregation-period": {"interval": 1, "units": "M"}, "test-interval": null, "json-message": false,
+AlertSpecification example (recurring):
+{"id": null, "description": "my description", "topic": "my/topic", "field": "my.field",
+"lower-threshold": null,  "upper-threshold": 100.0, "alert-on-none": true,
+"aggregation-period": {"type": "recurring", "interval": 5, "units": "M"},
+"test-interval": {"type": "recurring", "interval": 1, "units": "M"}, "json-message": true,
 "creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
-"cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
+"cc-list": ["bbeloff@me.com", "hhopton@me.com"], "suspended": false}
+
+AlertSpecification example (diurnal):
+{"id": null, "description": "my description", "topic": "my/topic", "field": "my.field",
+"lower-threshold": null, "upper-threshold": 100.0, "alert-on-none": true,
+"aggregation-period": {"type": "diurnal", "start": "09:00:00", "end": "17:00:00", "timezone": "Europe/London"},
+"test-interval": {"type": "recurring", "interval": 1, "units": "M"}, "json-message": true,
+"creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
+"cc-list": ["bbeloff@me.com", "hhopton@me.com"], "suspended": false}
 
 AlertStatus example:
 {"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": "OK", "val": 589.6}
@@ -21,6 +30,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
+from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 
@@ -161,7 +171,12 @@ class AlertSpecification(JSONable):
         upper_threshold = jdict.get('upper-threshold')
         alert_on_none = jdict.get('alert-on-none')
 
-        aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
+        agg_jdict = jdict.get('aggregation-period')
+        period_type = agg_jdict.get('type')
+
+        aggregation_period = DiurnalPeriod.construct_from_jdict(agg_jdict) if period_type == DiurnalPeriod.type() \
+            else RecurringPeriod.construct_from_jdict(agg_jdict)
+
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
         json_message = jdict.get('json-message', False)
@@ -194,7 +209,7 @@ class AlertSpecification(JSONable):
         self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
         self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
+        self.__aggregation_period = aggregation_period              # Period                updatable
         self.__test_interval = test_interval                        # RecurringPeriod       updatable
 
         self.__json_message = bool(json_message)                    # bool
@@ -238,6 +253,10 @@ class AlertSpecification(JSONable):
             return False
 
         return False
+
+
+    def __contains__(self, email):
+        return email == self.creator_email_address or email == self.to or email in self.__cc_list
 
 
     # ----------------------------------------------------------------------------------------------------------------
