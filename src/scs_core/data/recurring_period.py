@@ -7,7 +7,7 @@ https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
 https://en.wikipedia.org/wiki/Cron
 
 document example:
-{"interval": 1, "units": "D"}
+{"type": "recurring", "interval": 1, "units": "D", "timezone": "Europe/London"}
 """
 
 import pytz
@@ -54,7 +54,7 @@ class RecurringPeriod(Period, JSONable):
 
         interval = jdict.get('interval')
         units = jdict.get('units')
-        timezone_str = jdict.get('timezone', 'Europe/London')
+        timezone_str = jdict.get('timezone')
 
         return cls.construct(interval, units, timezone_str)
 

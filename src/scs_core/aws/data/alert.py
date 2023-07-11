@@ -6,7 +6,8 @@ Created on 17 Jun 2021
 Alert example:
 {"id": 88, "description": "warm", "topic": "south-coast-science-dev/development/loc/1/climate", "field": "val.tmp",
 "lower-threshold": null, "upper-threshold": 30.0, "alert-on-none": false,
-"aggregation-period": {"interval": 1, "units": "M"}, "test-interval": null, "json-message": false,
+"aggregation-period": {"type": "recurring", "interval": 1, "units": "D", "timezone": "Europe/London"},
+"test-interval": null, "json-message": false,
 "creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
 "cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
 
