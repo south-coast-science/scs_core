@@ -11,6 +11,7 @@ document example:
 """
 
 import pytz
+import re
 
 from collections import OrderedDict
 from datetime import datetime, time
@@ -61,11 +62,23 @@ class DiurnalPeriod(Period, JSONable):
     @classmethod
     def __time(cls, time_str):
         try:
-            iso_time_str = '0' + time_str if len(time_str) < 5 else time_str
-            return time.fromisoformat(iso_time_str + ':00')
-
+            return time.fromisoformat(cls.__iso_time_str(time_str))
         except (TypeError, ValueError):
             raise ValueError(time_str)
+
+
+    @classmethod
+    def __iso_time_str(cls, time_str):
+        if re.match(r'\d{2}:\d{2}:\d{2}', time_str):
+            return time_str
+
+        if re.match(r'\d{2}:\d{2}', time_str):
+            return time_str + ':00'
+
+        if re.match(r'\d:\d{2}', time_str):
+            return '0' + time_str + ':00'
+
+        raise ValueError(time_str)
 
 
     # ----------------------------------------------------------------------------------------------------------------
