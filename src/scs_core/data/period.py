@@ -4,6 +4,8 @@ Created on 10 Jul 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import pytz
+
 from abc import abstractmethod, ABC
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -24,6 +26,10 @@ class Period(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __init__(self, timezone: pytz.timezone):
+        self.__timezone = timezone                          # pytz.timezone
+
+
     @abstractmethod
     def __lt__(self, other):
         pass
@@ -42,6 +48,11 @@ class Period(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def checkpoint(self):
+        pass
+
 
     @abstractmethod
     def cron(self, minutes_offset):
@@ -65,3 +76,13 @@ class Period(ABC):
         pass
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def timezone(self):
+        return self.__timezone
+
+
+    @timezone.setter
+    def timezone(self, timezone):
+        self.__timezone = timezone

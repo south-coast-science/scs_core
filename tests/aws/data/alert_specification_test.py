@@ -17,8 +17,8 @@ from scs_core.data.recurring_period import RecurringPeriod
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = RecurringPeriod.construct(5, 'M')
-test_interval = RecurringPeriod.construct(1, 'M')
+aggregation_period = RecurringPeriod.construct(5, 'M', 'Europe/London')
+test_interval = RecurringPeriod.construct(1, 'M', 'Europe/London')
 
 print("1...")
 

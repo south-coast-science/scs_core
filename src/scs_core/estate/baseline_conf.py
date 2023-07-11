@@ -22,6 +22,7 @@ from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
 
+# TODO: use Period class
 # --------------------------------------------------------------------------------------------------------------------
 
 class BaselineConf(MultiPersistentJSONable):
@@ -180,7 +181,7 @@ class BaselineConf(MultiPersistentJSONable):
         jdict['timezone'] = self.timezone
         jdict['start-hour'] = self.start_hour
         jdict['end-hour'] = self.end_hour
-        jdict['aggregation-period'] = self.aggregation_period.as_json()
+        jdict['aggregation-period'] = self.aggregation_period
         jdict['minimums'] = self.minimums
 
         return jdict

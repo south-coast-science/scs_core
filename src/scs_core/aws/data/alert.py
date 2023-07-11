@@ -21,6 +21,7 @@ from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
+from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 
@@ -161,7 +162,11 @@ class AlertSpecification(JSONable):
         upper_threshold = jdict.get('upper-threshold')
         alert_on_none = jdict.get('alert-on-none')
 
-        aggregation_period = RecurringPeriod.construct_from_jdict(jdict.get('aggregation-period'))
+        agg_jdict = jdict.get('aggregation-period')
+
+        aggregation_period = DiurnalPeriod.construct_from_jdict(agg_jdict) \
+            if agg_jdict.get('type') == DiurnalPeriod.type() else RecurringPeriod.construct_from_jdict(agg_jdict)
+
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
         json_message = jdict.get('json-message', False)
@@ -357,8 +362,8 @@ class AlertSpecification(JSONable):
         jdict['upper-threshold'] = self.upper_threshold
         jdict['alert-on-none'] = self.alert_on_none
 
-        jdict['aggregation-period'] = self.aggregation_period
-        jdict['test-interval'] = self.test_interval
+        jdict['aggregation-period'] = self.aggregation_period.as_json()
+        jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
         jdict['json-message'] = self.json_message
 
