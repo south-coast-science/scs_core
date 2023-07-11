@@ -70,13 +70,14 @@ class DiurnalPeriod(Period, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, start_time, end_time, timezone):
+    def __init__(self, start_time: time, end_time: time, timezone: pytz.timezone):
         """
         Constructor
         """
+        Period.__init__(self, timezone)
+
         self.__start_time = start_time                  # time
         self.__end_time = end_time                      # time
-        self.__timezone = timezone                      # pytz.timezone
 
 
     def __lt__(self, other):
@@ -120,6 +121,10 @@ class DiurnalPeriod(Period, JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def checkpoint(self):
+        return str(self.end_datetime(LocalizedDatetime.now()).datetime.time())
+
 
     def cron(self, minutes_offset):
         return '%d %d * * *' % self.__cron_units(minutes_offset)
@@ -186,11 +191,6 @@ class DiurnalPeriod(Period, JSONable):
     @property
     def end_time(self):
         return self.__end_time
-
-
-    @property
-    def timezone(self):
-        return self.__timezone
 
 
     # ----------------------------------------------------------------------------------------------------------------

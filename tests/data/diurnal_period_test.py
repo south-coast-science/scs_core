@@ -26,6 +26,7 @@ p1 = DiurnalPeriod.construct(start_time_str, end_time_str, timezone_str)
 print(p1)
 print("is_valid: %s" % p1.is_valid())
 print("crosses_midnight: %s" % p1.crosses_midnight())
+print("checkpoint: %s" % p1.checkpoint())
 
 now = LocalizedDatetime.now()
 print("has_expiring_dst: %s: %s" % (now.as_iso8601(), p1.has_expiring_dst()))
