@@ -223,14 +223,14 @@ class BylineGroup(JSONable):
         if not self.bylines:
             return None
 
-        return max([byline.pub for byline in self.bylines if byline.pub is not None])
+        return max([byline.pub for byline in self.bylines if byline.pub is not None], default=None)
 
 
     def latest_rec(self):
         if not self.bylines:
             return None
 
-        return max([byline.rec for byline in self.bylines if byline.rec is not None])
+        return max([byline.rec for byline in self.bylines if byline.rec is not None], default=None)
 
 
     # ----------------------------------------------------------------------------------------------------------------
