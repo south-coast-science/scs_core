@@ -357,8 +357,8 @@ class AlertSpecification(JSONable):
         jdict['upper-threshold'] = self.upper_threshold
         jdict['alert-on-none'] = self.alert_on_none
 
-        jdict['aggregation-period'] = self.aggregation_period.as_json()
-        jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
+        jdict['aggregation-period'] = self.aggregation_period
+        jdict['test-interval'] = self.test_interval
 
         jdict['json-message'] = self.json_message
 
