@@ -4,6 +4,7 @@ Created on 7 Jul 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+https://en.wikipedia.org/wiki/Cron
 
 document example:
 {"interval": 1, "units": "D"}
@@ -17,16 +18,24 @@ from datetime import datetime
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+from scs_core.data.period import Period
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class RecurringPeriod(JSONable):
+class RecurringPeriod(Period, JSONable):
     """
     classdocs
     """
     _UTC = pytz.timezone('Etc/UTC')
+
+    __TYPE = 'recurring'
+
+    @classmethod
+    def type(cls):
+        return cls.__TYPE
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -80,22 +89,7 @@ class RecurringPeriod(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def is_valid(self):
-        pass
-
-
-    @abstractmethod
     def checkpoint(self):
-        pass
-
-
-    @abstractmethod
-    def cron(self, minutes_offset):
-        pass
-
-
-    @abstractmethod
-    def aws_cron(self, minutes_offset):
         pass
 
 
@@ -104,15 +98,24 @@ class RecurringPeriod(JSONable):
         pass
 
 
-    @abstractmethod
-    def end_datetime(self, origin: LocalizedDatetime):
-        pass
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def has_expiring_dst(self):
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def start_datetime(self, point: LocalizedDatetime):
+        return self.end_datetime(point) - self.timedelta()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
+
+        jdict['type'] = self.type()
 
         jdict['interval'] = self.interval
         jdict['units'] = self.units
@@ -187,7 +190,7 @@ class RecurringDay(RecurringPeriod):
         return '00:00:00'
 
 
-    def cron(self, minutes_offset):
+    def cron(self, minutes_offset):                 # TODO: cron should adapt for customer timezone?
         return '%d 0 * * *' % minutes_offset
 
 
@@ -260,12 +263,17 @@ class RecurringHours(RecurringPeriod):
         return '/%d:00:00' % self.interval
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def cron(self, minutes_offset):
         return '%d */%d * * *' % (minutes_offset, self.interval)
 
 
     def aws_cron(self, minutes_offset):
         return 'cron(%d 0/%d * * ? *)' % (minutes_offset, self.interval)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
 
     def timedelta(self):

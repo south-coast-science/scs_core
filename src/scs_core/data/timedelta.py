@@ -141,6 +141,26 @@ class Timedelta(JSONable):
 
 
     @classmethod
+    def construct_from_dst_report(cls, report):
+        if report is None:
+            return None
+
+        # CPU time...
+        match = re.match(r'(\d+):(\d+):(\d+)', report)
+
+        if match is None:
+            return None
+
+        fields = match.groups()
+
+        hours = int(fields[0])
+        minutes = int(fields[1])
+        seconds = int(fields[2])
+
+        return Timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if jdict is None:
             return None
@@ -198,6 +218,16 @@ class Timedelta(JSONable):
 
     def __lt__(self, other):
         return self.delta < other.delta
+
+
+    def __add__(self, other):
+        seconds = self.total_seconds() + other.total_seconds()
+        return Timedelta(seconds=seconds)
+
+
+    def __sub__(self, other):
+        seconds = self.total_seconds() - other.total_seconds()
+        return Timedelta(seconds=seconds)
 
 
     def __truediv__(self, other):

@@ -10,9 +10,9 @@ https://www.epochconverter.com
 
 import json
 
-from scs_core.data.json import JSONify
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.period import Period
+from scs_core.data.diurnal_period import DiurnalPeriod
+from scs_core.data.json import JSONify
 from scs_core.data.str import Str
 
 
@@ -22,25 +22,35 @@ start_time_str = '9:00'
 end_time_str = '17:00'
 timezone_str = 'Europe/London'
 
-p1 = Period.construct(start_time_str, end_time_str, timezone_str)
+p1 = DiurnalPeriod.construct(start_time_str, end_time_str, timezone_str)
 print(p1)
-print("has_valid_start_end: %s" % p1.has_valid_start_end())
+print("is_valid: %s" % p1.is_valid())
+print("crosses_midnight: %s" % p1.crosses_midnight())
+
+now = LocalizedDatetime.now()
+print("has_expiring_dst: %s: %s" % (now.as_iso8601(), p1.has_expiring_dst()))
+
+# go_back = LocalizedDatetime.construct_from_iso8601('2023-10-28T12:00:00Z')
+# print("has_expiring_dst: %s: %s" % (go_back, p1.has_expiring_dst(go_back)))
+
 print("-")
 
 jstr = JSONify.dumps(p1)
 print(jstr)
 print("-")
 
-p1 = Period.construct_from_jdict(json.loads(jstr))
+p1 = DiurnalPeriod.construct_from_jdict(json.loads(jstr))
 print(p1)
 print("-")
 
-start_time_str = '8:00'
-end_time_str = '16:00'
+start_time_str = '23:00'
+end_time_str = '8:00'
 timezone_str = 'Europe/London'
 
-p2 = Period.construct(start_time_str, end_time_str, timezone_str)
+p2 = DiurnalPeriod.construct(start_time_str, end_time_str, timezone_str)
 print(p2)
+print("is_valid: %s" % p2.is_valid())
+print("crosses_midnight: %s" % p2.crosses_midnight())
 print("-")
 
 print(Str.collection(sorted([p2, p1])))

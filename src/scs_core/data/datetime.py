@@ -388,6 +388,10 @@ class LocalizedDatetime(JSONable):
         return LocalizedDatetime(self.__datetime + td)
 
 
+    def dst(self):
+        return Timedelta.construct(self.__datetime.dst())
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
