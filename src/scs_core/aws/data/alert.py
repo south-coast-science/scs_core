@@ -246,6 +246,10 @@ class AlertSpecification(JSONable):
         return False
 
 
+    def __contains__(self, email):
+        return email == self.creator_email_address or email == self.to or email in self.cc_list
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
