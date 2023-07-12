@@ -220,6 +220,10 @@ class DiurnalPeriod(Period, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __repr__(self):
+        return ' '.join((str(self.start_time), str(self.end_time), str(self.timezone)))
+
+
     def __str__(self, *args, **kwargs):
         return "DiurnalPeriod:{start_time:%s, end_time:%s, timezone:%s}" % \
             (self.start_time, self.end_time, self.timezone)

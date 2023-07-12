@@ -3,13 +3,20 @@ Created on 17 Jun 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Alert example:
-{"id": 88, "description": "warm", "topic": "south-coast-science-dev/development/loc/1/climate", "field": "val.tmp",
-"lower-threshold": null, "upper-threshold": 30.0, "alert-on-none": false,
+Alert example (recurring):
+{"id": null, "description": "my description", "topic": "my/topic",
+"field": "my.field", "lower-threshold": null,  "upper-threshold": 100.0, "alert-on-none": true,
 "aggregation-period": {"type": "recurring", "interval": 1, "units": "D", "timezone": "Europe/London"},
-"test-interval": null, "json-message": false,
+"test-interval": {"type": "recurring", "interval": 1, "units": "M"}, "json-message": true,
 "creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
-"cc-list": ["bbeloff@me.com", "jadempage@outlook.com"], "suspended": false}
+"cc-list": ["bbeloff@me.com", "hhopton@me.com"], "suspended": false}
+
+Alert example (diurnal):
+{"id": 107, "description": "be2-3-nightime-test", "topic": "south-coast-science-dev/development/loc/1/climate",
+"field": "val.tmp", "lower-threshold": null, "upper-threshold": 10.0, "alert-on-none": true,
+"aggregation-period": {"type": "diurnal", "start": "16:00:00", "end": "08:00:00", "timezone": "Europe/London"},
+"test-interval": null, "json-message": false, "creator-email-address": "production@southcoastscience.com",
+"to": "bruno.beloff@southcoastscience.com", "cc-list": ["jade.page@southcoastscience.com"], "suspended": false}
 
 AlertStatus example:
 {"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": "OK", "val": 589.6}
