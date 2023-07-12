@@ -332,10 +332,12 @@ class AlertSpecification(JSONable):
         return self.aggregation_period.timedelta()
 
 
+    def start_datetime(self, origin: LocalizedDatetime):
+        return self.aggregation_period.start_datetime(origin)
+
+
     def end_datetime(self, origin: LocalizedDatetime):
         return self.aggregation_period.end_datetime(origin)
-        # return self.test_interval.end_datetime(origin) if self.test_interval else \
-        #     self.aggregation_period.end_datetime(origin)
 
 
     # ----------------------------------------------------------------------------------------------------------------

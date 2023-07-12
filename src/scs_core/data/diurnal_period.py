@@ -39,24 +39,13 @@ class DiurnalPeriod(Period, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
+    def is_valid_time(cls, time_str):
+        try:
+            cls.__time(time_str)
+            return True
 
-        return cls.construct(jdict.get('start'), jdict.get('end'), jdict.get('timezone'))
-
-
-    @classmethod
-    def construct(cls, start_time_str, end_time_str, timezone_str):
-        start_time = cls.__time(start_time_str)
-        end_time = cls.__time(end_time_str)
-
-        if timezone_str not in pytz.all_timezones:
-            raise ValueError(timezone_str)
-
-        timezone = pytz.timezone(timezone_str)
-
-        return cls(start_time, end_time, timezone)
+        except ValueError:
+            return False
 
 
     @classmethod
@@ -79,6 +68,29 @@ class DiurnalPeriod(Period, JSONable):
             return '0' + time_str + ':00'
 
         raise ValueError(time_str)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        return cls.construct(jdict.get('start'), jdict.get('end'), jdict.get('timezone'))
+
+
+    @classmethod
+    def construct(cls, start_time_str, end_time_str, timezone_str):
+        start_time = cls.__time(start_time_str)
+        end_time = cls.__time(end_time_str)
+
+        if timezone_str not in pytz.all_timezones:
+            raise ValueError(timezone_str)
+
+        timezone = pytz.timezone(timezone_str)
+
+        return cls(start_time, end_time, timezone)
 
 
     # ----------------------------------------------------------------------------------------------------------------
