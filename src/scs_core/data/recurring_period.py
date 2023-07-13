@@ -4,9 +4,10 @@ Created on 7 Jul 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+https://en.wikipedia.org/wiki/Cron
 
 document example:
-{"interval": 1, "units": "D"}
+{"type": "recurring", "interval": 1, "units": "D", "timezone": "Europe/London"}
 """
 
 import pytz
@@ -17,16 +18,24 @@ from datetime import datetime
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
+from scs_core.data.period import Period
 from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class RecurringPeriod(JSONable):
+class RecurringPeriod(Period, JSONable):
     """
     classdocs
     """
     _UTC = pytz.timezone('Etc/UTC')
+
+    __TYPE = 'recurring'
+
+    @classmethod
+    def type(cls):
+        return cls.__TYPE
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,36 +48,41 @@ class RecurringPeriod(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, timezone=None):
         if not jdict:
             return None
 
         interval = jdict.get('interval')
         units = jdict.get('units')
+        timezone_str = jdict.get('timezone', timezone)
 
-        return cls.construct(interval, units)
+        return cls.construct(interval, units, timezone_str)
 
 
     @classmethod
-    def construct(cls, interval, units):
+    def construct(cls, interval, units, timezone_str):
+        timezone = pytz.timezone(timezone_str)
+
         if units == 'D':
-            return RecurringDay(interval)
+            return RecurringDay(interval, timezone)
 
         if units == 'H':
-            return RecurringHours(interval)
+            return RecurringHours(interval, timezone)
 
         if units == 'M':
-            return RecurringMinutes(interval)
+            return RecurringMinutes(interval, timezone)
 
         raise ValueError(units)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval):
+    def __init__(self, interval, timezone: pytz.timezone):
         """
         Constructor
         """
+        Period.__init__(self, timezone)
+
         self.__interval = int(interval)                     # int
 
 
@@ -79,34 +93,31 @@ class RecurringPeriod(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @abstractmethod
-    def is_valid(self):
-        pass
+    def _cron_minutes(self, minutes_offset):
+        utc_now = LocalizedDatetime.now().utc()
+        local_now = utc_now.localize(self.timezone)
+        cron_minutes = (abs(local_now.datetime.minute - utc_now.datetime.minute) + minutes_offset) % 60
+
+        return cron_minutes
 
 
-    @abstractmethod
-    def checkpoint(self):
-        pass
-
-
-    @abstractmethod
-    def cron(self, minutes_offset):
-        pass
-
-
-    @abstractmethod
-    def aws_cron(self, minutes_offset):
-        pass
-
+    # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
     def timedelta(self):
         pass
 
 
-    @abstractmethod
-    def end_datetime(self, origin: LocalizedDatetime):
-        pass
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def has_expiring_dst(self):
+        return False
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def start_datetime(self, point: LocalizedDatetime):
+        return self.end_datetime(point) - self.timedelta()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -114,8 +125,11 @@ class RecurringPeriod(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['type'] = self.type()
+
         jdict['interval'] = self.interval
         jdict['units'] = self.units
+        jdict['timezone'] = str(self.timezone)
 
         return jdict
 
@@ -146,7 +160,7 @@ class RecurringPeriod(JSONable):
 
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{interval:%s}" %  self.interval
+        return self.__class__.__name__ + ":{interval:%s, timezone:%s}" %  (self.interval, self.timezone)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -163,11 +177,11 @@ class RecurringDay(RecurringPeriod):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval):
+    def __init__(self, interval, timezone: pytz.timezone):
         """
         Constructor
         """
-        super().__init__(interval)
+        super().__init__(interval, timezone)
 
 
     def __lt__(self, other):
@@ -188,11 +202,11 @@ class RecurringDay(RecurringPeriod):
 
 
     def cron(self, minutes_offset):
-        return '%d 0 * * *' % minutes_offset
+        return '%d 0 * * *' % self._cron_minutes(minutes_offset)
 
 
     def aws_cron(self, minutes_offset):
-        return 'cron(%d 0 * * ? *)' % minutes_offset
+        return 'cron(%d 0 * * ? *)' % self._cron_minutes(minutes_offset)
 
 
     def timedelta(self):
@@ -233,11 +247,11 @@ class RecurringHours(RecurringPeriod):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval):
+    def __init__(self, interval, timezone: pytz.timezone):
         """
         Constructor
         """
-        super().__init__(interval)
+        super().__init__(interval, timezone)
 
 
     def __lt__(self, other):
@@ -260,12 +274,17 @@ class RecurringHours(RecurringPeriod):
         return '/%d:00:00' % self.interval
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def cron(self, minutes_offset):
-        return '%d */%d * * *' % (minutes_offset, self.interval)
+        return '%d */%d * * *' % (self._cron_minutes(minutes_offset), self.interval)
 
 
     def aws_cron(self, minutes_offset):
-        return 'cron(%d 0/%d * * ? *)' % (minutes_offset, self.interval)
+        return 'cron(%d 0/%d * * ? *)' % (self._cron_minutes(minutes_offset), self.interval)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
 
     def timedelta(self):
@@ -307,11 +326,11 @@ class RecurringMinutes(RecurringPeriod):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval):
+    def __init__(self, interval, timezone: pytz.timezone):
         """
         Constructor
         """
-        super().__init__(interval)
+        super().__init__(interval, timezone)
 
 
     def __lt__(self, other):

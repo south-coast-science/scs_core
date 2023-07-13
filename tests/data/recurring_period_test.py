@@ -18,7 +18,7 @@ from scs_core.data.json import JSONify
 now = LocalizedDatetime.now()
 
 print("json...")
-period = RecurringPeriod.construct(1, 'D')
+period = RecurringPeriod.construct(1, 'D', 'Europe/London')
 print(period)
 
 jstr = JSONify.dumps(period)
@@ -36,14 +36,14 @@ print("cron: %s" % period.cron(1))
 
 
 end_datetime = period.end_datetime(now)
-start_datetime = end_datetime - period.timedelta()
+start_datetime = period.start_datetime(now)
 print("start: %s" % start_datetime)
 print("  end: %s" % end_datetime)
 print("-")
 
 
 print("hours...")
-period = RecurringPeriod.construct(4, 'H')
+period = RecurringPeriod.construct(4, 'H', 'Europe/London')
 print(period)
 print(repr(period))
 
@@ -52,14 +52,14 @@ print("checkpoint: %s" % period.checkpoint())
 print("cron: %s" % period.cron(1))
 
 end_datetime = period.end_datetime(now)
-start_datetime = end_datetime - period.timedelta()
+start_datetime = period.start_datetime(now)
 print("start: %s" % start_datetime)
 print("  end: %s" % end_datetime)
 print("-")
 
 
 print("minutes...")
-period = RecurringPeriod.construct(5, 'M')
+period = RecurringPeriod.construct(5, 'M', 'Europe/London')
 print(period)
 print(repr(period))
 
@@ -68,7 +68,7 @@ print("checkpoint: %s" % period.checkpoint())
 print("cron: %s" % period.cron(1))
 
 end_datetime = period.end_datetime(now)
-start_datetime = end_datetime - period.timedelta()
+start_datetime = period.start_datetime(now)
 print("start: %s" % start_datetime)
 print("  end: %s" % end_datetime)
 
