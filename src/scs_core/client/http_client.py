@@ -5,7 +5,6 @@ Created on 9 Nov 2016
 """
 
 import ssl
-# import sys
 
 import http.client
 
@@ -40,7 +39,7 @@ class HTTPClient(object):
     def connect(self, host, secure=True, verified=True, timeout=None):
         # print("connect: host: {}, timeout: {}".format(host, timeout), file=sys.stderr)
 
-        self.__host = host                                          # PersistenceManager
+        self.__host = host
 
         if secure:
             # noinspection PyProtectedMember,PyUnresolvedReferences

@@ -212,7 +212,7 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
     def filter(self, email_address=None, device_tag=None, exact=False):
         device_dict = {}
 
-        for specification in self.__device_dict():
+        for specification in self.__device_dict.values():
             if not specification.matches_tag(device_tag, exact):
                 continue
 

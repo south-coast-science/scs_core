@@ -104,7 +104,7 @@ class AFECalib(PersistentJSONable):
     @classmethod
     def download(cls, serial_number, parse=True):
         http_client = HTTPClient()
-        http_client.connect(AFECalib.ALPHASENSE_HOST)
+        http_client.connect(cls.ALPHASENSE_HOST)
 
         try:
             path = AFECalib.ALPHASENSE_PATH + serial_number

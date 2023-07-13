@@ -16,8 +16,8 @@ from scs_core.data.recurring_period import RecurringPeriod
 
 # --------------------------------------------------------------------------------------------------------------------
 
-aggregation_period = RecurringPeriod.construct(4, 'H')
-test_interval = RecurringPeriod.construct(5, 'M')
+aggregation_period = RecurringPeriod.construct(4, 'H', 'Europe/London')
+test_interval = RecurringPeriod.construct(5, 'M', 'Europe/London')
 
 alert = AlertSpecification(None, 'description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
                            test_interval, True, 'bruno.beloff@southcoastscience.com',
