@@ -48,13 +48,13 @@ class RecurringPeriod(Period, JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, timezone=None):
         if not jdict:
             return None
 
         interval = jdict.get('interval')
         units = jdict.get('units')
-        timezone_str = jdict.get('timezone')
+        timezone_str = jdict.get('timezone', timezone)
 
         return cls.construct(interval, units, timezone_str)
 

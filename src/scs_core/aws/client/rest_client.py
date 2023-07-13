@@ -28,23 +28,24 @@ class RESTClient(object):
     classdocs
     """
 
+    __HOST = "aws.southcoastscience.com"
+
     __HEADER_ACCEPT = "application/json"
-    __HEADER_AUTHORIZATION = "api-key "
+    __HEADER_AUTHORIZATION = "api-key"
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, auth):
+    def __init__(self):
         """
         Constructor
         """
         self.__http_client = HTTPClient()
-        self.__auth = auth
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(self.__auth.endpoint)
+        self.__http_client.connect(self.__HOST)
 
 
     def close(self):
@@ -124,11 +125,11 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": RESTClient.__HEADER_ACCEPT,
-                "Authorization": RESTClient.__HEADER_AUTHORIZATION + self.__auth.api_key}
+        return {"Accept": self.__HEADER_ACCEPT,
+                "Authorization": self.__HEADER_AUTHORIZATION}
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "RESTClient:{auth:%s}" % self.__auth
+        return "RESTClient:{host:%s}" % self.__HOST
