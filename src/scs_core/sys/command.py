@@ -10,6 +10,8 @@ import sys
 
 from subprocess import Popen, PIPE
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -24,13 +26,27 @@ class Command(object):
         """
         Constructor
         """
-        self.__verbose = verbose                    # bool
+        self.__verbose = verbose                            # bool
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def s(self, cmd_args, wait=True, no_verbose=False):
+        tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
+        self.__logger.info(' '.join(tokens))
+
+        p = Popen(' '.join(tokens), shell=True)
+
+        if wait:
+            p.wait()
+
+
     def o(self, cmd_args, wait=False):
-        p = Popen(self.__cmd(cmd_args), stdout=PIPE)
+        tokens = self.__cmd(cmd_args)
+        self.__logger.info(' '.join(tokens))
+
+        p = Popen(tokens, stdout=PIPE)
 
         if wait:
             p.wait()
@@ -39,7 +55,10 @@ class Command(object):
 
 
     def io(self, p, cmd_args, wait=False):
-        p = Popen(self.__cmd(cmd_args), stdin=p.stdout, stdout=PIPE)
+        tokens = self.__cmd(cmd_args)
+        self.__logger.info(' '.join(tokens))
+
+        p = Popen(tokens, stdin=p.stdout, stdout=PIPE)
 
         if wait:
             p.wait()
@@ -48,14 +67,22 @@ class Command(object):
 
 
     def i(self, p, cmd_args, wait=True):
-        p = Popen(self.__cmd(cmd_args), stdin=p.stdout, stdout=sys.stderr)
+        tokens = self.__cmd(cmd_args)
+        self.__logger.info(' '.join(tokens))
+
+        p = Popen(tokens, stdin=p.stdout, stdout=sys.stderr)
 
         if wait:
             p.wait()
 
 
-    def __cmd(self, cmd_args):
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __cmd(self, cmd_args, no_verbose=False):
         strs = [str(cmd_arg) for cmd_arg in cmd_args if cmd_arg is not None]
+
+        if no_verbose:
+            return strs
 
         return strs[:1] + ['-v'] + strs[1:] if self.__verbose else strs
 
