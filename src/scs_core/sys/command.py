@@ -32,11 +32,15 @@ class Command(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def s(self, cmd_args, wait=True, no_verbose=False):
+    def s(self, cmd_args, wait=True, no_verbose=False, abort_on_fail=True):
         tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
         self.__logger.info(' '.join(tokens))
 
         p = Popen(' '.join(tokens), shell=True)
+
+        if p.returncode != 0:
+            self.__logger('aborted')
+            exit(p.returncode)
 
         if wait:
             p.wait()
