@@ -78,7 +78,7 @@ class Command(object):
             p.wait()
 
         if abort_on_fail and p.returncode != 0:
-            self.__logger.error('ABORTED')
+            self.__logger.error('ABORTED.')
             exit(p.returncode)
 
         return p
