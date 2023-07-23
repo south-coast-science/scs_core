@@ -63,10 +63,15 @@ class CognitoDeviceCredentials(JSONable):
 
     @classmethod
     def is_valid_tag(cls, tag):
-        if not isinstance(tag, str):
+        try:
+            if len(tag) > 255:
+                return False
+
+            return bool(re.fullmatch(r'[a-z]+\d*-[a-z]+\d*-\d+', tag))
+
+        except TypeError:
             return False
 
-        return re.search(r'^\w+-\w+-\d+$', tag) is not None
 
 
     @classmethod
