@@ -29,6 +29,8 @@ import re
 
 from collections import OrderedDict
 
+from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -584,18 +586,6 @@ class OrganisationDevice(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def is_valid_tag(cls, device_tag):
-        try:
-            if len(device_tag) > 255:
-                return False
-
-            return bool(re.fullmatch(r'[a-z]+[0-9]*-[a-z]+[0-9]*-[0-9]+', device_tag))
-
-        except TypeError:
-            return False
-
-
-    @classmethod
     def is_valid_deployment_label(cls, deployment_label):
         try:
             return 1 < len(deployment_label) < 256
@@ -685,8 +675,9 @@ class OrganisationDevice(JSONable):
         if self.device_tag is None or self.org_id is None:
             return False
 
-        return self.is_valid_tag(self.device_tag) and self.is_valid_deployment_label(self.deployment_label) and \
-            self.is_valid_path(self.device_path) and self.is_valid_path(self.location_path)
+        return CognitoDeviceCredentials.is_valid_tag(self.device_tag) and \
+            self.is_valid_deployment_label(self.deployment_label) and self.is_valid_path(self.device_path) and \
+            self.is_valid_path(self.location_path)
 
 
     def has_unix_era_start(self):

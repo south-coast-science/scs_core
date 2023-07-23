@@ -8,6 +8,7 @@ Created on 14 Jan 2022
 
 import json
 
+from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
 from scs_core.aws.security.organisation import Organisation, OrganisationPathRoot, OrganisationUser, \
     OrganisationUserPath, OrganisationDevice
 
@@ -82,7 +83,7 @@ extension = 'x/a/'
 print("is_valid_extension: %s: %s" % (extension, OrganisationUserPath.is_valid_path_extension(extension)))
 
 device_tag = 'scs-be2-3'
-print("is_valid_tag: %s: %s" % (device_tag, OrganisationDevice.is_valid_tag(device_tag)))
+print("is_valid_tag: %s: %s" % (device_tag, CognitoDeviceCredentials.is_valid_tag(device_tag)))
 
 label = 'Dust Control Brazil (Demo)'
 print("is_valid_name: %s: %s" % (label, Organisation.is_valid_label(label)))

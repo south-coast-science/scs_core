@@ -16,7 +16,7 @@ import pytz
 import re
 import tzlocal
 
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
@@ -73,9 +73,9 @@ class LocalizedDatetime(JSONable):
 
 
     @classmethod
-    def construct_from_date(cls, date):
+    def construct_from_date(cls, d):
         zone = tzlocal.get_localzone()
-        localized = zone.localize(datetime(date.year, month=date.month, day=date.day))
+        localized = zone.localize(datetime(d.year, month=d.month, day=d.day))
 
         return LocalizedDatetime(localized)
 
@@ -106,9 +106,9 @@ class LocalizedDatetime(JSONable):
     @classmethod
     def construct_from_date_time(cls, date_parser, date_str, time_str, tz=None):
         # date...
-        date = date_parser.datetime(date_str)
+        d = date_parser.datetime(date_str)
 
-        if date is None:
+        if d is None:
             return None
 
         # time (rightmost time in string)...
@@ -130,7 +130,7 @@ class LocalizedDatetime(JSONable):
         zone = pytz.timezone('Etc/UTC') if tz is None else tz
 
         # construct...
-        start = LocalizedDatetime(zone.localize(date))
+        start = LocalizedDatetime(zone.localize(d))
 
         corrected = start.timedelta(seconds=seconds_delta, minutes=minutes_delta, hours=hours_delta)
 
@@ -177,13 +177,13 @@ class LocalizedDatetime(JSONable):
 
     @classmethod
     def construct_from_oad(cls, oad, tz=None):
-        date = cls.OLE_TIME_ZERO + timedelta(days=float(oad))
+        d = cls.OLE_TIME_ZERO + timedelta(days=float(oad))
 
         # zone...
         zone = pytz.timezone('Etc/UTC') if tz is None else tz
 
         # construct...
-        return LocalizedDatetime(zone.localize(date))
+        return LocalizedDatetime(zone.localize(d))
 
 
     @classmethod
@@ -402,8 +402,8 @@ class LocalizedDatetime(JSONable):
         """
         example: 2016-08-13T00:38:05.210+01:00
         """
-        date = self.__datetime.strftime("%Y-%m-%d")
-        time = self.__datetime.strftime("%H:%M:%S")
+        d = self.__datetime.strftime("%Y-%m-%d")
+        t = self.__datetime.strftime("%H:%M:%S")
 
         # millis...
         if include_millis:
@@ -418,22 +418,22 @@ class LocalizedDatetime(JSONable):
 
         # Z format...
         if float(zone[1:]) == 0.0:
-            return "%sT%s%sZ" % (date, time, millis)
+            return "%sT%s%sZ" % (d, t, millis)
 
         # numeric format...
         zone_hours = zone[:3]
         zone_mins = zone[3:]
 
-        return "%sT%s%s%s:%s" % (date, time, millis, zone_hours, zone_mins)
+        return "%sT%s%s%s:%s" % (d, t, millis, zone_hours, zone_mins)
 
 
     def as_time(self):
-        time = self.__datetime.strftime("%H:%M:%S")
+        t = self.__datetime.strftime("%H:%M:%S")
 
         micros = float(self.__datetime.strftime("%f"))
         millis = "%03d" % (micros // 1000)
 
-        return "%s.%s" % (time, millis)
+        return "%s.%s" % (t, millis)
 
 
     def timestamp(self):
@@ -463,6 +463,23 @@ class LocalizedDatetime(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "LocalizedDatetime:{datetime:%s}" % self.datetime
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Date(object):
+    """
+    classdocs
+    """
+
+    @classmethod
+    def is_valid_iso_format(cls, date_str):
+        try:
+            date.fromisoformat(date_str)
+            return True
+
+        except (TypeError, ValueError):
+            return False
 
 
 # --------------------------------------------------------------------------------------------------------------------
