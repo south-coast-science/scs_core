@@ -10,7 +10,10 @@ example JSON:
 from collections import OrderedDict
 
 from scs_core.csv.csv_log import CSVLog
+
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
+
 from scs_core.sys.filesystem import FilesystemReport
 
 
@@ -38,27 +41,29 @@ class CSVLoggerConf(PersistentJSONable):
         root_path = jdict.get('root-path')
         delete_oldest = jdict.get('delete-oldest')
         write_interval = jdict.get('write-interval')
+        retrospection_limit = LocalizedDatetime.construct_from_iso8601(jdict.get('retrospection-limit'))
 
-        return CSVLoggerConf(root_path, delete_oldest, write_interval)
+        return CSVLoggerConf(root_path, delete_oldest, write_interval, retrospection_limit)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, root_path, delete_oldest, write_interval):
+    def __init__(self, root_path, delete_oldest, write_interval, retrospection_limit):
         """
         Constructor
         """
         super().__init__()
 
-        self.__root_path = root_path                            # string
-        self.__delete_oldest = bool(delete_oldest)              # bool
-        self.__write_interval = int(write_interval)             # int
+        self.__root_path = root_path                                # string
+        self.__delete_oldest = bool(delete_oldest)                  # bool
+        self.__write_interval = int(write_interval)                 # int
+        self.__retrospection_limit = retrospection_limit            # LocalizedDatetime or None
 
 
     def __eq__(self, other):
         try:
             return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
-                   self.write_interval == other.write_interval
+                   self.write_interval == other.write_interval and self.retrospection_limit == other.retrospection_limit
 
         except (TypeError, AttributeError):
             return False
@@ -74,6 +79,16 @@ class CSVLoggerConf(PersistentJSONable):
         return FilesystemReport.construct(self.root_path)
 
 
+    def retrospection_start(self, timeline_start):
+        if self.retrospection_limit is None or timeline_start is None:
+            return timeline_start
+
+        if timeline_start < self.retrospection_limit:
+            return self.retrospection_limit
+
+        return timeline_start
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
@@ -82,6 +97,7 @@ class CSVLoggerConf(PersistentJSONable):
         jdict['root-path'] = self.root_path
         jdict['delete-oldest'] = self.delete_oldest
         jdict['write-interval'] = self.write_interval
+        jdict['retrospection-limit'] = self.retrospection_limit
 
         return jdict
 
@@ -103,8 +119,13 @@ class CSVLoggerConf(PersistentJSONable):
         return self.__write_interval
 
 
+    @property
+    def retrospection_limit(self):
+        return self.__retrospection_limit
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLoggerConf:{root_path:%s, delete_oldest:%s, write_interval:%s}" %  \
-               (self.root_path, self.delete_oldest, self.write_interval)
+        return "CSVLoggerConf:{root_path:%s, delete_oldest:%s, write_interval:%s, retrospection_limit:%s}" %  \
+               (self.root_path, self.delete_oldest, self.write_interval, self.retrospection_limit)

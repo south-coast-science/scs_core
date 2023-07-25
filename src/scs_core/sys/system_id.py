@@ -165,6 +165,11 @@ class SystemID(PersistentJSONable):
         return self.__system_serial_number
 
 
+    @system_serial_number.setter
+    def system_serial_number(self, system_serial_number):
+        self.__system_serial_number = system_serial_number
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

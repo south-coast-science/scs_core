@@ -13,10 +13,13 @@ from collections import OrderedDict
 from multiprocessing import Manager
 
 from requests.exceptions import ConnectionError                                             # raised by requests
+
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException     # raised by HTTPClient
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
+
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
@@ -76,7 +79,7 @@ class CSVLogReader(SynchronisedProcess):
             # build queue...
             timeline_start, cursors = self.__queue_builder.find_cursors()       # waits indefinitely for network
 
-            self.__logger.info("timeline_start: %s" % timeline_start)
+            self.__logger.info("timeline_start: %s" % timeline_start.as_iso8601())
 
             with self._lock:
                 queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
@@ -205,11 +208,14 @@ class CSVLogQueueBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic_name, topic_path, byline_manager, system_id, conf):
-        self.__topic_name = topic_name
-        self.__topic_path = topic_path
-        self.__byline_manager = byline_manager
-        self.__system_id = system_id
-        self.__conf = conf
+        """
+        Constructor
+        """
+        self.__topic_name = topic_name                                      # string
+        self.__topic_path = topic_path                                      # string
+        self.__byline_manager = byline_manager                              # BylineManager
+        self.__system_id = system_id                                        # SystemID
+        self.__conf = conf                                                  # CSVLoggerConf
 
         self.__logger = Logging.getLogger()
 
@@ -228,11 +234,13 @@ class CSVLogQueueBuilder(object):
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
         rec = None if byline is None else byline.rec
-        timeline_start = None if rec is None else rec.utc_datetime
+        byline_start = None if rec is None else rec.utc_datetime
+
+        timeline_start = self.__conf.retrospection_start(LocalizedDatetime(byline_start))
 
         # CSVLog...
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
-                                       timeline_start=timeline_start)
+                                       timeline_start=timeline_start.datetime)
 
         return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')  # may raise FileNotFoundError
 
