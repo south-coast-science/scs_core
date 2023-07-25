@@ -63,9 +63,7 @@ class CSVLoggerConf(PersistentJSONable):
     def __eq__(self, other):
         try:
             return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
-                   self.write_interval == other.write_interval
-
-        # TODO: fix
+                   self.write_interval == other.write_interval and self.retrospection_limit == other.retrospection_limit
 
         except (TypeError, AttributeError):
             return False

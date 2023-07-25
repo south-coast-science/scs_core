@@ -79,7 +79,7 @@ class CSVLogReader(SynchronisedProcess):
             # build queue...
             timeline_start, cursors = self.__queue_builder.find_cursors()       # waits indefinitely for network
 
-            self.__logger.info("timeline_start: %s" % timeline_start)
+            self.__logger.info("timeline_start: %s" % timeline_start.as_iso8601())
 
             with self._lock:
                 queue = CSVLogCursorQueue.construct_from_jdict(OrderedDict(self._value))
