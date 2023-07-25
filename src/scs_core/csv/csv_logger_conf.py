@@ -4,7 +4,8 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"root-path": "/home/pi/SCS/logs", "delete-oldest": true, "write-interval": 0}
+{"root-path": "/srv/removable_data_storage", "delete-oldest": true, "write-interval": 0,
+"retrospection-limit": "2023-07-25T11:36:30Z"}
 """
 
 from collections import OrderedDict
