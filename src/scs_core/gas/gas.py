@@ -3,6 +3,8 @@ Created on 13 Feb 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Conversion Factors Between ppb and μg m-3 and ppm and mgm-3 (EC, not WHO)
+
 http://www.apis.ac.uk/unit-conversion
 https://keisan.casio.com/exec/system/1224579725
 """
@@ -27,7 +29,7 @@ class Gas(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __NAMES = {'CO', 'CO2', 'NO', 'NO2', 'O3', 'SO2'}
+    __NAMES = {'CO', 'CO2', 'NO', 'NO2', 'O3', 'Ox', 'SO2'}
 
     @classmethod
     def is_valid_name(cls, name):
@@ -42,6 +44,7 @@ class Gas(object):
                 'NO':   1.3402,
                 'NO2':  1.9125,
                 'O3':   1.9957,
+                'Ox':   1.9957,
                 'SO2':  2.6609
     }
 
@@ -59,6 +62,7 @@ class Gas(object):
                 'NO':   30.0100,
                 'NO2':  46.0055,
                 'O3':   48.0000,
+                'Ox':   48.0000,
                 'SO2':  64.0660
     }
 
