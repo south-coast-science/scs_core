@@ -13,10 +13,13 @@ from collections import OrderedDict
 from multiprocessing import Manager
 
 from requests.exceptions import ConnectionError                                             # raised by requests
+
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException     # raised by HTTPClient
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
+
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
@@ -233,11 +236,11 @@ class CSVLogQueueBuilder(object):
         rec = None if byline is None else byline.rec
         byline_start = None if rec is None else rec.utc_datetime
 
-        timeline_start = self.__conf.retrospection_start(byline_start)
+        timeline_start = self.__conf.retrospection_start(LocalizedDatetime(byline_start))
 
         # CSVLog...
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
-                                       timeline_start=timeline_start)
+                                       timeline_start=timeline_start.datetime)
 
         return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')  # may raise FileNotFoundError
 

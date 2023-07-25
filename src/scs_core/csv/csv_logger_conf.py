@@ -65,6 +65,8 @@ class CSVLoggerConf(PersistentJSONable):
             return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
                    self.write_interval == other.write_interval
 
+        # TODO: fix
+
         except (TypeError, AttributeError):
             return False
 
