@@ -205,11 +205,14 @@ class CSVLogQueueBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, topic_name, topic_path, byline_manager, system_id, conf):
-        self.__topic_name = topic_name
-        self.__topic_path = topic_path
-        self.__byline_manager = byline_manager
-        self.__system_id = system_id
-        self.__conf = conf
+        """
+        Constructor
+        """
+        self.__topic_name = topic_name                                      # string
+        self.__topic_path = topic_path                                      # string
+        self.__byline_manager = byline_manager                              # BylineManager
+        self.__system_id = system_id                                        # SystemID
+        self.__conf = conf                                                  # CSVLoggerConf
 
         self.__logger = Logging.getLogger()
 
@@ -228,7 +231,9 @@ class CSVLogQueueBuilder(object):
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
         rec = None if byline is None else byline.rec
-        timeline_start = None if rec is None else rec.utc_datetime
+        byline_start = None if rec is None else rec.utc_datetime
+
+        timeline_start = self.__conf.retrospection_start(byline_start)
 
         # CSVLog...
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
