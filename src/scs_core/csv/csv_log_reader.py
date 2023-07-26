@@ -239,7 +239,7 @@ class CSVLogQueueBuilder(object):
 
         # CSVLog...
         read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
-                                       timeline_start=timeline_start.datetime)
+                                       timeline_start=timeline_start)
 
         return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')  # may raise FileNotFoundError
 
