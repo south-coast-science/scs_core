@@ -80,14 +80,16 @@ class CSVLoggerConf(PersistentJSONable):
         return FilesystemReport.construct(self.root_path)
 
 
-    def retrospection_start(self, timeline_start):
-        if self.retrospection_limit is None or timeline_start is None:
-            return timeline_start
+    def utc_retrospection_start(self, utc_timeline_start):
+        utc_retrospection_limit = None if self.retrospection_limit is None else self.retrospection_limit.utc_datetime
 
-        if timeline_start < self.retrospection_limit:
-            return self.retrospection_limit
+        if utc_retrospection_limit is None or utc_timeline_start is None:
+            return utc_timeline_start
 
-        return timeline_start
+        if utc_timeline_start < utc_retrospection_limit:
+            return utc_retrospection_limit
+
+        return utc_timeline_start
 
 
     # ----------------------------------------------------------------------------------------------------------------
