@@ -6,6 +6,8 @@ Created on 24 Apr 2023
 Enables a device to register itself as a CognitoDevice
 """
 
+import json
+
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
 
@@ -29,6 +31,16 @@ class CognitoDeviceCreator(APIClient):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def may_create(self, device_tag):
+        payload = {"DeviceTag": device_tag}
+
+        response = self._http_client.get(self.__URL, headers=self._auth_headers(self.__AUTH),
+                                         data=JSONify.dumps(payload))
+        self._check_response(response)
+
+        return json.loads(response.json())
+
 
     def create(self, identity: CognitoDeviceIdentity):
         response = self._http_client.post(self.__URL, headers=self._auth_headers(self.__AUTH),

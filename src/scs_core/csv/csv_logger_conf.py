@@ -4,7 +4,8 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"root-path": "/home/pi/SCS/logs", "delete-oldest": true, "write-interval": 0}
+{"root-path": "/srv/removable_data_storage", "delete-oldest": true, "write-interval": 0,
+"retrospection-limit": "2023-07-25T11:36:30Z"}
 """
 
 from collections import OrderedDict
@@ -63,9 +64,7 @@ class CSVLoggerConf(PersistentJSONable):
     def __eq__(self, other):
         try:
             return self.root_path == other.root_path and self.delete_oldest == other.delete_oldest and \
-                   self.write_interval == other.write_interval
-
-        # TODO: fix
+                   self.write_interval == other.write_interval and self.retrospection_limit == other.retrospection_limit
 
         except (TypeError, AttributeError):
             return False
@@ -81,14 +80,16 @@ class CSVLoggerConf(PersistentJSONable):
         return FilesystemReport.construct(self.root_path)
 
 
-    def retrospection_start(self, timeline_start):
-        if self.retrospection_limit is None or timeline_start is None:
-            return timeline_start
+    def utc_retrospection_start(self, utc_timeline_start):
+        utc_retrospection_limit = None if self.retrospection_limit is None else self.retrospection_limit.utc_datetime
 
-        if timeline_start < self.retrospection_limit:
-            return self.retrospection_limit
+        if utc_retrospection_limit is None or utc_timeline_start is None:
+            return utc_timeline_start
 
-        return timeline_start
+        if utc_timeline_start < utc_retrospection_limit:
+            return utc_retrospection_limit
+
+        return utc_timeline_start
 
 
     # ----------------------------------------------------------------------------------------------------------------
