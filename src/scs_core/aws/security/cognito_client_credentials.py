@@ -42,7 +42,6 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
         logger = Logging.getLogger()
 
         if not cls.exists(host, name=name):
-            logger.info("name: [%s]" % name)
             logger.error("Cognito credentials not available.")
             return None
 
