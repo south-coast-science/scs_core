@@ -10,6 +10,7 @@ example document:
 """
 
 import json
+import os
 import sys
 import termios
 
@@ -32,6 +33,7 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
     """
 
     __FILENAME = "cognito_user_credentials.json"
+    __ENV_PASSWORD = 'SCS_CREDENTIALS_RETRIEVAL'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -44,9 +46,12 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
             return None
 
         try:
+            password = os.environ[cls.__ENV_PASSWORD]
+        except KeyError:
             password = cls.password_from_user()
-            return CognitoClientCredentials.load(host, name=name, encryption_key=password)
 
+        try:
+            return CognitoClientCredentials.load(host, name=name, encryption_key=password)
         except (KeyError, ValueError):
             logger.error("incorrect password.")
             return None

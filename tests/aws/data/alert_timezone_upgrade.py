@@ -36,7 +36,7 @@ gatekeeper = CognitoLoginManager(requests)
 auth = gatekeeper.user_login(credentials)
 
 if not auth.is_ok():
-    logger.error("login: %s" % auth.authentication_status.description)
+    logger.error("login: %s." % auth.authentication_status.description)
     exit(1)
 
 

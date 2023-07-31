@@ -53,7 +53,7 @@ class Command(object):
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def i(self, p, cmd_args, wait=False, abort_on_fail=True):
+    def i(self, p, cmd_args, wait=True, abort_on_fail=True):
         tokens = self.__cmd(cmd_args)
         p = Popen(tokens, stdin=p.stdout, stdout=sys.stderr)
 
@@ -77,7 +77,7 @@ class Command(object):
         if wait:
             p.wait()
 
-        if abort_on_fail and p.returncode != 0:
+        if abort_on_fail and (p.returncode is not None and p.returncode != 0):
             self.__logger.error('ABORTED.')
             exit(p.returncode)
 
