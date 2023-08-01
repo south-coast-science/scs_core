@@ -6,6 +6,8 @@ Created on 25 Dec 2018
 Equivalent to cURLs:
 curl "https://aws.southcoastscience.com/device-topics?topic=south-coast-science-dev/alphasense/loc/303/gases"
 curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
+
+DEPRECATED: replaced with BylineFinder
 """
 
 from urllib.parse import parse_qs, urlparse
