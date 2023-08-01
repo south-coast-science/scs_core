@@ -21,7 +21,6 @@ class BylineManager(APIClient):
     classdocs
     """
 
-    # __URL = 'https://aws.southcoastscience.com/device-topics'
     __URL = 'https://cxzne688y0.execute-api.us-west-2.amazonaws.com/default/Bylines'
 
     __DEVICE =      'device'
