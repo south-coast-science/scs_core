@@ -59,8 +59,8 @@ class TopicHistoryManager(APIClient):
                                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self._logger.debug(request)
 
-        for block in self._get_blocks(self.__URL, token, request.params(), TopicHistoryResponse):
-            yield block
+        for item in self._get_blocks(self.__URL, token, request.params(), TopicHistoryResponse):
+            yield item
 
 
 # --------------------------------------------------------------------------------------------------------------------

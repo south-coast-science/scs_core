@@ -63,7 +63,7 @@ class APIClient(ABC):
 
             # messages...
             block = block_class.construct_from_jdict(response.json())
-            self.__logger.debug(block)
+            # self.__logger.debug("block: %s" % block)
 
             for item in block.items:
                 yield item

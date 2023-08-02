@@ -64,13 +64,8 @@ class BylineFinder(APIClient):
 
 
     def find_bylines(self, token, excluded=None, strict_tags=False):
-        params = {}
-        bylines = []
+        bylines = [item for item in self._get_blocks(self.__URL, token, {}, BylineFinderResponse)]
 
-        for block in self._get_blocks(self.__URL, token, params, BylineFinderResponse):
-            bylines += block.items
-
-        # bylines...
         return TopicBylineGroup.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 
 
@@ -81,7 +76,6 @@ class BylineFinder(APIClient):
         self._check_response(response)
 
         jdict = response.json()
-        print("jdict: %s" % jdict)
 
         # bylines...
         return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, strict_tags=strict_tags, skeleton=True)
