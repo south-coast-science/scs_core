@@ -21,7 +21,6 @@ from scs_core.aws.client.api_client import APIClient, APIResponse
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -331,7 +330,7 @@ class TopicHistoryRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicHistoryResponse(APIResponse, JSONable):
+class TopicHistoryResponse(APIResponse):
     """
     classdocs
     """

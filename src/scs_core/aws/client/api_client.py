@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from http import HTTPStatus
 
 from scs_core.client.http_exception import HTTPException
-from scs_core.data.json import JSONify
+from scs_core.data.json import JSONable, JSONify
 from scs_core.sys.logging import Logging
 
 
@@ -99,7 +99,7 @@ class APIClient(ABC):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class APIResponse(ABC):
+class APIResponse(ABC, JSONable):
     """
     classdocs
     """
