@@ -25,8 +25,6 @@ from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
-from scs_core.sys.logging import Logging
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -39,13 +37,8 @@ class TopicHistoryManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        """
-        Constructor
-        """
-        super().__init__(http_client, reporter=reporter)
-
-        self.__logger = Logging.getLogger()
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -65,7 +58,7 @@ class TopicHistoryManager(APIClient):
 
         request = TopicHistoryRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
-        self.__logger.debug(request)
+        self._logger.debug(request)
 
         for block in self._get_blocks(self.__URL, token, request.params(), TopicHistoryResponse):
             yield block

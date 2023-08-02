@@ -10,6 +10,8 @@ curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 DEPRECATED: replaced with BylineFinder
 """
 
+import requests
+
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient
@@ -31,10 +33,8 @@ class BylineManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        super().__init__(http_client)
-
-        self.__reporter = reporter                              # BatchDownloadReporter
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ class BylineManager(APIClient):
     def find_latest_byline_for_topic(self, topic):
         params = {self.__TOPIC: topic}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         jdict = response.json()
 
         # bylines...
@@ -65,7 +65,7 @@ class BylineManager(APIClient):
         items_jdict = []
 
         while True:
-            response = self._http_client.get(self.__URL, params=params)
+            response = requests.get(self.__URL, params=params)
             jdict = response.json()
 
             block = jdict.get('Items')
@@ -90,7 +90,7 @@ class BylineManager(APIClient):
     def find_bylines_for_topic(self, topic, excluded=None, strict_tags=False):
         params = {self.__TOPIC: topic}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -102,7 +102,7 @@ class BylineManager(APIClient):
     def find_bylines_for_device(self, device, excluded=None):
         params = {self.__DEVICE: device}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -114,7 +114,7 @@ class BylineManager(APIClient):
     def find_byline_for_device_topic(self, device, topic):
         params = {self.__DEVICE: device}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()

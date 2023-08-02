@@ -3,6 +3,9 @@ Created on 19 Apr 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
+
+import requests
+
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 
@@ -19,13 +22,11 @@ class APIClient(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
+    def __init__(self, reporter=None):
         """
         Constructor
         """
-        self.__http_client = http_client                        # requests package
         self.__reporter = reporter
-
         self.__logger = Logging.getLogger()
 
 
@@ -33,14 +34,14 @@ class APIClient(ABC):
 
     def _auth_headers(self, auth):
         header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Authorization": auth}
-        self.__logger.debug('headers: %s' % header)
+        self.__logger.debug('header: %s' % header)
 
         return header
 
 
     def _token_headers(self, token):
         header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "Token": token}
-        self.__logger.debug('headers: %s' % header)
+        self.__logger.debug('header: %s' % header)
 
         return header
 
@@ -56,7 +57,7 @@ class APIClient(ABC):
 
     def _get_blocks(self, url, token, params, block_class):
         while True:
-            response = self._http_client.get(url, headers=self._token_headers(token), params=params)
+            response = requests.get(url, headers=self._token_headers(token), params=params)
             self._check_response(response)
 
             # messages...
@@ -78,11 +79,6 @@ class APIClient(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def _http_client(self):
-        return self.__http_client
-
 
     @property
     def _reporter(self):

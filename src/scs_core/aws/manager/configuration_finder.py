@@ -30,8 +30,8 @@ class ConfigurationFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        super().__init__(http_client, reporter=reporter)
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------

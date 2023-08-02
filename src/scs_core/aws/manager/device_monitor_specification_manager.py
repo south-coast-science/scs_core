@@ -4,6 +4,8 @@ Created on 17 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import requests
+
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.device_monitor_specification import DeviceMonitorSpecification, DeviceMonitorSpecificationList
 
@@ -19,8 +21,8 @@ class DeviceMonitorSpecificationManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -32,7 +34,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'exact': exact
         }
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecificationList.construct_from_jdict(response.json())
@@ -44,7 +46,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'device_tag': device_tag
         }
 
-        response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.post(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecification.construct_from_jdict(response.json())
@@ -56,7 +58,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'is_suspended': is_suspended
         }
 
-        response = self._http_client.patch(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.patch(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecification.construct_from_jdict(response.json())
@@ -68,13 +70,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'device_tag': device_tag
         }
 
-        response = self._http_client.delete(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.delete(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecificationList.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "DeviceMonitorSpecificationManager:{}"
