@@ -14,7 +14,6 @@ from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient, APIResponse
 
-from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
 from scs_core.sample.configuration_sample import ConfigurationSample
@@ -241,7 +240,7 @@ class ExclusiveStartKey(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationResponse(APIResponse, JSONable):
+class ConfigurationResponse(APIResponse):
     """
     classdocs
     """
