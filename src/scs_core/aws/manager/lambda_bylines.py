@@ -8,12 +8,6 @@ Helper class for the bylines lambda
 
 import json
 
-from collections import OrderedDict
-from http import HTTPStatus
-
-from scs_core.aws.data.http_response import HTTPResponse
-from scs_core.client.http_exception import HTTPException
-
 
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -74,7 +68,6 @@ class BylineExclusiveStartKey(object):
 
 
 # --------------------------------------------------------------------------------------------------------------------
-
 
 class BylineRequest(object):
     """
@@ -177,78 +170,3 @@ class BylineRequest(object):
         return "ConfigurationRequest:{tag_filter:%s, topic_filter:%s, start_exclude:%s, end_exclude:%s," \
                " exclusive_start_key:%s}" % \
                (self.tag_filter, self.topic_filter, self.start_exclude, self.end_exclude, self.exclusive_start_key)
-
-
-class BylinesResponse(HTTPResponse):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        status = HTTPStatus(jdict.get('statusCode'))
-
-        if status != HTTPStatus.OK:
-            raise HTTPException.construct(status.value, status.phrase, status.description)
-
-        items = jdict.get('Items')
-        next_url = jdict.get('next')
-
-        return cls(status, items, next_url=next_url)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, status, items, next_url=None):
-        """
-        Constructor
-        """
-        super().__init__(status)
-
-        self.__items = items  # list of string
-        self.__next_url = next_url  # URL string
-
-
-    def __len__(self):
-        return len(self.items)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['statusCode'] = self.status.value
-
-        if self.items is not None:
-            jdict['Items'] = self.items
-            jdict['itemCount'] = len(self.items)
-
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def items(self):
-        return self.__items
-
-
-    @property
-    def next_url(self):
-        return self.__next_url
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "BylinesResponse:{status:%s, items:%s, next_url:%s}" % \
-               (self.status, self.items, self.next_url)
