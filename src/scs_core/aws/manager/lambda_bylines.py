@@ -111,8 +111,8 @@ class BylineRequest(object):
         """
         Constructor
         """
-        self.__tag_filter = tag_filter  # string
-        self.__topic_filter = topic_filter  # string
+        self.__tag_filter = tag_filter                              # string
+        self.__topic_filter = topic_filter                          # string
 
         self.__start_exclude = start_exclude
         self.__end_exclude = end_exclude

@@ -72,8 +72,8 @@ class BylineManager(APIClient):
             items_jdict += block
 
             # report...
-            if self.__reporter:
-                self.__reporter.print(len(block))
+            if self._reporter:
+                self._reporter.print(len(block))
 
             # next...
             if jdict.get('next') is None:
@@ -130,9 +130,3 @@ class BylineManager(APIClient):
                 return byline
 
         return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "BylineManager:{reporter:%s}" % self.__reporter
