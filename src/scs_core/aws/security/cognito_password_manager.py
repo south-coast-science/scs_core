@@ -15,6 +15,8 @@ document example:
 "EmailSent"
 """
 
+import requests
+
 from scs_core.aws.client.api_client import APIClient
 from scs_core.data.json import JSONify
 
@@ -32,8 +34,8 @@ class CognitoPasswordManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -42,7 +44,7 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'send-email'))
         payload = {'email': email}
 
-        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
@@ -50,7 +52,7 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'reset'))
         payload = {'email': email, 'reset_code': code, 'new_password': new_password}
 
-        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
@@ -58,5 +60,5 @@ class CognitoPasswordManager(APIClient):
         url = '/'.join((self.__URL, 'respond'))
         payload = {'email': email, 'new_password': new_password, 'session': session}
 
-        response = self._http_client.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
+        response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)

@@ -5,6 +5,7 @@ Created on 17 Apr 2023
 """
 
 import json
+import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.control.control_receipt import ControlReceipt
@@ -23,8 +24,8 @@ class DeviceControlClient(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ class DeviceControlClient(APIClient):
             'message': [str(token) for token in cmd_tokens]
         }
 
-        response = self._http_client.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
         return ControlReceipt.construct_from_jdict(json.loads(response.json()))

@@ -211,7 +211,7 @@ class CSVLogQueueBuilder(object):
         """
         self.__topic_name = topic_name                                      # string
         self.__topic_path = topic_path                                      # string
-        self.__byline_manager = byline_manager                              # BylineManager
+        self.__byline_manager = byline_manager                              # BylineFinder
         self.__system_id = system_id                                        # SystemID
         self.__conf = conf                                                  # CSVLoggerConf
 

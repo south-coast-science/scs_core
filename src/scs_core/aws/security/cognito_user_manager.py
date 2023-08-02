@@ -4,6 +4,8 @@ Created on 24 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import requests
+
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
@@ -23,8 +25,8 @@ class CognitoUserCreator(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -32,7 +34,7 @@ class CognitoUserCreator(APIClient):
     def create(self, identity):
         headers = self._auth_headers(self.__AUTH)
 
-        response = self._http_client.post(self.__URL, headers=headers, json=identity.as_json())
+        response = requests.post(self.__URL, headers=headers, json=identity.as_json())
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
@@ -45,7 +47,7 @@ class CognitoUserCreator(APIClient):
             'confirmation': confirmation_code
         }
 
-        response = self._http_client.patch(self.__URL, headers=headers, json=payload)
+        response = requests.patch(self.__URL, headers=headers, json=payload)
         self._check_response(response)
 
 
@@ -60,27 +62,17 @@ class CognitoUserEditor(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, token):
-        super().__init__(http_client)
-
-        self.__token = token                            # string
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def update(self, identity):
-        headers = self._token_headers(self.__token)
-
-        response = self._http_client.patch(self.__URL, headers=headers, data=JSONify.dumps(identity))
+    def update(self, token, identity):
+        response = requests.patch(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoUserEditor:{token:%s}" % self.__token
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -94,23 +86,14 @@ class CognitoUserDeleter(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, token):
-        super().__init__(http_client)
-
-        self.__token = token                            # string
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def delete(self, email):
+    def delete(self, token, email):
         url = '/'.join((self.__URL, email))
-        headers = self._token_headers(self.__token)
 
-        response = self._http_client.delete(url, headers=headers)
+        response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoUserDeleter:{token:%s}" % self.__token

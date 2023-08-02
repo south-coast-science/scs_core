@@ -6,8 +6,6 @@ Created on 11 Jul 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import requests
-
 from scs_core.aws.manager.alert_specification_manager import AlertSpecificationManager
 
 from scs_core.aws.security.cognito_client_credentials import CognitoClientCredentials
@@ -32,7 +30,7 @@ credentials = CognitoClientCredentials.load_for_user(Host, name='super')
 if not credentials:
     exit(1)
 
-gatekeeper = CognitoLoginManager(requests)
+gatekeeper = CognitoLoginManager()
 auth = gatekeeper.user_login(credentials)
 
 if not auth.is_ok():
@@ -43,7 +41,7 @@ if not auth.is_ok():
 # ------------------------------------------------------------------------------------------------------------
 # resources...
 
-specification_manager = AlertSpecificationManager(requests)
+specification_manager = AlertSpecificationManager()
 
 
 # --------------------------------------------------------------------------------------------------------------------

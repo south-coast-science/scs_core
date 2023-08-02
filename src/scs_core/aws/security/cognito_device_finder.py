@@ -5,6 +5,7 @@ Created on 5 Apr 2022
 """
 
 import json
+import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
@@ -21,8 +22,8 @@ class CognitoDeviceFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -30,7 +31,7 @@ class CognitoDeviceFinder(APIClient):
     def find_all(self, token):
         url = '/'.join((self.__URL, 'all'))
 
-        response = self._http_client.get(url, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -40,7 +41,7 @@ class CognitoDeviceFinder(APIClient):
         url = '/'.join((self.__URL, 'in'))
         payload = json.dumps({"username": tag})
 
-        response = self._http_client.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -50,16 +51,10 @@ class CognitoDeviceFinder(APIClient):
         url = '/'.join((self.__URL, 'exact'))
         payload = json.dumps({"username": tag})
 
-        response = self._http_client.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, data=payload, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoDeviceFinder:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -73,20 +68,14 @@ class CognitoDeviceIntrospector(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_self(self, token):
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token))
+        response = requests.get(self.__URL, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoDeviceIntrospector:{}"

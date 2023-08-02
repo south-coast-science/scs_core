@@ -6,6 +6,8 @@ Created on 26 May 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+import requests
+
 from collections import OrderedDict
 from http import HTTPStatus
 
@@ -26,8 +28,8 @@ class ConfigurationCheckRequester(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,16 +37,10 @@ class ConfigurationCheckRequester(APIClient):
     def request(self, token, tag):
         params = {'tag': tag}
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=params)
+        response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return ConfigurationCheckRequesterResponse.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "ConfigurationCheckRequester:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

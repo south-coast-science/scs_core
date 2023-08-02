@@ -7,6 +7,7 @@ Enables a device to register itself as a CognitoDevice
 """
 
 import json
+import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
@@ -26,8 +27,8 @@ class CognitoDeviceCreator(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,22 +36,14 @@ class CognitoDeviceCreator(APIClient):
     def may_create(self, device_tag):
         payload = {"DeviceTag": device_tag}
 
-        response = self._http_client.get(self.__URL, headers=self._auth_headers(self.__AUTH),
-                                         data=JSONify.dumps(payload))
+        response = requests.get(self.__URL, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
         return json.loads(response.json())
 
 
     def create(self, identity: CognitoDeviceIdentity):
-        response = self._http_client.post(self.__URL, headers=self._auth_headers(self.__AUTH),
-                                          data=JSONify.dumps(identity))
+        response = requests.post(self.__URL, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(identity))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CognitoDeviceCreator:{}"

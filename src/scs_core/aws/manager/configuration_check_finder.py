@@ -6,6 +6,8 @@ Created on 28 Apr 2021
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
+import requests
+
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
@@ -29,8 +31,8 @@ class ConfigurationCheckFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,16 +40,10 @@ class ConfigurationCheckFinder(APIClient):
     def find(self, token, tag_filter, exact_match, response_mode):
         request = ConfigurationCheckRequest(tag_filter, exact_match, response_mode)
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
+        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return ConfigurationCheckResponse.construct_from_jdict(response.json())
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "ConfigurationCheckFinder:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

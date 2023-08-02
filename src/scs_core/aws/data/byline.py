@@ -162,22 +162,26 @@ class BylineGroup(JSONable):
         if not jdict:
             return cls({}) if skeleton else None
 
-        # bylines...
-        bylines = []
+        bylines = [Byline.construct_from_jdict(byline_jdict) for byline_jdict in jdict]
 
-        for byline_jdict in jdict:
-            byline = Byline.construct_from_jdict(byline_jdict)
+        return cls.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 
+
+    @classmethod
+    def construct(cls, bylines, excluded=None, strict_tags=False):
+        filtered_bylines = []
+
+        for byline in bylines:
             if excluded is not None and byline.topic.endswith(excluded):
                 continue
 
             if strict_tags and not CognitoDeviceCredentials.is_valid_tag(byline.device):
                 continue
 
-            bylines.append(byline)
+            filtered_bylines.append(byline)
 
         # device_bylines...
-        device_bylines = ArrayDict([(byline.device, byline) for byline in sorted(bylines)])
+        device_bylines = ArrayDict([(byline.device, byline) for byline in sorted(filtered_bylines)])
 
         return cls(device_bylines)
 

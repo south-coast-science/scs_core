@@ -15,17 +15,15 @@ curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregat
 """
 
 from collections import OrderedDict
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
-from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.client.api_client import APIClient, APIResponse
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
-
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -39,14 +37,8 @@ class TopicHistoryManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        """
-        Constructor
-        """
-        super().__init__(http_client)
-        self.__reporter = reporter
-
-        self.__logger = Logging.getLogger()
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,49 +54,19 @@ class TopicHistoryManager(APIClient):
 
     def find_for_topic(self, token, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
-        self.__reporter.reset()
+        self._reporter.reset()
 
-        request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                                 min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
-        self.__logger.debug(request)
+        request = TopicHistoryRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
+                                      min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
+        self._logger.debug(request)
 
-        # request...
-        while True:
-            response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
-            self._check_response(response)
-
-            # messages...
-            block = MessageResponse.construct_from_jdict(response.json())
-            self.__logger.debug(block)
-
-            for item in block.items:
-                yield item
-
-            # report...
-            if self.__reporter:
-                self.__reporter.print(len(block), block_start=block.start())
-
-            # next request...
-            if block.next_url is None:
-                break
-
-            next_url = urlparse(block.next_url)
-            next_params = parse_qs(next_url.query)
-
-            params = request.params()
-            # noinspection PyTypeChecker
-            params[MessageRequest.START] = next_params[MessageRequest.START][0]
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "TopicHistoryManager:{reporter:%s}" % self.__reporter
+        for block in self._get_blocks(self.__URL, token, request.params(), TopicHistoryResponse):
+            yield block
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageRequest(object):
+class TopicHistoryRequest(object):
     """
     classdocs
     """
@@ -185,19 +147,19 @@ class MessageRequest(object):
         """
         Constructor
         """
-        self.__topic = topic  # string
-        self.__start = start  # LocalizedDatetime
-        self.__end = end  # LocalizedDatetime
+        self.__topic = topic                                                        # string
+        self.__start = start                                                        # LocalizedDatetime
+        self.__end = end                                                            # LocalizedDatetime
 
-        self.__path = path  # string
-        self.__fetch_last_written = bool(fetch_last_written)  # bool
-        self.__checkpoint = checkpoint  # string
-        self.__include_wrapper = bool(include_wrapper)  # bool
-        self.__rec_only = bool(rec_only)  # bool
-        self.__min_max = bool(min_max)  # bool
-        self.__exclude_remainder = bool(exclude_remainder)  # bool
-        self.__fetch_last_written_before = bool(fetch_last_written_before)  # bool
-        self.__backoff_limit = backoff_limit  # int seconds
+        self.__path = path                                                          # string
+        self.__fetch_last_written = bool(fetch_last_written)                        # bool
+        self.__checkpoint = checkpoint                                              # string
+        self.__include_wrapper = bool(include_wrapper)                              # bool
+        self.__rec_only = bool(rec_only)                                            # bool
+        self.__min_max = bool(min_max)                                              # bool
+        self.__exclude_remainder = bool(exclude_remainder)                          # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)          # bool
+        self.__backoff_limit = backoff_limit                                        # int seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -238,15 +200,15 @@ class MessageRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, start):
-        return MessageRequest(self.topic, start, self.end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
-                              self.backoff_limit, self.fetch_last_written_before).params()
+        return TopicHistoryRequest(self.topic, start, self.end, self.path, self.fetch_last_written, self.checkpoint,
+                                   self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                                   self.backoff_limit, self.fetch_last_written_before).params()
 
 
     def change_params(self, start, end):
-        return MessageRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
-                              self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
-                              self.backoff_limit, self.fetch_last_written_before)
+        return TopicHistoryRequest(self.topic, start, end, self.path, self.fetch_last_written, self.checkpoint,
+                                   self.include_wrapper, self.rec_only, self.min_max, self.exclude_remainder,
+                                   self.backoff_limit, self.fetch_last_written_before)
 
 
     def params(self):
@@ -359,7 +321,7 @@ class MessageRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageRequest:{topic:%s, start:%s, end:%s, path:%s, fetch_last_written:%s, checkpoint:%s, " \
+        return "TopicHistoryRequest:{topic:%s, start:%s, end:%s, path:%s, fetch_last_written:%s, checkpoint:%s, " \
                "include_wrapper:%s, rec_only:%s, min_max:%s, exclude_remainder:%s, " \
                "fetch_last_written_before:%s, backoff_limit:%s}" % \
                (self.topic, self.start, self.end, self.path, self.fetch_last_written, self.__checkpoint,
@@ -369,7 +331,7 @@ class MessageRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageResponse(JSONable):
+class TopicHistoryResponse(APIResponse, JSONable):
     """
     classdocs
     """
@@ -381,8 +343,6 @@ class MessageResponse(JSONable):
         if not jdict:
             return None
 
-        code = jdict.get('statusCode')
-        status = jdict.get('status')
         fetched_last = jdict.get('fetchedLastWrittenData')
         interval = jdict.get('interval')
 
@@ -393,23 +353,21 @@ class MessageResponse(JSONable):
 
         next_url = jdict.get('next')
 
-        return cls(code, status, fetched_last, interval, items, next_url)
+        return cls(fetched_last, interval, items, next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, fetched_last, interval, items, next_url):
+    def __init__(self, fetched_last, interval, items, next_url):
         """
         Constructor
         """
-        self.__code = int(code)                         # int
-        self.__status = status                          # string
-        self.__fetched_last = fetched_last              # "Fetched last written data" flag
-        self.__interval = interval                      # int
+        self.__fetched_last = fetched_last                      # "Fetched last written data" flag
+        self.__interval = interval                              # int
 
-        self.__items = items                            # list of Message
+        self.__items = items                                    # list of Message
 
-        self.__next_url = next_url                      # URL string
+        self.__next_url = next_url                              # URL string
 
 
     def __len__(self):
@@ -418,14 +376,17 @@ class MessageResponse(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def next_params(self, params):
+        next_params = parse_qs(urlparse(self.next_url).query)
+
+        # noinspection PyTypeChecker
+        params[TopicHistoryRequest.START] = next_params[TopicHistoryRequest.START][0]
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
-
-        if self.code is not None:
-            jdict['statusCode'] = self.code
-
-        if self.status is not None:
-            jdict['status'] = self.status
 
         if self.fetched_last is not None:
             jdict['fetchedLastWrittenData'] = self.fetched_last
@@ -471,16 +432,6 @@ class MessageResponse(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def code(self):
-        return self.__code
-
-
-    @property
-    def status(self):
-        return self.__status
-
-
-    @property
     def fetched_last(self):
         return self.__fetched_last
 
@@ -503,5 +454,5 @@ class MessageResponse(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, interval:%s, items:%s, next_url:%s}" % \
-               (self.code, self.status, self.fetched_last, self.interval, Str.collection(self.items), self.next_url)
+        return "TopicHistoryResponse:{fetched_last:%s, interval:%s, items:%s, next_url:%s}" % \
+               (self.fetched_last, self.interval, Str.collection(self.items), self.next_url)
