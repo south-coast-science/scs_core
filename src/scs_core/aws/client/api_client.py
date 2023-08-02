@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 from http import HTTPStatus
 
 from scs_core.client.http_exception import HTTPException
+from scs_core.data.json import JSONify
 from scs_core.sys.logging import Logging
 
 
@@ -103,6 +104,13 @@ class APIResponse(ABC):
     classdocs
     """
 
+    __CORS_HEADERS = {                                      # Cross-Origin Resource Sharing
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': True,
+    }
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     @abstractmethod
     def construct_from_jdict(cls, jdict):
@@ -110,12 +118,26 @@ class APIResponse(ABC):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # server...
+
+    def as_http(self, status, cors=False):
+        jdict = {
+            'statusCode': status,
+            'body': JSONify.dumps(self)
+        }
+
+        if cors:
+            jdict['headers'] = self.__CORS_HEADERS
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # client...
 
     def start(self):
         return None
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
     def next_params(self, params):
