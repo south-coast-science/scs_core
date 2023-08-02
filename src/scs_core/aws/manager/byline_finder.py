@@ -10,6 +10,7 @@ curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 
 import requests
 
+from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient, APIResponse
@@ -63,13 +64,8 @@ class BylineFinder(APIClient):
 
 
     def find_bylines(self, token, excluded=None, strict_tags=False):
-        params = {}
-        bylines = []
+        bylines = [item for item in self._get_blocks(self.__URL, token, {}, BylineFinderResponse)]
 
-        for block in self._get_blocks(self.__URL, token, params, BylineFinderResponse):
-            bylines += block.items
-
-        # bylines...
         return TopicBylineGroup.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 
 
@@ -80,7 +76,6 @@ class BylineFinder(APIClient):
         self._check_response(response)
 
         jdict = response.json()
-        print("jdict: %s" % jdict)
 
         # bylines...
         return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, strict_tags=strict_tags, skeleton=True)
@@ -162,6 +157,21 @@ class BylineFinderResponse(APIResponse):
 
     def next_params(self, _):
         return parse_qs(urlparse(self.next_url).query)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        if self.items is not None:
+            jdict['Items'] = self.items
+            jdict['itemCount'] = len(self.items)
+
+        if self.next_url is not None:
+            jdict['next'] = self.next_url
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

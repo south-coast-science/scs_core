@@ -42,8 +42,8 @@ class ConfigurationFinder(APIClient):
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
 
-        for block in self._get_blocks(self.__URL, token, request.params(), ConfigurationResponse):
-            yield block
+        for item in self._get_blocks(self.__URL, token, request.params(), ConfigurationResponse):
+            yield item
 
 
 # --------------------------------------------------------------------------------------------------------------------
