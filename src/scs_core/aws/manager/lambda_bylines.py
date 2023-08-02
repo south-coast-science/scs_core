@@ -83,6 +83,8 @@ class BylineRequest(object):
     TAG_FILTER = 'device'
     TOPIC_FILTER = 'topic'
     EXCLUSIVE_START_KEY = 'exclusiveStartKey'
+    START_EXCLUDE = 'startExclude'
+    END_EXCLUDE = 'endExclude'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -97,19 +99,25 @@ class BylineRequest(object):
         esk_json = qsp.get(cls.EXCLUSIVE_START_KEY)
         exclusive_start_key = BylineExclusiveStartKey.construct_from_qsp(json.loads(esk_json)) if esk_json else None
 
-        return cls(tag_filter, topic_filter, exclusive_start_key=exclusive_start_key)
+        start_exclude = qsp.get(cls.START_EXCLUDE)
+        end_exclude = qsp.get(cls.END_EXCLUDE)
+
+        return cls(tag_filter, topic_filter, start_exclude, end_exclude, exclusive_start_key=exclusive_start_key)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag_filter, topic_filter, exclusive_start_key=None):
+    def __init__(self, tag_filter, topic_filter, start_exclude, end_exclude, exclusive_start_key=None):
         """
         Constructor
         """
         self.__tag_filter = tag_filter                              # string
         self.__topic_filter = topic_filter                          # string
 
-        self.__exclusive_start_key = exclusive_start_key            # ExclusiveStartKey
+        self.__start_exclude = start_exclude
+        self.__end_exclude = end_exclude
+
+        self.__exclusive_start_key = exclusive_start_key  # ExclusiveStartKey
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -122,6 +130,12 @@ class BylineRequest(object):
 
         if self.topic_filter is not None:
             params[self.TOPIC_FILTER] = self.__topic_filter
+
+        if self.start_exclude is not None:
+            params[self.START_EXCLUDE] = self.__start_exclude
+
+        if self.end_exclude is not None:
+            params[self.END_EXCLUDE] = self.__end_exclude
 
         if self.exclusive_start_key is not None:
             params[self.EXCLUSIVE_START_KEY] = json.dumps(self.exclusive_start_key.params())
@@ -139,6 +153,13 @@ class BylineRequest(object):
     def topic_filter(self):
         return self.__topic_filter
 
+    @property
+    def start_exclude(self):
+        return self.__start_exclude
+
+    @property
+    def end_exclude(self):
+        return self.__end_exclude
 
     @property
     def exclusive_start_key(self):
@@ -153,8 +174,9 @@ class BylineRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationRequest:{tag_filter:%s, topic_filter:%s, exclusive_start_key:%s}" % \
-               (self.tag_filter, self.topic_filter, self.exclusive_start_key)
+        return "ConfigurationRequest:{tag_filter:%s, topic_filter:%s, start_exclude:%s, end_exclude:%s," \
+               " exclusive_start_key:%s}" % \
+               (self.tag_filter, self.topic_filter, self.start_exclude, self.end_exclude, self.exclusive_start_key)
 
 
 class BylinesResponse(HTTPResponse):
