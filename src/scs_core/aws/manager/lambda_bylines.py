@@ -106,10 +106,10 @@ class BylineRequest(object):
         """
         Constructor
         """
-        self.__tag_filter = tag_filter  # string
-        self.__topic_filter = topic_filter  # string
+        self.__tag_filter = tag_filter                              # string
+        self.__topic_filter = topic_filter                          # string
 
-        self.__exclusive_start_key = exclusive_start_key  # ExclusiveStartKey
+        self.__exclusive_start_key = exclusive_start_key            # ExclusiveStartKey
 
 
     # ----------------------------------------------------------------------------------------------------------------
