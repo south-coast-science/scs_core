@@ -130,9 +130,3 @@ class BylineManager(APIClient):
                 return byline
 
         return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "BylineManager:{reporter:%s}" % self._reporter
