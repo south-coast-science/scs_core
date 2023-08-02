@@ -120,7 +120,7 @@ class APIResponse(ABC):
     # ----------------------------------------------------------------------------------------------------------------
     # server...
 
-    def as_http(self, status, cors=False):
+    def as_http(self, status=HTTPStatus.OK, cors=False):
         jdict = {
             'statusCode': status,
             'body': JSONify.dumps(self)
