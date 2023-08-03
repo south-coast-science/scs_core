@@ -35,9 +35,7 @@ class BylineFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, reporter=None):
-        super().__init__()
-
-        self.__reporter = reporter                              # BatchDownloadReporter
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -97,6 +95,42 @@ class BylineFinder(APIClient):
         params = {self.__DEVICE: device}
 
         response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
+        self._check_response(response)
+
+        jdict = response.json()
+
+        # bylines...
+        if jdict is None:
+            return None
+
+        for item in jdict:
+            byline = Byline.construct_from_jdict(item)
+
+            if byline.topic == topic:
+                return byline
+
+        return None
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceBylineFinder(APIClient):
+    """
+    classdocs
+    """
+
+    __URL = 'https://k5uz49605m.execute-api.us-west-2.amazonaws.com/default/TopicBylines/self'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
+        super().__init__()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def find_byline_for_topic(self, token, topic):
+        response = requests.get(self.__URL, headers=self._token_headers(token))
         self._check_response(response)
 
         jdict = response.json()
