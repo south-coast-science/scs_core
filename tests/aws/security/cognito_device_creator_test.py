@@ -6,8 +6,6 @@ Created on 24 Apr 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import requests
-
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
 from scs_core.aws.security.cognito_device_creator import CognitoDeviceCreator
 
@@ -24,7 +22,7 @@ credentials = CognitoDeviceIdentity(tag, shared_secret, invoice_number, None, No
 print(credentials)
 print("-")
 
-creator = CognitoDeviceCreator(requests)
+creator = CognitoDeviceCreator()
 response = creator.create(credentials)
 print(response)
 print("-")

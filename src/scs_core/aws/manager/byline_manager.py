@@ -6,7 +6,11 @@ Created on 25 Dec 2018
 Equivalent to cURLs:
 curl "https://aws.southcoastscience.com/device-topics?topic=south-coast-science-dev/alphasense/loc/303/gases"
 curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
+
+DEPRECATED: replaced with BylineFinder
 """
+
+import requests
 
 from urllib.parse import parse_qs, urlparse
 
@@ -21,7 +25,6 @@ class BylineManager(APIClient):
     classdocs
     """
 
-    # __URL = 'https://aws.southcoastscience.com/device-topics'
     __URL = 'https://cxzne688y0.execute-api.us-west-2.amazonaws.com/default/Bylines'
 
     __DEVICE =      'device'
@@ -30,10 +33,8 @@ class BylineManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        super().__init__(http_client)
-
-        self.__reporter = reporter                              # BatchDownloadReporter
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ class BylineManager(APIClient):
     def find_latest_byline_for_topic(self, topic):
         params = {self.__TOPIC: topic}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         jdict = response.json()
 
         # bylines...
@@ -64,15 +65,15 @@ class BylineManager(APIClient):
         items_jdict = []
 
         while True:
-            response = self._http_client.get(self.__URL, params=params)
+            response = requests.get(self.__URL, params=params)
             jdict = response.json()
 
             block = jdict.get('Items')
             items_jdict += block
 
             # report...
-            if self.__reporter:
-                self.__reporter.print(len(block))
+            if self._reporter:
+                self._reporter.print(len(block))
 
             # next...
             if jdict.get('next') is None:
@@ -89,7 +90,7 @@ class BylineManager(APIClient):
     def find_bylines_for_topic(self, topic, excluded=None, strict_tags=False):
         params = {self.__TOPIC: topic}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -101,7 +102,7 @@ class BylineManager(APIClient):
     def find_bylines_for_device(self, device, excluded=None):
         params = {self.__DEVICE: device}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -113,7 +114,7 @@ class BylineManager(APIClient):
     def find_byline_for_device_topic(self, device, topic):
         params = {self.__DEVICE: device}
 
-        response = self._http_client.get(self.__URL, params=params)
+        response = requests.get(self.__URL, params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -129,9 +130,3 @@ class BylineManager(APIClient):
                 return byline
 
         return None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "BylineManager:{reporter:%s}" % self.__reporter

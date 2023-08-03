@@ -4,8 +4,9 @@ Created on 17 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.client.api_client import APIClient
+import requests
 
+from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.device_monitor_report import DeviceMonitorReport
 
 
@@ -20,8 +21,8 @@ class DeviceMonitorStatusManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -32,15 +33,7 @@ class DeviceMonitorStatusManager(APIClient):
             'exact': exact
         }
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.get(self.__URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorReport.construct_from_jdict(response.json())
-
-        # return report.device(device_tag_filter) if exact else report
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "DeviceMonitorStatusManager:{}"
