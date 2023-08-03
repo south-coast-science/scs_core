@@ -4,6 +4,8 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import requests
+
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
@@ -29,8 +31,8 @@ class AlertStatusManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,7 +40,7 @@ class AlertStatusManager(APIClient):
     def find(self, token, id_filter, cause_filter, response_mode):
         request = AlertStatusFindRequest(id_filter, cause_filter, response_mode)
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
+        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return AlertStatusFindResponse.construct_from_jdict(response.json())
@@ -47,14 +49,8 @@ class AlertStatusManager(APIClient):
     def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
 
-        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        http_response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AlertStatusManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

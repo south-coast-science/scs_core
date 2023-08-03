@@ -14,6 +14,9 @@ from multiprocessing import Manager
 
 from requests.exceptions import ConnectionError                                             # raised by requests
 
+from scs_core.aws.manager.byline_finder import DeviceBylineFinder
+from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
+
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException     # raised by HTTPClient
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
@@ -205,15 +208,15 @@ class CSVLogQueueBuilder(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic_name, topic_path, byline_manager, system_id, conf):
+    def __init__(self, conf, credentials, message_tag, topic_name, topic_path):
         """
         Constructor
         """
-        self.__topic_name = topic_name                                      # string
-        self.__topic_path = topic_path                                      # string
-        self.__byline_manager = byline_manager                              # BylineManager
-        self.__system_id = system_id                                        # SystemID
-        self.__conf = conf                                                  # CSVLoggerConf
+        self.__conf = conf                                      # CSVLoggerConf
+        self.__credentials = credentials                        # CognitoDeviceCredentials
+        self.__message_tag = message_tag                        # string
+        self.__topic_name = topic_name                          # string
+        self.__topic_path = topic_path                          # string
 
         self.__logger = Logging.getLogger()
 
@@ -221,13 +224,17 @@ class CSVLogQueueBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_cursors(self):
+        gatekeeper = CognitoLoginManager()
+        finder = DeviceBylineFinder()
+
         # timeline_start...
         while True:
             try:
-                byline = self.__byline_manager.find_byline_for_device_topic(self.__system_id.message_tag(),
-                                                                            self.__topic_path)
+                auth = gatekeeper.device_login(self.__credentials)
+                byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path)
                 break
-            except (ConnectionError, ResourceUnavailableException) as ex:
+
+            except (ConnectionError, ResourceUnavailableException) as ex:       # TODO: check error types!!!
                 self.__logger.info(repr(ex))
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
@@ -237,8 +244,7 @@ class CSVLogQueueBuilder(object):
         timeline_start = self.__conf.utc_retrospection_start(byline_start)
 
         # CSVLog...
-        read_log = self.__conf.csv_log(self.__topic_name, tag=self.__system_id.message_tag(),
-                                       timeline_start=timeline_start)
+        read_log = self.__conf.csv_log(self.__topic_name, tag=self.__message_tag, timeline_start=timeline_start)
 
         return timeline_start, CSVLogCursorQueue.find_cursors_for_log(read_log, 'rec')  # may raise FileNotFoundError
 
@@ -246,5 +252,5 @@ class CSVLogQueueBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self):
-        return "CSVLogQueueBuilder:{topic_name:%s, topic_path:%s, byline_manager:%s, system_id:%s, conf:%s}" % \
-               (self.__topic_name, self.__topic_path, self.__byline_manager, self.__system_id, self.__conf)
+        return "CSVLogQueueBuilder:{conf:%s, credentials:%s, message_tag:%s, topic_name:%s, topic_path:%s}" % \
+               (self.__conf, self.__credentials, self.__message_tag, self.__topic_name, self.__topic_path)

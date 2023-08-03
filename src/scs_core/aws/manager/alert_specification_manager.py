@@ -4,6 +4,8 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import requests
+
 from collections import OrderedDict
 from http import HTTPStatus
 
@@ -27,8 +29,8 @@ class AlertSpecificationManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,7 +38,7 @@ class AlertSpecificationManager(APIClient):
     def find(self, token, description_filter, topic_filter, path_filter, creator_filter):
         request = AlertSpecificationFindRequest(description_filter, topic_filter, path_filter, creator_filter)
 
-        response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=request.params())
+        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return AlertSpecificationFindResponse.construct_from_jdict(response.json())
@@ -45,7 +47,7 @@ class AlertSpecificationManager(APIClient):
     def retrieve(self, token, id):
         url = '/'.join((self.__URL, str(id)))
 
-        http_response = self._http_client.get(url, headers=self._token_headers(token))
+        http_response = requests.get(url, headers=self._token_headers(token))
         self._check_response(http_response)
 
         response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
@@ -54,7 +56,7 @@ class AlertSpecificationManager(APIClient):
 
 
     def create(self, token, alert):
-        http_response = self._http_client.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
+        http_response = requests.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
@@ -65,7 +67,7 @@ class AlertSpecificationManager(APIClient):
     def update(self, token, alert):
         url = '/'.join((self.__URL, str(alert.id)))
 
-        http_response = self._http_client.post(url, headers=self._token_headers(token), json=alert.as_json())
+        http_response = requests.post(url, headers=self._token_headers(token), json=alert.as_json())
         self._check_response(http_response)
 
         response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
@@ -76,14 +78,8 @@ class AlertSpecificationManager(APIClient):
     def delete(self, token, id):
         url = '/'.join((self.__URL, str(id)))
 
-        http_response = self._http_client.delete(url, headers=self._token_headers(token))
+        http_response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AlertSpecificationManager:{}"
 
 
 # --------------------------------------------------------------------------------------------------------------------

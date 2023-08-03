@@ -4,6 +4,8 @@ Created on 23 Nov 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import requests
+
 from collections import OrderedDict
 from enum import Enum
 
@@ -26,8 +28,8 @@ class CognitoLoginManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
-        super().__init__(http_client)
+    def __init__(self):
+        super().__init__()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,7 +38,7 @@ class CognitoLoginManager(APIClient):
         url = '/'.join((self.__URL, 'user'))
         headers = self._auth_headers(self.__AUTH)
 
-        response = self._http_client.post(url, headers=headers, json=credentials.as_json())
+        response = requests.post(url, headers=headers, json=credentials.as_json())
         self._check_response(response)
 
         return AuthenticationResult.construct_from_res(response)
@@ -46,7 +48,7 @@ class CognitoLoginManager(APIClient):
         url = '/'.join((self.__URL, 'device'))
         headers = self._auth_headers(self.__AUTH)
 
-        response = self._http_client.post(url, headers=headers, json=credentials.as_json())
+        response = requests.post(url, headers=headers, json=credentials.as_json())
         self._check_response(response)
 
         return AuthenticationResult.construct_from_res(response)

@@ -10,13 +10,9 @@ import json
 
 from collections import OrderedDict
 from enum import Enum
-from http import HTTPStatus
 from urllib.parse import parse_qs, urlparse
 
-from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.data.http_response import HTTPResponse
-
-from scs_core.client.http_exception import HTTPException
+from scs_core.aws.client.api_client import APIClient, APIResponse
 
 from scs_core.data.str import Str
 
@@ -34,51 +30,20 @@ class ConfigurationFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, reporter=None):
-        super().__init__(http_client)
-
-        self.__reporter = reporter                              # BatchDownloadReporter
+    def __init__(self, reporter=None):
+        super().__init__(reporter=reporter)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, token, tag_filter, exact_match, response_mode):
-        if self.__reporter:
-            self.__reporter.reset()
+        if self._reporter:
+            self._reporter.reset()
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
-        params = request.params()
 
-        while True:
-            self._logger.debug("*** url: %s" % self.__URL)
-            self._logger.debug("*** params: %s" % params)
-
-            response = self._http_client.get(self.__URL, headers=self._token_headers(token), params=params)
-            self._check_response(response)
-
-            # messages...
-            block = ConfigurationResponse.construct_from_jdict(response.json())
-            # self._logger.debug(block)
-
-            for item in block.items:
-                yield item
-
-            # report...
-            if self.__reporter:
-                self.__reporter.print(len(block))
-
-            # next request...
-            if block.next_url is None:
-                break
-
-            next_url = urlparse(block.next_url)
-            params = parse_qs(next_url.query)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "ConfigurationFinder:{}"
+        for item in self._get_blocks(self.__URL, token, request.params(), ConfigurationResponse):
+            yield item
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -275,7 +240,7 @@ class ExclusiveStartKey(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ConfigurationResponse(HTTPResponse):
+class ConfigurationResponse(APIResponse):
     """
     classdocs
     """
@@ -286,11 +251,6 @@ class ConfigurationResponse(HTTPResponse):
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
-
-        status = HTTPStatus(jdict.get('statusCode'))
-
-        if status != HTTPStatus.OK:
-            raise HTTPException.construct(status.value, status.phrase, status.description)
 
         mode = ConfigurationRequest.Mode[jdict.get('mode')]
 
@@ -303,17 +263,15 @@ class ConfigurationResponse(HTTPResponse):
 
         next_url = jdict.get('next')
 
-        return cls(status, mode, items, next_url=next_url)
+        return cls(mode, items, next_url=next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, mode, items, next_url=None):
+    def __init__(self, mode, items, next_url=None):
         """
         Constructor
         """
-        super().__init__(status)
-
         self.__mode = mode                                  # ConfigurationRequest.Mode member
         self.__items = items                                # list of ConfigurationSample or string
         self.__next_url = next_url                          # URL string
@@ -325,10 +283,14 @@ class ConfigurationResponse(HTTPResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def next_params(self, _):
+        return parse_qs(urlparse(self.next_url).query)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
-
-        jdict['statusCode'] = self.status.value
 
         if self.mode is not None:
             jdict['mode'] = self.mode.name
@@ -363,5 +325,5 @@ class ConfigurationResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationResponse:{status:%s, mode:%s, items:%s, next_url:%s}" % \
-               (self.status, self.mode, Str.collection(self.items), self.next_url)
+        return "ConfigurationResponse:{mode:%s, items:%s, next_url:%s}" % \
+               (self.mode, Str.collection(self.items), self.next_url)
