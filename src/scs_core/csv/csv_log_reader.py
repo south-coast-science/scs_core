@@ -225,15 +225,15 @@ class CSVLogQueueBuilder(object):
 
     def find_cursors(self):
         gatekeeper = CognitoLoginManager()
+        finder = DeviceBylineFinder()
 
         # timeline_start...
         while True:
             try:
                 auth = gatekeeper.device_login(self.__credentials)
-                print("auth: %s" % auth)
-
-                byline = DeviceBylineFinder().find_byline_for_topic(auth.id_token, self.__topic_path)
+                byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path)
                 break
+
             except (ConnectionError, ResourceUnavailableException) as ex:       # TODO: check error types!!!
                 self.__logger.info(repr(ex))
                 time.sleep(self.__BYLINE_WAIT_TIME)
