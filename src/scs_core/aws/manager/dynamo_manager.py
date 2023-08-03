@@ -47,7 +47,7 @@ class DynamoManager(object):
         response = table.get_item(Key=key)
         return response['Item'] if 'Item' in response else None
 
-    def exists(self, table_name, pk, pk_val, sk=None, sk_val=None):
+    def items(self, table_name, pk, pk_val, sk=None, sk_val=None):
         table = self.__dynamo_resource.Table(table_name)
         if sk is None and sk_val is None:
             response = table.query(
@@ -149,10 +149,6 @@ class DynamoManager(object):
     # ----------------------------------------------------------------------------------------------------------------
     # MAIN FUNCTIONALITY
     # ----------------------------------------------------------------------------------------------------------------
-
-
-
-
     @staticmethod
     def build_query(table_name, pk=None, pk_val=None, sk=None, sk_val=None, keys_only=False, exact=False,
                     limit=None, fosk=False):
