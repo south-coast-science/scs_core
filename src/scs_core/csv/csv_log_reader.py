@@ -12,12 +12,10 @@ import time
 from collections import OrderedDict
 from multiprocessing import Manager
 
-from requests.exceptions import ConnectionError                                             # raised by requests
+from requests.exceptions import ConnectionError
 
 from scs_core.aws.manager.byline_finder import DeviceBylineFinder
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
-
-from scs_core.client.resource_unavailable_exception import ResourceUnavailableException     # raised by HTTPClient
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
 from scs_core.csv.csv_reader import CSVReader
@@ -234,8 +232,8 @@ class CSVLogQueueBuilder(object):
                 byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path)
                 break
 
-            except (ConnectionError, ResourceUnavailableException) as ex:       # TODO: check error types!!!
-                self.__logger.info(repr(ex))
+            except ConnectionError as ex:
+                self.__logger.info(ex)
                 time.sleep(self.__BYLINE_WAIT_TIME)
 
         rec = None if byline is None else byline.rec
