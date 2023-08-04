@@ -4,6 +4,7 @@ Created on 17 Jan 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import json
 import requests
 
 from scs_core.aws.client.api_client import APIClient
@@ -260,3 +261,30 @@ class OrganisationManager(APIClient):
 
         response = requests.delete(url, headers=self._token_headers(token), data=payload)
         self._check_response(response)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceOrganisationManager(APIClient):
+    """
+    classdocs
+    """
+
+    __MANAGER_URL = "https://6fs21ckyci.execute-api.us-west-2.amazonaws.com/default/DeviceOrganisationManager"
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
+        super().__init__()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # OrganisationDevice...
+
+    def location_path_in_use(self, token, location_path):
+        payload = JSONify.dumps({"LocationPath": location_path})
+
+        response = requests.get(self.__MANAGER_URL, headers=self._token_headers(token), data=payload)
+        self._check_response(response)
+
+        return json.loads(response.json())

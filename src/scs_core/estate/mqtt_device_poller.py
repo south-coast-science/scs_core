@@ -187,7 +187,7 @@ class MQTTDevicePoller(object):
     def save_changes(self, device_tag, response):
         # see if item already in DB
 
-        current = self.__dynamo_manager.exists(self.__TABLE, "device_tag", device_tag)
+        current = self.__dynamo_manager.items(self.__TABLE, "device_tag", device_tag)
         if current:
             loaded = current[0]['data'][0]
             res_str = response[0]
