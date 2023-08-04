@@ -19,6 +19,8 @@ credentials = CognitoDeviceCredentials(device_tag, shared_secret)
 
 gatekeeper = CognitoLoginManager()
 auth = gatekeeper.device_login(credentials)
+print("auth: %s" % auth.authentication_status)
+print("-")
 
 manager = DeviceOrganisationManager()
 
