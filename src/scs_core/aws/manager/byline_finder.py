@@ -91,27 +91,6 @@ class BylineFinder(APIClient):
         return DeviceBylineGroup.construct_from_jdict(jdict, excluded=excluded, skeleton=True)
 
 
-    def find_byline_for_device_topic(self, token, device, topic):
-        params = {self.__DEVICE: device}
-
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
-        self._check_response(response)
-
-        jdict = response.json()
-
-        # bylines...
-        if jdict is None:
-            return None
-
-        for item in jdict:
-            byline = Byline.construct_from_jdict(item)
-
-            if byline.topic == topic:
-                return byline
-
-        return None
-
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class DeviceBylineFinder(APIClient):
