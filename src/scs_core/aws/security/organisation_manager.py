@@ -270,7 +270,7 @@ class DeviceOrganisationManager(APIClient):
     classdocs
     """
 
-    __MANAGER_URL = "https://blahblahblah.execute-api.us-west-2.amazonaws.com/default/DeviceOrganisationManager"
+    __MANAGER_URL = "https://6fs21ckyci.execute-api.us-west-2.amazonaws.com/default/DeviceOrganisationManager"
 
     # ----------------------------------------------------------------------------------------------------------------
 
