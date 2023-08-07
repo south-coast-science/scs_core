@@ -32,3 +32,7 @@ path = 'dustscan/urban/loc/2/'
 exists = manager.location_path_in_use(auth.id_token, path)
 print("path: %s exists: %s" % (path, exists))
 
+path = None
+exists = manager.location_path_in_use(auth.id_token, path)
+print("path: %s exists: %s" % (path, exists))
+
