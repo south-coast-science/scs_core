@@ -287,4 +287,6 @@ class DeviceOrganisationManager(APIClient):
         response = requests.get(self.__MANAGER_URL, headers=self._token_headers(token), data=payload)
         self._check_response(response)
 
+        print("response: %s" % response.json())
+
         return json.loads(response.json())
