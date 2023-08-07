@@ -474,12 +474,15 @@ class Date(object):
 
     @classmethod
     def is_valid_iso_format(cls, date_str):
-        try:
-            match = re.match(r'.*\d{4}-\d{2}-\d{2}.*', date_str)          # e.g. 2023-03-15
-            return match is not None
+        match = re.match(r'\d{4}-\d{2}-\d{2}', date_str)  # e.g. 2023-03-15
+        return match is not None
 
-        except (TypeError, ValueError):
-            return False
+        # try:
+        #     match = re.match(r'.*\d{4}-\d{2}-\d{2}.*', date_str)          # e.g. 2023-03-15
+        #     return match is not None
+        #
+        # except (TypeError, ValueError):
+        #     return False
 
 
 # --------------------------------------------------------------------------------------------------------------------
