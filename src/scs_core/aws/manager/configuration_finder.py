@@ -42,7 +42,7 @@ class ConfigurationFinder(APIClient):
 
         request = ConfigurationRequest(tag_filter, exact_match, response_mode)
 
-        for item in self._get_blocks(self.__URL, token, request.params(), ConfigurationResponse):
+        for item in self._get_blocks(self.__URL, token, ConfigurationResponse, params=request.params()):
             yield item
 
 

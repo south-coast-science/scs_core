@@ -9,8 +9,6 @@ import requests
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
-from scs_core.data.json import JSONify
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -58,9 +56,9 @@ class CognitoUserFinder(APIClient):
 
     def find_by_email(self, token, email):
         url = '/'.join((self.__URL, 'in'))
-        payload = JSONify.dumps({"Email": email})
+        payload = {"Email": email}
 
-        response = requests.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -68,9 +66,8 @@ class CognitoUserFinder(APIClient):
 
     def find_by_usernames(self, token, usernames):
         url = '/'.join((self.__URL, 'usernames'))
-        payload = JSONify.dumps(usernames)
 
-        response = requests.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), json=usernames)
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -78,9 +75,9 @@ class CognitoUserFinder(APIClient):
 
     def get_by_email(self, token, email):
         url = '/'.join((self.__URL, 'exact'))
-        payload = JSONify.dumps({"Email": email})
+        payload = {"Email": email}
 
-        response = requests.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
