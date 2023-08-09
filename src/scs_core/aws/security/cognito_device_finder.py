@@ -4,7 +4,6 @@ Created on 5 Apr 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
 import requests
 
 from scs_core.aws.client.api_client import APIClient
@@ -39,9 +38,9 @@ class CognitoDeviceFinder(APIClient):
 
     def find_by_tag(self, token, tag):
         url = '/'.join((self.__URL, 'in'))
-        payload = json.dumps({"username": tag})
+        payload = {"username": tag}
 
-        response = requests.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -49,9 +48,9 @@ class CognitoDeviceFinder(APIClient):
 
     def get_by_tag(self, token, tag):
         url = '/'.join((self.__URL, 'exact'))
-        payload = json.dumps({"username": tag})
+        payload = {"username": tag}
 
-        response = requests.get(url, data=payload, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
