@@ -62,7 +62,7 @@ class BylineFinder(APIClient):
 
 
     def find_bylines(self, token, excluded=None, strict_tags=False):
-        bylines = [item for item in self._get_blocks(self.__URL, token, {}, BylineFinderResponse)]
+        bylines = [item for item in self._get_blocks(self.__URL, token, BylineFinderResponse)]
 
         return TopicBylineGroup.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 

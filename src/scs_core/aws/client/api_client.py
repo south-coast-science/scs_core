@@ -56,14 +56,14 @@ class APIClient(ABC):
             raise HTTPException.construct(status.value, response.reason, response.json())
 
 
-    def _get_blocks(self, url, token, params, block_class):
+    def _get_blocks(self, url, token, block_class, params=None, payload=None):
         while True:
-            response = requests.get(url, headers=self._token_headers(token), params=params)
+            response = requests.get(url, headers=self._token_headers(token), params=params, json=payload)
             self._check_response(response)
 
             # messages...
             block = block_class.construct_from_jdict(response.json())
-            # self.__logger.debug("block: %s" % block)
+            self.__logger.debug("block: %s" % block)
 
             for item in block.items:
                 yield item
