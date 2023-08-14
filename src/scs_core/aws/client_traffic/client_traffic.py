@@ -14,6 +14,7 @@ import re
 from abc import ABC
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
 
@@ -108,6 +109,11 @@ class ClientTrafficReport(ClientTrafficLocus):
     """
     classdocs
     """
+
+    @classmethod
+    def now(cls):
+        return str(LocalizedDatetime.now().utc().datetime.date())
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
