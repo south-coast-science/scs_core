@@ -25,6 +25,11 @@ class ClientTrafficLocus(ABC, JSONable):
     """
 
     @classmethod
+    def filtered_users(cls):
+        pass
+
+
+    @classmethod
     def is_valid_period(cls, period):
         try:
             match = re.match(r'^2\d{3}(-[01]\d(-[0123]\d)?)?$', period)
