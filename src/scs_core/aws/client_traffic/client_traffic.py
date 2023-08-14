@@ -27,6 +27,7 @@ class ClientTrafficLocus(ABC, JSONable):
 
     @classmethod
     def filtered_users(cls):
+        # TODO: implement
         pass
 
 
@@ -38,6 +39,11 @@ class ClientTrafficLocus(ABC, JSONable):
 
         except TypeError:
             return False
+
+
+    @classmethod
+    def now(cls):
+        return str(LocalizedDatetime.now().utc().datetime.date())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -109,11 +115,6 @@ class ClientTrafficReport(ClientTrafficLocus):
     """
     classdocs
     """
-
-    @classmethod
-    def now(cls):
-        return str(LocalizedDatetime.now().utc().datetime.date())
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
