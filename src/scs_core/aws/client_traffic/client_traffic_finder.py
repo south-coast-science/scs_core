@@ -8,7 +8,7 @@ from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient, APIResponse
-from scs_core.aws.security.client_traffic import ClientTrafficLocus, ClientTrafficReport
+from scs_core.aws.client_traffic.client_traffic import ClientTrafficLocus, ClientTrafficReport
 
 from scs_core.data.str import Str
 

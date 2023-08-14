@@ -83,7 +83,7 @@ class RecurringPeriod(Period, JSONable):
         """
         Period.__init__(self, timezone)
 
-        self.__interval = int(interval)                     # int
+        self.__interval = int(interval)                                             # int
 
 
     @abstractmethod
