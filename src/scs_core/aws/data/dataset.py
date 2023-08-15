@@ -124,14 +124,16 @@ class Dataset(object):
 
     def delete_unreferenced(self, references):
         for index, item in list(self.__items.items()):
+            self.__logger.info("item: %s" % item)
+
             if item in references:
                 continue
 
-            if not self.simulate:
-                item.delete(self.db_username)
+            # if not self.simulate:
+            #     item.delete(self.db_username)
 
             del self.__items[index]
-            print("deleted: %s" % item)
+            self.__logger.info("deleted: %s" % item)
 
 
     # ----------------------------------------------------------------------------------------------------------------
