@@ -246,9 +246,8 @@ class CognitoUserIdentity(DatasetItem, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def index(self):
-        return self.email
+    def references(self, item):
+        return item.username == self.username
 
 
     def copy_pk(self, other):
@@ -261,6 +260,11 @@ class CognitoUserIdentity(DatasetItem, JSONable):
 
     def delete(self, db_user):
         raise NotImplementedError
+
+
+    @property
+    def index(self):
+        return self.email
 
 
     # ----------------------------------------------------------------------------------------------------------------
