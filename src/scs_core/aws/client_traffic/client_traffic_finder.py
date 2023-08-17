@@ -20,7 +20,7 @@ class ClientTrafficFinder(APIClient):
     classdocs
     """
 
-    __URL = 'https://xxxxxxx.execute-api.us-west-2.amazonaws.com/default/ClientTraffic/'
+    __URL = 'https://tduyom430a.execute-api.us-west-2.amazonaws.com/default/ClientTraffic'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ class ClientTrafficFinder(APIClient):
 
 
     def find_for_organisation(self, token, request):
-        url = '/'.join((self.__URL, 'organisation'))
+        url = '/'.join((self.__URL, 'organisations'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
