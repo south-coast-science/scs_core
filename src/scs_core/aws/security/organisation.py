@@ -50,6 +50,10 @@ class Organisation(JSONable):
     URL = 'URL'
     OWNER = 'Owner'
 
+    __EXCLUDED_EMAILS = ['paul@p3d.co.uk']
+    __EXCLUDED_DOMAINS = ['southcoastscience.com']
+    __UNFILTERED_ORGANISATIONS = ['South Coast Science']
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -148,6 +152,25 @@ class Organisation(JSONable):
 
     def organisation_path_root(self, aws_opr_id, path_root):
         return OrganisationPathRoot(aws_opr_id, self.org_id, path_root)
+
+
+    def filtered_users(self, user_emails):
+        for label_prefix in self.__UNFILTERED_ORGANISATIONS:
+            if self.label.startswith(label_prefix):
+                return user_emails
+
+        filtered_users = []
+
+        for user_email in user_emails:
+            if user_email in self.__EXCLUDED_EMAILS:
+                continue
+
+            if user_email.split('@')[1] in self.__EXCLUDED_DOMAINS:
+                continue
+
+            filtered_users.append(user_email)
+
+        return filtered_users
 
 
     # ----------------------------------------------------------------------------------------------------------------
