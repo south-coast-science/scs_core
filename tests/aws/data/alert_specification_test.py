@@ -23,7 +23,7 @@ test_interval = RecurringPeriod.construct(1, 'M', 'Europe/London')
 print("1...")
 
 alert = AlertSpecification(None, 'my description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, True, 'bruno.beloff@southcoastscience.com',
+                           test_interval, True, True, 'bruno.beloff@southcoastscience.com',
                            'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 print("-")
@@ -70,7 +70,7 @@ timezone_str = 'Europe/London'
 aggregation_period = DiurnalPeriod.construct(start_time_str, end_time_str, timezone_str)
 
 alert = AlertSpecification(None, 'my description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, True, 'bruno.beloff@southcoastscience.com',
+                           test_interval, False, True, 'bruno.beloff@southcoastscience.com',
                            'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 print("-")
