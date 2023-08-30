@@ -17,6 +17,8 @@ import re
 
 from collections import OrderedDict
 
+from scs_core.aws.data.dataset import DatasetItem
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
@@ -79,7 +81,7 @@ class CognitoUserCredentials(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CognitoUserIdentity(JSONable):
+class CognitoUserIdentity(DatasetItem, JSONable):
     """
     classdocs
     """
@@ -244,17 +246,25 @@ class CognitoUserIdentity(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def index(self):
-        return self.email
+    def references(self, item):
+        return item.username == self.username
 
 
-    def copy_id(self, other):
+    def copy_pk(self, other):
         pass
 
 
     def save(self, db_user):
         raise NotImplementedError
+
+
+    def delete(self, db_user):
+        raise NotImplementedError
+
+
+    @property
+    def index(self):
+        return self.email
 
 
     # ----------------------------------------------------------------------------------------------------------------

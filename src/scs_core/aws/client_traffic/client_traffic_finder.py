@@ -8,7 +8,7 @@ from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient, APIResponse
-from scs_core.aws.security.client_traffic import ClientTrafficLocus, ClientTrafficReport
+from scs_core.aws.client_traffic.client_traffic import ClientTrafficLocus, ClientTrafficReport
 
 from scs_core.data.str import Str
 
@@ -20,7 +20,7 @@ class ClientTrafficFinder(APIClient):
     classdocs
     """
 
-    __URL = 'https://xxxxxxx.execute-api.us-west-2.amazonaws.com/default/ClientTraffic/'
+    __URL = 'https://tduyom430a.execute-api.us-west-2.amazonaws.com/default/ClientTraffic'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -30,15 +30,15 @@ class ClientTrafficFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_for_user(self, token, request):
-        url = '/'.join((self.__URL, 'user'))
+    def find_for_users(self, token, request):
+        url = '/'.join((self.__URL, 'users'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
 
 
     def find_for_organisation(self, token, request):
-        url = '/'.join((self.__URL, 'organisation'))
+        url = '/'.join((self.__URL, 'organisations'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
@@ -59,21 +59,21 @@ class ClientTrafficRequest(ClientTrafficLocus):
             return None
 
         endpoint = jdict.get('endpoint')
-        client = jdict.get('client')
+        clients = jdict.get('clients')
         period = jdict.get('period')
 
         aggregate = jdict.get('aggregate')
 
-        return cls(endpoint, client, period, aggregate)
+        return cls(endpoint, clients, period, aggregate)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, endpoint, client, period, aggregate):
+    def __init__(self, endpoint, clients, period, aggregate):
         """
         Constructor
         """
-        super().__init__(endpoint, client, period)
+        super().__init__(endpoint, clients, period)
 
         self.__aggregate = bool(aggregate)                          # bool
 
@@ -83,8 +83,10 @@ class ClientTrafficRequest(ClientTrafficLocus):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['endpoint'] = self.endpoint
-        jdict['client'] = self.client
+        if self.endpoint is not None:
+            jdict['endpoint'] = self.endpoint
+
+        jdict['clients'] = self.client
         jdict['period'] = self.period
 
         jdict['aggregate'] = self.aggregate
@@ -102,7 +104,7 @@ class ClientTrafficRequest(ClientTrafficLocus):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClientTrafficRequest:{endpoint:%s, client:%s, period:%s, aggregate:%s}" % \
+        return "ClientTrafficRequest:{endpoint:%s, clients:%s, period:%s, aggregate:%s}" % \
             (self.endpoint, self.client, self.period, self.aggregate)
 
 

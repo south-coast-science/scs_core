@@ -21,6 +21,11 @@ class DatasetItem(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
+    def references(self, other):
+        pass
+
+
+    @abstractmethod
     def copy_pk(self, other):
         pass
 
@@ -71,6 +76,16 @@ class Dataset(object):
 
     def __len__(self):
         return len(self.__items)
+
+
+    def __contains__(self, item):
+        for dataset_item in self.__items.values():
+            # print("item: %s" % item)
+            # print("dataset_item: %s" % dataset_item)
+            if dataset_item.references(item):
+                return True
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -131,7 +146,7 @@ class Dataset(object):
                 item.delete(self.db_username)
 
             del self.__items[index]
-            print("deleted: %s" % item)
+            self.__logger.info("deleted: %s" % item)
 
 
     # ----------------------------------------------------------------------------------------------------------------
