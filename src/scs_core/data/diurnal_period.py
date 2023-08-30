@@ -16,8 +16,8 @@ import re
 from collections import OrderedDict
 from datetime import datetime, time
 
-from scs_core.data.json import JSONable
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.json import JSONable
 from scs_core.data.period import Period
 from scs_core.data.timedelta import Timedelta
 

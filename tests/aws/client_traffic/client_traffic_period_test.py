@@ -6,7 +6,7 @@ Created on 8 Aug 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.security.client_traffic_finder import ClientTrafficRequest
+from scs_core.aws.client_traffic.client_traffic_finder import ClientTrafficRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------

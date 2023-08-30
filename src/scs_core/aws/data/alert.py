@@ -4,18 +4,17 @@ Created on 17 Jun 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Alert example (recurring):
-{"id": null, "description": "my description", "topic": "my/topic",
-"field": "my.field", "lower-threshold": null,  "upper-threshold": 100.0, "alert-on-none": true,
-"aggregation-period": {"type": "recurring", "interval": 1, "units": "D", "timezone": "Europe/London"},
-"test-interval": {"type": "recurring", "interval": 1, "units": "M"}, "json-message": true,
-"creator-email-address": "bruno.beloff@southcoastscience.com", "to": "bruno.beloff@southcoastscience.com",
-"cc-list": ["bbeloff@me.com", "hhopton@me.com"], "suspended": false}
+{"id": 85, "description": "test", "topic": "south-coast-science-demo/brighton-urban/loc/1/particulates",
+"field": "exg.val.pm2p5", "lower-threshold": null, "upper-threshold": 20.0, "alert-on-none": false,
+"aggregation-period": {"type": "recurring", "interval": 1, "units": "M", "timezone": "Europe/London"},
+"contiguous-alerts": false, "json-message": false, "creator-email-address": "bruno.beloff@southcoastscience.com",
+"to": "bruno.beloff@southcoastscience.com", "cc-list": [], "suspended": false}
 
 Alert example (diurnal):
 {"id": 107, "description": "be2-3-nightime-test", "topic": "south-coast-science-dev/development/loc/1/climate",
-"field": "val.tmp", "lower-threshold": null, "upper-threshold": 10.0, "alert-on-none": true,
-"aggregation-period": {"type": "diurnal", "start": "16:00:00", "end": "08:00:00", "timezone": "Europe/London"},
-"test-interval": null, "json-message": false, "creator-email-address": "production@southcoastscience.com",
+"field": "val.tmp", "lower-threshold": null, "upper-threshold": 10.0, "alert-on-none": false,
+"aggregation-period": {"type": "diurnal", "start": "20:00:00", "end": "09:50:00", "timezone": "Europe/London"},
+"contiguous-alerts": true, "json-message": false, "creator-email-address": "production@southcoastscience.com",
 "to": "bruno.beloff@southcoastscience.com", "cc-list": ["jade.page@southcoastscience.com"], "suspended": false}
 
 AlertStatus example:
@@ -171,12 +170,14 @@ class AlertSpecification(JSONable):
         alert_on_none = jdict.get('alert-on-none')
 
         agg_jdict = jdict.get('aggregation-period')
+        is_diurnal = agg_jdict.get('type') == DiurnalPeriod.type()
 
-        aggregation_period = DiurnalPeriod.construct_from_jdict(agg_jdict) \
-            if agg_jdict.get('type') == DiurnalPeriod.type() else RecurringPeriod.construct_from_jdict(agg_jdict)
+        aggregation_period = DiurnalPeriod.construct_from_jdict(agg_jdict) if is_diurnal else \
+            RecurringPeriod.construct_from_jdict(agg_jdict)
 
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
+        contiguous_alerts = jdict.get('contiguous-alerts', is_diurnal)      # backwards-compatibility
         json_message = jdict.get('json-message', False)
 
         creator_email_address = jdict.get('creator-email-address')
@@ -186,37 +187,40 @@ class AlertSpecification(JSONable):
         suspended = jdict.get('suspended')
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended)
+                   aggregation_period, test_interval, contiguous_alerts, json_message,
+                   creator_email_address, to, cc_list, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                 aggregation_period, test_interval, json_message, creator_email_address, to, cc_list, suspended):
+                 aggregation_period, test_interval, contiguous_alerts, json_message,
+                 creator_email_address, to, cc_list, suspended):
         """
         Constructor
         """
-        self.__id = Datum.int(id)                                   # int
+        self.__id = Datum.int(id)                                       # int
 
-        self.__description = description                            # string
+        self.__description = description                                # string
 
-        self.__topic = topic                                        # string topic
-        self.__field = field                                        # string path
+        self.__topic = topic                                            # string topic
+        self.__field = field                                            # string path
 
-        self.__lower_threshold = Datum.float(lower_threshold)       # float                 updatable
-        self.__upper_threshold = Datum.float(upper_threshold)       # float                 updatable
-        self.__alert_on_none = bool(alert_on_none)                  # bool                  updatable
+        self.__lower_threshold = Datum.float(lower_threshold)           # float                 updatable
+        self.__upper_threshold = Datum.float(upper_threshold)           # float                 updatable
+        self.__alert_on_none = bool(alert_on_none)                      # bool                  updatable
 
-        self.__aggregation_period = aggregation_period              # RecurringPeriod       updatable
-        self.__test_interval = test_interval                        # RecurringPeriod       updatable
+        self.__aggregation_period = aggregation_period                  # RecurringPeriod       updatable
+        self.__test_interval = test_interval                            # RecurringPeriod       updatable
 
-        self.__json_message = bool(json_message)                    # bool
+        self.__contiguous_alerts = bool(contiguous_alerts)              # bool
+        self.__json_message = bool(json_message)                        # bool
 
-        self.__creator_email_address = creator_email_address        # string
+        self.__creator_email_address = creator_email_address            # string
 
-        self.__to = to                                              # string                updatable
-        self.__cc_list = cc_list                                    # set of string         updatable
-        self.__suspended = bool(suspended)                          # bool                  updatable
+        self.__to = to                                                  # string                updatable
+        self.__cc_list = cc_list                                        # set of string         updatable
+        self.__suspended = bool(suspended)                              # bool                  updatable
 
 
     def __lt__(self, other):
@@ -377,8 +381,11 @@ class AlertSpecification(JSONable):
         jdict['alert-on-none'] = self.alert_on_none
 
         jdict['aggregation-period'] = self.aggregation_period.as_json()
-        jdict['test-interval'] = None if self.test_interval is None else self.test_interval.as_json()
 
+        if self.test_interval is not None:
+            jdict['test-interval'] = self.test_interval.as_json()
+
+        jdict['contiguous-alerts'] = self.contiguous_alerts
         jdict['json-message'] = self.json_message
 
         if self.creator_email_address is not None:
@@ -439,6 +446,11 @@ class AlertSpecification(JSONable):
 
 
     @property
+    def contiguous_alerts(self):
+        return self.__contiguous_alerts
+
+
+    @property
     def json_message(self):
         return self.__json_message
 
@@ -494,10 +506,12 @@ class AlertSpecification(JSONable):
     def __str__(self, *args, **kwargs):
         return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
                "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
-               "json_message:%s, creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               "contiguous_alerts:%s, json_message:%s, " \
+               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
-                self.json_message, self.creator_email_address, self.to, self.__cc_list, self.suspended)
+                self.contiguous_alerts, self.json_message,
+                self.creator_email_address, self.to, self.__cc_list, self.suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -59,6 +59,13 @@ class HTTPResponse(JSONable, ABC):
         self.__body = body                              # string
 
 
+    def __len__(self):
+        try:
+            return len(self.body)
+        except (AttributeError, TypeError):
+            return 1
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_ok(self):
@@ -80,7 +87,7 @@ class HTTPResponse(JSONable, ABC):
 
 
     def as_json(self):
-        return self.status.phrase if self.body is None else self.body
+        return self.body
 
 
     # ----------------------------------------------------------------------------------------------------------------

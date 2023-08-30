@@ -8,8 +8,8 @@ Created on 8 Aug 2023
 
 import json
 
-from scs_core.aws.security.client_traffic import ClientTrafficReport
-from scs_core.aws.security.client_traffic_finder import ClientTrafficResponse
+from scs_core.aws.client_traffic.client_traffic import ClientTrafficReport
+from scs_core.aws.client_traffic.client_traffic_finder import ClientTrafficResponse
 
 from scs_core.data.json import JSONify
 

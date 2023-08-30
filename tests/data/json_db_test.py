@@ -20,7 +20,7 @@ aggregation_period = RecurringPeriod.construct(4, 'H', 'Europe/London')
 test_interval = RecurringPeriod.construct(5, 'M', 'Europe/London')
 
 alert = AlertSpecification(None, 'description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, True, 'bruno.beloff@southcoastscience.com',
+                           test_interval, True, True, 'bruno.beloff@southcoastscience.com',
                            'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
 print(alert)
 print("-")

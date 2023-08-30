@@ -57,9 +57,13 @@ class APIClient(ABC):
 
 
     def _get_blocks(self, url, token, block_class, params=None, payload=None):
+        self.__logger.debug("url: %s" % url)
+
         while True:
-            response = requests.get(url, headers=self._token_headers(token), params=params, json=payload)
+            response = requests.get(url, headers=self._token_headers(token), params=params, data=JSONify.dumps(payload))
             self._check_response(response)
+
+            self.__logger.debug("response: %s" % response.json())
 
             # messages...
             block = block_class.construct_from_jdict(response.json())
