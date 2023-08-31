@@ -47,7 +47,7 @@ class ClientTrafficLocus(ABC, JSONable):
         Constructor
         """
         self.__endpoint = endpoint                              # string or None
-        self.__client = client                                  # string email or int OrgID - or array of string?
+        self.__client = client                                  # string (or array of) email or int OrgID
         self.__period = period                                  # string (part-)date, e.g. 2023, 2023-08, 2023-08-31
 
 
