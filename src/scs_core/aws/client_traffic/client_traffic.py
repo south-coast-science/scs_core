@@ -6,7 +6,7 @@ Created on 7 Aug 2023
 https://stackoverflow.com/questions/403421/how-do-i-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
 
 example document:
-{"endpoint": "aaa", "client": "111", "period": "2023-08-01", "queries": 10, "invocations": 10, "documents": 100}
+{"endpoint": "test1", "client": "MyOrg", "period": "2023-08-22", "queries": 99, "invocations": 99, "documents": 495}
 """
 
 import re
@@ -47,7 +47,7 @@ class ClientTrafficLocus(ABC, JSONable):
         Constructor
         """
         self.__endpoint = endpoint                              # string or None
-        self.__client = client                                  # string email or int OrgID - or array of string?
+        self.__client = client                                  # string (or array of) email or int OrgID
         self.__period = period                                  # string (part-)date, e.g. 2023, 2023-08, 2023-08-31
 
 
