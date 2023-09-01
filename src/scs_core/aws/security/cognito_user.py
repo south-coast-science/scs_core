@@ -9,7 +9,7 @@ https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-pol
 example document:
 {"username": "506cd055-1978-4984-9f17-2fad77797fa1", "email": "bruno.beloff@southcoastscience.com",
 "given-name": "Bruno", "family-name": "Beloff", "confirmation-status": "CONFIRMED", "enabled": true,
-"email-verified": true, "is-super": false, "is-tester": false, "is-financial": false,
+"email-verified": true, "is-super": true, "is-tester": true, "is-financial": true,
 "created": "2023-04-20T11:45:21Z", "last-updated": "2023-06-26T14:39:17Z"}
 """
 
@@ -165,9 +165,10 @@ class CognitoUserIdentity(DatasetItem, JSONable):
         confirmation_status = jdict.get('confirmation-status')
         enabled = jdict.get('enabled')
         email_verified = jdict.get('email-verified')
-        is_super = jdict.get('is-super')
-        is_tester = jdict.get('is-tester')
-        is_financial = jdict.get('is-financial')
+
+        is_super = jdict.get('is-super', False)
+        is_tester = jdict.get('is-tester', False)
+        is_financial = jdict.get('is-financial', False)
 
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
@@ -301,9 +302,15 @@ class CognitoUserIdentity(DatasetItem, JSONable):
             jdict['enabled'] = self.enabled
 
         jdict['email-verified'] = self.email_verified
-        jdict['is-super'] = self.is_super
-        jdict['is-tester'] = self.is_tester
-        jdict['is-financial'] = self.is_financial
+
+        if self.is_super:
+            jdict['is-super'] = self.is_super
+
+        if self.is_tester:
+            jdict['is-tester'] = self.is_tester
+
+        if self.is_financial:
+            jdict['is-financial'] = self.is_financial
 
         if self.created is not None:
             jdict['created'] = self.created.as_iso8601()

@@ -210,7 +210,7 @@ class AlertSpecification(JSONable):
         self.__upper_threshold = Datum.float(upper_threshold)           # float                 updatable
         self.__alert_on_none = bool(alert_on_none)                      # bool                  updatable
 
-        self.__aggregation_period = aggregation_period                  # RecurringPeriod       updatable
+        self.__aggregation_period = aggregation_period                  # Period                updatable
         self.__test_interval = test_interval                            # RecurringPeriod       updatable
 
         self.__contiguous_alerts = bool(contiguous_alerts)              # bool
