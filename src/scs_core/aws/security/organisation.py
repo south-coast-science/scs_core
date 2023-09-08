@@ -49,6 +49,7 @@ class Organisation(JSONable):
     LONG_NAME = 'LongName'
     URL = 'URL'
     OWNER = 'Owner'
+    PARENT = 'ParentID'
 
     __EXCLUDED_EMAILS = ['paul@p3d.co.uk']
     __EXCLUDED_DOMAINS = ['southcoastscience.com']
@@ -113,13 +114,14 @@ class Organisation(JSONable):
         long_name = jdict.get(cls.LONG_NAME)
         url = jdict.get(cls.URL)
         owner = jdict.get(cls.OWNER)
+        parent_id = jdict.get(cls.PARENT)
 
-        return cls(org_id, label, long_name, url, owner)
+        return cls(org_id, label, long_name, url, owner, parent_id)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, org_id, label, long_name, url, owner):
+    def __init__(self, org_id, label, long_name, url, owner, parent_id):
         """
         Constructor
         """
@@ -128,6 +130,7 @@ class Organisation(JSONable):
         self.__long_name = long_name                    # string
         self.__url = url                                # string
         self.__owner = owner                            # INDEX: string (email address)
+        self.__parent_id = Datum.int(parent_id)         # FK: int (self reference)
 
 
     def __eq__(self, other):
@@ -183,6 +186,7 @@ class Organisation(JSONable):
         jdict[self.LONG_NAME] = self.long_name
         jdict[self.URL] = self.url
         jdict[self.OWNER] = self.owner
+        jdict[self.PARENT] = self.parent_id
 
         return jdict
 
@@ -214,11 +218,16 @@ class Organisation(JSONable):
         return self.__owner
 
 
+    @property
+    def parent_id(self):
+        return self.__parent_id
+
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Organisation:{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s}" % \
-            (self.org_id, self.label, self.long_name, self.url, self.owner)
+        return "Organisation:{org_id:%s, label:%s, long_name:%s, url:%s, owner:%s, parent_id:%s}" % \
+            (self.org_id, self.label, self.long_name, self.url, self.owner, self.parent_id)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -267,7 +276,7 @@ class OrganisationPathRoot(JSONable):
         Constructor
         """
         self._opr_id = Datum.int(opr_id)                # AUTO PK: int
-        self.__org_id = Datum.int(org_id)               # INDEX: int
+        self.__org_id = Datum.int(org_id)               # FK: int
         self.__path_root = path_root                    # UNIQUE: string
 
 
@@ -373,7 +382,7 @@ class OrganisationUser(JSONable):
         Constructor
         """
         self._username = username                                   # PK: string
-        self._org_id = Datum.int(org_id)                            # PK: int
+        self._org_id = Datum.int(org_id)                            # PK, FK: int
         self.__is_org_admin = bool(is_org_admin)                    # INDEX: bool
         self.__is_device_admin = bool(is_device_admin)              # INDEX: bool
         self.__is_suspended = bool(is_suspended)                    # INDEX: bool
@@ -510,7 +519,7 @@ class OrganisationUserPath(JSONable):
         Constructor
         """
         self._username = username                                   # PK: string
-        self._opr_id = Datum.int(opr_id)                            # PK: int
+        self._opr_id = Datum.int(opr_id)                            # PK, FK: int
         self._path_extension = path_extension                       # PK: string
 
 
@@ -656,7 +665,7 @@ class OrganisationDevice(JSONable):
         Constructor
         """
         self._device_tag = device_tag                   # PK: string
-        self._org_id = Datum.int(org_id)                # PK: int
+        self._org_id = Datum.int(org_id)                # PK, FK: int
         self.__device_path = device_path                # string
         self.__location_path = location_path            # string
 

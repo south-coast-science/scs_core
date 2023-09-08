@@ -376,10 +376,7 @@ class TopicHistoryResponse(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, params):
-        next_params = parse_qs(urlparse(self.next_url).query)
-
-        # noinspection PyTypeChecker
-        params[TopicHistoryRequest.START] = next_params[TopicHistoryRequest.START][0]
+        return parse_qs(urlparse(self.next_url).query)
 
 
     # ----------------------------------------------------------------------------------------------------------------
