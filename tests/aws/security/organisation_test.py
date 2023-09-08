@@ -19,7 +19,7 @@ from scs_core.data.json import JSONify
 # --------------------------------------------------------------------------------------------------------------------
 
 organisation = Organisation(1, "SCS", 'South Coast Science', 'https://www.southcoastscience.com',
-                            "bruno.beloff@southcoastscience.com")
+                            "bruno.beloff@southcoastscience.com", None)
 print(organisation)
 
 jstr = JSONify.dumps(organisation)
