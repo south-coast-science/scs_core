@@ -59,7 +59,6 @@ class OrganisationManager(APIClient):
         response = requests.get(url, headers=self._token_headers(token), data=payload)
         self._check_response(response)
 
-        print("response: %s" % response.json())
         return Organisation.construct_from_jdict(response.json())
 
 
