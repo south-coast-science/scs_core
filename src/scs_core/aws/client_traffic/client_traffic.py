@@ -119,13 +119,11 @@ class ClientTrafficReport(ClientTrafficLocus):
         for report in reports:
             key = '+'.join((report.endpoint, report.client))
 
-            if key not in aggregations:
+            if key in aggregations:
+                aggregations[key] += report
+            else:
                 aggregations[key] = cls(report.endpoint, report.client, aggregation_period,
                                         report.queries, report.invocations, report.documents)
-            else:
-                aggregations[key].queries += report.queries
-                aggregations[key].invocations += report.invocations
-                aggregations[key].documents += report.documents
 
         return aggregations.values()
 
@@ -135,15 +133,13 @@ class ClientTrafficReport(ClientTrafficLocus):
         totals = {}
 
         for report in reports:
-            key = '+'.join((report.endpoint, org_label))
+            key = '+'.join((report.endpoint, report.period))
 
-            if key not in totals:
+            if key in totals:
+                totals[key] += report
+            else:
                 totals[key] = cls(report.endpoint, org_label, report.period,
                                   report.queries, report.invocations, report.documents)
-            else:
-                totals[key].queries += report.queries
-                totals[key].invocations += report.invocations
-                totals[key].documents += report.documents
 
         return totals.values()
 
@@ -177,6 +173,15 @@ class ClientTrafficReport(ClientTrafficLocus):
         self.__queries = int(queries)                           # int
         self.__invocations = int(invocations)                   # int
         self.__documents = int(documents)                       # int
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __add__(self, other):
+        return ClientTrafficReport(self.endpoint, self.client, self.period,
+                                   self.queries + other.queries,
+                                   self.invocations + other.invocations,
+                                   self.documents + other.documents)
 
 
     # ----------------------------------------------------------------------------------------------------------------
