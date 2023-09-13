@@ -177,9 +177,9 @@ class ClientTrafficReport(ClientTrafficLocus):
 
     def __add__(self, other):
         return ClientTrafficReport(self.endpoint, self.client, self.period,
-                                   self.queries + other.queries,
-                                   self.invocations + other.invocations,
-                                   self.documents + other.documents)
+                                   self.__queries + other.queries,
+                                   self.__invocations + other.invocations,
+                                   self.__documents + other.documents)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -205,29 +205,14 @@ class ClientTrafficReport(ClientTrafficLocus):
         return self.__queries
 
 
-    @queries.setter
-    def queries(self, queries):
-        self.__queries = queries
-
-
     @property
     def invocations(self):
         return self.__invocations
 
 
-    @invocations.setter
-    def invocations(self, invocations):
-        self.__invocations = invocations
-
-
     @property
     def documents(self):
         return self.__documents
-
-
-    @documents.setter
-    def documents(self, documents):
-        self.__documents = documents
 
 
     # ----------------------------------------------------------------------------------------------------------------
