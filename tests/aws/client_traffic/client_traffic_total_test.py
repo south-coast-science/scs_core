@@ -7,6 +7,7 @@ Created on 13 Sep 2023
 """
 
 from scs_core.aws.client_traffic.client_traffic import ClientTrafficReport
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -53,3 +54,4 @@ for report in aggregations:
     print(report)
 print("-")
 
+print(JSONify.dumps(aggregations, indent=4))

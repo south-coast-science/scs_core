@@ -125,7 +125,7 @@ class ClientTrafficReport(ClientTrafficLocus):
                 aggregations[key] = cls(report.endpoint, report.client, aggregation_period,
                                         report.queries, report.invocations, report.documents)
 
-        return aggregations.values()
+        return tuple(aggregations.values())
 
 
     @classmethod
@@ -141,7 +141,7 @@ class ClientTrafficReport(ClientTrafficLocus):
                 totals[key] = cls(report.endpoint, org_label, report.period,
                                   report.queries, report.invocations, report.documents)
 
-        return totals.values()
+        return tuple(totals.values())
 
 
     # ----------------------------------------------------------------------------------------------------------------
