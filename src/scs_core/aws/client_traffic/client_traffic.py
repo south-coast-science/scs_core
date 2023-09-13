@@ -175,8 +175,6 @@ class ClientTrafficReport(ClientTrafficLocus):
         self.__documents = int(documents)                       # int
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __add__(self, other):
         return ClientTrafficReport(self.endpoint, self.client, self.period,
                                    self.queries + other.queries,
