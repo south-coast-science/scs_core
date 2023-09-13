@@ -4,6 +4,11 @@ Created on 2 Feb 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
+{"account": {"username": "scs-bgx-867", "invoice": "INV-0489", "created": "2023-08-30T13:52:28Z",
+"last-updated": "2023-08-30T13:52:29Z"}, "memberships": [
+{"DeviceTag": "scs-bgx-867", "OrgID": 16, "DeploymentLabel": "Development 19",
+"DevicePath": "cirrusresearch/development/device/praxis-000867/", "LocationPath": "cirrusresearch/development/loc/19/",
+"StartDatetime": "1970-01-01T00:00:00Z", "EndDatetime": null}]}
 """
 
 from collections import OrderedDict

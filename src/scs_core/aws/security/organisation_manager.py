@@ -42,6 +42,16 @@ class OrganisationManager(APIClient):
         return tuple(Organisation.construct_from_jdict(jdict) for jdict in response.json())
 
 
+    def find_child_organisations(self, token, label):
+        url = '/'.join((self.__MANAGER_URL, 'organisation'))
+        payload = JSONify.dumps({"ParentLabel": label})
+
+        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        self._check_response(response)
+
+        return tuple(Organisation.construct_from_jdict(jdict) for jdict in response.json())
+
+
     def get_organisation_by_label(self, token, label):
         url = '/'.join((self.__MANAGER_URL, 'organisation'))
         payload = JSONify.dumps({"Label": label})

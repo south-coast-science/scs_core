@@ -224,6 +224,12 @@ class AlertSpecification(JSONable):
 
 
     def __lt__(self, other):
+        if self.description.lower() > other.description.lower():
+            return False
+
+        if self.description.lower() < other.description.lower():
+            return True
+
         if self.topic < other.topic:
             return True
 
@@ -233,25 +239,19 @@ class AlertSpecification(JSONable):
         if self.field < other.field:
             return True
 
-        if self.description > other.description:
-            return False
-
-        if self.description < other.description:
-            return True
-
         if self.field > other.field:
             return False
 
-        if self.creator_email_address < other.creator_email_address:
+        if self.creator_email_address.lower() < other.creator_email_address.lower():
             return True
 
-        if self.creator_email_address > other.creator_email_address:
+        if self.creator_email_address.lower() > other.creator_email_address.lower():
             return False
 
-        if self.to < other.to:
+        if self.to.lower() < other.to.lower():
             return True
 
-        if self.to > other.to:
+        if self.to.lower() > other.to.lower():
             return False
 
         return False

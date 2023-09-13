@@ -216,23 +216,23 @@ class CognitoUserIdentity(DatasetItem, JSONable):
 
     def __lt__(self, other):
         # family_name...
-        self_name = self.ext_name(self.family_name)
-        other_name = self.ext_name(other.family_name)
+        self_name = self.ext_name(self.family_name).lower()
+        other_name = self.ext_name(other.family_name).lower()
 
-        if self_name.lower() < other_name.lower():
+        if self_name < other_name:
             return True
 
-        if self_name.lower() > other_name.lower():
+        if self_name > other_name:
             return False
 
         # given_name...
-        self_name = self.ext_name(self.given_name)
-        other_name = self.ext_name(other.given_name)
+        self_name = self.ext_name(self.given_name).lower()
+        other_name = self.ext_name(other.given_name).lower()
 
-        if self_name.lower() < other_name.lower():
+        if self_name < other_name:
             return True
 
-        if self_name.lower() > other_name.lower():
+        if self_name > other_name:
             return False
 
         # email...

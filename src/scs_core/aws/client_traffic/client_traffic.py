@@ -61,16 +61,16 @@ class ClientTrafficLocus(ABC, JSONable):
 
 
     def __lt__(self, other):
-        if self.endpoint < other.endpoint:
+        if self.endpoint.lower() < other.endpoint.lower():
             return True
 
-        if self.endpoint > other.endpoint:
+        if self.endpoint.lower() > other.endpoint.lower():
             return False
 
-        if self.client < other.client:
+        if self.client.lower() < other.client.lower():
             return True
 
-        if self.client > other.client:
+        if self.client.lower() > other.client.lower():
             return False
 
         if self.period < other.period:
