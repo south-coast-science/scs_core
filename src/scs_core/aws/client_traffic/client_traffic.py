@@ -113,6 +113,44 @@ class ClientTrafficReport(ClientTrafficLocus):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def client_aggregations(cls, aggregation_period, reports):
+        aggregations = {}
+
+        for report in reports:
+            key = '+'.join((report.endpoint, report.client))
+
+            if key not in aggregations:
+                aggregations[key] = cls(report.endpoint, report.client, aggregation_period,
+                                        report.queries, report.invocations, report.documents)
+            else:
+                aggregations[key].queries += report.queries
+                aggregations[key].invocations += report.invocations
+                aggregations[key].documents += report.documents
+
+        return aggregations.values()
+
+
+    @classmethod
+    def organisation_totals(cls, org_label, reports):
+        totals = {}
+
+        for report in reports:
+            key = '+'.join((report.endpoint, org_label))
+
+            if key not in totals:
+                totals[key] = cls(report.endpoint, org_label, report.period,
+                                  report.queries, report.invocations, report.documents)
+            else:
+                totals[key].queries += report.queries
+                totals[key].invocations += report.invocations
+                totals[key].documents += report.documents
+
+        return totals.values()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -164,14 +202,29 @@ class ClientTrafficReport(ClientTrafficLocus):
         return self.__queries
 
 
+    @queries.setter
+    def queries(self, queries):
+        self.__queries = queries
+
+
     @property
     def invocations(self):
         return self.__invocations
 
 
+    @invocations.setter
+    def invocations(self, invocations):
+        self.__invocations = invocations
+
+
     @property
     def documents(self):
         return self.__documents
+
+
+    @documents.setter
+    def documents(self, documents):
+        self.__documents = documents
 
 
     # ----------------------------------------------------------------------------------------------------------------
