@@ -143,7 +143,7 @@ class Organisation(JSONable):
 
 
     def __lt__(self, other):
-        return self.label < other.label
+        return self.label.lower() < other.label.lower()
 
 
     # ----------------------------------------------------------------------------------------------------------------
