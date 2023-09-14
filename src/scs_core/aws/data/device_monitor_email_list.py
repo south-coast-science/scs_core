@@ -159,7 +159,7 @@ class DeviceMonitorEmailList(PersistentJSONable):
         device_dict = OrderedDict()
         for device_tag in sorted(self.__device_dict):
             if self.__device_dict[device_tag]:
-                device_dict[device_tag] = sorted(self.__device_dict[device_tag])
+                device_dict[device_tag] = sorted(self.__device_dict[device_tag], key=lambda email: email.lower())
 
         return device_dict
 
