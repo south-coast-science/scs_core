@@ -353,19 +353,6 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add_cc(self, cc):
-        self.__cc_list.add(cc)
-
-
-    def remove_cc(self, cc):
-        try:
-            self.__cc_list.remove(cc)
-        except KeyError:
-            pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def as_json(self):
         jdict = OrderedDict()
 
@@ -392,7 +379,7 @@ class AlertSpecification(JSONable):
             jdict['creator-email-address'] = self.creator_email_address
 
         jdict['to'] = self.to
-        jdict['cc-list'] = self.cc_list
+        jdict['cc-list'] = sorted(self.cc_list, key=lambda email: email.lower())
         jdict['suspended'] = self.suspended
 
         return jdict
@@ -472,7 +459,7 @@ class AlertSpecification(JSONable):
 
     @property
     def cc_list(self):
-        return sorted(self.__cc_list)
+        return self.__cc_list
 
 
     @property

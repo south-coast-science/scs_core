@@ -113,6 +113,40 @@ class ClientTrafficReport(ClientTrafficLocus):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def client_aggregations(cls, aggregation_period, reports):
+        aggregations = {}
+
+        for report in reports:
+            key = '+'.join((report.endpoint, report.client))
+
+            if key in aggregations:
+                aggregations[key] += report
+            else:
+                aggregations[key] = cls(report.endpoint, report.client, aggregation_period,
+                                        report.queries, report.invocations, report.documents)
+
+        return tuple(aggregations.values())
+
+
+    @classmethod
+    def organisation_totals(cls, org_label, reports):
+        totals = {}
+
+        for report in reports:
+            key = '+'.join((report.endpoint, report.period))
+
+            if key in totals:
+                totals[key] += report
+            else:
+                totals[key] = cls(report.endpoint, org_label, report.period,
+                                  report.queries, report.invocations, report.documents)
+
+        return tuple(totals.values())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
@@ -139,6 +173,13 @@ class ClientTrafficReport(ClientTrafficLocus):
         self.__queries = int(queries)                           # int
         self.__invocations = int(invocations)                   # int
         self.__documents = int(documents)                       # int
+
+
+    def __add__(self, other):
+        return ClientTrafficReport(self.endpoint, self.client, self.period,
+                                   self.__queries + other.queries,
+                                   self.__invocations + other.invocations,
+                                   self.__documents + other.documents)
 
 
     # ----------------------------------------------------------------------------------------------------------------

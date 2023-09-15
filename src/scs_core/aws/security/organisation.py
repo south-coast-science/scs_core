@@ -7,7 +7,7 @@ The foundation data classes for the security system
 
 example Organisation:
 {"OrgID": 1, "Label": "SCS", "LongName": "South Coast Science", "URL": "https://www.southcoastscience.com",
-"Owner": "bruno.beloff@southcoastscience.com"}
+"Owner": "bruno.beloff@southcoastscience.com", "ParentID": null}
 
 example OrganisationPathRoot:
 {"OPRID": 11, "OrgID": 1, "PathRoot": "ricardo/"}
