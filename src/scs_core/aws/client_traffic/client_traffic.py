@@ -6,7 +6,7 @@ Created on 7 Aug 2023
 https://stackoverflow.com/questions/403421/how-do-i-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
 
 example document:
-{"endpoint": "test1", "client": "MyOrg", "period": "2023-08-22", "queries": 99, "invocations": 99, "documents": 495}
+{"endpoint": "test1", "client": "MyOrg", "period": "2023-08-22", "queries": 99, "invocations": 99, "characters": 495}
 """
 
 import re
@@ -123,7 +123,7 @@ class ClientTrafficReport(ClientTrafficLocus):
                 aggregations[key] += report
             else:
                 aggregations[key] = cls(report.endpoint, report.client, aggregation_period,
-                                        report.queries, report.invocations, report.documents)
+                                        report.queries, report.invocations, report.characters)
 
         return tuple(aggregations.values())
 
@@ -139,7 +139,7 @@ class ClientTrafficReport(ClientTrafficLocus):
                 totals[key] += report
             else:
                 totals[key] = cls(report.endpoint, org_label, report.period,
-                                  report.queries, report.invocations, report.documents)
+                                  report.queries, report.invocations, report.characters)
 
         return tuple(totals.values())
 
@@ -157,14 +157,14 @@ class ClientTrafficReport(ClientTrafficLocus):
 
         queries = jdict.get('queries')
         invocations = jdict.get('invocations')
-        documents = jdict.get('documents')
+        characters = jdict.get('characters')
 
-        return cls(endpoint, client, period, queries, invocations, documents)
+        return cls(endpoint, client, period, queries, invocations, characters)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, endpoint, client, period, queries, invocations, documents):
+    def __init__(self, endpoint, client, period, queries, invocations, characters):
         """
         Constructor
         """
@@ -172,14 +172,14 @@ class ClientTrafficReport(ClientTrafficLocus):
 
         self.__queries = int(queries)                           # int
         self.__invocations = int(invocations)                   # int
-        self.__documents = int(documents)                       # int
+        self.__characters = int(characters)                     # int
 
 
     def __add__(self, other):
         return ClientTrafficReport(self.endpoint, self.client, self.period,
                                    self.__queries + other.queries,
                                    self.__invocations + other.invocations,
-                                   self.__documents + other.documents)
+                                   self.__characters + other.characters)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ class ClientTrafficReport(ClientTrafficLocus):
 
         jdict['queries'] = self.queries
         jdict['invocations'] = self.invocations
-        jdict['documents'] = self.documents
+        jdict['characters'] = self.characters
 
         return jdict
 
@@ -211,8 +211,8 @@ class ClientTrafficReport(ClientTrafficLocus):
 
 
     @property
-    def documents(self):
-        return self.__documents
+    def characters(self):
+        return self.__characters
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -220,5 +220,5 @@ class ClientTrafficReport(ClientTrafficLocus):
     def __str__(self, *args, **kwargs):
         class_name = self.__class__.__name__
 
-        return class_name + ":{endpoint:%s, client:%s, period:%s, queries:%s, invocations:%s, documents:%s}" % \
-            (self.endpoint, self.client, self.period, self.queries, self.invocations, self.documents)
+        return class_name + ":{endpoint:%s, client:%s, period:%s, queries:%s, invocations:%s, characters:%s}" % \
+            (self.endpoint, self.client, self.period, self.queries, self.invocations, self.characters)
