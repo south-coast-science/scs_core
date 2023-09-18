@@ -117,6 +117,7 @@ class ClientTrafficReport(ClientTrafficLocus):
         aggregations = {}
 
         for report in reports:
+            print("endpoint: %s client: %s" % (report.endpoint, report.client))
             key = '+'.join((report.endpoint, report.client))
 
             if key in aggregations:
