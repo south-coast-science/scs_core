@@ -64,15 +64,6 @@ class CognitoUserFinder(APIClient):
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
 
 
-    def find_by_usernames(self, token, usernames):
-        url = '/'.join((self.__URL, 'usernames'))
-
-        response = requests.get(url, headers=self._token_headers(token), json=usernames)
-        self._check_response(response)
-
-        return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
-
-
     def get_by_email(self, token, email):
         url = '/'.join((self.__URL, 'exact'))
         payload = {"Email": email}
