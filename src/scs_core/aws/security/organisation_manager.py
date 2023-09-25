@@ -8,6 +8,7 @@ import json
 import requests
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.security.cognito_user import CognitoUserIdentity
 from scs_core.aws.security.organisation import Organisation, OrganisationPathRoot, OrganisationUser, \
     OrganisationUserPath, OrganisationDevice
 
@@ -152,6 +153,16 @@ class OrganisationManager(APIClient):
         self._check_response(response)
 
         return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
+
+
+    def find_cognito_users_by_organisation(self, token, org_id):
+        url = '/'.join((self.__MANAGER_URL, 'cognito-user'))
+        payload = JSONify.dumps({"OrgID": org_id})
+
+        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        self._check_response(response)
+
+        return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
 
 
     def find_users_by_username(self, token, username):

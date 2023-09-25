@@ -37,8 +37,15 @@ class ClientTrafficFinder(APIClient):
             yield item
 
 
-    def find_for_organisation(self, token, request):
+    def find_for_organisations(self, token, request):
         url = '/'.join((self.__URL, 'organisations'))
+
+        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+            yield item
+
+
+    def find_for_organisations_users(self, token, request):
+        url = '/'.join((self.__URL, 'organisations-users'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
