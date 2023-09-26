@@ -6,8 +6,11 @@
 # python -m pip install --upgrade build
 # python -m pip install --upgrade twine
 
-rm -rf dist
-python -m build
-twine upload dist/*
+# https://pypi.org/manage/account/token/
 
 rm -rf dist
+python -m build
+twine upload dist/* "$@"
+
+rm -rf dist
+
