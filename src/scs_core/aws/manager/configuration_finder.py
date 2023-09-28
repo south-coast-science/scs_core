@@ -167,6 +167,11 @@ class ConfigurationRequest(object):
         self.__exclusive_start_key = exclusive_start_key
 
 
+    @property
+    def exclusive_start_key_params(self):
+        return self.__exclusive_start_key.params() if self.__exclusive_start_key else None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

@@ -31,9 +31,11 @@ class DynamoManager(object):
         self.__dynamo_client = dynamo_client
         self.__dynamo_resource = dynamo_resource
 
+
     # ----------------------------------------------------------------------------------------------------------------
     # SINGLE ITEMS
     # ----------------------------------------------------------------------------------------------------------------
+
     def get(self, table_name, pk, pk_val, sk=None, sk_val=None):
         # get specific item
         table = self.__dynamo_resource.Table(table_name)
@@ -47,6 +49,7 @@ class DynamoManager(object):
         response = table.get_item(Key=key)
         return response['Item'] if 'Item' in response else None
 
+
     def items(self, table_name, pk, pk_val, sk=None, sk_val=None):
         table = self.__dynamo_resource.Table(table_name)
         if sk is None and sk_val is None:
@@ -59,6 +62,7 @@ class DynamoManager(object):
             )
         return response['Items'] if 'Items' in response else None
 
+
     def add(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -67,6 +71,7 @@ class DynamoManager(object):
         )
 
         return response
+
 
     def add_simple(self, table_name, pk, pk_val, sk=None, sk_val=None):
         table = self.__dynamo_resource.Table(table_name)
@@ -83,6 +88,7 @@ class DynamoManager(object):
 
         return response
 
+
     def delete(self, table_name, pk, pk_val, sk=None, sk_val=None):
         table = self.__dynamo_resource.Table(table_name)
         if pk and pk_val and sk and sk_val:
@@ -98,6 +104,7 @@ class DynamoManager(object):
 
         return response
 
+
     def delete_item(self, table_name, item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -106,6 +113,7 @@ class DynamoManager(object):
         )
 
         return response
+
 
     def update_item(self, table_name, pk, update_expression, eav):
         table = self.__dynamo_resource.Table(table_name)
@@ -118,6 +126,7 @@ class DynamoManager(object):
 
         return response
 
+
     def filter_on_index(self, table_name, index_name, sk, filter_item):
         table = self.__dynamo_resource.Table(table_name)
 
@@ -126,6 +135,7 @@ class DynamoManager(object):
         to_return = []
         to_return.extend(response['Items'])
         return to_return
+
 
     def multi_scan(self, table_name, key_value_pairs, limited):
         kwargs = {}
@@ -146,9 +156,11 @@ class DynamoManager(object):
                 to_return.extend(q['Items'])
         return to_return
 
+
     # ----------------------------------------------------------------------------------------------------------------
     # MAIN FUNCTIONALITY
     # ----------------------------------------------------------------------------------------------------------------
+
     @staticmethod
     def build_query(table_name, pk=None, pk_val=None, sk=None, sk_val=None, keys_only=False, exact=False,
                     limit=None, fosk=False):
@@ -232,6 +244,7 @@ class DynamoManager(object):
                 to_return.extend(q['Items'])
         return to_return
 
+
     def do_query_batched(self, table_name, query, exclusive_start_key=None):
         exact_match = False
         if "KeyConditionExpression" in query:
@@ -251,6 +264,7 @@ class DynamoManager(object):
 
         return to_return, last_evaluated_key
 
+
     # ----------------------------------------------------------------------------------------------------------------
     # UTILITIES
     # ----------------------------------------------------------------------------------------------------------------
@@ -262,9 +276,11 @@ class DynamoManager(object):
 
         return response
 
+
     def return_key_schema(self, table_name):
         table = self.__dynamo_resource.Table(table_name)
         return table.key_schema
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # BATCH FUNCTIONS
@@ -276,10 +292,9 @@ class DynamoManager(object):
             for item in items:
                 batch.delete_item(item)
 
+
     def batch_write(self, table_name, items):
         table = self.__dynamo_resource.Table(table_name)
         with table.batch_writer() as batch:
             for item in items:
                 batch.put_item(Item=item)
-
-# --------------------------------------------------------------------------------------------------------------------
