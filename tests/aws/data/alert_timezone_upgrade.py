@@ -6,7 +6,7 @@ Created on 11 Jul 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.manager.alert_specification_manager import AlertSpecificationManager
+from scs_core.aws.monitor.alert.alert_specification_manager import AlertSpecificationManager
 
 from scs_core.aws.security.cognito_client_credentials import CognitoClientCredentials
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager

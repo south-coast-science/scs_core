@@ -7,7 +7,7 @@ Created on 17 Jun 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.data.device_monitor_report import DeviceMonitorReport
+from scs_core.aws.monitor.device.device_monitor_report import DeviceMonitorReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
