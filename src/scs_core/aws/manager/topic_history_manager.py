@@ -17,7 +17,8 @@ curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregat
 from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
-from scs_core.aws.client.api_client import APIClient, APIResponse
+from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.client.api_intercourse import APIResponse
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
