@@ -1,49 +1,20 @@
 """
-Created on 28 Apr 2021
+Created on 2 Oct 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
-import requests
-
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
 
-from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.client.http_exception import HTTPException
 from scs_core.data.str import Str
 from scs_core.estate.configuration_check import ConfigurationCheck
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class ConfigurationCheckFinder(APIClient):
-    """
-    classdocs
-    """
-
-    __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder"
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self):
-        super().__init__()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def find(self, token, tag_filter, exact_match, response_mode):
-        request = ConfigurationCheckRequest(tag_filter, exact_match, response_mode)
-
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
-        self._check_response(response)
-
-        return ConfigurationCheckResponse.construct_from_jdict(response.json())
 
 
 # --------------------------------------------------------------------------------------------------------------------
