@@ -14,7 +14,7 @@ from multiprocessing import Manager
 
 from requests.exceptions import ConnectionError
 
-from scs_core.aws.manager.byline_finder import DeviceBylineFinder
+from scs_core.aws.manager.byline.byline_finder import DeviceBylineFinder
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
 
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue, CSVLogCursor
