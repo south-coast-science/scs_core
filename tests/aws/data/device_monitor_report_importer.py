@@ -11,10 +11,11 @@ import sys
 from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.client import Client
 
-from scs_core.aws.data.status_list import StatusList
-from scs_core.aws.data.byline_list import BylineList
-from scs_core.aws.data.power_list import PowerList
-from scs_core.aws.data.uptime_list import UptimeList
+from scs_core.aws.monitor.device.status_list import StatusList
+from scs_core.aws.monitor.device.power_list import PowerList
+from scs_core.aws.monitor.device.uptime_list import UptimeList
+
+from scs_core.aws.manager.byline.byline_list import BylineList
 
 from scs_core.aws.manager.s3_manager import S3PersistenceManager
 

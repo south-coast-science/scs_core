@@ -11,7 +11,8 @@ curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.data.byline import Byline, DeviceBylineGroup, TopicBylineGroup
+
+from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 from scs_core.aws.manager.byline.byline_intercourse import BylineFinderResponse
 
 

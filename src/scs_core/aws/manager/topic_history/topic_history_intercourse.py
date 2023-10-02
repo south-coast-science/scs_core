@@ -17,51 +17,12 @@ curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregat
 from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
-from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.client.api_intercourse import APIResponse
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class TopicHistoryManager(APIClient):
-    """
-    classdocs AWSAggregateTest
-    """
-
-    __URL = "https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory"
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, reporter=None):
-        super().__init__(reporter=reporter)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def find_latest_for_topic(self, token, topic, end, path, include_wrapper, rec_only, backoff_limit):
-        documents = list(self.find_for_topic(token, topic, None, end, path, False, None, include_wrapper, rec_only,
-                                             False, False, True, backoff_limit))
-        if documents:
-            return documents[0]
-
-        return None
-
-
-    def find_for_topic(self, token, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
-        self._reporter.reset()
-
-        request = TopicHistoryRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
-                                      min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
-        self._logger.debug(request)
-
-        for item in self._get_blocks(self.__URL, token, TopicHistoryResponse, params=request.params()):
-            yield item
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import json
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
-from scs_core.aws.data.byline import Byline
+from scs_core.aws.manager.byline.byline import Byline
 
 # --------------------------------------------------------------------------------------------------------------------
 

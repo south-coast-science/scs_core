@@ -12,7 +12,7 @@ from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_intercourse import APIResponse
-from scs_core.aws.data.byline import Byline
+from scs_core.aws.manager.byline.byline import Byline
 
 from scs_core.data.str import Str
 
