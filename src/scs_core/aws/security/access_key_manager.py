@@ -20,6 +20,7 @@ class AccessKeyManager(APIClient):
     """
     classdocs
     """
+
     __URL = "https://a0vjvahph1.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceKey"
 
     # ----------------------------------------------------------------------------------------------------------------
