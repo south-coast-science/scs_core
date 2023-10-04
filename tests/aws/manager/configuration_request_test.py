@@ -6,7 +6,7 @@ Created on 22 Apr 2021
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.manager.configuration_finder import ConfigurationRequest
+from scs_core.aws.manager.configuration.configuration_intercourse import ConfigurationRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------

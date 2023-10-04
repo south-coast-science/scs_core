@@ -6,11 +6,11 @@ Created on 19 Apr 2023
 
 import requests
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from http import HTTPStatus
 
 from scs_core.client.http_exception import HTTPException
-from scs_core.data.json import JSONable, JSONify
+from scs_core.data.json import JSONify
 from scs_core.sys.logging import Logging
 
 
@@ -99,56 +99,3 @@ class APIClient(ABC):
 
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__ + ":{reporter:%s}" % self.__reporter
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class APIResponse(ABC, JSONable):
-    """
-    classdocs
-    """
-
-    __CORS_HEADERS = {                                      # Cross-Origin Resource Sharing
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': True,
-    }
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    @abstractmethod
-    def construct_from_jdict(cls, jdict):
-        pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # server...
-
-    def as_http(self, status=HTTPStatus.OK, cors=False):
-        jdict = {
-            'statusCode': status,
-            'body': JSONify.dumps(self)
-        }
-
-        if cors:
-            jdict['headers'] = self.__CORS_HEADERS
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # client...
-
-    def start(self):
-        return None
-
-
-    @abstractmethod
-    def next_params(self, params):
-        pass
-
-
-    @property
-    @abstractmethod
-    def next_url(self):
-        pass

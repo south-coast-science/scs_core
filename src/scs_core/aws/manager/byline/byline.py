@@ -320,7 +320,7 @@ class TopicBylineGroup(BylineGroup):
                     topic_roots.add(TopicPath.construct(byline.rec, byline.topic).root())
 
                 except ValueError:
-                    self.__logger.info("invalid topic: %s" % byline.topic)
+                    self.__logger.debug("invalid topic: %s" % byline.topic)
                     continue
 
         return sorted(topic_roots)

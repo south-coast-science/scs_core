@@ -1,72 +1,37 @@
 """
-Created on 17 Jun 2021
+Created on 2 Oct 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-"""
 
-import requests
+https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
+"""
 
 from collections import OrderedDict
 from enum import Enum
 from http import HTTPStatus
 
-from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.data.alert import AlertStatus
 from scs_core.aws.data.http_response import HTTPResponse
 
 from scs_core.client.http_exception import HTTPException
-
-from scs_core.data.datum import Datum
 from scs_core.data.str import Str
+from scs_core.estate.configuration_check import ConfigurationCheck
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusManager(APIClient):
-    """
-    classdocs
-    """
-
-    __URL = "https://n0ctatmvjl.execute-api.us-west-2.amazonaws.com/default/AlertStatus"
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self):
-        super().__init__()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def find(self, token, id_filter, cause_filter, response_mode):
-        request = AlertStatusFindRequest(id_filter, cause_filter, response_mode)
-
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
-        self._check_response(response)
-
-        return AlertStatusFindResponse.construct_from_jdict(response.json())
-
-
-    def delete(self, token, id):
-        url = '/'.join((self.__URL, str(id)))
-
-        http_response = requests.delete(url, headers=self._token_headers(token))
-        self._check_response(http_response)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class AlertStatusFindRequest(object):
+class ConfigurationCheckRequest(object):
     """
     classdocs
     """
 
     class Mode(Enum):
-        HISTORY = 1
-        LATEST = 2
+        FULL = 1
+        TAGS_ONLY = 2
 
-    ID_FILTER = 'id'
-    CAUSE_FILTER = 'cause'
+    TAG_FILTER = 'tagFilter'
+    EXACT_MATCH = 'exactMatch'
     RESPONSE_MODE = 'responseMode'
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -75,46 +40,47 @@ class AlertStatusFindRequest(object):
         if not qsp:
             return None
 
-        id_filter = qsp.get(cls.ID_FILTER)
-        cause_filter = qsp.get(cls.CAUSE_FILTER)
+        tag_filter = qsp.get(cls.TAG_FILTER)
+        exact_match = qsp.get(cls.EXACT_MATCH, 'false').lower() == 'true'
 
         try:
             response_mode = cls.Mode[qsp.get(cls.RESPONSE_MODE)]
         except KeyError:
             response_mode = None
 
-        return cls(id_filter, cause_filter, response_mode)
+        return cls(tag_filter, exact_match, response_mode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id_filter, cause_filter, response_mode):
+    def __init__(self, tag_filter, exact_match, response_mode):
         """
         Constructor
         """
-        self.__id_filter = Datum.int(id_filter)                     # int
-        self.__cause_filter = cause_filter                          # string
-        self.__response_mode = response_mode                        # enum
+        self.__tag_filter = tag_filter                          # string
+        self.__exact_match = bool(exact_match)                  # bool
+        self.__response_mode = response_mode                    # MODE enum
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.id_filter is None and self.cause_filter is None:
-            return False
-
         if self.response_mode is None:
             return False
 
         return True
 
 
+    def tags_only(self):
+        return self.__response_mode == self.Mode.TAGS_ONLY
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def params(self):
         params = {
-            self.ID_FILTER: self.id_filter,
-            self.CAUSE_FILTER: self.cause_filter,
+            self.TAG_FILTER: self.tag_filter,
+            self.EXACT_MATCH: self.exact_match,
             self.RESPONSE_MODE: self.response_mode.name
         }
 
@@ -124,13 +90,13 @@ class AlertStatusFindRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def id_filter(self):
-        return self.__id_filter
+    def tag_filter(self):
+        return self.__tag_filter
 
 
     @property
-    def cause_filter(self):
-        return self.__cause_filter
+    def exact_match(self):
+        return self.__exact_match
 
 
     @property
@@ -141,13 +107,13 @@ class AlertStatusFindRequest(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFindRequest:{id_filter:%s, cause_filter:%s, response_mode:%s}" % \
-               (self.id_filter, self.cause_filter, self.response_mode)
+        return "ConfigurationCheckRequest:{tag_filter:%s, exact_match:%s, response_mode:%s}" % \
+               (self.tag_filter, self.exact_match, self.response_mode)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertStatusFindResponse(HTTPResponse):
+class ConfigurationCheckResponse(HTTPResponse):
     """
     classdocs
     """
@@ -164,33 +130,35 @@ class AlertStatusFindResponse(HTTPResponse):
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, status.phrase, status.description)
 
-        mode = AlertStatusFindRequest.Mode[jdict.get('mode')]
+        mode = ConfigurationCheckRequest.Mode[jdict.get('mode')]
 
-        alert_statuses = []
-        if jdict.get('alert-statuses'):
-            for alert_jdict in jdict.get('alert-statuses'):
-                alert_statuses.append(AlertStatus.construct_from_jdict(alert_jdict))
+        items = []
+        if jdict.get('Items'):
+            for item_jdict in jdict.get('Items'):
+                item = item_jdict.get('tag') if mode == ConfigurationCheckRequest.Mode.TAGS_ONLY else \
+                    ConfigurationCheck.construct_from_jdict(item_jdict)
+                items.append(item)
 
         next_url = jdict.get('next')
 
-        return cls(status, mode, alert_statuses, next_url=next_url)
+        return cls(status, mode, items, next_url=next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, mode, alert_statuses, next_url=None):
+    def __init__(self, status, mode, items, next_url=None):
         """
         Constructor
         """
         super().__init__(status)
 
-        self.__mode = mode                              # AlertStatusRequest.Mode member
-        self.__alert_statuses = alert_statuses          # array of AlertStatus
+        self.__mode = mode                              # ConfigurationCheckRequest.Mode member
+        self.__items = items                            # list of ConfigurationCheck or string
         self.__next_url = next_url                      # URL string
 
 
     def __len__(self):
-        return len(self.alert_statuses)
+        return len(self.items)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -203,8 +171,9 @@ class AlertStatusFindResponse(HTTPResponse):
         if self.mode is not None:
             jdict['mode'] = self.mode.name
 
-        if self.alert_statuses is not None:
-            jdict['alert-statuses'] = self.alert_statuses
+        if self.items is not None:
+            jdict['Items'] = self.items
+            jdict['itemCount'] = len(self.items)
 
         if self.next_url is not None:
             jdict['next'] = self.next_url
@@ -220,8 +189,8 @@ class AlertStatusFindResponse(HTTPResponse):
 
 
     @property
-    def alert_statuses(self):
-        return self.__alert_statuses
+    def items(self):
+        return self.__items
 
 
     @property
@@ -232,5 +201,5 @@ class AlertStatusFindResponse(HTTPResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertStatusFindResponse:{status:%s, mode:%s, alert_statuses:%s, next_url:%s}" % \
-               (self.status, self.mode, Str.collection(self.alert_statuses), self.next_url)
+        return "ConfigurationCheckResponse:{status:%s, mode:%s, items:%s, next_url:%s}" % \
+               (self.status, self.mode, Str.collection(self.items), self.next_url)

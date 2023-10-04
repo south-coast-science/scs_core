@@ -8,7 +8,7 @@ Created on 6 Dec 2022
 
 import json
 
-from scs_core.aws.data.byline import TopicBylineGroup
+from scs_core.aws.manager.byline.byline import TopicBylineGroup
 
 from scs_core.data.topic_path import TopicPath, TopicGroup
 from scs_core.data.datetime import LocalizedDatetime

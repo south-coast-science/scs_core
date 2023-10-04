@@ -6,7 +6,6 @@ Created on 24 Apr 2023
 Enables a device to register itself as a CognitoDevice
 """
 
-import json
 import requests
 
 from scs_core.aws.client.api_client import APIClient
@@ -39,7 +38,7 @@ class CognitoDeviceCreator(APIClient):
         response = requests.get(self.__URL, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
         self._check_response(response)
 
-        return json.loads(response.json())
+        return response.json()
 
 
     def create(self, identity: CognitoDeviceIdentity):

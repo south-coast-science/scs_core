@@ -8,7 +8,7 @@ Created on 17 Jun 2021
 
 import json
 
-from scs_core.aws.data.alert import AlertSpecification, AlertStatus
+from scs_core.aws.monitor.alert.alert import AlertSpecification, AlertStatus
 
 from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONify
