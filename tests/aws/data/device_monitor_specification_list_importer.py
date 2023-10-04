@@ -11,10 +11,12 @@ import sys
 from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.client import Client
 
-from scs_core.aws.data.device_monitor_specification import DeviceMonitorSpecification, DeviceMonitorSpecificationList
-from scs_core.aws.data.device_monitor_email_list import DeviceMonitorEmailList
-
 from scs_core.aws.manager.s3_manager import S3PersistenceManager
+
+from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
+    DeviceMonitorSpecificationList
+
+from scs_core.aws.monitor.device.device_monitor_email_list import DeviceMonitorEmailList
 
 from scs_core.data.json import JSONify
 

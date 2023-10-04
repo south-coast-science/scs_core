@@ -15,7 +15,7 @@ import requests
 from urllib.parse import parse_qs, urlparse
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.data.byline import Byline, DeviceBylineGroup, TopicBylineGroup
+from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------

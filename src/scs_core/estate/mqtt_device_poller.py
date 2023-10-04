@@ -14,7 +14,8 @@ from AWSIoTPythonSDK.exception import operationError, operationTimeoutException
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
-from scs_core.aws.data.byline import TopicBylineGroup
+
+from scs_core.aws.manager.byline.byline import TopicBylineGroup
 from scs_core.aws.manager.dynamo_manager import DynamoManager
 
 from scs_core.control.control_datum import ControlDatum

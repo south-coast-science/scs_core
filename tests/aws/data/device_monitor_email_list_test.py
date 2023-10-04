@@ -6,7 +6,7 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.data.device_monitor_email_list import DeviceMonitorEmailList
+from scs_core.aws.monitor.device.device_monitor_email_list import DeviceMonitorEmailList
 
 
 # ------------------------------------------------------------------------------------------------------------

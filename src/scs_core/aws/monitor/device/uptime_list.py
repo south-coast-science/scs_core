@@ -1,8 +1,7 @@
 """
-Created on 09 Nov 2020
+Created on 06 Nov 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
-
 """
 
 from collections import OrderedDict
@@ -12,12 +11,12 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class RuntimeRecord(PersistentJSONable):
+class UptimeList(PersistentJSONable):
     """
     classdocs
     """
 
-    __FILENAME = "device_monitor_runtime"
+    __FILENAME = "device_uptime_list"
 
     @classmethod
     def persistence_location(cls):
@@ -32,34 +31,34 @@ class RuntimeRecord(PersistentJSONable):
         if not jdict:
             return None
 
-        last_runtime = jdict.get('last_runtime')
+        uptime_list = jdict.get('uptime_list')
 
-        return RuntimeRecord(last_runtime)
+        return UptimeList(uptime_list)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, last_runtime):
+    def __init__(self, uptime_list):
         """
         Constructor
         """
         super().__init__()
 
-        self.__last_runtime = last_runtime
+        self.__uptime_list = uptime_list
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def last_runtime(self):
-        return self.__last_runtime
+    def uptime_list(self):
+        return self.__uptime_list
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['last_runtime'] = self.__last_runtime
+        jdict['uptime_list'] = self.__uptime_list
 
         return jdict
 
@@ -67,5 +66,5 @@ class RuntimeRecord(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "RuntimeRecord:{last_runtime:%s}" %  \
-               self.__last_runtime
+        return "UptimeList:{uptime_list:%s}" %  \
+               self.uptime_list

@@ -12,38 +12,11 @@ from collections import OrderedDict
 from enum import Enum
 from urllib.parse import parse_qs, urlparse
 
-from scs_core.aws.client.api_client import APIClient, APIResponse
+from scs_core.aws.client.api_intercourse import APIResponse
 
 from scs_core.data.str import Str
 
 from scs_core.sample.configuration_sample import ConfigurationSample
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class ConfigurationFinder(APIClient):
-    """
-    classdocs
-    """
-
-    __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationFinder"
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, reporter=None):
-        super().__init__(reporter=reporter)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def find(self, token, tag_filter, exact_match, response_mode):
-        if self._reporter:
-            self._reporter.reset()
-
-        request = ConfigurationRequest(tag_filter, exact_match, response_mode)
-
-        for item in self._get_blocks(self.__URL, token, ConfigurationResponse, params=request.params()):
-            yield item
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -165,6 +138,11 @@ class ConfigurationRequest(object):
     @exclusive_start_key.setter
     def exclusive_start_key(self, exclusive_start_key):
         self.__exclusive_start_key = exclusive_start_key
+
+
+    @property
+    def exclusive_start_key_params(self):
+        return self.__exclusive_start_key.params() if self.__exclusive_start_key else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
