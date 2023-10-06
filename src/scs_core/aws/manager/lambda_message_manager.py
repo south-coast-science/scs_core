@@ -17,11 +17,12 @@ curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregat
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
+from scs_core.aws.client.api_intercourse import APIResponse
 from scs_core.aws.client.rest_client import RESTClient
+
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -379,7 +380,7 @@ class MessageRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageResponse(JSONable):
+class MessageResponse(APIResponse):
     """
     classdocs
     """
@@ -481,6 +482,11 @@ class MessageResponse(JSONable):
             return item['rec']
         except TypeError:
             return item.payload['rec']
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def next_params(self, _):
+        raise NotImplemented
 
 
     # ----------------------------------------------------------------------------------------------------------------

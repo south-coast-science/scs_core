@@ -21,7 +21,7 @@ class APIResponse(ABC, JSONable):
 
     __CORS_HEADERS = {                                      # Cross-Origin Resource Sharing
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': True,
+        'Access-Control-Allow-Credentials': True
     }
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class APIResponse(ABC, JSONable):
 
     def as_http(self, status=HTTPStatus.OK, cors=False):
         jdict = {
-            'statusCode': status,
+            'statusCode': int(status),
             'body': JSONify.dumps(self)
         }
 
