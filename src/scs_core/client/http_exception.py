@@ -107,7 +107,12 @@ class HTTPException(RuntimeError, JSONable):
     @property
     def error_report(self):
         now = LocalizedDatetime.now().utc().as_iso8601()
+
+        if self.data is None:
+            return "%s: HTTP response: %s (%s)" % (now, self.status, self.reason)
+
         return "%s: HTTP response: %s (%s) %s" % (now, self.status, self.reason, self.data)
+
 
 
     def __str__(self, *args, **kwargs):

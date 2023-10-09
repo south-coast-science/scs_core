@@ -116,7 +116,7 @@ class Dataset(object):
 
             # AWS item is newer - ignore old-world item...
             if self.latest_import and retrieved_item.last_updated > self.latest_import:
-                self.__logger.info('WARNING: old-world item ignored: %s' % item)
+                self.__logger.warn('WARNING: old-world item ignored: %s' % item)
                 return
 
             # old-world item is newer...
@@ -126,7 +126,7 @@ class Dataset(object):
                 item.save(self.db_username)
 
             self.__items[item.index] = item
-            self.__logger.info('updated: %s' % item)
+            self.__logger.warn('updated: %s' % item)
 
         except KeyError:
             # no AWS item...
@@ -134,7 +134,7 @@ class Dataset(object):
                 item.save(self.db_username)
 
             self.__items[item.index] = item
-            self.__logger.info('inserted: %s' % item)
+            self.__logger.warn('inserted: %s' % item)
 
 
     def delete_unreferenced(self, references):
@@ -146,7 +146,7 @@ class Dataset(object):
                 item.delete(self.db_username)
 
             del self.__items[index]
-            self.__logger.info("deleted: %s" % item)
+            self.__logger.warn("deleted: %s" % item)
 
 
     # ----------------------------------------------------------------------------------------------------------------

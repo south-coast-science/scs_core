@@ -35,6 +35,7 @@ class Aggregate(object):
         self.__iso_path = iso_path                      # string
         self.__nodes = nodes                            # list of string
 
+        self.__paths = []                               # array of string
         self.__precisions = {}                          # dict of path: Precision
         self.__regressions = {}                         # dict of path: LinearRegression
 
@@ -71,10 +72,11 @@ class Aggregate(object):
                 node = sample.node(path)
                 self.__regressions[path] = CategoricalRegression() if isinstance(node, str) else LinearRegression()
 
+            self.__paths = self.__precisions.keys()
             self.__initialised = True
 
         # values...
-        for path in self.__precisions.keys():
+        for path in self.__paths:
             try:
                 value = sample.node(path)
             except KeyError:
@@ -95,7 +97,7 @@ class Aggregate(object):
     def reset(self):
         self.__block_sample_count = 0
 
-        for path in self.__regressions.keys():
+        for path in self.__paths:
             self.__regressions[path].reset()
 
 

@@ -48,9 +48,8 @@ class APIClient(ABC):
 
 
     def _check_response(self, response):
-        self.__logger.debug('response.json: %s' % response.json())
-
         status = HTTPStatus(response.status_code)
+        self.__logger.debug('status: %s' % status)
 
         if status != HTTPStatus.OK:
             raise HTTPException.construct(status.value, response.reason, response.json())

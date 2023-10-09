@@ -76,7 +76,7 @@ class HTTPResponse(JSONable, ABC):
 
     def as_http(self, cors=False):
         jdict = {
-            'statusCode': self.status,
+            'statusCode': int(self.status),
             'body': JSONify.dumps(self)
         }
 
