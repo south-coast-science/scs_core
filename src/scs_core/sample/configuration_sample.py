@@ -50,7 +50,6 @@ example document:
 """
 
 import json
-# import sys
 
 from collections import OrderedDict
 

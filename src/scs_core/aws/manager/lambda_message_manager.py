@@ -17,11 +17,12 @@ curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregat
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
+from scs_core.aws.client.api_intercourse import APIResponse
 from scs_core.aws.client.rest_client import RESTClient
+
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -41,12 +42,13 @@ class MessageManager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, reporter=None):
+    def __init__(self, reporter=None, api_key=None):
         """
         Constructor
         """
-        self.__rest_client = RESTClient()
+        self.__rest_client = RESTClient(api_key=api_key)
         self.__reporter = reporter
+        self.__api_key = api_key
 
         self.__logger = Logging.getLogger()
 
@@ -107,7 +109,8 @@ class MessageManager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageManager:{rest_client:%s, reporter:%s}" % (self.__rest_client, self.__reporter)
+        return "MessageManager:{rest_client:%s, reporter:%s, api_key:%s}" % \
+            (self.__rest_client, self.__reporter, self.__api_key)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -193,19 +196,19 @@ class MessageRequest(object):
         """
         Constructor
         """
-        self.__topic = topic  # string
-        self.__start = start  # LocalizedDatetime
-        self.__end = end  # LocalizedDatetime
+        self.__topic = topic                                                        # string
+        self.__start = start                                                        # LocalizedDatetime
+        self.__end = end                                                            # LocalizedDatetime
 
-        self.__path = path  # string
-        self.__fetch_last_written = bool(fetch_last_written)  # bool
-        self.__checkpoint = checkpoint  # string
-        self.__include_wrapper = bool(include_wrapper)  # bool
-        self.__rec_only = bool(rec_only)  # bool
-        self.__min_max = bool(min_max)  # bool
-        self.__exclude_remainder = bool(exclude_remainder)  # bool
-        self.__fetch_last_written_before = bool(fetch_last_written_before)  # bool
-        self.__backoff_limit = backoff_limit  # int seconds
+        self.__path = path                                                          # string
+        self.__fetch_last_written = bool(fetch_last_written)                        # bool
+        self.__checkpoint = checkpoint                                              # string
+        self.__include_wrapper = bool(include_wrapper)                              # bool
+        self.__rec_only = bool(rec_only)                                            # bool
+        self.__min_max = bool(min_max)                                              # bool
+        self.__exclude_remainder = bool(exclude_remainder)                          # bool
+        self.__fetch_last_written_before = bool(fetch_last_written_before)          # bool
+        self.__backoff_limit = backoff_limit                                        # int seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -377,7 +380,7 @@ class MessageRequest(object):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MessageResponse(JSONable):
+class MessageResponse(APIResponse):
     """
     classdocs
     """
@@ -386,6 +389,8 @@ class MessageResponse(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("jdict: %s" % jdict)
+
         if not jdict:
             return None
 
@@ -396,6 +401,9 @@ class MessageResponse(JSONable):
 
         items = []
         for msg_jdict in jdict.get('Items'):
+            if not msg_jdict:
+                continue
+
             item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
             items.append(item)
 
@@ -474,6 +482,11 @@ class MessageResponse(JSONable):
             return item['rec']
         except TypeError:
             return item.payload['rec']
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def next_params(self, _):
+        raise NotImplemented
 
 
     # ----------------------------------------------------------------------------------------------------------------

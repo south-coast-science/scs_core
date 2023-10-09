@@ -35,11 +35,12 @@ class RESTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    def __init__(self, api_key=None):
         """
         Constructor
         """
         self.__http_client = HTTPClient()
+        self.__api_key = api_key
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -55,7 +56,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, path, params=None):
-        # print("RESTClient.get: path: %s params: %s headers:%s" % (path, params, self.__headers), file=sys.stderr)
+        print("RESTClient.get: path: %s params: %s headers:%s" % (path, params, self.__headers))
 
         try:
             response_jstr = self.__http_client.get(path, params, self.__headers)
@@ -125,11 +126,17 @@ class RESTClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": self.__HEADER_ACCEPT,
-                "Authorization": self.__HEADER_AUTHORIZATION}
+        headers = {
+            "Accept": self.__HEADER_ACCEPT,
+        }
+
+        if self.__api_key is not None:
+            headers["Authorization"] = ' '.join((self.__HEADER_AUTHORIZATION, self.__api_key))
+
+        return headers
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "RESTClient:{host:%s}" % self.__HOST
+        return "RESTClient:{host:%s, api_key:%s}" % (self.__HOST, self.__api_key)
