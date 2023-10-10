@@ -61,6 +61,11 @@ class Datum(object):
             return False
 
 
+    @classmethod
+    def is_true(cls, value):
+        return value in ['True', 'true']
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # morphological numeracy...
 
