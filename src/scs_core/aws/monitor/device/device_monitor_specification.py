@@ -4,13 +4,84 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"device-tag": "scs-ph1-43", "recipients": ["someone@somewhere.com"], "suspended": false}
+{"scs-ph1-44": {"device-tag": "scs-ph1-44", "recipients": [{"email": "tony.bush@apertum.co.uk", "json-message": false}],
+"suspended": false}, ...}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.str import Str
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceMonitorRecipient(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if jdict is None:
+            return None
+
+        try:
+            email_address = jdict.get('email')
+            json_message = jdict.get('json-message')
+
+            return cls(email_address, json_message)
+
+        except AttributeError:
+            return cls(jdict, False)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, email_address, json_message):
+        """
+        Constructor
+        """
+        super().__init__()
+
+        self.__email_address = email_address                        # string
+        self.__json_message = bool(json_message)                    # bool
+
+
+    def __lt__(self, other):
+        return self.__email_address < other.__email_address
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['email'] = self.email_address
+        jdict['json-message'] = self.json_message
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def email_address(self):
+        return self.__email_address
+
+
+    @property
+    def json_message(self):
+        return self.__json_message
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DeviceMonitorRecipient:{email_address:%s, json_message:%s}" %  \
+            (self.email_address, self.json_message)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,7 +99,12 @@ class DeviceMonitorSpecification(JSONable):
             return None
 
         device_tag = jdict.get('device-tag')
-        recipients = set(jdict.get('recipients'))
+
+        recipients = {}
+        for recipient_jdict in jdict.get('recipients'):
+            recipient = DeviceMonitorRecipient.construct_from_jdict(recipient_jdict)
+            recipients[recipient.email_address] = recipient
+
         is_suspended = jdict.get('suspended')
 
         return cls(device_tag, recipients, is_suspended)
@@ -43,7 +119,7 @@ class DeviceMonitorSpecification(JSONable):
         super().__init__()
 
         self.__device_tag = device_tag                              # string
-        self.__recipients = recipients                              # set of emails
+        self.__recipients = recipients                              # dict of email: DeviceMonitorRecipient
         self.__is_suspended = bool(is_suspended)                    # bool
 
 
@@ -53,12 +129,15 @@ class DeviceMonitorSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, email_address):
-        self.__recipients.add(email_address)
+    def add(self, receipient: DeviceMonitorRecipient):
+        self.__recipients[receipient.email_address] = receipient
 
 
     def discard(self, email_address):
-        self.__recipients.discard(email_address)
+        try:
+            del self.__recipients[email_address]
+        except KeyError:
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -106,7 +185,7 @@ class DeviceMonitorSpecification(JSONable):
 
     @property
     def recipients(self):
-        return sorted(self.__recipients)
+        return sorted(self.__recipients.values())
 
 
     @property
@@ -180,11 +259,11 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         return self.__device_dict[device_tag]
 
 
-    def add(self, device_tag, email_address):
+    def add(self, device_tag, receipient: DeviceMonitorRecipient):
         if device_tag not in self.__device_dict:
             self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, set(), False)
 
-        self.__device_dict[device_tag].add(email_address)
+        self.__device_dict[device_tag].add(receipient)
 
         return self.__device_dict[device_tag]
 
@@ -196,7 +275,9 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         if device_tag is None:
             for device_tag in self.__device_dict:
                 self.__device_dict[device_tag].discard(email_address)
-                device_dict[device_tag] = self.__device_dict[device_tag]
+
+                if len(self.__device_dict[device_tag]):
+                    device_dict[device_tag] = self.__device_dict[device_tag]
 
         # specific device...
         elif device_tag not in self.__device_dict:
@@ -204,7 +285,9 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
 
         else:
             self.__device_dict[device_tag].discard(email_address)
-            device_dict = {device_tag: self.__device_dict[device_tag]}
+
+            if len(self.__device_dict[device_tag]):
+                device_dict = {device_tag: self.__device_dict[device_tag]}
 
         return DeviceMonitorSpecificationList(device_dict)
 
