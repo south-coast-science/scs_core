@@ -129,8 +129,8 @@ class DeviceMonitorSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, receipient: DeviceMonitorRecipient):
-        self.__recipients[receipient.email_address] = receipient
+    def add(self, recipient: DeviceMonitorRecipient):
+        self.__recipients[recipient.email_address] = recipient
 
 
     def discard(self, email_address):
@@ -186,6 +186,11 @@ class DeviceMonitorSpecification(JSONable):
     @property
     def recipients(self):
         return sorted(self.__recipients.values())
+
+
+    @property
+    def recipient_email_addresses(self):                                        # TODO: temporary fix
+        return [recipient.email_address for recipient in self.recipients]
 
 
     @property
@@ -259,11 +264,11 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         return self.__device_dict[device_tag]
 
 
-    def add(self, device_tag, receipient: DeviceMonitorRecipient):
+    def add(self, device_tag, recipient: DeviceMonitorRecipient):
         if device_tag not in self.__device_dict:
             self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, set(), False)
 
-        self.__device_dict[device_tag].add(receipient)
+        self.__device_dict[device_tag].add(recipient)
 
         return self.__device_dict[device_tag]
 
