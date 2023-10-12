@@ -69,6 +69,19 @@ specification_manager = AlertSpecificationManager()
 response = specification_manager.find(auth.id_token, None, None, None, None)
 
 for alert in sorted(response.alerts):
+    jstr = JSONify.dumps(alert)
+    print("jstr: %s" % jstr)
+    print("-")
+
+    jdict = json.loads(jstr)
+    print("jdict: %s" % jdict)
+    print("-")
+
+    alert = AlertSpecification.construct_from_jdict(jdict)
+    print("alert: %s" % alert)
+    print("-")
+
+
     response = specification_manager.update(auth.id_token, alert)
     print(response)
 

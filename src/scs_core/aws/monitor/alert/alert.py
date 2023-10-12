@@ -189,18 +189,23 @@ class AlertSpecification(JSONable):
         # cc_list = set(jdict.get('cc-list', []))
         suspended = jdict.get('suspended')
 
-        to = EmailRecipient(jdict.get('to'), json_message)
+        try:
+            # new format...
+            to = EmailRecipient.construct_from_jdict(jdict.get('to'))
 
-        cc_list = {}
-        for email_address in jdict.get('cc-list', []):
-            recipient = EmailRecipient(email_address, json_message)
-            cc_list[recipient.email_address] = recipient
+            cc_list = {}
+            for cc_jdict in jdict.get('cc-list'):
+                recipient = EmailRecipient.construct_from_jdict(cc_jdict)
+                cc_list[recipient.email_address] = recipient
 
-        # cc_list = {}
-        # for cc_jdict in jdict.get('cc-list'):
-        #     recipient = EmailRecipient.construct_from_jdict(cc_jdict)
-        #     cc_list[recipient.email_address] = recipient
+        except AttributeError:
+            # old format...
+            to = EmailRecipient(jdict.get('to'), json_message)
 
+            cc_list = {}
+            for email_address in jdict.get('cc-list', []):
+                recipient = EmailRecipient(email_address, json_message)
+                cc_list[recipient.email_address] = recipient
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, contiguous_alerts, json_message,
