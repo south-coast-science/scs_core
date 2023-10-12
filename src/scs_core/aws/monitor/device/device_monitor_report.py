@@ -13,12 +13,22 @@ document example (DeviceReport):
 "south-coast-science-dev/development/loc/1/particulates": {"is-ok": true, "since": "2023-06-19T16:57:25Z"}},
 "power": {"is-ok": null, "since": "2023-06-19T16:57:25Z"},
 "uptime": {"period": "00-03:34:00"}}
+
+document example (DeviceMonitorMessage):
+{"change": {"device-tag": "scs-be2-3", "cause": "TOPIC_INACTIVE", "topic": "test/topic"},
+"status": {"device-tag": "scs-be2-3", "availability": {"is-ok": false, "since": "2023-10-11T14:45:35Z"},
+"data": {"south-coast-science-dev/development/device/alpha-bb-eng-000003/status":
+{"is-ok": true, "since": "2023-07-06T13:00:32Z"}, "south-coast-science-dev/development/loc/1/climate":
+{"is-ok": true, "since": "2023-10-02T13:30:37Z"}, "south-coast-science-dev/development/loc/1/gases":
+{"is-ok": true, "since": "2023-10-02T12:45:36Z"}, "south-coast-science-dev/development/loc/1/particulates":
+{"is-ok": true, "since": "2023-10-10T11:45:35Z"}}, "power": {"is-ok": true, "since": "2023-07-04T15:42:10Z"},
+"uptime": {"period": "00-00:53:00"}}}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
-from scs_core.data.json import JSONable, PersistentJSONable
+from scs_core.data.json import JSONable, JSONify, PersistentJSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -213,7 +223,7 @@ class TopicStatus(JSONable):
         """
         super().__init__()
 
-        self.__topic_dict = topic_dict                                      # dict of string: DeviceStatus
+        self.__topic_dict = topic_dict                                  # dict of string: DeviceStatus
 
 
     def __len__(self):
@@ -453,3 +463,154 @@ class DeviceMonitorReport(PersistentJSONable):
 
     def __str__(self, *args, **kwargs):
         return "DeviceMonitorReport:{device_dict:%s}" %  Str.collection(self.device_dict)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceStatusChange(JSONable):
+    """
+    classdocs
+    """
+
+    CAUSE_ILLEGAL_VALUES = "ILLEGAL_VALUES"
+    CAUSE_LEGAL_VALUES = "LEGAL_VALUES"
+    CAUSE_POWER_LOST = "POWER_LOST"
+    CAUSE_POWER_RESTORED = "POWER_RESTORED"
+    CAUSE_OFFLINE = "OFFLINE"
+    CAUSE_ONLINE = "ONLINE"
+    CAUSE_TOPIC_INACTIVE = "TOPIC_INACTIVE"
+    CAUSE_TOPIC_ACTIVE = "TOPIC_ACTIVE"
+    CAUSE_UPTIME = "UPTIME"
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        device_tag = jdict.get('device-tag')
+        cause = jdict.get('cause')
+        topic = jdict.get('topic')
+
+        return cls(device_tag, cause, topic)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device_tag, cause, topic=None):
+        """
+        Constructor
+        """
+        self.__device_tag = device_tag                              # string
+        self.__cause = cause                                        # string
+        self.__topic = topic                                        # string or None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['device-tag'] = self.device_tag
+        jdict['cause'] = self.cause
+
+        if self.topic is not None:
+            jdict['topic'] = self.topic
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device_tag(self):
+        return self.__device_tag
+
+
+    @property
+    def cause(self):
+        return self.__cause
+
+
+    @property
+    def topic(self):
+        return self.__topic
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DeviceStatusChange:{device_tag:%s, cause:%s, topic:%s}" %  (self.device_tag, self.cause, self.topic)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceMonitorMessage(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        change = DeviceStatusChange.construct_from_jdict(jdict.get('change'))
+        status = DeviceReport.construct_from_jdict(jdict.get('status'))
+
+        return cls(change, status)
+
+
+    @classmethod
+    def construct(cls, status: DeviceReport, cause, topic=None):
+        change = DeviceStatusChange(status.device_tag, cause, topic=topic)
+
+        return cls(change, status)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, change: DeviceStatusChange, status: DeviceReport):
+        """
+        Constructor
+        """
+        self.__change = change                                      # DeviceStatusChange
+        self.__status = status                                      # DeviceReport
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['change'] = self.change
+        jdict['status'] = self.status
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def subject(self):
+        return JSONify.dumps(self.change)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def change(self):
+        return self.__change
+
+
+    @property
+    def status(self):
+        return self.__status
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DeviceMonitorMessage:{change:%s, status:%s}" %   (self.change, self.status)

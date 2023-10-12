@@ -28,14 +28,10 @@ class DeviceMonitorRecipient(JSONable):
         if jdict is None:
             return None
 
-        try:
-            email_address = jdict.get('email')
-            json_message = jdict.get('json-message')
+        email_address = jdict.get('email')
+        json_message = jdict.get('json-message')
 
-            return cls(email_address, json_message)
-
-        except AttributeError:
-            return cls(jdict, False)
+        return cls(email_address, json_message)
 
 
     # ----------------------------------------------------------------------------------------------------------------
