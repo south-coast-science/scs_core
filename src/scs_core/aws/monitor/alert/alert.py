@@ -158,6 +158,7 @@ class AlertSpecification(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("jdict: %s" % jdict)
         if not jdict:
             return None
 
