@@ -189,8 +189,10 @@ class AlertSpecification(JSONable):
 
         to = EmailRecipient.construct_from_jdict(jdict.get('to'))
 
+        recipients_list = jdict.get('bcc-list') if 'bcc-list' in jdict else jdict.get('cc-list')
+
         bcc_dict = {}
-        for bcc_jdict in jdict.get('bcc-list'):
+        for bcc_jdict in recipients_list:
             recipient = EmailRecipient.construct_from_jdict(bcc_jdict)
             bcc_dict[recipient.email_address] = recipient
 
