@@ -33,7 +33,7 @@ from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 from scs_core.data.str import Str
 
-from scs_core.email.email import EmailRecipient
+from scs_core.email.email import Email, EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -497,7 +497,7 @@ class AlertSpecification(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertMessage(JSONable):
+class AlertMessage(Email, JSONable):
     """
     classdocs
     """
@@ -538,8 +538,14 @@ class AlertMessage(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def subject(self):
         return JSONify.dumps(self.alert_status)
+
+
+    @property
+    def body(self):
+        return JSONify.dumps(self)
 
 
     # ----------------------------------------------------------------------------------------------------------------
