@@ -121,11 +121,6 @@ class DeviceMonitorSpecification(JSONable):
 
 
     @property
-    def recipient_email_addresses(self):                                        # TODO: temporary fix
-        return [recipient.email_address for recipient in self.recipients]
-
-
-    @property
     def is_suspended(self):
         return self.__is_suspended
 

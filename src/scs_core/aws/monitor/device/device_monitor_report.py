@@ -171,7 +171,12 @@ class DeviceUptime(JSONable):
         if self.period < prev_report.period:
             return False
 
-        return None
+        return True
+
+        # if self.period < prev_report.period:
+        #     return False
+        #
+        # return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
