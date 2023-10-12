@@ -7,10 +7,12 @@ Created on 17 Jun 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorRecipient, \
-    DeviceMonitorSpecification, DeviceMonitorSpecificationList
+from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
+    DeviceMonitorSpecificationList
 
 from scs_core.data.json import JSONify
+
+from scs_core.email.email import EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -43,7 +45,7 @@ class DeviceMonitorSpecificationManager(APIClient):
         return DeviceMonitorSpecificationList.construct_from_jdict(response.json())
 
 
-    def add(self, token, device_tag, recipient: DeviceMonitorRecipient):
+    def add(self, token, device_tag, recipient: EmailRecipient):
         payload = {
             'device_tag': device_tag,
             'recipient': recipient

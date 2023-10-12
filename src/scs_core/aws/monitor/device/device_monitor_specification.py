@@ -133,8 +133,10 @@ class DeviceMonitorSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        recipients = Str.collection(self.recipients)
+
         return "DeviceMonitorSpecification:{device_tag:%s, recipients:%s, is_suspended:%s}" %  \
-            (self.device_tag, self.recipients, self.is_suspended)
+            (self.device_tag, recipients, self.is_suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -64,7 +64,7 @@ class EmailRecipient(JSONable):
 
 
     def __lt__(self, other):
-        return self.__email_address < other.__email_address
+        return self.__email_address.lower() < other.__email_address.lower()
 
 
     # ----------------------------------------------------------------------------------------------------------------

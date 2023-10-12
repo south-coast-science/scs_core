@@ -31,6 +31,9 @@ from scs_core.data.datum import Datum
 from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
+from scs_core.data.str import Str
+
+from scs_core.email.email import EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -177,14 +180,27 @@ class AlertSpecification(JSONable):
 
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
-        contiguous_alerts = jdict.get('contiguous-alerts', is_diurnal)      # backwards-compatibility
-        json_message = jdict.get('json-message', False)
+        contiguous_alerts = jdict.get('contiguous-alerts', is_diurnal)          # backwards-compatibility
+        json_message = jdict.get('json-message', False)                         # backwards-compatibility
 
         creator_email_address = jdict.get('creator-email-address')
 
-        to = jdict.get('to')
-        cc_list = set(jdict.get('cc-list', []))
+        # to = jdict.get('to')
+        # cc_list = set(jdict.get('cc-list', []))
         suspended = jdict.get('suspended')
+
+        to = EmailRecipient(jdict.get('to'), json_message)
+
+        cc_list = {}
+        for email_address in jdict.get('cc-list', []):
+            recipient = EmailRecipient(email_address, json_message)
+            cc_list[recipient.email_address] = recipient
+
+        # cc_list = {}
+        # for cc_jdict in jdict.get('cc-list'):
+        #     recipient = EmailRecipient.construct_from_jdict(cc_jdict)
+        #     cc_list[recipient.email_address] = recipient
+
 
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
                    aggregation_period, test_interval, contiguous_alerts, json_message,
@@ -218,8 +234,8 @@ class AlertSpecification(JSONable):
 
         self.__creator_email_address = creator_email_address            # string
 
-        self.__to = to                                                  # string                updatable
-        self.__cc_list = cc_list                                        # set of string         updatable
+        self.__to = to                                                  # EmailRecipient
+        self.__cc_list = cc_list                                        # dict of email: DeviceMonitorRecipient
         self.__suspended = bool(suspended)                              # bool                  updatable
 
 
@@ -379,7 +395,8 @@ class AlertSpecification(JSONable):
             jdict['creator-email-address'] = self.creator_email_address
 
         jdict['to'] = self.to
-        jdict['cc-list'] = sorted(self.cc_list, key=lambda email: email.lower())
+        # jdict['cc-list'] = sorted(self.cc_list, key=lambda email: email.lower())
+        jdict['cc-list'] = self.cc_list
         jdict['suspended'] = self.suspended
 
         return jdict
@@ -459,7 +476,7 @@ class AlertSpecification(JSONable):
 
     @property
     def cc_list(self):
-        return self.__cc_list
+        return sorted(self.__cc_list.values())
 
 
     @property
@@ -491,6 +508,8 @@ class AlertSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        cclist = Str.collection(self.__cc_list)
+
         return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
                "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
                "contiguous_alerts:%s, json_message:%s, " \
@@ -498,7 +517,7 @@ class AlertSpecification(JSONable):
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
                 self.contiguous_alerts, self.json_message,
-                self.creator_email_address, self.to, self.__cc_list, self.suspended)
+                self.creator_email_address, self.to, cclist, self.suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------
