@@ -13,71 +13,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.str import Str
 
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class DeviceMonitorRecipient(JSONable):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if jdict is None:
-            return None
-
-        email_address = jdict.get('email')
-        json_message = jdict.get('json-message')
-
-        return cls(email_address, json_message)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, email_address, json_message):
-        """
-        Constructor
-        """
-        super().__init__()
-
-        self.__email_address = email_address                        # string
-        self.__json_message = bool(json_message)                    # bool
-
-
-    def __lt__(self, other):
-        return self.__email_address < other.__email_address
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['email'] = self.email_address
-        jdict['json-message'] = self.json_message
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def email_address(self):
-        return self.__email_address
-
-
-    @property
-    def json_message(self):
-        return self.__json_message
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "DeviceMonitorRecipient:{email_address:%s, json_message:%s}" %  \
-            (self.email_address, self.json_message)
+from scs_core.email.email import EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -98,7 +34,7 @@ class DeviceMonitorSpecification(JSONable):
 
         recipients = {}
         for recipient_jdict in jdict.get('recipients'):
-            recipient = DeviceMonitorRecipient.construct_from_jdict(recipient_jdict)
+            recipient = EmailRecipient.construct_from_jdict(recipient_jdict)
             recipients[recipient.email_address] = recipient
 
         is_suspended = jdict.get('suspended')
@@ -125,7 +61,7 @@ class DeviceMonitorSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, recipient: DeviceMonitorRecipient):
+    def add(self, recipient: EmailRecipient):
         self.__recipients[recipient.email_address] = recipient
 
 
@@ -260,7 +196,7 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         return self.__device_dict[device_tag]
 
 
-    def add(self, device_tag, recipient: DeviceMonitorRecipient):
+    def add(self, device_tag, recipient: EmailRecipient):
         if device_tag not in self.__device_dict:
             self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, set(), False)
 

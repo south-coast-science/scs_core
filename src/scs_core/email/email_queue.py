@@ -3,6 +3,7 @@ Created on 28 Oct 2020
 
 @author: Jade Page (jade.page@southcoastscience.com)
 """
+
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable

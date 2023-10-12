@@ -32,6 +32,8 @@ from scs_core.data.json import JSONable, JSONify, PersistentJSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
+from scs_core.email.email import Email
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -66,7 +68,7 @@ class DeviceStatus(JSONable):
         """
         super().__init__()
 
-        self.__is_ok = is_ok                                        # bool
+        self.__is_ok = bool(is_ok)                                  # bool
         self.__since = since                                        # LocalizedDatetime or None
 
 
@@ -546,7 +548,7 @@ class DeviceStatusChange(JSONable):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceMonitorMessage(JSONable):
+class DeviceMonitorMessage(Email, JSONable):
     """
     classdocs
     """
@@ -583,6 +585,18 @@ class DeviceMonitorMessage(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def subject(self):
+        return JSONify.dumps(self.change)
+
+
+    @property
+    def body(self):
+        return JSONify.dumps(self)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def as_json(self):
         jdict = OrderedDict()
 
@@ -590,12 +604,6 @@ class DeviceMonitorMessage(JSONable):
         jdict['status'] = self.status
 
         return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def subject(self):
-        return JSONify.dumps(self.change)
 
 
     # ----------------------------------------------------------------------------------------------------------------
