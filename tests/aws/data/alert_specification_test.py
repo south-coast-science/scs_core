@@ -14,17 +14,23 @@ from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONify
 from scs_core.data.recurring_period import RecurringPeriod
 
+from scs_core.email.email import EmailRecipient
 
 # --------------------------------------------------------------------------------------------------------------------
 
 aggregation_period = RecurringPeriod.construct(5, 'M', 'Europe/London')
 test_interval = RecurringPeriod.construct(1, 'M', 'Europe/London')
 
+to = EmailRecipient("bruno.beloff@southcoastscience.com", False)
+r1 = EmailRecipient("bbeloff@me.com", False)
+r2 = EmailRecipient("hhopton@me.com", False)
+bcc_dict = {r1.email_address: r1, r2.email_address: r2}
+
 print("1...")
 
 alert = AlertSpecification(None, 'my description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, True, True, 'bruno.beloff@southcoastscience.com',
-                           'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
+                           test_interval, True, 'bruno.beloff@southcoastscience.com',
+                           to, bcc_dict, False)
 print(alert)
 print("-")
 
@@ -70,8 +76,8 @@ timezone_str = 'Europe/London'
 aggregation_period = DiurnalPeriod.construct(start_time_str, end_time_str, timezone_str)
 
 alert = AlertSpecification(None, 'my description', 'my/topic', 'my.field', None, 100, True, aggregation_period,
-                           test_interval, False, True, 'bruno.beloff@southcoastscience.com',
-                           'bruno.beloff@southcoastscience.com', ["bbeloff@me.com", "hhopton@me.com"], False)
+                           test_interval, False, 'bruno.beloff@southcoastscience.com',
+                           to, bcc_dict, False)
 print(alert)
 print("-")
 

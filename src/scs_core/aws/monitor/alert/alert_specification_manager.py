@@ -10,6 +10,8 @@ from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.monitor.alert.alert_specification_intercourse import AlertSpecificationFindRequest, \
     AlertSpecificationFindResponse
 
+from scs_core.data.json import JSONify
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +51,7 @@ class AlertSpecificationManager(APIClient):
 
 
     def create(self, token, alert):
-        http_response = requests.post(self.__URL, headers=self._token_headers(token), json=alert.as_json())
+        http_response = requests.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(alert))
         self._check_response(http_response)
 
         response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())
@@ -60,7 +62,7 @@ class AlertSpecificationManager(APIClient):
     def update(self, token, alert):
         url = '/'.join((self.__URL, str(alert.id)))
 
-        http_response = requests.post(url, headers=self._token_headers(token), json=alert.as_json())
+        http_response = requests.post(url, headers=self._token_headers(token), data=JSONify.dumps(alert))
         self._check_response(http_response)
 
         response = AlertSpecificationFindResponse.construct_from_jdict(http_response.json())

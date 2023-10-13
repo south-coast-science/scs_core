@@ -15,6 +15,7 @@ from urllib.parse import parse_qs, urlparse
 from scs_core.aws.client.api_intercourse import APIResponse
 
 from scs_core.data.str import Str
+from scs_core.data.datum import Datum
 
 from scs_core.sample.configuration_sample import ConfigurationSample
 
@@ -45,7 +46,7 @@ class ConfigurationRequest(object):
             return None
 
         tag_filter = qsp.get(cls.TAG_FILTER)
-        exact_match = qsp.get(cls.EXACT_MATCH, 'false').lower() == 'true'
+        exact_match = Datum.is_true(qsp.get(cls.EXACT_MATCH))
 
         try:
             response_mode = cls.Mode[qsp.get(cls.RESPONSE_MODE)]

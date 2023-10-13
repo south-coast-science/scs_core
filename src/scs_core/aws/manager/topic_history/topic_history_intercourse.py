@@ -21,6 +21,7 @@ from scs_core.aws.client.api_intercourse import APIResponse
 from scs_core.aws.data.message import Message
 
 from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.datum import Datum
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
@@ -85,13 +86,13 @@ class TopicHistoryRequest(object):
 
         # optional...
         path = qsp.get(cls.PATH)
-        fetch_last_written = qsp.get(cls.FETCH_LAST_WRITTEN, 'false').lower() == 'true'
+        fetch_last_written = Datum.is_true(qsp.get(cls.FETCH_LAST_WRITTEN))
         checkpoint = qsp.get(cls.CHECKPOINT)
-        include_wrapper = qsp.get(cls.INCLUDE_WRAPPER, 'false').lower() == 'true'
-        rec_only = qsp.get(cls.REC_ONLY, 'false').lower() == 'true'
-        min_max = qsp.get(cls.MIN_MAX, 'false').lower() == 'true'
-        exclude_remainder = qsp.get(cls.EXCLUDE_REMAINDER, 'false').lower() == 'true'
-        fetch_last_written_before = qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE, 'false').lower() == 'true'
+        include_wrapper = Datum.is_true(qsp.get(cls.INCLUDE_WRAPPER))
+        rec_only = Datum.is_true(qsp.get(cls.REC_ONLY))
+        min_max = Datum.is_true(qsp.get(cls.MIN_MAX))
+        exclude_remainder = Datum.is_true(qsp.get(cls.EXCLUDE_REMAINDER))
+        fetch_last_written_before = Datum.is_true(qsp.get(cls.FETCH_LAST_WRITTEN_BEFORE))
         backoff_limit = qsp.get(cls.backoff_limit)
 
         if checkpoint and checkpoint.lower() == 'none':
