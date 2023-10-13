@@ -264,7 +264,12 @@ class AlertSpecification(JSONable):
 
 
     def __contains__(self, email):
-        return email == self.creator_email_address or email == self.to or email in self.bcc_list
+        recipient = EmailRecipient(email, None)
+
+        if self.creator_email_address == email or self.to == recipient:
+            return True
+
+        return EmailRecipient(email, None) in self.bcc_list
 
 
     # ----------------------------------------------------------------------------------------------------------------

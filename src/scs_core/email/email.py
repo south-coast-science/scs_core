@@ -67,6 +67,13 @@ class EmailRecipient(JSONable):
         return self.__email_address.lower() < other.__email_address.lower()
 
 
+    def __eq__(self, other):
+        try:
+            return self.email_address == other.email_address
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
