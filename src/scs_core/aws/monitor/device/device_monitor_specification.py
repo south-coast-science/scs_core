@@ -4,13 +4,16 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"device-tag": "scs-ph1-43", "recipients": ["someone@somewhere.com"], "suspended": false}
+{"scs-ph1-44": {"device-tag": "scs-ph1-44", "recipients": [{"email": "tony.bush@apertum.co.uk", "json-message": false}],
+"suspended": false}, ...}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable, PersistentJSONable
 from scs_core.data.str import Str
+
+from scs_core.email.email import EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,7 +31,12 @@ class DeviceMonitorSpecification(JSONable):
             return None
 
         device_tag = jdict.get('device-tag')
-        recipients = set(jdict.get('recipients'))
+
+        recipients = {}
+        for recipient_jdict in jdict.get('recipients'):
+            recipient = EmailRecipient.construct_from_jdict(recipient_jdict)
+            recipients[recipient.email_address] = recipient
+
         is_suspended = jdict.get('suspended')
 
         return cls(device_tag, recipients, is_suspended)
@@ -43,7 +51,7 @@ class DeviceMonitorSpecification(JSONable):
         super().__init__()
 
         self.__device_tag = device_tag                              # string
-        self.__recipients = recipients                              # set of emails
+        self.__recipients = recipients                              # dict of email: DeviceMonitorRecipient
         self.__is_suspended = bool(is_suspended)                    # bool
 
 
@@ -53,12 +61,15 @@ class DeviceMonitorSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, email_address):
-        self.__recipients.add(email_address)
+    def add(self, recipient: EmailRecipient):
+        self.__recipients[recipient.email_address] = recipient
 
 
     def discard(self, email_address):
-        self.__recipients.discard(email_address)
+        try:
+            del self.__recipients[email_address]
+        except KeyError:
+            pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -106,7 +117,7 @@ class DeviceMonitorSpecification(JSONable):
 
     @property
     def recipients(self):
-        return sorted(self.__recipients)
+        return sorted(self.__recipients.values())
 
 
     @property
@@ -122,8 +133,10 @@ class DeviceMonitorSpecification(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        recipients = Str.collection(self.recipients)
+
         return "DeviceMonitorSpecification:{device_tag:%s, recipients:%s, is_suspended:%s}" %  \
-            (self.device_tag, self.recipients, self.is_suspended)
+            (self.device_tag, recipients, self.is_suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -180,11 +193,11 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         return self.__device_dict[device_tag]
 
 
-    def add(self, device_tag, email_address):
+    def add(self, device_tag, recipient: EmailRecipient):
         if device_tag not in self.__device_dict:
             self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, set(), False)
 
-        self.__device_dict[device_tag].add(email_address)
+        self.__device_dict[device_tag].add(recipient)
 
         return self.__device_dict[device_tag]
 
@@ -196,7 +209,9 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
         if device_tag is None:
             for device_tag in self.__device_dict:
                 self.__device_dict[device_tag].discard(email_address)
-                device_dict[device_tag] = self.__device_dict[device_tag]
+
+                if len(self.__device_dict[device_tag]):
+                    device_dict[device_tag] = self.__device_dict[device_tag]
 
         # specific device...
         elif device_tag not in self.__device_dict:
@@ -204,7 +219,9 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
 
         else:
             self.__device_dict[device_tag].discard(email_address)
-            device_dict = {device_tag: self.__device_dict[device_tag]}
+
+            if len(self.__device_dict[device_tag]):
+                device_dict = {device_tag: self.__device_dict[device_tag]}
 
         return DeviceMonitorSpecificationList(device_dict)
 

@@ -1,0 +1,34 @@
+{
+    "scs-be2-3": {
+        "device-tag": "scs-be2-3",
+        "availability": {
+            "is-ok": false,
+            "since": "2023-10-11T14:45:35Z"
+        },
+        "data": {
+            "south-coast-science-dev/development/device/alpha-bb-eng-000003/status": {
+                "is-ok": true,
+                "since": "2023-07-06T13:00:32Z"
+            },
+            "south-coast-science-dev/development/loc/1/climate": {
+                "is-ok": true,
+                "since": "2023-10-02T13:30:37Z"
+            },
+            "south-coast-science-dev/development/loc/1/gases": {
+                "is-ok": true,
+                "since": "2023-10-02T12:45:36Z"
+            },
+            "south-coast-science-dev/development/loc/1/particulates": {
+                "is-ok": true,
+                "since": "2023-10-10T11:45:35Z"
+            }
+        },
+        "power": {
+            "is-ok": true,
+            "since": "2023-07-04T15:42:10Z"
+        },
+        "uptime": {
+            "period": "00-00:53:00"
+        }
+    }
+}

@@ -8,14 +8,14 @@ Alert example (recurring):
 "field": "exg.val.pm2p5", "lower-threshold": null, "upper-threshold": 20.0, "alert-on-none": false,
 "aggregation-period": {"type": "recurring", "interval": 1, "units": "M", "timezone": "Europe/London"},
 "contiguous-alerts": false, "json-message": false, "creator-email-address": "bruno.beloff@southcoastscience.com",
-"to": "bruno.beloff@southcoastscience.com", "cc-list": [], "suspended": false}
+"to": "bruno.beloff@southcoastscience.com", "bcc-list": [], "suspended": false}
 
 Alert example (diurnal):
 {"id": 107, "description": "be2-3-nightime-test", "topic": "south-coast-science-dev/development/loc/1/climate",
 "field": "val.tmp", "lower-threshold": null, "upper-threshold": 10.0, "alert-on-none": false,
 "aggregation-period": {"type": "diurnal", "start": "20:00:00", "end": "09:50:00", "timezone": "Europe/London"},
 "contiguous-alerts": true, "json-message": false, "creator-email-address": "production@southcoastscience.com",
-"to": "bruno.beloff@southcoastscience.com", "cc-list": ["jade.page@southcoastscience.com"], "suspended": false}
+"to": "bruno.beloff@southcoastscience.com", "bcc-list": ["jade.page@southcoastscience.com"], "suspended": false}
 
 AlertStatus example:
 {"id": 77, "rec": "2021-09-07T11:40:00Z", "cause": "OK", "val": 589.6}
@@ -31,6 +31,9 @@ from scs_core.data.datum import Datum
 from scs_core.data.diurnal_period import DiurnalPeriod
 from scs_core.data.json import JSONable, JSONify
 from scs_core.data.recurring_period import RecurringPeriod
+from scs_core.data.str import Str
+
+from scs_core.email.email import Email, EmailRecipient
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -177,25 +180,29 @@ class AlertSpecification(JSONable):
 
         test_interval = RecurringPeriod.construct_from_jdict(jdict.get('test-interval'))
 
-        contiguous_alerts = jdict.get('contiguous-alerts', is_diurnal)      # backwards-compatibility
-        json_message = jdict.get('json-message', False)
+        contiguous_alerts = jdict.get('contiguous-alerts', is_diurnal)          # backwards-compatibility
 
         creator_email_address = jdict.get('creator-email-address')
 
-        to = jdict.get('to')
-        cc_list = set(jdict.get('cc-list', []))
         suspended = jdict.get('suspended')
 
+        to = EmailRecipient.construct_from_jdict(jdict.get('to'))
+
+        bcc_dict = {}
+        for bcc_jdict in jdict.get('bcc-list'):
+            recipient = EmailRecipient.construct_from_jdict(bcc_jdict)
+            bcc_dict[recipient.email_address] = recipient
+
         return cls(id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                   aggregation_period, test_interval, contiguous_alerts, json_message,
-                   creator_email_address, to, cc_list, suspended)
+                   aggregation_period, test_interval, contiguous_alerts,
+                   creator_email_address, to, bcc_dict, suspended)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, id, description, topic, field, lower_threshold, upper_threshold, alert_on_none,
-                 aggregation_period, test_interval, contiguous_alerts, json_message,
-                 creator_email_address, to, cc_list, suspended):
+                 aggregation_period, test_interval, contiguous_alerts,
+                 creator_email_address, to, bcc_dict, suspended):
         """
         Constructor
         """
@@ -214,12 +221,11 @@ class AlertSpecification(JSONable):
         self.__test_interval = test_interval                            # RecurringPeriod       updatable
 
         self.__contiguous_alerts = bool(contiguous_alerts)              # bool
-        self.__json_message = bool(json_message)                        # bool
 
         self.__creator_email_address = creator_email_address            # string
 
-        self.__to = to                                                  # string                updatable
-        self.__cc_list = cc_list                                        # set of string         updatable
+        self.__to = to                                                  # EmailRecipient
+        self.__bcc_dict = bcc_dict                                      # dict of email: DeviceMonitorRecipient
         self.__suspended = bool(suspended)                              # bool                  updatable
 
 
@@ -258,7 +264,12 @@ class AlertSpecification(JSONable):
 
 
     def __contains__(self, email):
-        return email == self.creator_email_address or email == self.to or email in self.cc_list
+        recipient = EmailRecipient(email, None)
+
+        if self.creator_email_address == email or self.to == recipient:
+            return True
+
+        return EmailRecipient(email, None) in self.bcc_list
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -373,13 +384,12 @@ class AlertSpecification(JSONable):
             jdict['test-interval'] = self.test_interval.as_json()
 
         jdict['contiguous-alerts'] = self.contiguous_alerts
-        jdict['json-message'] = self.json_message
 
         if self.creator_email_address is not None:
             jdict['creator-email-address'] = self.creator_email_address
 
         jdict['to'] = self.to
-        jdict['cc-list'] = sorted(self.cc_list, key=lambda email: email.lower())
+        jdict['bcc-list'] = self.bcc_list
         jdict['suspended'] = self.suspended
 
         return jdict
@@ -438,11 +448,6 @@ class AlertSpecification(JSONable):
 
 
     @property
-    def json_message(self):
-        return self.__json_message
-
-
-    @property
     def creator_email_address(self):
         return self.__creator_email_address
 
@@ -458,8 +463,13 @@ class AlertSpecification(JSONable):
 
 
     @property
-    def cc_list(self):
-        return self.__cc_list
+    def bcc_list(self):
+        return sorted(self.__bcc_dict.values())
+
+
+    @property
+    def bcc_dict(self):
+        return self.__bcc_dict
 
 
     @property
@@ -474,36 +484,22 @@ class AlertSpecification(JSONable):
         self.__id = id
 
 
-    def append_to_cc_list(self, cc):
-        if cc in self.__cc_list:
-            return
-
-        self.__cc_list.append(cc)
-
-
-    def remove_from_cc_list(self, cc):
-        if cc not in self.__cc_list:
-            return
-
-        self.__cc_list.remove(cc)
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        bcclist = Str.collection(self.bcc_list)
+
         return "AlertSpecification:{id:%s, description:%s, topic:%s, field:%s, lower_threshold:%s, " \
                "upper_threshold:%s, alert_on_none:%s, aggregation_period:%s, test_interval:%s, " \
-               "contiguous_alerts:%s, json_message:%s, " \
-               "creator_email_address:%s, to:%s, cc_list:%s, suspended:%s}" %  \
+               "contiguous_alerts:%s, creator_email_address:%s, to:%s, bcc_list:%s, suspended:%s}" %  \
                (self.id, self.description, self.topic, self.field, self.lower_threshold,
                 self.upper_threshold, self.alert_on_none, self.aggregation_period, self.test_interval,
-                self.contiguous_alerts, self.json_message,
-                self.creator_email_address, self.to, self.__cc_list, self.suspended)
+                self.contiguous_alerts, self.creator_email_address, self.to, bcclist, self.suspended)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AlertMessage(JSONable):
+class AlertMessage(Email, JSONable):
     """
     classdocs
     """
@@ -544,8 +540,14 @@ class AlertMessage(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def subject(self):
         return JSONify.dumps(self.alert_status)
+
+
+    @property
+    def body(self):
+        return JSONify.dumps(self)
 
 
     # ----------------------------------------------------------------------------------------------------------------
