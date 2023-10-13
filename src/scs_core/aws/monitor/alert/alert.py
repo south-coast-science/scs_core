@@ -158,7 +158,6 @@ class AlertSpecification(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        print("jdict: %s" % jdict)
         if not jdict:
             return None
 
@@ -188,8 +187,6 @@ class AlertSpecification(JSONable):
         suspended = jdict.get('suspended')
 
         to = EmailRecipient.construct_from_jdict(jdict.get('to'))
-
-        # recipients_list = jdict.get('bcc-list') if 'bcc-list' in jdict else jdict.get('cc-list')
 
         bcc_dict = {}
         for bcc_jdict in jdict.get('bcc-list'):
