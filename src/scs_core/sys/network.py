@@ -40,7 +40,7 @@ class Network(JSONable):
 
         kind = jdict.get('kind')
         state = jdict.get('state')
-        connection = jdict.get('connection')
+        connection = jdict.get('conn')
 
         return cls(device, kind, state, connection)
 
@@ -116,7 +116,9 @@ class Network(JSONable):
 
         jdict['kind'] = self.kind
         jdict['state'] = self.state
-        jdict['connection'] = self.connection
+
+        if self.connection:
+            jdict['conn'] = self.connection
 
         return jdict
 
