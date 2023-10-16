@@ -195,7 +195,7 @@ class DeviceMonitorSpecificationList(PersistentJSONable):
 
     def add(self, device_tag, recipient: EmailRecipient):
         if device_tag not in self.__device_dict:
-            self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, set(), False)
+            self.__device_dict[device_tag] = DeviceMonitorSpecification(device_tag, {}, False)
 
         self.__device_dict[device_tag].add(recipient)
 
