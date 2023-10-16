@@ -225,6 +225,18 @@ example document:
             "int": "0x45",
             "ext": "0x45"
         },
+        "networks": {
+            "cdc-wdm0": {
+                "kind": "gsm",
+                "state": "connected",
+                "connection": "EE M2M"
+            },
+            "eth0": {
+                "kind": "ethernet",
+                "state": "unavailable",
+                "connection": null
+            }
+        },
         "modem": {
             "id": "e3f0ca1c3134d586a9c47dc4fd6c1cb46e6",
             "imei": "866758042325619",
@@ -305,6 +317,7 @@ from scs_core.sync.schedule import Schedule
 
 from scs_core.sys.filesystem import FilesystemReport
 from scs_core.sys.modem import Modem, SIM
+from scs_core.sys.network import Networks
 from scs_core.sys.platform import PlatformSummary
 from scs_core.sys.system_id import SystemID
 
@@ -316,7 +329,7 @@ class Configuration(JSONable):
     classdocs
     """
 
-    VERSION = 1.4
+    VERSION = 1.3
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -338,7 +351,7 @@ class Configuration(JSONable):
                            None, None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
-                           None, None)
+                           None, None, None)
             else:
                 return None
 
@@ -371,6 +384,7 @@ class Configuration(JSONable):
         scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'))
         schedule = Schedule.construct_from_jdict(jdict.get('schedule'))
         sht_conf = SHTConf.construct_from_jdict(jdict.get('sht-conf'))
+        networks = Networks.construct_from_jdict(jdict.get('networks'))
         modem = Modem.construct_from_jdict(jdict.get('modem'))
         sim = SIM.construct_from_jdict(jdict.get('sim'))
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
@@ -381,7 +395,7 @@ class Configuration(JSONable):
                    gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                    mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
                    pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                   scd30_conf, schedule, sht_conf, modem,
+                   scd30_conf, schedule, sht_conf, networks, modem,
                    sim, system_id, timezone_conf)
 
 
@@ -418,6 +432,7 @@ class Configuration(JSONable):
         scd30_conf = SCD30Conf.load(manager)
         schedule = Schedule.load(manager)
         sht_conf = SHTConf.load(manager)
+        networks = None                                         # now provided by Status class
         modem = manager.modem()
         sim = None if exclude_sim else manager.sim()
         system_id = SystemID.load(manager)
@@ -428,7 +443,7 @@ class Configuration(JSONable):
                    gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                    mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
                    pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                   scd30_conf, schedule, sht_conf, modem,
+                   scd30_conf, schedule, sht_conf, networks, modem,
                    sim, system_id, timezone_conf)
 
 
@@ -439,7 +454,7 @@ class Configuration(JSONable):
                  gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                  mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
                  pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                 scd30_conf, schedule, sht_conf, modem,
+                 scd30_conf, schedule, sht_conf, networks, modem,
                  sim, system_id, timezone_conf):
         """
         Constructor
@@ -474,6 +489,7 @@ class Configuration(JSONable):
         self.__scd30_conf = scd30_conf                              # SCD30Conf
         self.__schedule = schedule                                  # Schedule
         self.__sht_conf = sht_conf                                  # SHTConf
+        self.__networks = networks                                  # Networks or None
         self.__modem = modem                                        # Modem
         self.__sim = sim                                            # SIM
         self.__system_id = system_id                                # SystemID
@@ -495,9 +511,9 @@ class Configuration(JSONable):
                    self.psu_conf == other.psu_conf and self.psu_version == other.psu_version and \
                    self.pt1000_calib == other.pt1000_calib and self.scd30_baseline == other.scd30_baseline and \
                    self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
-                   self.sht_conf == other.sht_conf and self.modem == other.modem and \
-                   self.sim == other.sim and self.system_id == other.system_id and \
-                   self.timezone_conf == other.timezone_conf
+                   self.sht_conf == other.sht_conf and self.networks == other.networks and \
+                   self.modem == other.modem and self.sim == other.sim and \
+                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -510,7 +526,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None)
+                             None, None, None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -592,6 +608,9 @@ class Configuration(JSONable):
 
         if self.sht_conf != other.sht_conf:
             diff.__sht_conf = self.sht_conf
+
+        if self.networks != other.networks:
+            diff.__networks = self.networks
 
         if self.modem != other.modem:
             diff.__modem = self.modem
@@ -695,6 +714,9 @@ class Configuration(JSONable):
         if self.sht_conf:
             self.sht_conf.save(manager)
 
+        if self.networks:
+            raise ValueError('networks may not be set')
+
         if self.modem:
             raise ValueError('modem may not be set')
 
@@ -742,6 +764,7 @@ class Configuration(JSONable):
         jdict['scd30-conf'] = self.scd30_conf
         jdict['schedule'] = self.schedule
         jdict['sht-conf'] = self.sht_conf
+        jdict['networks'] = self.networks
         jdict['modem'] = self.modem
         jdict['sim'] = self.sim
         jdict['system-id'] = self.system_id
@@ -893,6 +916,11 @@ class Configuration(JSONable):
 
 
     @property
+    def networks(self):
+        return self.__networks
+
+
+    @property
     def modem(self):
         return self.__modem
 
@@ -920,12 +948,12 @@ class Configuration(JSONable):
                "gas_model_conf:%s, gps_conf:%s, interface_conf:%s, mpl115a2_calib:%s, " \
                "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, opc_version:%s, pmx_model_conf:%s, " \
                "pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
-               "scd30_conf:%s, schedule:%s, sht_conf:%s, modem:%s, " \
+               "scd30_conf:%s, schedule:%s, sht_conf:%s, networks:%s, modem:%s, " \
                "sim:%s, system_id:%s, timezone_conf:%s}" % \
                (self.hostname, self.platform, self.packs, self.afe_baseline, self.afe_id, self.aws_group_config,
                 self.aws_project, self.data_log, self.display_conf, self.vcal_baseline, self.gas_baseline,
                 self.gas_model_conf, self.gps_conf, self.interface_conf, self.mpl115a2_calib,
                 self.mqtt_conf, self.ndir_conf, self.opc_conf, self.opc_version, self.pmx_model_conf,
                 self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
-                self.scd30_conf, self.schedule, self.sht_conf, self.modem,
+                self.scd30_conf, self.schedule, self.sht_conf, self.networks, self.modem,
                 self.sim, self.system_id, self.timezone_conf)
