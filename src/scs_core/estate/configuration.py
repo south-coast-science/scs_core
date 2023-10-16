@@ -432,7 +432,7 @@ class Configuration(JSONable):
         scd30_conf = SCD30Conf.load(manager)
         schedule = Schedule.load(manager)
         sht_conf = SHTConf.load(manager)
-        networks = manager.networks()
+        networks = None                                         # now provided by Status class
         modem = manager.modem()
         sim = None if exclude_sim else manager.sim()
         system_id = SystemID.load(manager)
@@ -489,7 +489,7 @@ class Configuration(JSONable):
         self.__scd30_conf = scd30_conf                              # SCD30Conf
         self.__schedule = schedule                                  # Schedule
         self.__sht_conf = sht_conf                                  # SHTConf
-        self.__networks = networks                                  # Networks
+        self.__networks = networks                                  # Networks or None
         self.__modem = modem                                        # Modem
         self.__sim = sim                                            # SIM
         self.__system_id = system_id                                # SystemID
