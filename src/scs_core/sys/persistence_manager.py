@@ -69,7 +69,11 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
     def list(cls, container, dirname):
         abs_dirname = os.path.join(container, dirname)
 
-        return sorted(os.listdir(abs_dirname))
+        try:
+            return sorted(os.listdir(abs_dirname))
+
+        except FileNotFoundError:
+            return []
 
 
     @classmethod
