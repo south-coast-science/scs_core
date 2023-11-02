@@ -22,11 +22,13 @@ class Command(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, verbose):
+    def __init__(self, verbose, on_abort=None):
         """
         Constructor
         """
         self.__verbose = verbose                            # bool
+        self.__on_abort = on_abort                          # function
+
         self.__logger = Logging.getLogger()
 
 
@@ -79,6 +81,10 @@ class Command(object):
 
         if abort_on_fail and (p.returncode is not None and p.returncode != 0):
             self.__logger.error('ABORTED.')
+
+            if self.__on_abort:
+                self.__on_abort()
+
             exit(p.returncode)
 
         return p
@@ -94,4 +100,4 @@ class Command(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Command:{verbose:%s}" % self.verbose
+        return "Command:{verbose:%s, on_abort:%s}" % (self.verbose, self.__on_abort)
