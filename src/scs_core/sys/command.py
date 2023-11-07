@@ -22,16 +22,20 @@ class JSONPopen(Popen):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-
+    #     def __init__(self, args, bufsize=-1, executable=None,
+    #                  stdin=None, stdout=None, stderr=None,
+    #                  preexec_fn=None, close_fds=True,
+    #                  shell=False, cwd=None, env=None, universal_newlines=None,
+    #                  startupinfo=None, creationflags=0,
+    #                  restore_signals=True, start_new_session=False,
+    #                  pass_fds=(), *, encoding=None, errors=None, text=None):
     def __init__(self, args, bufsize=-1, executable=None,
                  stdin=None, stdout=None, stderr=None,
                  preexec_fn=None, close_fds=True,
                  shell=False, cwd=None, env=None, universal_newlines=None,
                  startupinfo=None, creationflags=0,
                  restore_signals=True, start_new_session=False,
-                 pass_fds=(), user=None, group=None, extra_groups=None,
-                 encoding=None, errors=None, text=None, umask=-1, pipesize=-1,
-                 process_group=None):
+                 pass_fds=(), encoding=None, errors=None, text=None):
         """
         Constructor
         """
@@ -41,9 +45,7 @@ class JSONPopen(Popen):
                          shell=shell, cwd=cwd, env=env, universal_newlines=universal_newlines,
                          startupinfo=startupinfo, creationflags=creationflags,
                          restore_signals=restore_signals, start_new_session=start_new_session,
-                         pass_fds=pass_fds, user=user, group=group, extra_groups=extra_groups,
-                         encoding=encoding, errors=errors, text=text, umask=umask, pipesize=pipesize,
-                         process_group=process_group)
+                         pass_fds=pass_fds, encoding=encoding, errors=errors, text=text)
 
 
     # ----------------------------------------------------------------------------------------------------------------

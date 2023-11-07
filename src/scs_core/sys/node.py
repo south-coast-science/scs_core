@@ -167,7 +167,7 @@ class IoTNode(Node):
     # version...
 
     @classmethod
-    def is_acceptable_os_release(cls):
+    def has_acceptable_os_release(cls):
         minimum = cls.minimum_os_release().split('.')
         release = platform.uname().release
 
@@ -176,13 +176,13 @@ class IoTNode(Node):
         if not match:
             raise ValueError(release)
 
-        fields = match.groups()
+        current = match.groups()
 
-        for i in range(len(fields)):
-            if fields[i] > minimum[i]:
+        for i in range(len(current)):
+            if int(current[i]) > int(minimum[i]):
                 return True
 
-            if fields[i] < minimum[i]:
+            if int(current[i]) < int(minimum[i]):
                 return False
 
         return True
