@@ -6,11 +6,55 @@ Created on 15 Sep 2021
 https://pymotw.com/2/subprocess/
 """
 
+import json
 import sys
 
 from subprocess import Popen, PIPE
 
 from scs_core.sys.logging import Logging
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class JSONPopen(Popen):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, args, bufsize=-1, executable=None,
+                 stdin=None, stdout=None, stderr=None,
+                 preexec_fn=None, close_fds=True,
+                 shell=False, cwd=None, env=None, universal_newlines=None,
+                 startupinfo=None, creationflags=0,
+                 restore_signals=True, start_new_session=False,
+                 pass_fds=(), user=None, group=None, extra_groups=None,
+                 encoding=None, errors=None, text=None, umask=-1, pipesize=-1,
+                 process_group=None):
+        """
+        Constructor
+        """
+        super().__init__(args, bufsize=bufsize, executable=executable,
+                         stdin=stdin, stdout=stdout, stderr=stderr,
+                         preexec_fn=preexec_fn, close_fds=close_fds,
+                         shell=shell, cwd=cwd, env=env, universal_newlines=universal_newlines,
+                         startupinfo=startupinfo, creationflags=creationflags,
+                         restore_signals=restore_signals, start_new_session=start_new_session,
+                         pass_fds=pass_fds, user=user, group=group, extra_groups=extra_groups,
+                         encoding=encoding, errors=errors, text=text, umask=umask, pipesize=pipesize,
+                         process_group=process_group)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def json(self):
+        return json.loads(self.stdout.readline().decode())
+
+
+    def json_lines(self):
+        for line in self.stdout.readlines():
+            yield json.loads(line.decode())
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -36,28 +80,28 @@ class Command(object):
 
     def s(self, cmd_args, wait=True, no_verbose=False, abort_on_fail=True):
         tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
-        p = Popen(' '.join(tokens), shell=True)
+        p = JSONPopen(' '.join(tokens), shell=True)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
     def o(self, cmd_args, wait=False, abort_on_fail=True):
         tokens = self.__cmd(cmd_args)
-        p = Popen(tokens, stdout=PIPE)
+        p = JSONPopen(tokens, stdout=PIPE)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def io(self, p, cmd_args, wait=False, abort_on_fail=True):
+    def io(self, p: JSONPopen, cmd_args, wait=False, abort_on_fail=True):
         tokens = self.__cmd(cmd_args)
-        p = Popen(tokens, stdin=p.stdout, stdout=PIPE)
+        p = JSONPopen(tokens, stdin=p.stdout, stdout=PIPE)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def i(self, p, cmd_args, wait=True, abort_on_fail=True):
+    def i(self, p: JSONPopen, cmd_args, wait=True, abort_on_fail=True):
         tokens = self.__cmd(cmd_args)
-        p = Popen(tokens, stdin=p.stdout, stdout=sys.stderr)
+        p = JSONPopen(tokens, stdin=p.stdout, stdout=sys.stderr)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
@@ -75,7 +119,7 @@ class Command(object):
         return tokens
 
 
-    def __process(self, p, wait=False, abort_on_fail=True):
+    def __process(self, p: JSONPopen, wait=False, abort_on_fail=True):
         if wait:
             p.wait()
 
