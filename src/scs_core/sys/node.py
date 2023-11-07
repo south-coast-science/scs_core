@@ -179,10 +179,10 @@ class IoTNode(Node):
         fields = match.groups()
 
         for i in range(len(fields)):
-            if fields[i] > minimum[i]:
+            if int(fields[i]) > int(minimum[i]):
                 return True
 
-            if fields[i] < minimum[i]:
+            if int(fields[i]) < int(minimum[i]):
                 return False
 
         return True
