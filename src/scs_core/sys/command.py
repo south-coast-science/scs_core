@@ -124,14 +124,18 @@ class Command(object):
             p.wait()
 
         if abort_on_fail and (p.returncode is not None and p.returncode != 0):
-            self.__logger.error('ABORTED.')
-
-            if self.__on_abort:
-                self.__on_abort()
-
-            exit(p.returncode)
+            self.abort(p.returncode)
 
         return p
+
+
+    def abort(self, return_code):
+        self.__logger.error('ABORTED.')
+
+        if self.__on_abort:
+            self.__on_abort()
+
+        exit(return_code)
 
 
     # ----------------------------------------------------------------------------------------------------------------
