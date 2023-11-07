@@ -7,6 +7,8 @@ https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pyth
 https://codereview.stackexchange.com/questions/101659/test-if-a-network-is-online-by-using-urllib2
 """
 
+import platform
+import re
 import socket
 
 from abc import ABC, abstractmethod
@@ -159,6 +161,37 @@ class IoTNode(Node):
             raise ValueError(hostname)
 
         return numeric_component
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # version...
+
+    @classmethod
+    def is_acceptable_os_release(cls):
+        minimum = cls.minimum_os_release().split('.')
+        release = platform.uname().release
+
+        match = re.match(r'^(\d+).(\d+).(\d+)-', release)
+
+        if not match:
+            raise ValueError(release)
+
+        fields = match.groups()
+
+        for i in range(len(fields)):
+            if fields[i] > minimum[i]:
+                return True
+
+            if fields[i] < minimum[i]:
+                return False
+
+        return True
+
+
+    @classmethod
+    @abstractmethod
+    def minimum_os_release(cls):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
