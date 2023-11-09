@@ -69,7 +69,7 @@ class HTTPClient(object):
         params = urllib.parse.urlencode(payload) if payload else None
         query = path + '?' + params if params else path
 
-        print("get: query: {}".format(query))
+        # print("get: query: {}".format(query))
         # print("headers: %s " % headers)
 
         # request...
