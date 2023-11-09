@@ -58,7 +58,7 @@ class CSVLogReader(SynchronisedProcess):
 
         manager = Manager()
 
-        SynchronisedProcess.__init__(self, manager.list())
+        SynchronisedProcess.__init__(self, value=manager.list())
 
         queue = CSVLogCursorQueue()
 

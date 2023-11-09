@@ -15,14 +15,19 @@ https://github.com/aws/aws-iot-device-sdk-java/issues/2
 """
 
 import logging
+import time
 
 from AWSIoTPythonSDK.exception.AWSIoTExceptions import connectError, connectTimeoutException
 from AWSIoTPythonSDK.exception.AWSIoTExceptions import disconnectError, disconnectTimeoutException
 
 import AWSIoTPythonSDK.MQTTLib as MQTTLib
 
+from scs_core.aws.client.client_auth import ClientAuth
+
 from scs_core.data.json import JSONify
 from scs_core.data.str import Str
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -137,6 +142,57 @@ class MQTTClient(object):
 
     def __str__(self, *args, **kwargs):
         return "MQTTClient:{subscribers:%s}" % Str.collection(self.__subscribers)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class MQTTClientManager(object):
+    """
+    a singleton class, because the MQTTClient cannot be pickled (and the the MQTTClient must be unique)
+    """
+
+    __WAIT_FOR_CONNECTION_TIME = 10         # seconds
+
+    __AUTH = None
+    __CLIENT = None
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def configure(cls, auth: ClientAuth, client: MQTTClient):
+        """
+        Constructor
+        """
+        cls.__AUTH = auth
+        cls.__CLIENT = client
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def network_not_available_handler(cls):
+        Logging.getLogger().error("network loss - attempting to reconnect MQTT client")
+
+        cls.disconnect()                    # remove dead connection
+        cls.connect()
+
+
+    @classmethod
+    def connect(cls):
+        while True:
+            try:
+                cls.__CLIENT.connect(cls.__AUTH, debug=Logging.debugging_on())        # connect when possible
+                Logging.getLogger().info("connected")
+                break
+            except OSError:
+                time.sleep(cls.__WAIT_FOR_CONNECTION_TIME)
+
+
+    @classmethod
+    def disconnect(cls):
+        if cls.__CLIENT:
+            cls.__CLIENT.disconnect()
+            Logging.getLogger().info("disconnected")
 
 
 # --------------------------------------------------------------------------------------------------------------------
