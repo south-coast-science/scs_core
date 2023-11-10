@@ -76,6 +76,8 @@ class Logging(object):
         logging.basicConfig(format=cls.__MULTI_FORMAT, level=cls.__LEVEL, stream=stream)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def getLogger(cls, name=None):
         logger_name = cls.__NAME if cls.__NAME else name
