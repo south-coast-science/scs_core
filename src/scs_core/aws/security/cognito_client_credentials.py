@@ -51,7 +51,7 @@ class CognitoClientCredentials(CognitoUserCredentials, MultiPersistentJSONable):
             password = cls.password_from_user()
 
         try:
-            return CognitoClientCredentials.load(host, name=name, encryption_key=password)
+            return cls.load(host, name=name, encryption_key=password)
         except (KeyError, ValueError):
             logger.error("incorrect password.")
             return None
