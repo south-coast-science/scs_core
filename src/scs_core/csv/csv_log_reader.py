@@ -55,6 +55,7 @@ class CSVLogReader(SynchronisedProcess):
         Constructor
         """
         self.__logger = Logging.getLogger()
+        self.__logging_specification = Logging.specification()
 
         manager = Manager()
 
@@ -72,7 +73,8 @@ class CSVLogReader(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def run(self, halt_on_empty_queue=False):
-        # self.__logger.info('CSVLogReader: running')
+        Logging.replicate(self.__logging_specification)
+        self.__logger = Logging.getLogger()
 
         try:
             # build queue...
