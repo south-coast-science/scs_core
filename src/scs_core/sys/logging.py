@@ -61,7 +61,7 @@ class Logging(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr):
+    def config(cls, name, verbose=False, level=logging.ERROR, stream=sys.stderr):       # for CLU
         cls.__NAME = name
         cls.__LEVEL = logging.INFO if verbose else level
 
@@ -69,11 +69,11 @@ class Logging(object):
 
 
     @classmethod
-    def clone(cls, specification: LoggingSpecification):
+    def replicate(cls, specification: LoggingSpecification, stream=sys.stderr):         # for child process
         cls.__NAME = specification.name
         cls.__LEVEL = specification.level
 
-        logging.basicConfig(format=cls.__MULTI_FORMAT, level=cls.__LEVEL, stream=sys.stderr)
+        logging.basicConfig(format=cls.__MULTI_FORMAT, level=cls.__LEVEL, stream=stream)
 
 
     @classmethod
@@ -89,10 +89,10 @@ class Logging(object):
 
 
     @classmethod
-    def level(cls):
-        return cls.__LEVEL
+    def specification(cls):
+        return LoggingSpecification(cls.__NAME, cls.__LEVEL)
 
 
     @classmethod
-    def specification(cls):
-        return LoggingSpecification(cls.__NAME, cls.__LEVEL)
+    def level(cls):
+        return cls.__LEVEL
