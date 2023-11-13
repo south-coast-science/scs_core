@@ -14,6 +14,8 @@ from scs_core.email.email_queue import EmailQueue
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -29,6 +31,9 @@ class EmailQueueManager(SynchronisedProcess):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+        self.__logging_specification = Logging.specification()
+
         manager = Manager()
 
         SynchronisedProcess.__init__(self, value=manager.list())
@@ -49,6 +54,8 @@ class EmailQueueManager(SynchronisedProcess):
 
 
     def run(self):
+        Logging.replicate(self.__logging_specification)
+
         try:
             timer = IntervalTimer(10)
 
