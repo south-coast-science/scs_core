@@ -87,22 +87,22 @@ class Command(object):
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def o(self, cmd_args, wait=False, abort_on_fail=True):
-        tokens = self.__cmd(cmd_args)
+    def o(self, cmd_args, wait=False, no_verbose=False, abort_on_fail=True):
+        tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
         p = JSONPopen(tokens, stdout=PIPE)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def io(self, p: JSONPopen, cmd_args, wait=False, abort_on_fail=True):
-        tokens = self.__cmd(cmd_args)
+    def io(self, p: JSONPopen, cmd_args, wait=False, no_verbose=False, abort_on_fail=True):
+        tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
         p = JSONPopen(tokens, stdin=p.stdout, stdout=PIPE)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
 
 
-    def i(self, p: JSONPopen, cmd_args, wait=True, abort_on_fail=True):
-        tokens = self.__cmd(cmd_args)
+    def i(self, p: JSONPopen, cmd_args, wait=True, no_verbose=False, abort_on_fail=True):
+        tokens = self.__cmd(cmd_args, no_verbose=no_verbose)
         p = JSONPopen(tokens, stdin=p.stdout, stdout=sys.stderr)
 
         return self.__process(p, wait=wait, abort_on_fail=abort_on_fail)
