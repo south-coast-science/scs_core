@@ -136,6 +136,11 @@ class BaselineConf(MultiPersistentJSONable):
         return None if self.sample_period is None else self.sample_period.timezone
 
 
+    @property
+    def gases(self):
+        return set(sorted(self.__minimums.keys()))
+
+
     def minimum(self, gas):
         return self.__minimums[gas]
 
