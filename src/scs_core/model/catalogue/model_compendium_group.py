@@ -128,7 +128,7 @@ class ModelCompendiumGroup(JSONCatalogueEntry):
 
     @property
     def gases(self):
-        return sorted(self.compendia.keys())
+        return set(sorted(self.compendia.keys()))
 
 
     def compendium(self, gas):

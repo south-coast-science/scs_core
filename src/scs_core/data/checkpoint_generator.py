@@ -44,7 +44,7 @@ class CheckpointGenerator(object):
         except ValueError:
             raise ValueError(specification)
 
-        return CheckpointGenerator(hour, minute, second)
+        return cls(hour, minute, second)
 
 
     @classmethod

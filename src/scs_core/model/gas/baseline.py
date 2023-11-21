@@ -51,10 +51,10 @@ class Baseline(PersistentJSONable, ABC):
 
     def __eq__(self, other):
         try:
-            if list(self.gases()) != list(other.gases()):
+            if list(self.gases) != list(other.gases):
                 return False
 
-            for gas in self.gases():
+            for gas in self.gases:
                 if self.sensor_baseline(gas) != other.sensor_baseline(gas):
                     return False
 
@@ -81,12 +81,13 @@ class Baseline(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
     def gases(self):
-        return self.__sensor_baselines.keys()
+        return set(sorted(self.__sensor_baselines.keys()))
 
 
     def offsets(self, gases=None):
-        return {gas: self.sensor_offset(gas) for gas in (self.gases() if gases is None else gases)}
+        return {gas: self.sensor_offset(gas) for gas in (self.gases if gases is None else gases)}
 
 
     def sensor_offset(self, gas):
