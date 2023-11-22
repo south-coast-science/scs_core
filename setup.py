@@ -51,7 +51,7 @@ setuptools.setup(
     url="https://github.com/south-coast-science/scs_core",
     package_dir={'': 'src'},
     packages=setuptools.find_packages('src'),
-    package_data={'src': ['**/*.csv', '**/*.json']},
+    package_data={'scs_core': ['**/*.csv', '**/*.json']},
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
