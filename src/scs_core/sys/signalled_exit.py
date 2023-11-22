@@ -7,6 +7,8 @@ Created on 26 Jun 2019
 import signal
 import sys
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -35,6 +37,7 @@ class SignalledExit(object):
         self.__verbose = verbose                                # bool
 
         self.__original_sigint_handler = None                   # function?
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -42,9 +45,7 @@ class SignalledExit(object):
     def sigint_handler(self, signum, _frame):
         self.clear()
 
-        if self.__verbose:
-            print("%s: SIGINT (%d)" % (self.__client, signum), file=sys.stderr)
-            sys.stderr.flush()
+        self.__logger.info("%s: SIGINT (%d)" % (self.__client, signum))
 
         sys.exit(1)
 
@@ -52,9 +53,7 @@ class SignalledExit(object):
     def sigterm_handler(self, signum, _frame):
         self.clear()
 
-        if self.__verbose:
-            print("%s: SIGTERM (%d)" % (self.__client, signum), file=sys.stderr)
-            sys.stderr.flush()
+        self.__logger.info("%s: SIGTERM (%d)" % (self.__client, signum))
 
         sys.exit(0)
 
