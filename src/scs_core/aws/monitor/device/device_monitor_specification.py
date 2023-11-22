@@ -4,8 +4,8 @@ Created on 14 Jun 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"scs-ph1-44": {"device-tag": "scs-ph1-44", "recipients": [{"email": "tony.bush@apertum.co.uk", "json-message": false}],
-"suspended": false}, ...}
+{"scs-be2-3": {"device-tag": "scs-be2-3", "recipients": [{"email": "bbeloff@me.com", "json-message": true},
+{"email": "bruno.beloff@southcoastscience.com", "json-message": false}], "suspended": false}}
 """
 
 from collections import OrderedDict
