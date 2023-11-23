@@ -8,13 +8,17 @@ Created on 26 Jun 2019
 
 import time
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-listener = SignalledExit.construct("test", True)
+Logging.config('signalled_exit_test.py', verbose=True)
+logger = Logging.getLogger()
+
+listener = SignalledExit.construct()
 print(listener)
 
 while True:
