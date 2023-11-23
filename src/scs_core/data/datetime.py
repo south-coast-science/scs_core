@@ -678,6 +678,13 @@ class ISO8601(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def datetime(self):
+        time = '-'.join((str(self.hour), str(self.minute), str(self.second)))
+
+        return 'T'.join((self.date, time))
+
+
+    @property
     def date(self):
         return "%s-%s-%s" % (self.year, self.month, self.day)
 
