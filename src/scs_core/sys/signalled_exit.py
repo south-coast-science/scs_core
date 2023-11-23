@@ -20,8 +20,8 @@ class SignalledExit(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, client, verbose):
-        listener = cls(client, verbose)
+    def construct(cls):
+        listener = cls()
         listener.set()
 
         return listener
@@ -29,13 +29,10 @@ class SignalledExit(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, client, verbose):
+    def __init__(self):
         """
         Constructor
         """
-        self.__client = client                                  # string
-        self.__verbose = verbose                                # bool
-
         self.__original_sigint_handler = None                   # function?
         self.__logger = Logging.getLogger()
 
@@ -45,7 +42,7 @@ class SignalledExit(object):
     def sigint_handler(self, signum, _frame):
         self.clear()
 
-        self.__logger.info("%s: SIGINT (%d)" % (self.__client, signum))
+        self.__logger.info("SIGINT (%d)" % signum)
 
         sys.exit(1)
 
@@ -53,7 +50,7 @@ class SignalledExit(object):
     def sigterm_handler(self, signum, _frame):
         self.clear()
 
-        self.__logger.info("%s: SIGTERM (%d)" % (self.__client, signum))
+        self.__logger.info("SIGTERM (%d)" % signum)
 
         sys.exit(0)
 
@@ -79,5 +76,4 @@ class SignalledExit(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SignalledExit:{client:%s, verbose:%s, original_sigint_handler:%s}" % \
-               (self.__client, self.__verbose, self.__original_sigint_handler)
+        return "SignalledExit:{original_sigint_handler:%s}" % self.__original_sigint_handler
