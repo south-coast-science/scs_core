@@ -204,7 +204,7 @@ class CSVLogQueueBuilder(object):
     classdocs
     """
 
-    __BYLINE_WAIT_TIME = 20.0                   # seconds
+    __BYLINE_WAIT_TIME = 30.0           # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -231,6 +231,10 @@ class CSVLogQueueBuilder(object):
         while True:
             try:
                 auth = gatekeeper.device_login(self.__credentials)
+
+                if not auth.is_ok():
+                    self.__logger.error(auth.authentication_status.description)
+
                 byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path)
                 break
 

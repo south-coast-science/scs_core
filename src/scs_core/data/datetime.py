@@ -5,11 +5,11 @@ Created on 13 Aug 2016
 
 Note that, for the ISO 8601 constructors, milliseconds are optional.
 
-http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+https://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 https://stackoverflow.com/questions/6410971/python-datetime-object-show-wrong-timezone-offset
 
 https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tooadate?view=netframework-4.8
-http://code.activestate.com/recipes/496683-converting-ole-datetime-values-into-python-datetim/
+https://code.activestate.com/recipes/496683-converting-ole-datetime-values-into-python-datetim/
 """
 
 import pytz
@@ -676,6 +676,13 @@ class ISO8601(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def datetime(self):
+        time = '-'.join((str(self.hour), str(self.minute), str(self.second)))
+
+        return 'T'.join((self.date, time))
+
 
     @property
     def date(self):
