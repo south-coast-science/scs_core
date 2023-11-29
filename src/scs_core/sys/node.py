@@ -8,13 +8,15 @@ https://codereview.stackexchange.com/questions/101659/test-if-a-network-is-onlin
 """
 
 import platform
-import re
 import socket
 
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from subprocess import Popen, DEVNULL, TimeoutExpired
 
+from scs_core.estate.software_version import SoftwareVersion
+
+from scs_core.sys.command import Command
 from scs_core.sys.ipv4_address import IPv4Address
 
 
@@ -167,30 +169,30 @@ class IoTNode(Node):
     # version...
 
     @classmethod
-    def has_acceptable_os_release(cls):
-        minimum = cls.minimum_os_release().split('.')
-        release = platform.uname().release
+    def os_release(cls) -> SoftwareVersion:
+        return SoftwareVersion.construct_from_jdict(platform.uname().release)
 
-        match = re.match(r'^(\d+).(\d+).(\d+)-', release)
 
-        if not match:
-            raise ValueError(release)
+    @classmethod
+    def greengrass_release(cls) -> SoftwareVersion:
+        c = Command()
+        p = c.o(['/greengrass/ggc/core/greengrassd', '--version'])
 
-        current = match.groups()
+        line = p.stdout.readline().decode().strip()
+        field = line.split(' ')[-1]
 
-        for i in range(len(current)):
-            if int(current[i]) > int(minimum[i]):
-                return True
-
-            if int(current[i]) < int(minimum[i]):
-                return False
-
-        return True
+        return SoftwareVersion.construct_from_jdict(field)
 
 
     @classmethod
     @abstractmethod
-    def minimum_os_release(cls):
+    def minimum_required_os_release(cls) -> SoftwareVersion:
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def minimum_required_greengrass_release(cls) -> SoftwareVersion:
         pass
 
 

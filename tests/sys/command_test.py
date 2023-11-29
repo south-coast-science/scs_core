@@ -14,7 +14,7 @@ from scs_core.sys.logging import Logging
 
 Logging.config('command_test')
 
-command = Command(True)
+command = Command(verbose=True)
 
-command.s(['rm', 'non-existent.txt'], no_verbose=True)
+command.s(['rm', 'non-existent.txt'], no_verbose=True, abort_on_fail=False)
 command.s(['ls'], no_verbose=True)
