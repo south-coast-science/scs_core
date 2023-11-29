@@ -22,13 +22,7 @@ class JSONPopen(Popen):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-    #     def __init__(self, args, bufsize=-1, executable=None,
-    #                  stdin=None, stdout=None, stderr=None,
-    #                  preexec_fn=None, close_fds=True,
-    #                  shell=False, cwd=None, env=None, universal_newlines=None,
-    #                  startupinfo=None, creationflags=0,
-    #                  restore_signals=True, start_new_session=False,
-    #                  pass_fds=(), *, encoding=None, errors=None, text=None):
+
     def __init__(self, args, bufsize=-1, executable=None,
                  stdin=None, stdout=None, stderr=None,
                  preexec_fn=None, close_fds=True,
@@ -68,7 +62,7 @@ class Command(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, verbose, on_abort=None):
+    def __init__(self, verbose=False, on_abort=None):
         """
         Constructor
         """
@@ -116,7 +110,8 @@ class Command(object):
         if self.__verbose and not no_verbose:
             tokens = tokens[:1] + ['-v'] + tokens[1:]
 
-        self.__logger.info(' '.join(tokens))
+        if self.__verbose:                          # Command verbosity overrides logger verbosity
+            self.__logger.info(' '.join(tokens))
 
         return tokens
 
