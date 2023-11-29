@@ -31,7 +31,7 @@ class MQTTPeer(JSONable):
         shared_secret = jdict.get('shared-secret')
         topic = jdict.get('topic')
 
-        return MQTTPeer(tag, shared_secret, topic)
+        return cls(tag, shared_secret, topic)
 
 
     # ----------------------------------------------------------------------------------------------------------------

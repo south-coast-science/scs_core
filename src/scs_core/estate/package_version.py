@@ -21,6 +21,7 @@ from scs_core.data.json import JSONable, MultiPersistentJSONable
 from scs_core.data.str import Str
 
 from scs_core.estate.git_pull import GitPull
+from scs_core.estate.software_version import SoftwareVersion
 
 from scs_core.sys.filesystem import Filesystem
 
@@ -54,7 +55,7 @@ class PackageVersion(MultiPersistentJSONable):
 
         try:
             # noinspection PyUnresolvedReferences
-            version = module.__version__
+            version = SoftwareVersion.construct_from_jdict(module.__version__)
         except AttributeError:
             version = None
 
@@ -67,7 +68,7 @@ class PackageVersion(MultiPersistentJSONable):
             return None
 
         repository = jdict.get('repo')
-        version = jdict.get('version')
+        version = SoftwareVersion.construct_from_jdict(jdict.get('version'))
 
         return cls(name, repository, version)
 
@@ -81,7 +82,7 @@ class PackageVersion(MultiPersistentJSONable):
         super().__init__(name)
 
         self.__repository = repository              # string
-        self.__version = version                    # string
+        self.__version = version                    # SoftwareVersion or None
 
 
     def __eq__(self, other):
