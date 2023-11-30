@@ -77,6 +77,9 @@ class JSONable(object):
 
     @classmethod
     def loads(cls, jstr):
+        if not jstr:
+            return None
+
         try:
             return json.loads(jstr)
         except json.decoder.JSONDecodeError:
