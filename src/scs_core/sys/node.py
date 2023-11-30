@@ -175,8 +175,8 @@ class IoTNode(Node):
 
     @classmethod
     def greengrass_release(cls) -> SoftwareVersion:
-        c = Command()
-        p = c.o(['/greengrass/ggc/core/greengrassd', '--version'])
+        clu = Command()
+        p = clu.o(['/greengrass/ggc/core/greengrassd', '--version'])
 
         line = p.stdout.readline().decode().strip()
         field = line.split(' ')[-1]
