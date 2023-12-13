@@ -195,6 +195,10 @@ class BylineGroup(JSONable):
         self._device_bylines = device_bylines                   # dict of device: Byline
 
 
+    def __bool__(self):
+        return len(self) > 0
+
+
     def __len__(self):
         return len(list(self.bylines))
 
