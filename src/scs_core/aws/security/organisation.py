@@ -63,7 +63,7 @@ class Organisation(JSONable):
             if not (1 < len(label) < 256):
                 return False
 
-            return bool(re.fullmatch(r'[0-9A-Za-z\- &.()]+', label))
+            return bool(re.fullmatch(r'[0-9A-Za-z\- /&.()]+', label))
 
         except TypeError:
             return False
