@@ -145,4 +145,4 @@ class Command(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Command:{verbose:%s, on_abort:%s}" % (self.verbose, self.__on_abort)
+        return "Command:{verbose:%s, on_abort:%s}" % (self.verbose, self.__on_abort.__class__.__name__)
