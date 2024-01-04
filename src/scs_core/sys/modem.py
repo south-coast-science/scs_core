@@ -68,7 +68,6 @@ class ModemList(object):
 
         for line in lines:
             match = re.match(r'modem-list.value\[\d+]\s+:\s+(\S+)', line)
-
             if match:
                 modems.append(match.groups()[0])
 
