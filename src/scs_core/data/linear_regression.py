@@ -79,7 +79,7 @@ class LinearRegression(Regression):
     # ----------------------------------------------------------------------------------------------------------------
 
     def line(self):
-        # validate...
+        # validation...
         if not self.has_regression():
             return None, None
 
@@ -115,7 +115,7 @@ class LinearRegression(Regression):
 
 
     def midpoint(self, ndigits=None):
-        # validate...
+        # validation...
         if not self.has_midpoint():
             return None, None
 
@@ -154,7 +154,7 @@ class LinearRegression(Regression):
             return None
 
     def mid(self, ndigits=None):
-        # validate...
+        # validation...
         if not self.has_midpoint():
             return None
 

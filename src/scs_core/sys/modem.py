@@ -50,6 +50,8 @@ from collections import OrderedDict
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -266,12 +268,16 @@ class ModemConnection(JSONable):
 
     @classmethod
     def construct_from_mmcli(cls, lines):
+        first_line = None
         state = None
         failure = None
         quality = None
         recent = None
 
         for line in lines:
+            if first_line is None:
+                first_line = line
+
             match = re.match(r'modem\.generic\.state\s+:\s+([a-z]+)', line)
             if match:
                 state = match.groups()[0]
@@ -292,6 +298,9 @@ class ModemConnection(JSONable):
             if match:
                 recent = match.groups()[0] == 'yes'
                 continue
+
+        if state is None:
+            Logging.getLogger().error("construct_from_mmcli: could not get state from '%s'" % first_line)
 
         return cls(state, failure, Signal(quality, recent))
 

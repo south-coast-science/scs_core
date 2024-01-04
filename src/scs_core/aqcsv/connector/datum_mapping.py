@@ -82,7 +82,7 @@ class DatumMapping(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def aqcsv_record(self, datum: PathDict, duration):
-        # validate...
+        # validation...
         if self.environment_tag(datum) != self.status_tag(datum):
             raise ValueError("non-matching tag fields: %s" % datum)
 
