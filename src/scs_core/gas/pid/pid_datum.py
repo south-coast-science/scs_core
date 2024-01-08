@@ -84,7 +84,9 @@ class PIDDatum(JSONable):
         response_c = we_c - offset_v                    # remove electronic zero
         cnc = response_c / calib.pid_sens_v_ppb         # units are Volts / ppb
 
-        return cnc
+        corrected_cnc = cnc if calib.bump_sensitivity is None else cnc / calib.bump_sensitivity
+
+        return corrected_cnc
 
 
     # ----------------------------------------------------------------------------------------------------------------
