@@ -98,7 +98,7 @@ class PID(Sensor):
         pid_sens_mv_ppm = self.default_sens_mv_ppm if calib.pid_sens_mv_ppm is None else calib.pid_sens_mv_ppm
 
         # set calibration...
-        self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv_ppm, calib.test_calib)
+        self._calib = PIDCalib(calib.serial_number, calib.sensor_type, pid_elc_mv, pid_sens_mv_ppm, calib.bump_calib)
         self._calibrator = PIDCalibrator(self.calib)
 
 
