@@ -24,6 +24,9 @@ class PIDTestCalib(JSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
@@ -94,6 +97,9 @@ class PIDCalib(SensorCalib):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:

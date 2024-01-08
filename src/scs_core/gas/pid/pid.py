@@ -43,6 +43,17 @@ class PID(Sensor):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __MINIMUM_CNC = 250              # lowest valid reading (ppb)
+
+    @classmethod
+    def sensitivity(cls, correct, reported):
+        sensitivity = (reported - cls.__MINIMUM_CNC) / (correct - cls.__MINIMUM_CNC)
+
+        return round(sensitivity, 3)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, sensor_code, sensor_type, gas_name, adc_gain_index, default_elc_mv, default_sens_mv_ppm):
         """
         Constructor
