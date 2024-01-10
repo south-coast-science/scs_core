@@ -173,6 +173,14 @@ class OPCErrorSummary(JSONable):
         self.__entries = entries                                # int or None
 
 
+    def __eq__(self, other):
+        try:
+            return self.entries == other.entries
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
