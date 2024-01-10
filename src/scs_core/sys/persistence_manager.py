@@ -39,7 +39,7 @@ class PersistenceManager(ABC):
 
 
     @abstractmethod
-    def save(self, jstr, dirname, filename, encryption_key=None):
+    def save(self, text, dirname, filename, encryption_key=None):
         pass
 
 
@@ -78,14 +78,14 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
     @classmethod
     def exists(cls, dirname, filename):
-        abs_filename = cls.__abs_filename(dirname, filename)
+        abs_filename = cls.abs_filename(dirname, filename)
 
         return os.path.isfile(abs_filename)
 
 
     @classmethod
     def load(cls, dirname, filename, encryption_key=None):
-        abs_filename = cls.__abs_filename(dirname, filename)
+        abs_filename = cls.abs_filename(dirname, filename)
 
         try:
             with open(abs_filename, "r") as f:
@@ -107,9 +107,9 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
 
     @classmethod
-    def save(cls, jstr, dirname, filename, encryption_key=None):
-        abs_dirname = cls.__abs_dirname(dirname)
-        abs_filename = cls.__abs_filename(dirname, filename)
+    def save(cls, text, dirname, filename, encryption_key=None):
+        abs_dirname = cls.abs_dirname(dirname)
+        abs_filename = cls.abs_filename(dirname, filename)
 
         # file...
         if filename:
@@ -119,12 +119,12 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
         if encryption_key:
             from scs_core.data.crypt import Crypt                   # late import
-            text = Crypt.encrypt(encryption_key, jstr)
+            saved_text = Crypt.encrypt(encryption_key, text)
         else:
-            text = jstr + '\n'
+            saved_text = text + '\n'
 
         with open(tmp_filename, "w") as f:
-            f.write(text)
+            f.write(saved_text)
 
         # atomic operation...
         os.rename(tmp_filename, abs_filename)
@@ -132,7 +132,7 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
     @classmethod
     def remove(cls, dirname, filename):
-        abs_filename = cls.__abs_filename(dirname, filename)
+        abs_filename = cls.abs_filename(dirname, filename)
 
         try:
             os.remove(abs_filename)
@@ -143,10 +143,11 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __abs_filename(cls, dirname, filename):
-        return os.path.join(cls.scs_path(), dirname, filename)
+    def abs_dirname(cls, dirname):
+        return os.path.join(cls.scs_path(), dirname)
 
 
     @classmethod
-    def __abs_dirname(cls, dirname):
-        return os.path.join(cls.scs_path(), dirname)
+    def abs_filename(cls, dirname, filename):
+        return os.path.join(cls.scs_path(), dirname, filename)
+

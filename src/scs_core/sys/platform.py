@@ -31,31 +31,29 @@ class PlatformSummary(JSONable):
             return None
 
         release = jdict.get('rel')
-        version = jdict.get('vers')
 
-        return cls(release, version)
+        return cls(release)
 
 
     @classmethod
     def construct(cls):
         uname = platform.uname()
 
-        return cls(uname.release, uname.version)
+        return cls(uname.release)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, release, version):
+    def __init__(self, release):
         """
         Constructor
         """
         self.__release = release                          # string
-        self.__version = version                          # string
 
 
     def __eq__(self, other):
         try:
-            return self.release == other.release and self.version == other.version
+            return self.release == other.release
 
         except (TypeError, AttributeError):
             return False
@@ -67,7 +65,6 @@ class PlatformSummary(JSONable):
         jdict = OrderedDict()
 
         jdict['rel'] = self.release
-        jdict['vers'] = self.version
 
         return jdict
 
@@ -79,13 +76,7 @@ class PlatformSummary(JSONable):
         return self.__release
 
 
-    @property
-    def version(self):
-        return self.__version
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PlatformSummary:{release:%s, version:%s}" %  \
-               (self.release, self.version)
+        return "PlatformSummary:{release:%s}" %  self.release

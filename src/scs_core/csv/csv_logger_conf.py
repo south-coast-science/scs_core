@@ -10,7 +10,7 @@ example JSON:
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_log import CSVLog
+from scs_core.csv.csv_data_log import CSVDataLog
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
@@ -73,7 +73,7 @@ class CSVLoggerConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def csv_log(self, topic_subject, tag=None, timeline_start=None):
-        return CSVLog(self.root_path, topic_subject, tag=tag, timeline_start=timeline_start)
+        return CSVDataLog(self.root_path, topic_subject, tag=tag, timeline_start=timeline_start)
 
 
     def filesystem_report(self):

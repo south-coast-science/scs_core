@@ -1,201 +1,146 @@
 """
-Created on 12 Apr 2018
+Created on 9 Jan 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import os
-import pytz
-import re
+from abc import ABC, abstractmethod
 
-from datetime import datetime as dt
+from scs_core.csv.csv_reader import CSVReader
+from scs_core.csv.csv_writer import CSVWriter
 
-from scs_core.sys.filesystem import Filesystem, File
+from scs_core.data.json import JSONify, PersistentJSONable
 
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class CSVLog(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @staticmethod
-    def directory_name(datetime):
-        if datetime is None:
-            raise ValueError("datetime may not be None")
-
-        return "%04d-%02d" % (datetime.year, datetime.month)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, root_path, topic_subject, tag=None, timeline_start=None):
-        """
-        Constructor
-        """
-        self.__root_path = root_path                        # string
-        self.__topic_subject = topic_subject                # string
-        self.__tag = tag                                    # string
-
-        self.__timeline_start = timeline_start              # datetime
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def mkdir(self):
-        Filesystem.mkdir(self.directory_path())
-
-
-    def directory_path(self):
-        return os.path.join(self.root_path, self.directory_name(self.timeline_start))
-
-
-    def file_path(self):
-        return os.path.join(self.directory_path(), CSVLogFile.name(self.timeline_start, self.topic_subject, self.tag))
-
-
-    def in_timeline(self, localised_datetime):
-        if self.timeline_start is None:
-            return False
-
-        utc_localised_datetime = localised_datetime.utc()
-
-        return utc_localised_datetime.datetime.date() == self.__timeline_start.date()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def root_path(self):
-        return self.__root_path
-
-
-    @property
-    def topic_subject(self):
-        return self.__topic_subject
-
-
-    @property
-    def tag(self):
-        return self.__tag
-
-
-    @tag.setter
-    def tag(self, tag):
-        self.__tag = tag
-
-
-    @property
-    def timeline_start(self):
-        return self.__timeline_start
-
-
-    @timeline_start.setter
-    def timeline_start(self, localised_timeline_start):
-        self.__timeline_start = localised_timeline_start.utc_datetime
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CSVLog:{root_path:%s, tag:%s, topic_subject:%s, timeline_start:%s}" % \
-               (self.root_path, self.tag, self.topic_subject, self.timeline_start)
+from scs_core.sys.filesystem import Filesystem
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVLogFile(object):
+class CSVLog(PersistentJSONable, ABC):
     """
     classdocs
     """
 
+    __LOG_DIR =             "log"                               # hard-coded rel path
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def name(datetime, topic_subject, tag=None):
-        if datetime is None:
-            raise ValueError("datetime may not be None")
+    @classmethod
+    def log_dir(cls):
+        return cls.__LOG_DIR
 
-        if tag is None:
-            return "%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-                   (topic_subject, datetime.year, datetime.month, datetime.day,
-                    datetime.hour, datetime.minute, datetime.second)
 
-        return "%s-%s-%4d-%02d-%02d-%02d-%02d-%02d.csv" % \
-               (tag, topic_subject, datetime.year, datetime.month, datetime.day,
-                datetime.hour, datetime.minute, datetime.second)
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    @abstractmethod
+    def max_permitted_entries(cls):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def rows(cls, manager):
+        if not cls.exists(manager):
+            return None
+
+        dirname, filename = cls.persistence_location()
+        abs_filename = manager.abs_filename(dirname, filename)
+
+        num_lines = sum(1 for _ in open(abs_filename))
+
+        return 0 if not num_lines else num_lines - 1                # ignore CSV header row
 
 
     @classmethod
-    def construct(cls, file: File):
-        match = re.match(r'^(.+-)?([^-]+)-(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.csv',
-                         file.name)
+    def trim(cls, manager, max_entries):
+        if not cls.exists(manager):
+            return
 
-        if not match:
+        dirname, filename = cls.persistence_location()
+        abs_filename = manager.abs_filename(dirname, filename)
+
+        with open(abs_filename) as f:
+            lines = f.readlines()
+
+        remove = len(lines) - max_entries
+
+        if remove < 1:
+            return
+
+        del lines[1:remove]
+
+        with open(abs_filename, "w") as f:
+            f.writelines(lines)
+
+
+    @classmethod
+    def load(cls, manager, encryption_key=None, skeleton=False):
+        if not cls.exists(manager):
+            return cls.construct_from_jdict(None, skeleton=skeleton)
+
+        dirname, filename = cls.persistence_location()
+        text, last_modified = manager.load(dirname, filename)
+
+        reader = CSVReader(text.splitlines())
+        jdict = [cls.loads(row) for row in reader.rows()]
+
+        try:
+            obj = cls.construct_from_jdict(jdict, skeleton=skeleton)
+            obj._last_modified = last_modified
+            return obj
+
+        except (AttributeError, TypeError):
             return None
 
-        fields = match.groups()
 
-        # fields...
-        tag = None if fields[0] is None else fields[0][:-1]
+    @classmethod
+    def save_entry(cls, manager, entry, trim=False):
+        cls.__save_entries(manager, [entry])
 
-        topic_subject = fields[1]
-
-        year = int(fields[2])
-        month = int(fields[3])
-        day = int(fields[4])
-
-        hour = int(fields[5])
-        minute = int(fields[6])
-        second = int(fields[7])
-
-        created_datetime = dt(year, month=month, day=day, hour=hour, minute=minute, second=second,
-                              tzinfo=pytz.UTC)
-
-        return cls(created_datetime, topic_subject, tag, file)
+        if trim:
+            cls.trim(manager, cls.max_permitted_entries())
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, created_datetime, topic_subject, tag, file: File):
-        """
-        Constructor
-        """
-        self.__created_datetime = created_datetime          # datetime (offset-aware to UTC)
-        self.__topic_subject = topic_subject                # string
-        self.__tag = tag                                    # string
+    @classmethod
+    def __save_entries(cls, manager, entries):
+        dirname, filename = cls.persistence_location()
+        abs_filename = manager.abs_filename(dirname, filename)
 
-        self.__file = file                                  # File
+        Filesystem.mkdir(manager.abs_dirname(dirname))
+        append = cls.exists(manager)
+
+        writer = None
+
+        try:
+            writer = CSVWriter(filename=abs_filename, append=append)
+
+            for entry in entries:
+                writer.write(JSONify.dumps(entry))
+
+        finally:
+            if writer:
+                writer.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def path(self):
-        return self.__file.path()
+    def __len__(self):
+        return len(self.entries)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def save(self, manager, encryption_key=None):
+        self.__save_entries(manager, self.entries)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def created_datetime(self):
-        return self.__created_datetime
-
-
-    @property
-    def topic_subject(self):
-        return self.__topic_subject
-
-
-    @property
-    def tag(self):
-        return self.__tag
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "CSVLogFile:{created_datetime:%s, tag:%s, topic_subject:%s, file:%s}" % \
-               (self.created_datetime, self.tag, self.topic_subject, self.__file)
+    @abstractmethod
+    def entries(self):
+        return []

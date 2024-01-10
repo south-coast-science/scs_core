@@ -9,7 +9,7 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.csv.csv_log import CSVLog, CSVLogFile
+from scs_core.csv.csv_data_log import CSVDataLog, CSVDataLogFile
 from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -35,7 +35,7 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def find_cursors_for_log(cls, log: CSVLog, rec_field):                      # these cursors are NOT live
+    def find_cursors_for_log(cls, log: CSVDataLog, rec_field):                  # these cursors are NOT live
         cursors = []
 
         if log.timeline_start is not None:
@@ -52,9 +52,9 @@ class CSVLogCursorQueue(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __directory_paths(cls, log: CSVLog):
+    def __directory_paths(cls, log: CSVDataLog):
         root_directory = Filesystem.ls(log.root_path)
-        from_directory = CSVLog.directory_name(log.timeline_start)
+        from_directory = CSVDataLog.directory_name(log.timeline_start)
 
         if root_directory is None:
             raise FileNotFoundError(log.root_path)
@@ -67,9 +67,9 @@ class CSVLogCursorQueue(JSONable):
 
 
     @staticmethod
-    def __log_files(log: CSVLog, directory_path):
+    def __log_files(log: CSVDataLog, directory_path):
         for file in Filesystem.ls(directory_path):
-            log_file = CSVLogFile.construct(file)
+            log_file = CSVDataLogFile.construct(file)
 
             if log_file is None:
                 continue
@@ -178,7 +178,7 @@ class CSVLogCursor(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_for_log_file(cls, log: CSVLog, log_file, rec_field):          # this cursor is NOT live
+    def construct_for_log_file(cls, log: CSVDataLog, log_file, rec_field):          # this cursor is NOT live
         logger = Logging.getLogger()
 
         reader = None

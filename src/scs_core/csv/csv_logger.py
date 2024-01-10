@@ -237,6 +237,9 @@ class CSVSpaceManager(object):
     def __has_sufficient_space(self):
         du = self.__host.disk_usage(self.__log.root_path)
 
+        if du is None:
+            raise OSError("has_sufficient_space: '%s' is not available." % self.__log.root_path)
+
         return du.free > self.__min_free_space
 
 
