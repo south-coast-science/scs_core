@@ -88,7 +88,7 @@ class OPCConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def opc_monitor(self, interface):
+    def opc_monitor(self, manager, interface):
         return None
 
 

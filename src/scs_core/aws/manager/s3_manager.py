@@ -256,16 +256,16 @@ class S3PersistenceManager(PersistenceManager):
         return jstr, last_modified
 
 
-    def save(self, jstr, dirname, filename, encryption_key=None):
+    def save(self, text, dirname, filename, encryption_key=None):
         key = self.__key(dirname, filename)
 
         if encryption_key:
             from scs_core.data.crypt import Crypt               # late import
-            text = Crypt.encrypt(encryption_key, jstr)
+            saved_text = Crypt.encrypt(encryption_key, text)
         else:
-            text = jstr + '\n'
+            saved_text = text + '\n'
 
-        self.__manager.put_object(text, self.__BUCKET, key)
+        self.__manager.put_object(saved_text, self.__BUCKET, key)
 
 
     def remove(self, dirname, filename):

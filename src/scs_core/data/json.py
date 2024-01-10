@@ -313,13 +313,13 @@ class PersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     def load(cls, manager, encryption_key=None, skeleton=False):
+        if not cls.exists(manager):
+            return cls.construct_from_jdict(None, skeleton=skeleton)
+
         try:
             dirname, filename = cls.persistence_location()
         except NotImplementedError:
             return None
-
-        if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, skeleton=skeleton)
 
         try:
             jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
@@ -405,13 +405,13 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     def load(cls, manager, name=None, encryption_key=None, skeleton=False):
+        if not cls.exists(manager):
+            return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
+
         try:
             dirname, filename = cls.persistence_location(name)
         except NotImplementedError:
             return None
-
-        if not manager.exists(dirname, filename):
-            return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
 
         try:
             jstr, last_modified = manager.load(dirname, filename, encryption_key=encryption_key)
