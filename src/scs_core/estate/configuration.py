@@ -7,113 +7,104 @@ Created on 27 Jan 2021
 
 example document:
 {
-    "rec": "2023-02-28T12:25:24Z",
-    "tag": "scs-bgx-431",
-    "ver": 1.3,
+    "rec": "2024-01-10T12:47:17Z",
+    "tag": "scs-be2-3",
+    "ver": 1.4,
     "val": {
-        "hostname": "scs-bbe-431",
+        "hostname": "scs-bbe-003",
         "os": {
-            "rel": "4.19.173-bone60",
-            "vers": "#1buster PREEMPT Tue Feb 16 23:42:12 UTC 2021"
+            "rel": "6.1.38-bone21"
         },
         "packs": {
+            "scs_comms": {
+                "repo": "scs_comms_ge910",
+                "version": null
+            },
             "scs_core": {
                 "repo": "scs_core",
-                "version": "2.4.1"
+                "version": "3.6.0"
             },
             "scs_dev": {
                 "repo": "scs_dev",
-                "version": "2.4.0"
+                "version": "3.2.3"
             },
             "scs_dfe": {
                 "repo": "scs_dfe_eng",
-                "version": "2.4.0"
+                "version": "3.0.0"
             },
-            "scs_greengrass": {
-                "repo": "scs_greengrass",
-                "version": "2.4.0"
+            "scs_exegesis": {
+                "repo": "scs_exegesis",
+                "version": null
             },
             "scs_host": {
                 "repo": "scs_host_bbe_southern",
-                "version": "1.0.13"
+                "version": "3.4.2"
+            },
+            "scs_inference": {
+                "repo": "scs_inference",
+                "version": null
             },
             "scs_mfr": {
                 "repo": "scs_mfr",
-                "version": "1.5.4"
+                "version": "3.6.1"
+            },
+            "scs_ndir": {
+                "repo": "scs_ndir",
+                "version": null
             },
             "scs_psu": {
                 "repo": "scs_psu",
-                "version": "1.2.0"
+                "version": "2.5.2"
             }
         },
         "afe-baseline": {
             "sn1": {
-                "calibrated-on": "2023-02-08T12:52:39Z",
-                "offset": 10,
-                "env": {
-                    "rec": "2023-02-08T02:40:00Z",
-                    "hmd": 30.7,
-                    "tmp": 20.3
-                }
+                "calibrated-on": "2023-12-07T12:43:55Z",
+                "offset": 0
             },
             "sn2": {
-                "calibrated-on": "2023-02-08T12:52:42Z",
-                "offset": 48,
-                "env": {
-                    "rec": "2023-02-08T07:55:00Z",
-                    "hmd": 31.3,
-                    "tmp": 19.5
-                }
+                "calibrated-on": "2023-12-07T12:43:55Z",
+                "offset": 0
             },
             "sn3": {
-                "calibrated-on": "2023-02-08T12:52:37Z",
-                "offset": 97,
-                "env": {
-                    "rec": "2023-02-07T17:05:00Z",
-                    "hmd": 31.7,
-                    "tmp": 23.1
-                }
+                "calibrated-on": "2023-12-07T12:43:55Z",
+                "offset": 0
             },
             "sn4": {
-                "calibrated-on": "2023-02-08T12:52:32Z",
-                "offset": 142,
-                "env": {
-                    "rec": "2023-02-08T05:45:00Z",
-                    "hmd": 31.0,
-                    "tmp": 19.8
-                }
+                "calibrated-on": "2023-12-07T12:43:55Z",
+                "offset": 0
             }
         },
         "afe-id": {
-            "serial_number": "26-000595",
+            "serial_number": "26-000345",
             "type": "810-0023-01",
-            "calibrated_on": "2022-11-23",
+            "calibrated_on": "2020-11-18",
             "sn1": {
-                "serial_number": "212801359",
+                "serial_number": "212632052",
                 "sensor_type": "NO2A43F"
             },
             "sn2": {
-                "serial_number": "214801144",
+                "serial_number": "214250436",
                 "sensor_type": "OXA431"
             },
             "sn3": {
-                "serial_number": "130820459",
+                "serial_number": "130631043",
                 "sensor_type": "NO A4"
             },
             "sn4": {
-                "serial_number": "132800043",
-                "sensor_type": "CO A4"
+                "serial_number": "134200204",
+                "sensor_type": "SO2A4"
             }
         },
         "aws-group-config": {
-            "group-name": "scs-bbe-431-group",
-            "time-initiated": "2023-02-28T10:32:28Z",
+            "group-name": "scs-bbe-003-group",
+            "time-initiated": "2023-12-22T10:26:28Z",
             "unix-group": 987,
             "ml": "uE.1"
         },
         "aws-project": {
-            "location-path": "ricardo/heathrow/loc/4",
-            "device-path": "ricardo/heathrow/device"
+            "location-path": "south-coast-science-dev/development/loc/1",
+            "device-path": "south-coast-science-dev/development/device"
         },
         "data-log": {
             "path": "/srv/removable_data_storage",
@@ -122,16 +113,7 @@ example document:
             "used": 6
         },
         "display-conf": null,
-        "vcal-baseline": {
-            "NO": {
-                "calibrated-on": "2023-01-22T18:56:44Z",
-                "offset": -15
-            },
-            "NO2": {
-                "calibrated-on": "2023-01-22T08:45:53Z",
-                "offset": 2
-            }
-        },
+        "vcal-baseline": null,
         "gas-baseline": null,
         "gas-model-conf": {
             "uds-path": "pipes/lambda-gas-model.uds",
@@ -139,23 +121,16 @@ example document:
             "model-compendium-group": "uE.1"
         },
         "gps-conf": {
-            "model": "PAM7Q",
+            "model": "SAM8Q",
             "sample-interval": 10,
             "tally": 60,
             "report-file": "/tmp/southcoastscience/gps_report.json",
             "debug": false
         },
-        "interface-conf": null,
-        "mpl115a2-calib": {
-            "calibrated-on": "2021-03-18T13:25:10Z",
-            "c25": 506
+        "interface-conf": {
+            "model": "DFE"
         },
-        "mqtt-conf": {
-            "inhibit-publishing": false,
-            "report-file": null,
-            "debug": false
-        },
-        "ndir-conf": null,
+        "mpl115a2-calib": null,
         "opc-conf": {
             "model": "N3",
             "sample-period": 10,
@@ -163,17 +138,15 @@ example document:
             "power-saving": false
         },
         "opc-version": {
-            "serial": "177780318",
+            "serial": "177050912",
             "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
         },
+        "opc-errors": 1,
         "pmx-model-conf": {
             "uds-path": "pipes/lambda-pmx-model.uds",
             "model-interface": "s2"
         },
-        "pressure-conf": {
-            "model": "ICP",
-            "altitude": 25
-        },
+        "pressure-conf": null,
         "psu-conf": {
             "model": "OsloV1",
             "batt-model": null,
@@ -185,24 +158,8 @@ example document:
             "id": "South Coast Science PSU Oslo",
             "tag": "2.2.5"
         },
-        "pt1000-calib": {
-            "calibrated-on": "2017-08-15T11:21:45Z",
-            "v20": 0.320208
-        },
-        "scd30-baseline": {
-            "CO2": {
-                "calibrated-on": "2023-02-08T12:52:34Z",
-                "offset": -7,
-                "env": {
-                    "hmd": 30.9,
-                    "tmp": 20.0
-                }
-            }
-        },
-        "scd30-conf": {
-            "sample-interval": 5,
-            "temp-offset": 0.0
-        },
+        "scd30-baseline": null,
+        "scd30-conf": null,
         "schedule": {
             "scs-climate": {
                 "interval": 60.0,
@@ -225,38 +182,27 @@ example document:
             "int": "0x45",
             "ext": "0x45"
         },
-        "networks": {
-            "cdc-wdm0": {
-                "kind": "gsm",
-                "state": "connected",
-                "connection": "EE M2M"
-            },
-            "eth0": {
-                "kind": "ethernet",
-                "state": "unavailable",
-                "connection": null
-            }
-        },
+        "networks": null,
         "modem": {
-            "id": "e3f0ca1c3134d586a9c47dc4fd6c1cb46e6",
-            "imei": "866758042325619",
+            "id": "992c3ac6da0b68d58005d20ea5e957d409001e42",
+            "imei": "860425041573914",
             "mfr": "QUALCOMM INCORPORATED",
             "model": "QUECTEL Mobile Broadband Module",
-            "rev": "EC2506A03M4G"
+            "rev": "EC25ECGAR06A05M1G"
         },
         "sim": {
-            "imsi": "234301951432536",
-            "iccid": "8944303382697124815",
+            "imsi": "234301951432537",
+            "iccid": "8944303382697124823",
             "operator-code": "23430",
             "operator-name": "EE"
         },
         "system-id": {
-            "set-on": "2019-01-04T11:28:27Z",
+            "set-on": "2024-01-09T16:02:09Z",
             "vendor-id": "SCS",
-            "model-id": "BGX",
-            "model": "Praxis",
-            "config": "BGX",
-            "system-sn": 431
+            "model-id": "BE2",
+            "model": "Alpha BB Eng",
+            "config": "V2",
+            "system-sn": 3
         },
         "timezone-conf": {
             "set-on": "2017-08-15T12:50:05Z",
@@ -278,8 +224,6 @@ from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 from scs_core.climate.pressure_conf import PressureConf
 from scs_core.climate.sht_conf import SHTConf
 
-from scs_core.comms.mqtt_conf import MQTTConf
-
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
 from scs_core.data.json import JSONable
@@ -290,8 +234,6 @@ from scs_core.estate.package_version import PackageVersions
 
 from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_id import AFEId
-from scs_core.gas.afe.pt1000_calib import Pt1000Calib
-from scs_core.gas.ndir.ndir_conf import NDIRConf
 from scs_core.gas.scd30.scd30_conf import SCD30Conf
 from scs_core.gas.scd30.scd30_baseline import SCD30Baseline
 
@@ -308,6 +250,7 @@ from scs_core.model.gas.vcal_baseline import VCalBaseline
 from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
 from scs_core.particulate.opc_conf import OPCConf
+from scs_core.particulate.opc_error_log import OPCErrorSummary
 from scs_core.particulate.opc_version import OPCVersion
 
 from scs_core.psu.psu_conf import PSUConf
@@ -329,7 +272,7 @@ class Configuration(JSONable):
     classdocs
     """
 
-    VERSION = 1.3
+    VERSION = 1.4
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -351,7 +294,7 @@ class Configuration(JSONable):
                            None, None, None, None, None,
                            None, None, None, None, None,
                            None, None, None, None, None,
-                           None, None, None)
+                           None)
             else:
                 return None
 
@@ -371,15 +314,13 @@ class Configuration(JSONable):
         gps_conf = GPSConf.construct_from_jdict(jdict.get('gps-conf'))
         interface_conf = InterfaceConf.construct_from_jdict(jdict.get('interface-conf'))
         mpl115a2_calib = MPL115A2Calib.construct_from_jdict(jdict.get('mpl115a2-calib'))
-        mqtt_conf = MQTTConf.construct_from_jdict(jdict.get('mqtt-conf'))
-        ndir_conf = NDIRConf.construct_from_jdict(jdict.get('ndir-conf'))
         opc_conf = OPCConf.construct_from_jdict(jdict.get('opc-conf'))
         opc_version = OPCVersion.construct_from_jdict(jdict.get('opc-version'))
+        opc_error_summary = OPCErrorSummary.construct_from_jdict(jdict.get('opc-errors'))
         pmx_model_conf = PMxModelConf.construct_from_jdict(jdict.get('pmx-model-conf'))
         pressure_conf = PressureConf.construct_from_jdict(jdict.get('pressure-conf'))
         psu_conf = PSUConf.construct_from_jdict(jdict.get('psu-conf'))
         psu_version = PSUVersion.construct_from_jdict(jdict.get('psu-version'))
-        pt1000_calib = Pt1000Calib.construct_from_jdict(jdict.get('pt1000-calib'))
         scd30_baseline = SCD30Baseline.construct_from_jdict(jdict.get('scd30-baseline'))
         scd30_conf = SCD30Conf.construct_from_jdict(jdict.get('scd30-conf'))
         schedule = Schedule.construct_from_jdict(jdict.get('schedule'))
@@ -390,13 +331,13 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
 
-        return cls(hostname, platform, packs, afe_baseline, afe_id, aws_group_config,
-                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
-                   gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
-                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
-                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                   scd30_conf, schedule, sht_conf, networks, modem,
-                   sim, system_id, timezone_conf)
+        return cls(hostname, platform, packs, afe_baseline, afe_id,
+                   aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
+                   gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
+                   opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
+                   psu_conf, psu_version, scd30_baseline, scd30_conf, schedule,
+                   sht_conf, networks, modem, sim, system_id,
+                   timezone_conf)
 
 
     @classmethod
@@ -419,15 +360,13 @@ class Configuration(JSONable):
         gps_conf = GPSConf.load(manager)
         interface_conf = InterfaceConf.load(manager)
         mpl115a2_calib = MPL115A2Calib.load(manager)
-        mqtt_conf = MQTTConf.load(manager)
-        ndir_conf = NDIRConf.load(manager)
         opc_conf = OPCConf.load(manager)
         opc_version = OPCVersion.load(manager)
+        opc_error_summary = OPCErrorSummary.load(manager)
         pmx_model_conf = PMxModelConf.load(manager)
         pressure_conf = PressureConf.load(manager)
         psu_conf = PSUConf.load(manager)
         psu_version = psu_version
-        pt1000_calib = Pt1000Calib.load(manager)
         scd30_baseline = SCD30Baseline.load(manager)
         scd30_conf = SCD30Conf.load(manager)
         schedule = Schedule.load(manager)
@@ -438,24 +377,24 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(hostname, platform, packs, afe_baseline, afe_id, aws_group_config,
-                   aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
-                   gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
-                   mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
-                   pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                   scd30_conf, schedule, sht_conf, networks, modem,
-                   sim, system_id, timezone_conf)
+        return cls(hostname, platform, packs, afe_baseline, afe_id,
+                   aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
+                   gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
+                   opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
+                   psu_conf, psu_version, scd30_baseline, scd30_conf, schedule,
+                   sht_conf, networks, modem, sim, system_id,
+                   timezone_conf)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, platform, packs, afe_baseline, afe_id, aws_group_config,
-                 aws_project, data_log, display_conf, vcal_baseline, gas_baseline,
-                 gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
-                 mqtt_conf, ndir_conf, opc_conf, opc_version, pmx_model_conf,
-                 pressure_conf, psu_conf, psu_version, pt1000_calib, scd30_baseline,
-                 scd30_conf, schedule, sht_conf, networks, modem,
-                 sim, system_id, timezone_conf):
+    def __init__(self, hostname, platform, packs, afe_baseline, afe_id,
+                 aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
+                 gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
+                 opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
+                 psu_conf, psu_version, scd30_baseline, scd30_conf, schedule,
+                 sht_conf, networks, modem, sim, system_id,
+                 timezone_conf):
         """
         Constructor
         """
@@ -476,15 +415,13 @@ class Configuration(JSONable):
         self.__gps_conf = gps_conf                                  # GPSConf
         self.__interface_conf = interface_conf                      # InterfaceConf
         self.__mpl115a2_calib = mpl115a2_calib                      # MPL115A2Calib
-        self.__mqtt_conf = mqtt_conf                                # MQTTConf
-        self.__ndir_conf = ndir_conf                                # NDIRConf
         self.__opc_conf = opc_conf                                  # OPCConf
         self.__opc_version = opc_version                            # OPCVersion
+        self.__opc_error_summary = opc_error_summary                # OPCErrorSummary
         self.__pmx_model_conf = pmx_model_conf                      # PMxModelConf
         self.__pressure_conf = pressure_conf                        # PressureConf
         self.__psu_conf = psu_conf                                  # PSUConf
         self.__psu_version = psu_version                            # PSUVersion
-        self.__pt1000_calib = pt1000_calib                          # Pt1000Calib
         self.__scd30_baseline = scd30_baseline                      # SCD30Baseline
         self.__scd30_conf = scd30_conf                              # SCD30Conf
         self.__schedule = schedule                                  # Schedule
@@ -499,21 +436,20 @@ class Configuration(JSONable):
     def __eq__(self, other):
         try:
             return self.hostname == other.hostname and self.platform == other.platform and \
-                   self.packs == other.packs and self.afe_baseline == other.afe_baseline and \
-                   self.afe_id == other.afe_id and self.aws_project == other.aws_project and \
-                   self.data_log == other.data_log and self.display_conf == other.display_conf and \
-                   self.vcal_baseline == other.vcal_baseline and self.gas_baseline == other.gas_baseline and \
-                   self.gas_model_conf == other.gas_model_conf and self.gps_conf == other.gps_conf and \
-                   self.interface_conf == other.interface_conf and self.mpl115a2_calib == other.mpl115a2_calib and \
-                   self.mqtt_conf == other.mqtt_conf and self.ndir_conf == other.ndir_conf and \
-                   self.opc_conf == other.opc_conf and self.pmx_model_conf == other.pmx_model_conf and \
-                   self.pmx_model_conf == other.pmx_model_conf and self.pressure_conf == other.pressure_conf and \
-                   self.psu_conf == other.psu_conf and self.psu_version == other.psu_version and \
-                   self.pt1000_calib == other.pt1000_calib and self.scd30_baseline == other.scd30_baseline and \
-                   self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
-                   self.sht_conf == other.sht_conf and self.networks == other.networks and \
-                   self.modem == other.modem and self.sim == other.sim and \
-                   self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
+                self.packs == other.packs and self.afe_baseline == other.afe_baseline and \
+                self.afe_id == other.afe_id and self.aws_project == other.aws_project and \
+                self.data_log == other.data_log and self.display_conf == other.display_conf and \
+                self.vcal_baseline == other.vcal_baseline and self.gas_baseline == other.gas_baseline and \
+                self.gas_model_conf == other.gas_model_conf and self.gps_conf == other.gps_conf and \
+                self.interface_conf == other.interface_conf and self.mpl115a2_calib == other.mpl115a2_calib and \
+                self.opc_conf == other.opc_conf and self.opc_version == other.opc_version and \
+                self.opc_error_summary == other.opc_error_summary and self.pmx_model_conf == other.pmx_model_conf and \
+                self.pressure_conf == other.pressure_conf and self.psu_conf == other.psu_conf and \
+                self.psu_version == other.psu_version and self.scd30_baseline == other.scd30_baseline and \
+                self.scd30_conf == other.scd30_conf and self.schedule == other.schedule and \
+                self.sht_conf == other.sht_conf and self.networks == other.networks and \
+                self.modem == other.modem and self.sim == other.sim and \
+                self.system_id == other.system_id and self.timezone_conf == other.timezone_conf
 
         except (TypeError, AttributeError):
             return False
@@ -526,7 +462,7 @@ class Configuration(JSONable):
                              None, None, None, None, None,
                              None, None, None, None, None,
                              None, None, None, None, None,
-                             None, None, None)
+                             None)
 
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
@@ -570,12 +506,6 @@ class Configuration(JSONable):
         if self.mpl115a2_calib != other.mpl115a2_calib:
             diff.__mpl115a2_calib = self.mpl115a2_calib
 
-        if self.mqtt_conf != other.mqtt_conf:
-            diff.__mqtt_conf = self.mqtt_conf
-
-        if self.ndir_conf != other.ndir_conf:
-            diff.__ndir_conf = self.ndir_conf
-
         if self.opc_conf != other.opc_conf:
             diff.__opc_conf = self.opc_conf
 
@@ -593,9 +523,6 @@ class Configuration(JSONable):
 
         if self.psu_version != other.psu_version:
             diff.__psu_version = self.psu_version
-
-        if self.pt1000_calib != other.pt1000_calib:
-            diff.__pt1000_calib = self.pt1000_calib
 
         if self.scd30_baseline != other.scd30_baseline:
             diff.__scd30_baseline = self.scd30_baseline
@@ -675,17 +602,14 @@ class Configuration(JSONable):
         if self.mpl115a2_calib:
             self.mpl115a2_calib.save(manager)
 
-        if self.mqtt_conf:
-            self.mqtt_conf.save(manager)
-
-        if self.ndir_conf:
-            self.ndir_conf.save(manager)
-
         if self.opc_conf:
             self.opc_conf.save(manager)
 
         if self.opc_version:
             raise ValueError('opc_version may not be set')
+
+        if self.opc_error_summary:
+            raise ValueError('opc_error_summary may not be set')
 
         if self.pmx_model_conf:
             self.pmx_model_conf.save(manager)
@@ -698,9 +622,6 @@ class Configuration(JSONable):
 
         if self.psu_version:
             raise ValueError('psu_version may not be set')
-
-        if self.pt1000_calib:
-            self.pt1000_calib.save(manager)
 
         if self.scd30_baseline:
             self.scd30_baseline.save(manager)
@@ -751,15 +672,13 @@ class Configuration(JSONable):
         jdict['gps-conf'] = self.gps_conf
         jdict['interface-conf'] = self.interface_conf
         jdict['mpl115a2-calib'] = self.mpl115a2_calib
-        jdict['mqtt-conf'] = self.mqtt_conf
-        jdict['ndir-conf'] = self.ndir_conf
         jdict['opc-conf'] = self.opc_conf
         jdict['opc-version'] = self.opc_version
+        jdict['opc-errors'] = self.opc_error_summary
         jdict['pmx-model-conf'] = self.pmx_model_conf
         jdict['pressure-conf'] = self.pressure_conf
         jdict['psu-conf'] = self.psu_conf
         jdict['psu-version'] = self.psu_version
-        jdict['pt1000-calib'] = self.pt1000_calib
         jdict['scd30-baseline'] = self.scd30_baseline
         jdict['scd30-conf'] = self.scd30_conf
         jdict['schedule'] = self.schedule
@@ -851,16 +770,6 @@ class Configuration(JSONable):
 
 
     @property
-    def mqtt_conf(self):
-        return self.__mqtt_conf
-
-
-    @property
-    def ndir_conf(self):
-        return self.__ndir_conf
-
-
-    @property
     def opc_conf(self):
         return self.__opc_conf
 
@@ -868,6 +777,11 @@ class Configuration(JSONable):
     @property
     def opc_version(self):
         return self.__opc_version
+
+
+    @property
+    def opc_error_summary(self):
+        return self.__opc_error_summary
 
 
     @property
@@ -888,11 +802,6 @@ class Configuration(JSONable):
     @property
     def psu_version(self):
         return self.__psu_version
-
-
-    @property
-    def pt1000_calib(self):
-        return self.__pt1000_calib
 
 
     @property
@@ -943,17 +852,17 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, platform:%s, packs:%s, afe_baseline:%s, afe_id:%s, aws_group_config:%s, " \
-               "aws_project:%s, data_log:%s, display_conf:%s, vcal_baseline:%s, gas_baseline:%s, " \
-               "gas_model_conf:%s, gps_conf:%s, interface_conf:%s, mpl115a2_calib:%s, " \
-               "mqtt_conf:%s, ndir_conf:%s, opc_conf:%s, opc_version:%s, pmx_model_conf:%s, " \
-               "pressure_conf:%s, psu_conf:%s, psu_version:%s, pt1000_calib:%s, scd30_baseline:%s, " \
-               "scd30_conf:%s, schedule:%s, sht_conf:%s, networks:%s, modem:%s, " \
-               "sim:%s, system_id:%s, timezone_conf:%s}" % \
-               (self.hostname, self.platform, self.packs, self.afe_baseline, self.afe_id, self.aws_group_config,
-                self.aws_project, self.data_log, self.display_conf, self.vcal_baseline, self.gas_baseline,
-                self.gas_model_conf, self.gps_conf, self.interface_conf, self.mpl115a2_calib,
-                self.mqtt_conf, self.ndir_conf, self.opc_conf, self.opc_version, self.pmx_model_conf,
-                self.pressure_conf, self.psu_conf, self.psu_version, self.pt1000_calib, self.scd30_baseline,
-                self.scd30_conf, self.schedule, self.sht_conf, self.networks, self.modem,
-                self.sim, self.system_id, self.timezone_conf)
+        return "Configuration:{hostname:%s, platform:%s, packs:%s, afe_baseline:%s, afe_id:%s, " \
+               "aws_group_config:%s, aws_project:%s, data_log:%s, display_conf:%s, vcal_baseline:%s, " \
+               "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, interface_conf:%s, mpl115a2_calib:%s, " \
+               "opc_conf:%s, opc_version:%s, opc_error_summary:%s, pmx_model_conf:%s, pressure_conf:%s, " \
+               "psu_conf:%s, psu_version:%s, scd30_baseline:%s, scd30_conf:%s, schedule:%s, " \
+               "sht_conf:%s, networks:%s, modem:%s, sim:%s, system_id:%s, " \
+               "timezone_conf:%s}" % \
+               (self.hostname, self.platform, self.packs, self.afe_baseline, self.afe_id,
+                self.aws_group_config, self.aws_project, self.data_log, self.display_conf, self.vcal_baseline,
+                self.gas_baseline, self.gas_model_conf, self.gps_conf, self.interface_conf, self.mpl115a2_calib,
+                self.opc_conf, self.opc_version, self.opc_error_summary, self.pmx_model_conf, self.pressure_conf,
+                self.psu_conf, self.psu_version, self.scd30_baseline, self.scd30_conf, self.schedule,
+                self.sht_conf, self.networks, self.modem, self.sim, self.system_id,
+                self.timezone_conf)

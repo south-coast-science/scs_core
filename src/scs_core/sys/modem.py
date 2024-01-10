@@ -111,7 +111,6 @@ class Modem(JSONable):
     """
     modem.generic.device-identifier                 : 3f07553c31ce11715037ac16c24ceddcfb6f7a0b
     modem.generic.manufacturer                      : QUALCOMM INCORPORATED
-    modem.generic.model                             : QUECTEL Mobile Broadband Module
     modem.generic.revision                          : EC21EFAR06A01M4G
     ...
     modem.3gpp.imei                                 : 867962041294151
@@ -127,10 +126,9 @@ class Modem(JSONable):
         id = jdict.get('id')
         imei = jdict.get('imei')
         mfr = jdict.get('mfr')
-        model = jdict.get('model')
         rev = jdict.get('rev')
 
-        return cls(id, imei, mfr, model, rev)
+        return cls(id, imei, mfr, rev)
 
 
     @classmethod
@@ -138,7 +136,6 @@ class Modem(JSONable):
         id = None
         imei = None
         mfr = None
-        model = None
         rev = None
 
         for line in lines:
@@ -157,36 +154,30 @@ class Modem(JSONable):
                 mfr = match.groups()[0]
                 continue
 
-            match = re.match(r'modem\.generic\.model\s+:\s+(\S.*\S)', line)
-            if match:
-                model = match.groups()[0]
-                continue
-
             match = re.match(r'modem\.generic\.revision\s+:\s+(\S+)', line)
             if match:
                 rev = match.groups()[0]
                 continue
 
-        return cls(id, imei, mfr, model, rev)
+        return cls(id, imei, mfr, rev)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, id, imei, mfr, model, rev):
+    def __init__(self, id, imei, mfr, rev):
         """
         Constructor
         """
         self.__id = id                              # string
         self.__imei = imei                          # string
         self.__mfr = mfr                            # string
-        self.__model = model                        # string
         self.__rev = rev                            # string
 
 
     def __eq__(self, other):
         try:
             return self.id == other.id and self.imei == other.imei and self.mfr == other.mfr and \
-                   self.model == other.model and self.rev == other.rev
+                   self.rev == other.rev
 
         except (TypeError, AttributeError):
             return False
@@ -210,11 +201,6 @@ class Modem(JSONable):
 
 
     @property
-    def model(self):
-        return self.__model
-
-
-    @property
     def rev(self):
         return self.__rev
 
@@ -227,7 +213,6 @@ class Modem(JSONable):
         jdict['id'] = self.id
         jdict['imei'] = self.imei
         jdict['mfr'] = self.mfr
-        jdict['model'] = self.model
         jdict['rev'] = self.rev
 
         return jdict
@@ -236,8 +221,8 @@ class Modem(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Modem:{id:%s, imei:%s, mfr:%s, model:%s, rev:%s}" %  \
-               (self.id, self.imei, self.mfr, self.model, self.rev)
+        return "Modem:{id:%s, imei:%s, mfr:%s, rev:%s}" %  \
+               (self.id, self.imei, self.mfr, self.rev)
 
 
 # --------------------------------------------------------------------------------------------------------------------

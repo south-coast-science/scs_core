@@ -6,7 +6,7 @@ Created on 13 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.csv.csv_log import CSVLog, CSVLogFile
+from scs_core.csv.csv_data_log import CSVDataLog, CSVDataLogFile
 
 from scs_core.data.datetime import LocalizedDatetime
 
@@ -20,11 +20,11 @@ now = LocalizedDatetime.now().utc()
 
 path = '/home/pi/SCS/scs_core/tests/csv'
 
-log = CSVLog(path, topic_subject, device_tag)
+log = CSVDataLog(path, topic_subject, device_tag)
 log.timeline_start = now
 
 print(log)
-print("file_name: %s" % CSVLogFile.name(now.datetime, topic_subject, device_tag))
+print("file_name: %s" % CSVDataLogFile.name(now.datetime, topic_subject, device_tag))
 print("file_path: %s" % log.file_path())
 print("-")
 
@@ -40,11 +40,11 @@ print("-")
 
 path = 'data'
 
-log = CSVLog(path, topic_subject, device_tag)
+log = CSVDataLog(path, topic_subject, device_tag)
 log.timeline_start = now
 
 print(log)
-print("file_name: %s" % CSVLogFile.name(now.datetime, topic_subject, device_tag))
+print("file_name: %s" % CSVDataLogFile.name(now.datetime, topic_subject, device_tag))
 print("file_path: %s" % log.file_path())
 print("-")
 

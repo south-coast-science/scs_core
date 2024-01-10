@@ -1,88 +1,108 @@
 {
-    "rec": "2023-02-28T12:25:24Z",
-    "tag": "scs-bgx-851",
-    "ver": 1.3,
+    "rec": "2024-01-10T12:47:17Z",
+    "tag": "scs-be2-3",
+    "ver": 1.4,
     "val": {
-        "hostname": "scs-bbe-851",
+        "hostname": "scs-bbe-003",
         "os": {
-            "rel": "4.19.232-bone75",
-            "vers": "#1buster SMP PREEMPT Tue Mar 8 06:47:51 UTC 2022"
+            "rel": "6.1.38-bone21"
         },
         "packs": {
+            "scs_comms": {
+                "repo": "scs_comms_ge910",
+                "version": null
+            },
             "scs_core": {
                 "repo": "scs_core",
-                "version": "2.8.9"
+                "version": "3.6.0"
             },
             "scs_dev": {
                 "repo": "scs_dev",
-                "version": "2.8.3"
+                "version": "3.2.3"
             },
             "scs_dfe": {
                 "repo": "scs_dfe_eng",
-                "version": "2.8.1"
+                "version": "3.0.0"
             },
-            "scs_greengrass": {
-                "repo": "scs_greengrass",
-                "version": "2.4.1"
+            "scs_exegesis": {
+                "repo": "scs_exegesis",
+                "version": null
             },
             "scs_host": {
                 "repo": "scs_host_bbe_southern",
-                "version": "2.8.2"
+                "version": "3.4.2"
+            },
+            "scs_inference": {
+                "repo": "scs_inference",
+                "version": null
             },
             "scs_mfr": {
                 "repo": "scs_mfr",
-                "version": "2.8.5"
+                "version": "3.6.1"
+            },
+            "scs_ndir": {
+                "repo": "scs_ndir",
+                "version": null
             },
             "scs_psu": {
                 "repo": "scs_psu",
-                "version": "2.5.1"
+                "version": "2.5.2"
             }
         },
         "afe-baseline": {
             "sn1": {
-                "calibrated-on": "2023-07-26T11:31:00Z",
+                "calibrated-on": "2023-12-07T12:43:55Z",
                 "offset": 0
             },
             "sn2": {
-                "calibrated-on": "2023-07-26T11:31:00Z",
+                "calibrated-on": "2023-12-07T12:43:55Z",
                 "offset": 0
             },
             "sn3": {
-                "calibrated-on": "2023-07-26T11:31:00Z",
+                "calibrated-on": "2023-12-07T12:43:55Z",
                 "offset": 0
             },
             "sn4": {
-                "calibrated-on": "2023-07-26T11:31:00Z",
+                "calibrated-on": "2023-12-07T12:43:55Z",
                 "offset": 0
             }
         },
         "afe-id": {
-            "serial_number": "25-001244",
-            "type": "810-0023-00",
-            "calibrated_on": "2023-07-06",
+            "serial_number": "26-000345",
+            "type": "810-0023-01",
+            "calibrated_on": "2020-11-18",
             "sn1": {
-                "serial_number": "212602217",
+                "serial_number": "212632052",
                 "sensor_type": "NO2A43F"
             },
-            "sn2": null,
-            "sn3": null,
-            "sn4": null
+            "sn2": {
+                "serial_number": "214250436",
+                "sensor_type": "OXA431"
+            },
+            "sn3": {
+                "serial_number": "130631043",
+                "sensor_type": "NO A4"
+            },
+            "sn4": {
+                "serial_number": "134200204",
+                "sensor_type": "SO2A4"
+            }
         },
         "aws-group-config": {
-            "group-name": "scs-bbe-851-group",
-            "time-initiated": "2023-07-26T11:31:35Z",
+            "group-name": "scs-bbe-003-group",
+            "time-initiated": "2023-12-22T10:26:28Z",
             "unix-group": 987,
             "ml": "uE.1"
         },
         "aws-project": {
-            "location-path": "eemc-monitors/urban/loc/851",
-            "device-path": "eemc-monitors/urban/device"
+            "location-path": "south-coast-science-dev/development/loc/1",
+            "device-path": "south-coast-science-dev/development/device"
         },
         "data-log": {
             "path": "/srv/removable_data_storage",
             "is-available": true,
             "on-root": false,
-            "used": 5
+            "used": 6
         },
         "display-conf": null,
         "vcal-baseline": null,
@@ -103,8 +123,6 @@
             "model": "DFE"
         },
         "mpl115a2-calib": null,
-        "mqtt-conf": null,
-        "ndir-conf": null,
         "opc-conf": {
             "model": "N3",
             "sample-period": 10,
@@ -112,94 +130,71 @@
             "power-saving": false
         },
         "opc-version": {
-            "serial": "177391311",
+            "serial": "177050912",
             "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
         },
+        "opc-errors": null,
         "pmx-model-conf": {
             "uds-path": "pipes/lambda-pmx-model.uds",
             "model-interface": "s2"
         },
-        "pressure-conf": {
-            "model": "ICP",
-            "altitude": null
-        },
+        "pressure-conf": null,
         "psu-conf": {
             "model": "OsloV1",
             "batt-model": null,
             "ignore-threshold": false,
-            "reporting-interval": 20,
+            "reporting-interval": 10,
             "report-file": "/tmp/southcoastscience/psu_status_report.json"
         },
         "psu-version": {
             "id": "South Coast Science PSU Oslo",
             "tag": "2.2.5"
         },
-        "pt1000-calib": {
-            "calibrated-on": "2017-08-15T11:21:45Z",
-            "v20": 0.320208
-        },
         "scd30-baseline": null,
         "scd30-conf": null,
         "schedule": {
             "scs-climate": {
-                "interval": 60,
+                "interval": 60.0,
                 "tally": 1
             },
             "scs-gases": {
-                "interval": 10,
+                "interval": 10.0,
                 "tally": 1
             },
             "scs-particulates": {
-                "interval": 10,
+                "interval": 10.0,
                 "tally": 1
             },
             "scs-status": {
-                "interval": 60,
+                "interval": 60.0,
                 "tally": 1
             }
         },
-        "shared-secret": null,
         "sht-conf": {
             "int": "0x45",
             "ext": "0x45"
         },
-        "networks": {
-            "eth0": {
-                "kind": "ethernet",
-                "state": "connected",
-                "connection": "Ethernet eth0"
-            },
-            "cdc-wdm0": {
-                "kind": "gsm",
-                "state": "connected",
-                "connection": "EE M2M"
-            },
-            "usb0": {
-                "kind": "ethernet",
-                "state": "unavailable",
-                "connection": null
-            }
-        },
+        "networks": null,
         "modem": {
-            "id": "dc6200b568a7db70967069df82382723af78475e",
-            "imei": "865167067957499",
+            "id": "992c3ac6da0b68d58005d20ea5e957d409001e42",
+            "imei": "860425041573914",
             "mfr": "QUALCOMM INCORPORATED",
             "model": "QUECTEL Mobile Broadband Module",
-            "rev": "EG25GGBR07A08M2G"
+            "rev": "EC25ECGAR06A05M1G"
         },
         "sim": {
-            "imsi": "234301953139715",
-            "iccid": "8944303353143783694",
+            "imsi": "234301951432537",
+            "iccid": "8944303382697124823",
             "operator-code": "23430",
             "operator-name": "EE"
         },
         "system-id": {
-            "set-on": "2023-07-26T11:31:09Z",
+            "set-on": "2024-01-09T16:02:09Z",
             "vendor-id": "SCS",
-            "model-id": "BGX",
-            "model": "Praxis",
-            "config": "BGX",
-            "system-sn": 851
+            "model-id": "BE2",
+            "model": "Alpha BB Eng",
+            "config": "V2",
+            "system-sn": 3
         },
         "timezone-conf": {
             "set-on": "2017-08-15T12:50:05Z",
