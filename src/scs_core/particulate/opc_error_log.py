@@ -88,7 +88,7 @@ class OPCErrorLog(CSVLog):
     """
 
     __FILENAME = "opc_error_log.csv"
-    __MAX_ENTRIES = 10000
+    __MAX_ENTRIES = 5000                                # 180 KB
 
     @classmethod
     def persistence_location(cls):

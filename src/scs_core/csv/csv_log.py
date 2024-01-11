@@ -2,6 +2,9 @@
 Created on 9 Jan 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://stackoverflow.com/questions/845058/how-to-get-the-line-count-of-a-large-file-cheaply-in-python
+https://stackoverflow.com/questions/33626623/the-most-efficient-way-to-remove-first-n-elements-in-a-list
 """
 
 from abc import ABC, abstractmethod
@@ -21,7 +24,8 @@ class CSVLog(PersistentJSONable, ABC):
     classdocs
     """
 
-    __LOG_DIR =             "log"                               # hard-coded rel path
+    __TRIM_MARGIN =         0.2                             # 20%
+    __LOG_DIR =             "log"                           # hard-coded rel path
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +39,7 @@ class CSVLog(PersistentJSONable, ABC):
     @classmethod
     @abstractmethod
     def max_permitted_entries(cls):
-        return None
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,10 +68,12 @@ class CSVLog(PersistentJSONable, ABC):
         with open(abs_filename) as f:
             lines = f.readlines()
 
-        remove = len(lines) - max_entries
+        excess = len(lines) - max_entries
 
-        if remove < 1:
+        if excess < 1:
             return
+
+        remove = excess + int(max_entries * cls.__TRIM_MARGIN)
 
         del lines[1:remove]
 
