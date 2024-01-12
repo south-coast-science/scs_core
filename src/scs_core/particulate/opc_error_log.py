@@ -32,14 +32,9 @@ class OPCErrorLog(CSVLog):
         return cls.__MAX_ENTRIES
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
     @classmethod
-    def save_event(cls, manager, event, trim=False):
-        cls.__save_entries(manager, [LogEntry.construct(event)])
-
-        if trim:
-            cls.trim(manager, cls.max_permitted_entries())
+    def construct_entry(cls, event):
+        return LogEntry.construct(event)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -109,6 +109,12 @@ class CSVLog(PersistentJSONable, ABC):
         pass
 
 
+    @classmethod
+    @abstractmethod
+    def construct_entry(cls, event):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -169,9 +175,11 @@ class CSVLog(PersistentJSONable, ABC):
 
 
     @classmethod
-    @abstractmethod
     def save_event(cls, manager, event, trim=False):
-        pass
+        cls.__save_entries(manager, [cls.construct_entry(event)])
+
+        if trim:
+            cls.trim(manager, cls.max_permitted_entries())
 
 
     # ----------------------------------------------------------------------------------------------------------------
