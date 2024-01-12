@@ -8,13 +8,80 @@ https://stackoverflow.com/questions/33626623/the-most-efficient-way-to-remove-fi
 """
 
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 
 from scs_core.csv.csv_reader import CSVReader
 from scs_core.csv.csv_writer import CSVWriter
 
-from scs_core.data.json import JSONify, PersistentJSONable
+from scs_core.data.datetime import LocalizedDatetime
+from scs_core.data.json import JSONable, JSONify, PersistentJSONable
+from scs_core.data.str import Str
 
 from scs_core.sys.filesystem import Filesystem
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class LogEntry(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
+        event = jdict.get('event')
+
+        return cls(rec, event)
+
+
+    @classmethod
+    def construct(cls, event):
+        return cls(LocalizedDatetime.now(), event)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, rec, event):
+        """
+        Constructor
+        """
+        self.__rec = rec                                    # LocalizedDatetime
+        self.__event = event                                # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['rec'] = self.rec.as_iso8601()
+        jdict['event'] = self.event
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def rec(self):
+        return self.__rec
+
+
+    @property
+    def event(self):
+        return self.__event
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "LogEntry:{rec:%s, event:%s}" % (self.rec, self.event)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -102,11 +169,9 @@ class CSVLog(PersistentJSONable, ABC):
 
 
     @classmethod
-    def save_entry(cls, manager, entry, trim=False):
-        cls.__save_entries(manager, [entry])
-
-        if trim:
-            cls.trim(manager, cls.max_permitted_entries())
+    @abstractmethod
+    def save_event(cls, manager, event, trim=False):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -134,6 +199,15 @@ class CSVLog(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __init__(self, entries):
+        """
+        Constructor
+        """
+        super().__init__()
+
+        self.__entries = entries                            # array of JSONable
+
+
     def __len__(self):
         return len(self.entries)
 
@@ -146,7 +220,18 @@ class CSVLog(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def as_json(self):
+        return self.__entries
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
-    @abstractmethod
     def entries(self):
-        return []
+        return self.__entries
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return self.__class__.__name__ + ":{entries:%s}" % Str.collection(self.entries)

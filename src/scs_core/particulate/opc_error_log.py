@@ -4,80 +4,12 @@ Created on 9 Jan 2024
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-[{"rec": "2024-01-10T11:55:45Z", "cause": "checksum error"}]
+[{"rec": "2024-01-10T11:55:45Z", "event": "checksum error"}]
 """
 
-from collections import OrderedDict
+from scs_core.csv.csv_log import CSVLog, LogEntry
 
-from scs_core.csv.csv_log import CSVLog
-
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
-from scs_core.data.str import Str
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class OPCErrorLogEntry(JSONable):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct_from_jdict(cls, jdict):
-        if not jdict:
-            return None
-
-        rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
-        cause = jdict.get('cause')
-
-        return cls(rec, cause)
-
-
-    @classmethod
-    def construct(cls, cause):
-        return cls(LocalizedDatetime.now(), cause)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, rec, cause):
-        """
-        Constructor
-        """
-        self.__rec = rec                                    # LocalizedDatetime
-        self.__cause = cause                                # string
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['rec'] = self.rec.as_iso8601()
-        jdict['cause'] = self.cause
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def rec(self):
-        return self.__rec
-
-
-    @property
-    def cause(self):
-        return self.__cause
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "OPCErrorLogEntry:{rec:%s, cause:%s}" % (self.rec, self.cause)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -88,7 +20,7 @@ class OPCErrorLog(CSVLog):
     """
 
     __FILENAME = "opc_error_log.csv"
-    __MAX_ENTRIES = 5000                                # 180 KB
+    __MAX_ENTRIES = 5000                                # ≈ 180 KB
 
     @classmethod
     def persistence_location(cls):
@@ -103,11 +35,21 @@ class OPCErrorLog(CSVLog):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def save_event(cls, manager, event, trim=False):
+        cls.__save_entries(manager, [LogEntry.construct(event)])
+
+        if trim:
+            cls.trim(manager, cls.max_permitted_entries())
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
             return cls([]) if skeleton else None
 
-        entries = [OPCErrorLogEntry.construct_from_jdict(entry_jdict) for entry_jdict in jdict]
+        entries = [LogEntry.construct_from_jdict(entry_jdict) for entry_jdict in jdict]
 
         return cls(entries)
 
@@ -118,28 +60,7 @@ class OPCErrorLog(CSVLog):
         """
         Constructor
         """
-        super().__init__()
-
-        self.__entries = entries                            # array of OPCErrorLogEntry
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        return self.__entries
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def entries(self):
-        return self.__entries
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "OPCErrorLog:{entries:%s}" % Str.collection(self.entries)
+        super().__init__(entries)
 
 
 # --------------------------------------------------------------------------------------------------------------------
