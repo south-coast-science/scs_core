@@ -405,7 +405,7 @@ class MultiPersistentJSONable(AbstractPersistentJSONable):
 
     @classmethod
     def load(cls, manager, name=None, encryption_key=None, skeleton=False):
-        if not cls.exists(manager):
+        if not cls.exists(manager, name=name):
             return cls.construct_from_jdict(None, name=name, skeleton=skeleton)
 
         try:
