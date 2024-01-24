@@ -11,7 +11,8 @@ import json
 from scs_core.data.json import JSONify
 from scs_core.model.pmx.o2.pmx_request import PMxRequest
 
-from scs_core.sample.climate_sample import ClimateSample
+from scs_core.climate.sht_datum import SHTDatum
+
 from scs_core.sample.particulates_sample import ParticulatesSample
 
 
@@ -26,14 +27,13 @@ pmx_sample = ParticulatesSample.construct_from_jdict(json.loads(pmx_jstr))
 print(pmx_sample)
 print("-")
 
-climate_jstr = '{"rec": "2024-01-24T14:34:43Z", "tag": "scs-be2-3", "ver": 1.0, ' \
-               '"val": {"hmd": 46.6, "tmp": 24.9, "bar": null}}'
+ext_sht_jstr = '{"hmd": 46.6, "tmp": 24.9, "bar": null}'
 
-climate_sample = ClimateSample.construct_from_jdict(json.loads(climate_jstr))
-print(climate_sample)
+ext_sht_datum = SHTDatum.construct_from_jdict(json.loads(ext_sht_jstr))
+print(ext_sht_datum)
 print("-")
 
-request = PMxRequest(climate_sample, pmx_sample, 0.1, 0.2, 0.3, 0.4)
+request = PMxRequest(pmx_sample, ext_sht_datum, 0.1, 0.2, 0.3, 0.4)
 print(request)
 print('-')
 

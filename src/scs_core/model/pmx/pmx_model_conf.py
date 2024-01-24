@@ -12,6 +12,8 @@ example JSON:
 from scs_core.model.model_conf import ModelConf
 from scs_core.model.pmx.pmx_inference_client import PMxInferenceClient
 
+from scs_core.sync.schedule import ScheduleItem
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -45,7 +47,12 @@ class PMxModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def client(self, host, socket) -> PMxInferenceClient:
+    def client(self, host, socket, schedule_item: ScheduleItem) -> PMxInferenceClient:
+        if self.model_compendium_group.endswith('oE.2'):
+            from scs_core.model.pmx.o2.o2_pmx_inference_client import O2PMxInferenceClient
+
+            return O2PMxInferenceClient.construct(socket, self.abs_uds_path(host), schedule_item)
+
         if self.model_interface == 's1' or self.model_interface == 's2':
             from scs_core.model.pmx.s1.s1_pmx_inference_client import S1PMxInferenceClient
 

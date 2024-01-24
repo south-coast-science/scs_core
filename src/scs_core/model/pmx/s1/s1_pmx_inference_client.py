@@ -51,8 +51,8 @@ class S1PMxInferenceClient(PMxInferenceClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def infer(self, opc_sample, ext_sht_sample):
-        pmx_request = PMxRequest(opc_sample, ext_sht_sample)
+    def infer(self, opc_sample, ext_sht_sample):                # TODO: ext_sht_datum
+        pmx_request = PMxRequest(opc_sample, ext_sht_sample)                # TODO: ext_sht_datum
 
         self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
         response = self._uds_client.wait_for_response()
