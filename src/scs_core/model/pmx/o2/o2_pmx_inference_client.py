@@ -4,14 +4,13 @@ Created on 24 Jan 2024
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example request:
-{"meteo-sample": {"rec": "2024-01-24T14:34:43Z", "tag": "scs-be2-3", "ver": 1.0,
-"val": {"hmd": 46.6, "tmp": 24.9, "bar": null}},
-"pmx-sample": {"rec": "2024-01-24T14:32:35Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
+{"sample": {"rec": "2024-01-24T14:32:35Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
 "val": {"per": 4.1, "pm1": 3.4, "pm2p5": 5.8, "pm10": 6.1,
 "bin": [276, 175, 80, 13, 11, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 "mtf1": 27, "mtf3": 29, "mtf5": 40, "mtf7": 0, "sfr": 5.61,
 "sht": {"hmd": 42.6, "tmp": 23.8}}},
-"slopes": {"meteo-t": 0.1, "meteo-rh": 0.2, "opc-t": 0.3, "opc-rh": 0.4}}
+"ext-sht": {"hmd": 46.6, "tmp": 24.9},
+"slopes": {"ext-t": 0.1, "ext-rh": 0.2, "opc-t": 0.3, "opc-rh": 0.4}}
 """
 
 import json

@@ -4,14 +4,13 @@ Created on 24 Jan Dec 2024
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"meteo-sample": {"rec": "2024-01-24T14:34:43Z", "tag": "scs-be2-3", "ver": 1.0,
-"val": {"hmd": 46.6, "tmp": 24.9, "bar": null}},
-"pmx-sample": {"rec": "2024-01-24T14:32:35Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
+{"sample": {"rec": "2024-01-24T14:32:35Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
 "val": {"per": 4.1, "pm1": 3.4, "pm2p5": 5.8, "pm10": 6.1,
 "bin": [276, 175, 80, 13, 11, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 "mtf1": 27, "mtf3": 29, "mtf5": 40, "mtf7": 0, "sfr": 5.61,
 "sht": {"hmd": 42.6, "tmp": 23.8}}},
-"slopes": {"meteo-t": 0.1, "meteo-rh": 0.2, "opc-t": 0.3, "opc-rh": 0.4}}
+"ext-sht": {"hmd": 46.6, "tmp": 24.9},
+"slopes": {"ext-t": 0.1, "ext-rh": 0.2, "opc-t": 0.3, "opc-rh": 0.4}}
 """
 
 from collections import OrderedDict
@@ -39,11 +38,11 @@ class PMxRequest(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pmx_sample, ext_sht_datum, ext_t_slope, ext_rh_slope, opc_t_slope, opc_rh_slope):
+    def __init__(self, sample, ext_sht_datum, ext_t_slope, ext_rh_slope, opc_t_slope, opc_rh_slope):
         """
         Constructor
         """
-        self.__pmx_sample = pmx_sample                                          # ParticulatesSample
+        self.__sample = sample                                                  # ParticulatesSample
         self.__ext_sht_datum = ext_sht_datum                                    # SHTDatum
 
         self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=4)                # float
@@ -56,7 +55,7 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_compatible(self, group):
-        return self.pmx_sample.src == group.opc_version()
+        return self.sample.src == group.opc_version()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,7 +63,7 @@ class PMxRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['pmx-sample'] = self.pmx_sample
+        jdict['sample'] = self.sample
         jdict['ext-sht'] = self.ext_sht_datum
 
         jdict['slopes'] = {
@@ -80,8 +79,8 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def pmx_sample(self):
-        return self.__pmx_sample
+    def sample(self):
+        return self.__sample
 
 
     @property
@@ -112,7 +111,7 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxRequest(o2):{pmx_sample:%s, ext_sht_datum:%s, " \
+        return "PMxRequest(o2):{sample:%s, ext_sht_datum:%s, " \
                "ext_t_slope:%s, ext_rh_slope:%s, opc_t_slope:%s, opc_rh_slope:%s}" %  \
-               (self.pmx_sample, self.ext_sht_datum,
+               (self.sample, self.ext_sht_datum,
                 self.ext_t_slope, self.ext_rh_slope, self.opc_t_slope, self.opc_rh_slope)
