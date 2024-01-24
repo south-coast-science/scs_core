@@ -72,9 +72,6 @@ class O2PMxInferenceClient(PMxInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def infer(self, opc_sample, ext_sht_datum):
-        print("opc_sample: %s" % opc_sample)
-        print("sht_datum: %s" % ext_sht_datum)
-
         # Meteo T / rH slope...
         self.__meteo_t_regression.append(opc_sample.rec, ext_sht_datum.temp)
         self.__meteo_rh_regression.append(opc_sample.rec, ext_sht_datum.humid)
