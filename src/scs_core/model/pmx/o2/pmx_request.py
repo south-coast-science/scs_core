@@ -39,15 +39,15 @@ class PMxRequest(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, meteo_sample, pmx_sample, meteo_t_slope, meteo_rh_slope, opc_t_slope, opc_rh_slope):
+    def __init__(self, pmx_sample, ext_sht_datum, ext_t_slope, ext_rh_slope, opc_t_slope, opc_rh_slope):
         """
         Constructor
         """
-        self.__meteo_sample = meteo_sample                                      # ClimateSample
         self.__pmx_sample = pmx_sample                                          # ParticulatesSample
+        self.__ext_sht_datum = ext_sht_datum                                    # SHTDatum
 
-        self.__meteo_t_slope = Datum.float(meteo_t_slope, ndigits=4)            # float
-        self.__meteo_rh_slope = Datum.float(meteo_rh_slope, ndigits=4)          # float
+        self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=4)                # float
+        self.__ext_rh_slope = Datum.float(ext_rh_slope, ndigits=4)              # float
 
         self.__opc_t_slope = Datum.float(opc_t_slope, ndigits=4)                # float
         self.__opc_rh_slope = Datum.float(opc_rh_slope, ndigits=4)              # float
@@ -58,12 +58,12 @@ class PMxRequest(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['meteo-sample'] = self.meteo_sample
         jdict['pmx-sample'] = self.pmx_sample
+        jdict['ext-sht'] = self.ext_sht_datum
 
         jdict['slopes'] = {
-            'meteo-t': self.meteo_t_slope,
-            'meteo-rh': self.meteo_rh_slope,
+            'ext-t': self.ext_t_slope,
+            'ext-rh': self.ext_rh_slope,
             'opc-t': self.opc_t_slope,
             'opc-rh': self.opc_rh_slope
         }
@@ -74,23 +74,23 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def meteo_sample(self):
-        return self.__meteo_sample
-
-
-    @property
     def pmx_sample(self):
         return self.__pmx_sample
 
 
     @property
-    def meteo_t_slope(self):
-        return self.__meteo_t_slope
+    def ext_sht_datum(self):
+        return self.__ext_sht_datum
 
 
     @property
-    def meteo_rh_slope(self):
-        return self.__meteo_rh_slope
+    def ext_t_slope(self):
+        return self.__ext_t_slope
+
+
+    @property
+    def ext_rh_slope(self):
+        return self.__ext_rh_slope
 
 
     @property
@@ -106,7 +106,7 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxRequest(o2):{meteo_sample:%s, pmx_sample:%s, " \
-               "meteo_t_slope:%s, meteo_rh_slope:%s, opc_t_slope:%s, opc_rh_slope:%s}" %  \
-               (self.meteo_sample, self.pmx_sample,
-                self.meteo_t_slope, self.meteo_rh_slope, self.opc_t_slope, self.opc_rh_slope)
+        return "PMxRequest(o2):{pmx_sample:%s, ext_sht_datum:%s, " \
+               "ext_t_slope:%s, ext_rh_slope:%s, opc_t_slope:%s, opc_rh_slope:%s}" %  \
+               (self.pmx_sample, self.ext_sht_datum,
+                self.ext_t_slope, self.ext_rh_slope, self.opc_t_slope, self.opc_rh_slope)
