@@ -6,7 +6,7 @@ Created on 23 Dec 2020
 an ML model group configuration for particulates inference
 
 example JSON:
-{"uds-path": "pipes/lambda-model-pmx-s1.uds", "model-interface": "s1"}
+{"uds-path": "pipes/lambda-pmx-model.uds", "model-interface": "s2", "model-map": "oM.2"}
 """
 
 from scs_core.model.model_conf import ModelConf

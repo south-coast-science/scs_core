@@ -20,9 +20,11 @@ class ModelMapping(object):
         cls.__MAPS['oM.2'] = cls('oM.2', 'oE.1', 'oPG.2', 'oP.2')
         cls.__MAPS['uE.1'] = cls('uE.1', 'uE.1', 'uE.1', 'g0')
 
+
     @classmethod
     def map(cls, name):
-        return cls.__MAPS[name]                         # may raise KeyError
+        return cls.__MAPS[name]                             # may raise KeyError
+
 
     @classmethod
     def names(cls):
@@ -36,6 +38,7 @@ class ModelMapping(object):
         Constructor
         """
         self.__name = name                                                  # string
+
         self.__gas_compendium_group = gas_compendium_group                  # string
         self.__pg_gg_ml_template = pg_gg_ml_template                        # string PMx + Gas
         self.__p_gg_ml_template = p_gg_ml_template                          # string PMx

@@ -39,7 +39,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         # gas-only model...
         if gas_model_conf and not pmx_model_conf:
-            raise ValueError('the configuration gas model without PMx model is not supported.')
+            raise ValueError('a gas model without PMx model is not supported.')
 
         # gas and PMx models...
         gas_model_map = gas_model_conf.model_map
@@ -76,8 +76,8 @@ class ModelConf(ABC, PersistentJSONable):
         model_interface = jdict.get('model-interface')
 
         try:
-            mapping_field = 'model-map' if 'model-map' in jdict else 'model-compendium-group'
-            model_map = ModelMapping.map(jdict.get(mapping_field))
+            field = 'model-map' if 'model-map' in jdict else 'model-compendium-group'
+            model_map = ModelMapping.map(jdict.get(field))
         except KeyError:
             model_map = None
 
@@ -143,5 +143,7 @@ class ModelConf(ABC, PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        model_map_name = None if self.model_map is None else self.model_map.name
+
         return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_map:%s}" %  \
-               (self.uds_path, self.model_interface, self.model_map)
+            (self.uds_path, self.model_interface, model_map_name)
