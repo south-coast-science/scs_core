@@ -26,6 +26,31 @@ class ModelConf(ABC, PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def compendium_group_resolution(cls, gas_model_conf, pmx_model_conf):
+        # no models...
+        if not gas_model_conf and not pmx_model_conf:
+            return 'm0'
+
+        # PMx-only model...
+        if not gas_model_conf and pmx_model_conf:
+            return "g0.oE.2" if pmx_model_conf.model_compendium_group == 'oE.2' else 'g0'
+
+        # gas-only model...
+        if gas_model_conf and not pmx_model_conf:
+            raise ValueError('the configuration gas model without PMx model is not supported.')
+
+        # gas and PMx models...
+        if gas_model_conf.model_compendium_group and pmx_model_conf.model_compendium_group:
+            if gas_model_conf.model_compendium_group != pmx_model_conf.model_compendium_group:
+                raise ValueError("the gas model group '%s' is not compatible with the PMx model group '%s'." %
+                                 (gas_model_conf.model_compendium_group, pmx_model_conf.model_compendium_group))
+
+        return gas_model_conf.model_compendium_group
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     @abstractmethod
     def interfaces(cls):
         return tuple()
