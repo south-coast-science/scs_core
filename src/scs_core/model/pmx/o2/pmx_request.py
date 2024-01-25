@@ -38,18 +38,18 @@ class PMxRequest(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sample, ext_sht_datum, ext_t_slope, ext_rh_slope, opc_t_slope, opc_rh_slope):
+    def __init__(self, sample, sht_datum, ext_t_slope, ext_rh_slope, opc_t_slope, opc_rh_slope):
         """
         Constructor
         """
         self.__sample = sample                                                  # ParticulatesSample
-        self.__ext_sht_datum = ext_sht_datum                                    # SHTDatum
+        self.__sht_datum = sht_datum                                            # SHTDatum
 
-        self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=4)                # float
-        self.__ext_rh_slope = Datum.float(ext_rh_slope, ndigits=4)              # float
+        self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=4)                # float or None
+        self.__ext_rh_slope = Datum.float(ext_rh_slope, ndigits=4)              # float or None
 
-        self.__opc_t_slope = Datum.float(opc_t_slope, ndigits=4)                # float
-        self.__opc_rh_slope = Datum.float(opc_rh_slope, ndigits=4)              # float
+        self.__opc_t_slope = Datum.float(opc_t_slope, ndigits=4)                # float or None
+        self.__opc_rh_slope = Datum.float(opc_rh_slope, ndigits=4)              # float or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ class PMxRequest(JSONable):
         jdict = OrderedDict()
 
         jdict['sample'] = self.sample
-        jdict['ext-sht'] = self.ext_sht_datum
+        jdict['ext-sht'] = self.sht_datum
 
         jdict['slopes'] = {
             'ext-t': self.ext_t_slope,
@@ -84,8 +84,8 @@ class PMxRequest(JSONable):
 
 
     @property
-    def ext_sht_datum(self):
-        return self.__ext_sht_datum
+    def sht_datum(self):
+        return self.__sht_datum
 
 
     @property
@@ -111,7 +111,7 @@ class PMxRequest(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PMxRequest(o2):{sample:%s, ext_sht_datum:%s, " \
-               "ext_t_slope:%s, ext_rh_slope:%s, opc_t_slope:%s, opc_rh_slope:%s}" %  \
-               (self.sample, self.ext_sht_datum,
-                self.ext_t_slope, self.ext_rh_slope, self.opc_t_slope, self.opc_rh_slope)
+        return "PMxRequest(o2):{sample:%s, sht_datum:%s, ext_t_slope:%s, ext_rh_slope:%s, " \
+               "opc_t_slope:%s, opc_rh_slope:%s}" %  \
+               (self.sample, self.sht_datum, self.ext_t_slope, self.ext_rh_slope,
+                self.opc_t_slope, self.opc_rh_slope)
