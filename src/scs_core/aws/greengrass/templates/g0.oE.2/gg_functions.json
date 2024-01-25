@@ -63,7 +63,7 @@
               }
             ],
             "Variables": {
-              "MODEL_NAME": "BR.22.105"
+              "MODEL_NAME": "oB.1"
             }
           },
           "Executable": "lambda_function.lambda_handler",
