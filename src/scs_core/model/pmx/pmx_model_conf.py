@@ -38,18 +38,18 @@ class PMxModelConf(ModelConf):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium_group=None):
+    def __init__(self, uds_path, model_interface, model_map):
         """
         Constructor
         """
-        super().__init__(uds_path, model_interface, model_compendium_group=model_compendium_group)
+        super().__init__(uds_path, model_interface, model_map)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def client(self, host, socket, schedule_item: ScheduleItem) -> PMxInferenceClient:
-        # oE.2...
-        if self.model_compendium_group and self.model_compendium_group.endswith('oE.2'):
+        # oM.2...
+        if self.model_map.name == 'oM.2':
             from scs_core.model.pmx.o2.o2_pmx_inference_client import O2PMxInferenceClient
 
             return O2PMxInferenceClient.construct(socket, self.abs_uds_path(host), schedule_item)
