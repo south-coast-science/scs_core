@@ -88,6 +88,7 @@ class PackageVersion(MultiPersistentJSONable):
     def __eq__(self, other):
         try:
             return self.repository == other.repository and self.version == other.version
+
         except (TypeError, AttributeError):
             return False
 

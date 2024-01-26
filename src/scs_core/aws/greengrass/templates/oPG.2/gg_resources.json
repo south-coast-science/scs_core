@@ -1,0 +1,61 @@
+{
+    "Name": "RESOURCE_CONTAINER_NAME",
+    "InitialVersion": {
+        "Resources": [
+            {
+                "Id": "SYSTEM_ID-data-volume",
+                "Name": "SCS",
+                "ResourceDataContainer": {
+                    "LocalVolumeResourceData": {
+                        "SourcePath": "SCS_DIR",
+                        "DestinationPath": "/SCS",
+                        "GroupOwnerSetting": {
+                            "AutoAddGroupOwner": false,
+                            "GroupOwner": "UNIX_GROUP_OWNER_NAME"
+                        }
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm1",
+                "Name": "ML-PM1",
+                "ResourceDataContainer": {
+                    "S3MachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/oB.1/pm1",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM1-vB-scs-opc-105-2022-xgboost-2024-01-23.tar.gz"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm2p5",
+                "Name": "ML-PM2P5",
+                "ResourceDataContainer": {
+                    "S3MachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/oB.1/pm2p5",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM2P5-vB-scs-opc-105-2022-xgboost-2024-01-24.tar.gz"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-pm10",
+                "Name": "ML-PM10",
+                "ResourceDataContainer": {
+                    "S3MachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/oB.1/pm10",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM10-vB-scs-opc-105-2022-xgboost-2024-01-23.tar.gz"
+                    }
+                }
+            },
+            {
+                "Id": "SYSTEM_ID-ml-no2",
+                "Name": "ML-NO2",
+                "ResourceDataContainer": {
+                    "S3MachineLearningModelResourceData": {
+                        "DestinationPath": "/trained-models/oE.1/NO2",
+                        "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/NO2-vE-OPCube-21HA-xgboost-2021-10-14.tar.gz"
+                    }
+                }
+            }
+        ]
+    }
+}

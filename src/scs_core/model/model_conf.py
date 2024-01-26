@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
-
+from scs_core.model.model_map import ModelMap
 from scs_core.sys.logging import Logging
 
 
@@ -22,6 +22,35 @@ class ModelConf(ABC, PersistentJSONable):
     """
     classdocs
     """
+
+    __TEMPLATE_NO_MODELS = 'm0'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def gg_ml_template(cls, gas_model_conf, pmx_model_conf):
+        # no models...
+        if not gas_model_conf and not pmx_model_conf:
+            return cls.__TEMPLATE_NO_MODELS
+
+        # PMx-only model...
+        if not gas_model_conf and pmx_model_conf:
+            return pmx_model_conf.model_map.p_gg_ml_template
+
+        # gas-only model...
+        if gas_model_conf and not pmx_model_conf:
+            raise ValueError('a gas model without a PMx model is not supported.')
+
+        # gas and PMx models...
+        gas_model_map = gas_model_conf.model_map
+        pmx_model_map = pmx_model_conf.model_map
+
+        if gas_model_map and pmx_model_map and gas_model_map != pmx_model_map:
+            raise ValueError("the gas model map '%s' must match the PMx model map '%s'." %
+                             (gas_model_map, pmx_model_map))
+
+        return gas_model_conf.model_map.pg_gg_ml_template
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -41,18 +70,23 @@ class ModelConf(ABC, PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None) if skeleton else None
+            return cls(None, None, None) if skeleton else None
 
         uds_path = jdict.get('uds-path')
         model_interface = jdict.get('model-interface')
-        model_compendium_group = jdict.get('model-compendium-group')
 
-        return cls(uds_path, model_interface, model_compendium_group=model_compendium_group)
+        try:
+            field = 'model-map' if 'model-map' in jdict else 'model-compendium-group'
+            model_map = ModelMap.map(jdict.get(field))
+        except KeyError:
+            model_map = None
+
+        return cls(uds_path, model_interface, model_map)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_path, model_interface, model_compendium_group=None):
+    def __init__(self, uds_path, model_interface, model_map):
         """
         Constructor
         """
@@ -60,7 +94,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         self.__uds_path = uds_path                                      # string
         self.__model_interface = model_interface                        # string
-        self.__model_compendium_group = model_compendium_group          # string
+        self.__model_map = model_map                                    # ModelMapping
 
         self._logger = Logging.getLogger()
 
@@ -68,7 +102,8 @@ class ModelConf(ABC, PersistentJSONable):
     def __eq__(self, other):
         try:
             return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
-                   self.model_compendium_group == other.model_compendium_group
+                   self.model_map == other.model_map
+
         except (TypeError, AttributeError):
             return False
 
@@ -80,9 +115,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
-
-        if self.model_compendium_group is not None:
-            jdict['model-compendium-group'] = self.model_compendium_group
+        jdict['model-map'] = None if self.model_map is None else self.model_map.name
 
         return jdict
 
@@ -104,12 +137,14 @@ class ModelConf(ABC, PersistentJSONable):
 
 
     @property
-    def model_compendium_group(self):
-        return self.__model_compendium_group
+    def model_map(self):
+        return self.__model_map
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_compendium_group:%s}" %  \
-               (self.uds_path, self.model_interface, self.model_compendium_group)
+        model_map_name = None if self.model_map is None else self.model_map.name
+
+        return self.__class__.__name__ + ":{uds_path:%s, model_interface:%s, model_map:%s}" %  \
+            (self.uds_path, self.model_interface, model_map_name)

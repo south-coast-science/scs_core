@@ -59,7 +59,7 @@ class EEPROMImage(object):
         try:
             return self.content == other.content
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

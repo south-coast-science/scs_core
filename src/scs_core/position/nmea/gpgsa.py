@@ -75,7 +75,7 @@ class GPGSA(NMEASentence):
             return self.op_mode == other.op_mode and self.nav_mode == other.nav_mode and self.sv == other.sv and \
                    self.pdop == other.pdop and self.hdop == other.hdop and self.vdop == other.vdop
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

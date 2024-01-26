@@ -63,6 +63,7 @@ class SensorBaseline(JSONable):
         try:
             return self.calibrated_on == other.calibrated_on and self.offset == other.offset and \
                    self.sample == other.sample
+
         except (TypeError, AttributeError):
             return False
 
@@ -158,6 +159,7 @@ class SensorBaselineSample(JSONable):
         try:
             return self.rec == other.rec and self.humid == other.humid and self.temp == other.temp and \
                    self.press == other.press
+
         except (TypeError, AttributeError):
             return False
 

@@ -200,7 +200,7 @@ class Timedelta(JSONable):
         try:
             return self.delta == other.delta
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

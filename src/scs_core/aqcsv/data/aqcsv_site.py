@@ -63,7 +63,7 @@ class AQCSVSite(JSONable):
                 self.location_code == other.location_code and \
                 self.is_mobile == other.is_mobile
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

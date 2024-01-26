@@ -60,7 +60,7 @@ class SoftwareVersion(JSONable):
 
             return True
 
-        except TypeError:
+        except (TypeError, AttributeError):
             return False
 
 
