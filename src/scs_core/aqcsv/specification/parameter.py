@@ -69,7 +69,7 @@ class Parameter(CSVArchive, JSONable):
             return self.code == other.code and self.description == other.description and \
                    self.unit_code == other.unit_code
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

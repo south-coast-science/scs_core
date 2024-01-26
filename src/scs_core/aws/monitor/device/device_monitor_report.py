@@ -76,7 +76,7 @@ class DeviceStatus(JSONable):
         try:
             return self.is_ok == other.is_ok
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 
@@ -155,7 +155,7 @@ class DeviceUptime(JSONable):
         try:
             return self.period == other.period
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 
@@ -315,7 +315,7 @@ class DeviceReport(JSONable):
                 self.availability == other.availability and self.data == other.data and \
                 self.power == other.power and self.uptime == other.uptime
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

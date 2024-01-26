@@ -44,6 +44,15 @@ class ModelMap(object):
         self.__p_gg_ml_template = p_gg_ml_template                          # string PMx
 
 
+    def __eq__(self, other):
+        try:
+            return self.name == other.name and self.gas_compendium_group == other.gas_compendium_group and \
+                   self.pg_gg_ml_template == other.pg_gg_ml_template and self.p_gg_ml_template == other.p_gg_ml_template
+
+        except (TypeError, AttributeError):
+            return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property

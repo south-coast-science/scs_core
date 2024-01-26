@@ -103,6 +103,7 @@ class ModelConf(ABC, PersistentJSONable):
         try:
             return self.uds_path == other.uds_path and self.model_interface == other.model_interface and \
                    self.model_map == other.model_map
+
         except (TypeError, AttributeError):
             return False
 

@@ -64,7 +64,7 @@ class Unit(CSVArchive, JSONable):
         try:
             return self.code == other.code and self.description == other.description
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

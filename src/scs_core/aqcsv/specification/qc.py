@@ -64,7 +64,7 @@ class QC(CSVArchive, JSONable):
         try:
             return self.code == other.code and self.definition == other.definition
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

@@ -47,7 +47,7 @@ class LEDState(JSONable):
         try:
             return self.__colour0 == other.__colour0 and self.__colour1 == other.__colour1
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

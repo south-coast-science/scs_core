@@ -70,6 +70,7 @@ class EmailRecipient(JSONable):
     def __eq__(self, other):
         try:
             return self.email_address == other.email_address
+
         except (TypeError, AttributeError):
             return False
 

@@ -246,7 +246,7 @@ class CSVLogCursor(JSONable):
         try:
             return self.file_path == other.file_path
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

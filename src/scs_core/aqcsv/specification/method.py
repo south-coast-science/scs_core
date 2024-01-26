@@ -142,7 +142,7 @@ class Method(CSVArchive, JSONable):
                    self.round_truncate_indicator == other.round_truncate_indicator and \
                    self.units == other.units
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

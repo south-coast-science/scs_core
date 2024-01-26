@@ -47,7 +47,7 @@ class NDIRVoltages(JSONable):
         try:
             return self.ref == other.ref and self.act == other.act and self.therm == other.therm
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

@@ -285,7 +285,7 @@ class LocalizedDatetime(JSONable):
         try:
             return self.datetime == other.datetime
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

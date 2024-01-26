@@ -65,7 +65,7 @@ class Agency(CSVArchive, JSONable):
         try:
             return self.code == other.code and self.name == other.name
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 
