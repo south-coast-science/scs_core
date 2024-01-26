@@ -42,7 +42,11 @@ class Tokens(object):
 
 
     def __eq__(self, other):
-        return other.tokens == self.tokens
+        try:
+            return other.tokens == self.tokens
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------

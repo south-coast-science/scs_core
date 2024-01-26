@@ -166,7 +166,7 @@ class AQCSVRecord(JSONable):
                 self.uncertainty == other.uncertainty and \
                 self.qualifiers == other.qualifiers
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

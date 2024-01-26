@@ -193,7 +193,7 @@ class MappingTask(JSONable):
                    self.upload_start == other.upload_start and \
                    self.upload_end == other.upload_end
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

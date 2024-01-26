@@ -70,7 +70,7 @@ class MPC(CSVArchive, JSONable):
             return self.code == other.code and self.abbreviation == other.abbreviation and \
                    self.definition == other.definition and self.description == other.description
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

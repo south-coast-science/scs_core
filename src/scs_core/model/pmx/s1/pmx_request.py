@@ -17,12 +17,12 @@ example document:
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONable
+from scs_core.model.pmx.pmx_request import PMxRequest as AbstractPMxRequest
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PMxRequest(JSONable):
+class PMxRequest(AbstractPMxRequest):
     """
     classdocs
     """
@@ -41,6 +41,10 @@ class PMxRequest(JSONable):
 
     def is_compatible(self, group):
         return self.sample.src == group.opc_version()
+
+
+    def is_zero(self):
+        return self.sample.opc_datum.is_zero()
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -49,7 +49,7 @@ class NDIRDatum(JSONable):
         try:
             return self.temp == other.temp and self.cnc == other.cnc and self.cnc_igl == other.cnc_igl
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 

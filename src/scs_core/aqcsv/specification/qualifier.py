@@ -71,7 +71,7 @@ class Qualifier(CSVArchive, JSONable):
             return self.code == other.code and self.description == other.description and \
                    self.type_code == other.type_code and self.type_description == other.type_description
 
-        except AttributeError:
+        except (TypeError, AttributeError):
             return False
 
 
