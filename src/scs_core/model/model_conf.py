@@ -45,8 +45,8 @@ class ModelConf(ABC, PersistentJSONable):
         gas_model_map = gas_model_conf.model_map
         pmx_model_map = pmx_model_conf.model_map
 
-        if gas_model_map and pmx_model_map and gas_model_map != pmx_model_map:
-            raise ValueError("the gas model map '%s' must match the PMx model map '%s'." %
+        if gas_model_map != pmx_model_map:
+            raise ValueError("the gas model map '%s' does not match the PMx model map '%s'." %
                              (gas_model_map, pmx_model_map))
 
         return gas_model_conf.model_map.pg_gg_ml_template
