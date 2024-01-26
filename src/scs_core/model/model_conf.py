@@ -39,7 +39,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         # gas-only model...
         if gas_model_conf and not pmx_model_conf:
-            raise ValueError('a gas model without PMx model is not supported.')
+            raise ValueError('a gas model without a PMx model is not supported.')
 
         # gas and PMx models...
         gas_model_map = gas_model_conf.model_map
