@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
-from scs_core.model.model_mapping import ModelMapping
+from scs_core.model.model_map import ModelMap
 from scs_core.sys.logging import Logging
 
 
@@ -77,7 +77,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         try:
             field = 'model-map' if 'model-map' in jdict else 'model-compendium-group'
-            model_map = ModelMapping.map(jdict.get(field))
+            model_map = ModelMap.map(jdict.get(field))
         except KeyError:
             model_map = None
 

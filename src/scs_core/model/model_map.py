@@ -7,7 +7,7 @@ Created on 25 Jan 2024
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ModelMapping(object):
+class ModelMap(object):
     """
     classdocs
     """
@@ -69,5 +69,5 @@ class ModelMapping(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ModelMapping:{name:%s, gas_compendium_group:%s, pg_gg_ml_template:%s, p_gg_ml_template:%s}" %  \
+        return "ModelMap:{name:%s, gas_compendium_group:%s, pg_gg_ml_template:%s, p_gg_ml_template:%s}" %  \
                (self.name, self.gas_compendium_group, self.pg_gg_ml_template, self.p_gg_ml_template)
