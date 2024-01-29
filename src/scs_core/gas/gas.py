@@ -5,7 +5,7 @@ Created on 13 Feb 2018
 
 Conversion Factors Between ppb and μg m-3 and ppm and mgm-3 (EC, not WHO)
 
-http://www.apis.ac.uk/unit-conversion
+https://www.apis.ac.uk/unit-conversion
 https://keisan.casio.com/exec/system/1224579725
 """
 
