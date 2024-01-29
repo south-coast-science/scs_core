@@ -88,7 +88,7 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
         abs_filename = cls.abs_filename(dirname, filename)
 
         try:
-            with open(abs_filename, "r") as f:
+            with open(abs_filename) as f:
                 text = f.read()
 
             if encryption_key:

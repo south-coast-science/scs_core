@@ -5,7 +5,7 @@ Created on 13 Feb 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-http://www.apis.ac.uk/unit-conversion
+https://www.apis.ac.uk/unit-conversion
 """
 
 from scs_core.gas.gas import Gas

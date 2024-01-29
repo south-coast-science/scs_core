@@ -4,7 +4,7 @@ Created on 9 Jul 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 https://docs.python.org/3/library/multiprocessing.html#sharing-state-between-processes
-http://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
+https://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
 """
 
 from abc import ABC, abstractmethod

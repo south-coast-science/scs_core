@@ -3,7 +3,7 @@ Created on 9 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-http://softwareengineering.stackexchange.com/questions/298364/exception-handling-in-python-am-i-doing-this-wrong-and-why
+https://softwareengineering.stackexchange.com/questions/298364/exception-handling-in-python-am-i-doing-this-wrong-and-why
 """
 
 import sys

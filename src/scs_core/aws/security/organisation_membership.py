@@ -4,9 +4,9 @@ Created on 13 Sep 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"organisation": {"OrgID": 11, "Label": "CEPEMAR", "LongName": "CEPEMAR", "URL": "http://cepemar.com",
+{"organisation": {"OrgID": 11, "Label": "CEPEMAR", "LongName": "CEPEMAR", "URL": "https://cepemar.com",
 "Owner": "felipe.tatagiba@cepemar.com", "ParentID": null}, "children": [
-{"OrgID": 82, "Label": "Vale", "LongName": "Vale S.A.", "URL": "http://www.vale.com/",
+{"OrgID": 82, "Label": "Vale", "LongName": "Vale S.A.", "URL": "https://www.vale.com/",
 "Owner": "felipe.tatagiba@cepemar.com", "ParentID": 11}]}
 """
 
