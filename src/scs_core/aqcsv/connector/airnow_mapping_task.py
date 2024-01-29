@@ -101,7 +101,7 @@ class AirNowMappingTaskList(PersistentJSONable):
 
     def remove(self, pk):
         try:
-            del(self.__tasks[pk])
+            del self.__tasks[pk]
 
         except KeyError:
             pass

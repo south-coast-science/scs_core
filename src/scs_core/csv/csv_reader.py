@@ -67,7 +67,7 @@ class CSVReader(object):
 
     @classmethod
     def construct_for_file(cls, filename, cast=True, nullify=False, start_row=0):
-        iterable = sys.stdin if filename is None else open(filename, "r")
+        iterable = sys.stdin if filename is None else open(filename)
 
         return cls(iterable, filename=filename, cast=cast, nullify=nullify,
                    start_row=start_row)
@@ -86,8 +86,7 @@ class CSVReader(object):
         self.__start_row = int(start_row)                           # int
 
         try:
-            self.__reader = csv.reader(iterable, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL,
-                                       skipinitialspace=True)
+            self.__reader = csv.reader(iterable, quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
             try:
                 paths = next(self.__reader)

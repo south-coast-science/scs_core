@@ -128,7 +128,7 @@ class JSONReport(JSONable):
         if not os.path.isfile(filename):
             return cls.construct_from_jdict(None, skeleton=skeleton)
 
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             return cls.construct_from_jdict(json.load(f), skeleton=skeleton)
 
 

@@ -23,7 +23,7 @@ from scs_core.gas.afe_calib import AFECalib
 
 # --------------------------------------------------------------------------------------------------------------------
 
-with open('/Users/bruno/SCS/conf/afe_calib-bgx-508-26-000208.json', 'r') as f:
+with open('/Users/bruno/SCS/conf/afe_calib-bgx-508-26-000208.json') as f:
     calib_jstr = f.read()
 
 calib = AFECalib.construct_from_jdict(json.loads(calib_jstr))

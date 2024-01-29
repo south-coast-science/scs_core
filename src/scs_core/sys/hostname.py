@@ -41,11 +41,11 @@ class Hostname(object):
 
     def set(self):
         # existing...
-        with open(self.__HOSTNAME_FILE, 'r') as f:
+        with open(self.__HOSTNAME_FILE) as f:
             existing_hostname = f.read().strip()
 
         # hosts...
-        with open(self.__HOSTS_FILE, 'r') as f:
+        with open(self.__HOSTS_FILE) as f:
             hosts = f.read()
 
         if existing_hostname not in hosts:

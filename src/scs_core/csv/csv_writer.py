@@ -103,7 +103,7 @@ class CSVWriter(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __build_paths(self):
-        file = sys.stdin if self.__filename is None else open(self.__filename, "r")
+        file = sys.stdin if self.__filename is None else open(self.__filename)
         reader = csv.reader(file)
 
         paths = next(reader)

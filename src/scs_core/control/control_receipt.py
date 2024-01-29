@@ -3,7 +3,7 @@ Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-http://pythoncentral.io/hashing-strings-with-python/
+https://pythoncentral.io/hashing-strings-with-python/
 
 example document:
 {"tag": "scs-ap1-6", "attn": "my-laptop", "rec": "2022-11-28T12:05:27Z", "ver": 2.0,
