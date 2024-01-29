@@ -24,6 +24,8 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
 from scs_core.data.path_dict import PathDict
 
+from scs_core.model.model_conf import ModelConf
+
 from scs_core.sys.filesystem import Filesystem
 from scs_core.sys.logging import Logging
 from scs_core.sys.system_id import SystemID
@@ -120,6 +122,15 @@ class AWSGroupConfiguration(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def configuration_is_mismatched(self, gas_model_conf, pmx_model_conf):
+        gg_ml_template = ModelConf.gg_ml_template(gas_model_conf, pmx_model_conf)       # may raise ValueError
+
+        if gg_ml_template is not None and self.ml is not None:
+            return gg_ml_template != self.ml
+
+        return False
+
 
     def configurator(self, client):
         return AWSGroupConfigurator(self, client)
