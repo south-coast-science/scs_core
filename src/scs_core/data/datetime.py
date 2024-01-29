@@ -306,26 +306,26 @@ class LocalizedDatetime(JSONable):
 
 
     def __add__(self, other):
-        if type(other) == Timedelta:
+        if other is Timedelta:
             return LocalizedDatetime(self.datetime + other.delta)
 
-        if type(other) == timedelta:
+        if other is timedelta:
             return LocalizedDatetime(self.datetime + other)
 
         raise TypeError(other)
 
 
     def __sub__(self, other):
-        if type(other) == LocalizedDatetime:
+        if other is LocalizedDatetime:
             return Timedelta.construct(self.datetime - other.datetime)
 
-        if type(other) == datetime:
+        if other is datetime:
             return Timedelta.construct(self.datetime - other)
 
-        if type(other) == Timedelta:
+        if other is Timedelta:
             return LocalizedDatetime(self.datetime - other.delta)
 
-        if type(other) == timedelta:
+        if other is timedelta:
             return LocalizedDatetime(self.datetime - other)
 
         raise TypeError(other)
