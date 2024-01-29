@@ -51,7 +51,7 @@ class Minimum(JSONable):
         field_group = cls.FIELD_SELECTIONS[field_selection]
 
         minimums = {path: None for path in PathDict(data[0]).paths()
-                    if path.startswith(field_group) and (path.endswith('.cnc'))}    # or path.endswith('.vCal')
+                    if path.startswith(field_group) and (path.endswith('.cnc'))}        # or path.endswith('.vCal')
 
         # data...
         for i in range(len(data)):
