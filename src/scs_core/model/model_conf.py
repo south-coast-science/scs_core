@@ -35,7 +35,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         # PMx-only model...
         if not gas_model_conf and pmx_model_conf:
-            return pmx_model_conf.model_map.p_gg_ml_template
+            return None if pmx_model_conf.model_map is None else pmx_model_conf.model_map.p_gg_ml_template
 
         # gas-only model...
         if gas_model_conf and not pmx_model_conf:
@@ -49,7 +49,7 @@ class ModelConf(ABC, PersistentJSONable):
             raise ValueError("the gas model map '%s' does not match the PMx model map '%s'" %
                              (gas_model_map, pmx_model_map))
 
-        return gas_model_conf.model_map.pg_gg_ml_template
+        return None if gas_model_conf.model_map is None else gas_model_conf.model_map.pg_gg_ml_template
 
 
     # ----------------------------------------------------------------------------------------------------------------
