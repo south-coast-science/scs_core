@@ -46,7 +46,7 @@ class ModelConf(ABC, PersistentJSONable):
         pmx_model_map = pmx_model_conf.model_map
 
         if gas_model_map != pmx_model_map:
-            raise ValueError("the gas model map '%s' does not match the PMx model map '%s'." %
+            raise ValueError("the gas model map '%s' does not match the PMx model map '%s'" %
                              (gas_model_map, pmx_model_map))
 
         return gas_model_conf.model_map.pg_gg_ml_template
@@ -115,7 +115,7 @@ class ModelConf(ABC, PersistentJSONable):
 
         jdict['uds-path'] = self.uds_path
         jdict['model-interface'] = self.model_interface
-        jdict['model-map'] = None if self.model_map is None else self.model_map.name
+        jdict['model-map'] = self.model_map_name
 
         return jdict
 
@@ -139,6 +139,11 @@ class ModelConf(ABC, PersistentJSONable):
     @property
     def model_map(self):
         return self.__model_map
+
+
+    @property
+    def model_map_name(self):
+        return None if self.__model_map is None else self.__model_map.name
 
 
     # ----------------------------------------------------------------------------------------------------------------
