@@ -24,6 +24,8 @@ from scs_core.data.json import JSONify
 from scs_core.model.pmx.pmx_inference_client import PMxInferenceClient
 from scs_core.model.pmx.s1.pmx_request import PMxRequest
 
+from scs_core.sys.logging import Logging
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -48,10 +50,15 @@ class S1PMxInferenceClient(PMxInferenceClient):
         """
         super().__init__(uds_client)
 
+        self.__logger = Logging.getLogger()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def infer(self, opc_sample, ext_sht_datum):
+        self.__logger.error("opc_sample: %s" % opc_sample)
+        self.__logger.error("ext_sht_datum: %s" % ext_sht_datum)
+
         # request...
         pmx_request = PMxRequest(opc_sample, ext_sht_datum)
 
