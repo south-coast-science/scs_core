@@ -72,28 +72,26 @@ class O2PMxInferenceClient(PMxInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def infer(self, opc_sample, ext_sht_datum):
+        # self.__logger.error("opc_sample: %s" % opc_sample)
+        # self.__logger.error("ext_sht_datum: %s" % ext_sht_datum)
+
         # Meteo T / rH slope...
         self.__meteo_t_regression.append(opc_sample.rec, ext_sht_datum.temp)
+        meteo_t_slope = self.__meteo_t_regression.slope(default=0.0)
+
         self.__meteo_rh_regression.append(opc_sample.rec, ext_sht_datum.humid)
-
-        m, _ = self.__meteo_t_regression.line()
-        meteo_t_slope = 0.0 if m is None else m
-
-        m, _ = self.__meteo_rh_regression.line()
-        meteo_rh_slope = 0.0 if m is None else m
+        meteo_rh_slope = self.__meteo_rh_regression.slope(default=0.0)
 
         # OPC T / rH slope...
         self.__opc_t_regression.append(opc_sample.rec, opc_sample.opc_datum.sht.temp)
+        opc_t_slope = self.__opc_t_regression.slope(default=0.0)
+
         self.__opc_rh_regression.append(opc_sample.rec, opc_sample.opc_datum.sht.humid)
-
-        m, _ = self.__opc_t_regression.line()
-        opc_t_slope = 0.0 if m is None else m
-
-        m, _ = self.__opc_rh_regression.line()
-        opc_rh_slope = 0.0 if m is None else m
+        opc_rh_slope = self.__opc_rh_regression.slope(default=0.0)
 
         # request...
         pmx_request = PMxRequest(opc_sample, ext_sht_datum, meteo_t_slope, meteo_rh_slope, opc_t_slope, opc_rh_slope)
+        # self.__logger.info("pmx_request: %s" % pmx_request)
 
         self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
         response = self._uds_client.wait_for_response()

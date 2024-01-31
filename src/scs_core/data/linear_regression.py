@@ -78,6 +78,12 @@ class LinearRegression(Regression):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def slope(self, default=None):
+        m, _ = self.line()
+
+        return default if m is None else m
+
+
     def line(self):
         # validation...
         if not self.has_regression():

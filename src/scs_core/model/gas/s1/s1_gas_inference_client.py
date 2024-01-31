@@ -68,13 +68,10 @@ class S1GasInferenceClient(GasInferenceClient):
     def infer(self, gas_sample, _board_temp):
         # T / rH slope...
         self.__t_regression.append(gas_sample.rec, gas_sample.sht_datum.temp)
+        t_slope = self.__t_regression.slope(default=0.0)
+
         self.__rh_regression.append(gas_sample.rec, gas_sample.sht_datum.humid)
-
-        m, _ = self.__t_regression.line()
-        t_slope = 0.0 if m is None else m
-
-        m, _ = self.__rh_regression.line()
-        rh_slope = 0.0 if m is None else m
+        rh_slope = self.__rh_regression.slope(default=0.0)
 
         # calib...
         calib_age = self.__afe_calib.age()

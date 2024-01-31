@@ -56,11 +56,12 @@ class S1PMxInferenceClient(PMxInferenceClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def infer(self, opc_sample, ext_sht_datum):
-        self.__logger.error("opc_sample: %s" % opc_sample)
-        self.__logger.error("ext_sht_datum: %s" % ext_sht_datum)
+        # self.__logger.error("opc_sample: %s" % opc_sample)
+        # self.__logger.error("ext_sht_datum: %s" % ext_sht_datum)
 
         # request...
         pmx_request = PMxRequest(opc_sample, ext_sht_datum)
+        # self.__logger.info("pmx_request: %s" % pmx_request)
 
         self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
         response = self._uds_client.wait_for_response()
