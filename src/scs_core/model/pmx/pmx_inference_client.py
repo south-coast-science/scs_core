@@ -59,5 +59,5 @@ class PMxInferenceClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def infer(self, opc_sample, ext_sht_sample):
+    def infer(self, opc_sample, ext_sht_datum):
         pass

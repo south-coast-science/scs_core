@@ -78,6 +78,16 @@ class LinearRegression(Regression):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def slope(self, default=None, precision=None):
+        m, _ = self.line()
+        slope = default if m is None else m
+
+        if slope is None:
+            return None
+
+        return slope if precision is None else round(slope, precision)
+
+
     def line(self):
         # validation...
         if not self.has_regression():

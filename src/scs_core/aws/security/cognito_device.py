@@ -153,7 +153,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
     """
 
     @classmethod
-    def is_valid_invoice_number(cls, invoice_number):
+    def is_valid_invoice_number(cls, invoice_number):               # no longer in use - Larissa email 2024-02-06
         try:
             match = re.match(r'INV-\d{4,}', invoice_number)
             return match is not None
