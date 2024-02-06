@@ -65,13 +65,10 @@ class VEGasInferenceClient(GasInferenceClient):
     def infer(self, gas_sample, board_temp):
         # T / rH slope...
         self.__t_regression.append(gas_sample.rec, gas_sample.sht_datum.temp)
+        t_slope = self.__t_regression.slope(default=0.0)
+
         self.__rh_regression.append(gas_sample.rec, gas_sample.sht_datum.humid)
-
-        m, _ = self.__t_regression.line()
-        t_slope = 0.0 if m is None else m
-
-        m, _ = self.__rh_regression.line()
-        rh_slope = 0.0 if m is None else m
+        rh_slope = self.__rh_regression.slope(default=0.0)
 
         # preprocess...
         request = PathDict(GasRequest(gas_sample, t_slope, rh_slope, board_temp).as_json())
