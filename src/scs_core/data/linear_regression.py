@@ -163,6 +163,7 @@ class LinearRegression(Regression):
         except TypeError:
             return None
 
+
     def mid(self, ndigits=None):
         # validation...
         if not self.has_midpoint():
