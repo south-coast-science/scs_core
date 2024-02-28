@@ -7,7 +7,16 @@ Created on 23 Nov 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.config.aws import AWS
 from scs_core.aws.security.cognito_authentication import AuthenticationResult
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Endpoint(object):
+
+    URL = AWS.endpoint_url('CogLogAPI/CognitoLogin',
+                           'https://lnh2y9ip75.execute-api.us-west-2.amazonaws.com/default/CognitoLogin')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -17,9 +26,7 @@ class CognitoLoginManager(APIClient):
     classdocs
     """
 
-    __URL = 'https://lnh2y9ip75.execute-api.us-west-2.amazonaws.com/default/CognitoLogin'
     __AUTH = '@southcoastscience.com'
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -30,8 +37,10 @@ class CognitoLoginManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def user_login(self, credentials):
-        url = '/'.join((self.__URL, 'user'))
+        url = '/'.join((Endpoint.URL, 'user'))
         headers = self._auth_headers(self.__AUTH)
+
+        self._logger.info("url: %s" % url)
 
         response = requests.post(url, headers=headers, json=credentials.as_json())
         self._check_response(response)
@@ -40,7 +49,7 @@ class CognitoLoginManager(APIClient):
 
 
     def device_login(self, credentials):
-        url = '/'.join((self.__URL, 'device'))
+        url = '/'.join((Endpoint.URL, 'device'))
         headers = self._auth_headers(self.__AUTH)
 
         response = requests.post(url, headers=headers, json=credentials.as_json())

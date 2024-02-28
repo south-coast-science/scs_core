@@ -8,6 +8,7 @@ import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
+from scs_core.aws.security.cognito_device_manager import Endpoint
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -16,8 +17,6 @@ class CognitoDeviceFinder(APIClient):
     """
     classdocs
     """
-
-    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/CognitoDevices/retrieve'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -28,7 +27,7 @@ class CognitoDeviceFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self, token):
-        url = '/'.join((self.__URL, 'all'))
+        url = '/'.join((Endpoint.URL, 'retrieve', 'all'))
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -37,8 +36,10 @@ class CognitoDeviceFinder(APIClient):
 
 
     def find_by_tag(self, token, tag):
-        url = '/'.join((self.__URL, 'in'))
+        url = '/'.join((Endpoint.URL, 'retrieve', 'in'))
         payload = {"username": tag}
+
+        print("url: %s" % url)
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
@@ -47,7 +48,7 @@ class CognitoDeviceFinder(APIClient):
 
 
     def get_by_tag(self, token, tag):
-        url = '/'.join((self.__URL, 'exact'))
+        url = '/'.join((Endpoint.URL, 'retrieve', 'exact'))
         payload = {"username": tag}
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
@@ -63,8 +64,6 @@ class CognitoDeviceIntrospector(APIClient):
     classdocs
     """
 
-    __URL = 'https://6c2sfqt656.execute-api.us-west-2.amazonaws.com/default/CognitoDevices/self'
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
@@ -74,7 +73,9 @@ class CognitoDeviceIntrospector(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_self(self, token):
-        response = requests.get(self.__URL, headers=self._token_headers(token))
+        url = '/'.join((Endpoint.URL, 'self'))
+
+        response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())
