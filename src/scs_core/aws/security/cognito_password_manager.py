@@ -18,7 +18,16 @@ document example:
 import requests
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.config.aws import AWS
 from scs_core.data.json import JSONify
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Endpoint(object):
+
+    URL = AWS.endpoint_url('CogUsrPwdAPI/CognitoUserPassword',
+                           'https://df46l72wl7.execute-api.us-west-2.amazonaws.com/default/CognitoUserPassword')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,9 +37,7 @@ class CognitoPasswordManager(APIClient):
     classdocs
     """
 
-    __URL = "https://df46l72wl7.execute-api.us-west-2.amazonaws.com/default/CognitoUserPassword"
     __AUTH = "@southcoastscience.com"
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -41,7 +48,7 @@ class CognitoPasswordManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def send_email(self, email):
-        url = '/'.join((self.__URL, 'send-email'))
+        url = '/'.join((Endpoint.URL, 'send-email'))
         payload = {'email': email}
 
         response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
@@ -49,7 +56,7 @@ class CognitoPasswordManager(APIClient):
 
 
     def do_reset_password(self, email, code, new_password):
-        url = '/'.join((self.__URL, 'reset'))
+        url = '/'.join((Endpoint.URL, 'reset'))
         payload = {'email': email, 'reset_code': code, 'new_password': new_password}
 
         response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))
@@ -57,7 +64,7 @@ class CognitoPasswordManager(APIClient):
 
 
     def do_set_password(self, email, new_password, session):
-        url = '/'.join((self.__URL, 'respond'))
+        url = '/'.join((Endpoint.URL, 'respond'))
         payload = {'email': email, 'new_password': new_password, 'session': session}
 
         response = requests.post(url, headers=self._auth_headers(self.__AUTH), data=JSONify.dumps(payload))

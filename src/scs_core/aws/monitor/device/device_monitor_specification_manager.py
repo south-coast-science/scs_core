@@ -7,6 +7,8 @@ Created on 17 Jun 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.config.aws import AWS
+
 from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
     DeviceMonitorSpecificationList
 
@@ -17,12 +19,18 @@ from scs_core.email.email import EmailRecipient
 
 # --------------------------------------------------------------------------------------------------------------------
 
+class Endpoint(object):
+
+    URL = AWS.endpoint_url('DevMonSpecAPI/DeviceMonitorSpecification',
+                           'https://psnunpg4gb.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorSpecification')
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 class DeviceMonitorSpecificationManager(APIClient):
     """
     classdocs
     """
-
-    __URL = "https://psnunpg4gb.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorSpecification"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +47,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'exact': exact
         }
 
-        response = requests.get(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.get(Endpoint.URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecificationList.construct_from_jdict(response.json())
@@ -51,7 +59,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'recipient': recipient
         }
 
-        response = requests.post(self.__URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.post(Endpoint.URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
         return DeviceMonitorSpecification.construct_from_jdict(response.json())
@@ -63,7 +71,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'is_suspended': is_suspended
         }
 
-        response = requests.patch(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.patch(Endpoint.URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecification.construct_from_jdict(response.json())
@@ -75,7 +83,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'device_tag': device_tag
         }
 
-        response = requests.delete(self.__URL, headers=self._token_headers(token), json=payload)
+        response = requests.delete(Endpoint.URL, headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorSpecificationList.construct_from_jdict(response.json())

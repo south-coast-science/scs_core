@@ -3,10 +3,6 @@ Created on 25 Dec 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Equivalent to cURLs:
-curl "https://aws.southcoastscience.com/device-topics?topic=south-coast-science-dev/alphasense/loc/303/gases"
-curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
-
 DEPRECATED: replaced with BylineFinder
 """
 
@@ -18,6 +14,7 @@ from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 
 
+# TODO: delete this class
 # --------------------------------------------------------------------------------------------------------------------
 
 class BylineManager(APIClient):

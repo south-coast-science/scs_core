@@ -2,16 +2,6 @@
 Created on 26 Nov 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-This version of MessageManager for AWS lambda function with multipart response.
-
-Equivalent to cURL:
-curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
-&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
-
-Test endpoint:
-curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregateTest?topic=unep/ethiopia/loc/1/climate
-&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from collections import OrderedDict

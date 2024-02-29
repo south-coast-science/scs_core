@@ -28,7 +28,7 @@ class AWS(object):
     classdocs
     """
 
-    __USE_RAW_URLS = False
+    __USE_RAW_URLS = True
 
     __API_DOMAIN_NAME =     'api.southcoastscience.com'
     __REGION =              'us-west-2'
