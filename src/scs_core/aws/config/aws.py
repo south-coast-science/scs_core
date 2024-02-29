@@ -43,6 +43,21 @@ class AWS(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def header(cls, auth=None, token=None):
+        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json"}
+
+        if auth is not None:
+            header["Authorization"] = auth
+
+        if token is not None:
+            header["Token"] = token
+
+        return header
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def region(cls):
         return cls.__REGION
 

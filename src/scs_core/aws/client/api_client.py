@@ -9,6 +9,7 @@ import requests
 from abc import ABC
 from http import HTTPStatus
 
+from scs_core.aws.config.aws import AWS
 from scs_core.client.http_exception import HTTPException
 from scs_core.data.json import JSONify
 from scs_core.sys.logging import Logging
@@ -34,14 +35,14 @@ class APIClient(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def _auth_headers(self, auth):
-        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "Authorization": auth}
+        header = AWS.header(auth=auth)
         self.__logger.debug('header: %s' % header)
 
         return header
 
 
     def _token_headers(self, token):
-        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "Token": token}
+        header = AWS.header(token=token)
         self.__logger.debug('header: %s' % header)
 
         return header
