@@ -7,16 +7,17 @@ This version of MessageManager for AWS lambda function with multipart response.
 """
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.manager.topic_history.topic_history_intercourse import TopicHistoryRequest, TopicHistoryResponse
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('HistoryAPI/TopicHistory',
-                           'https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('HistoryAPI/TopicHistory',
+                   'https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -51,5 +52,5 @@ class TopicHistoryManager(APIClient):
                                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self._logger.debug(request)
 
-        for item in self._get_blocks(Endpoint.URL, token, TopicHistoryResponse, params=request.params()):
+        for item in self._get_blocks(Endpoint.url(), token, TopicHistoryResponse, params=request.params()):
             yield item

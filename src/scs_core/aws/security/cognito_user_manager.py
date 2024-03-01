@@ -7,7 +7,7 @@ Created on 24 Nov 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
 from scs_core.data.json import JSONify
@@ -15,18 +15,20 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CreEndpoint(object):
-
-    URL = AWS.endpoint_url('CogUsrCreAPI/CognitoUserAccountCreator',
-                           'https://0knr39qhv7.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccountCreator')
+class CreEndpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('CogUsrCreAPI/CognitoUserAccountCreator',
+                   'https://0knr39qhv7.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccountCreator')
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AccEndpoint(object):
-
-    URL = AWS.endpoint_url('CogUsrAccAPI/CognitoUserAccounts',
-                           'https://fru3uy2z82.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccounts')
+class AccEndpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('CogUsrAccAPI/CognitoUserAccounts',
+                   'https://fru3uy2z82.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccounts')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -35,8 +37,6 @@ class CognitoUserCreator(APIClient):
     """
     classdocs
     """
-
-    __AUTH = '@southcoastscience.com'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -47,22 +47,22 @@ class CognitoUserCreator(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def create(self, identity):
-        headers = self._auth_headers(self.__AUTH)
+        headers = self._auth_headers()
 
-        response = requests.post(CreEndpoint.URL, headers=headers, json=identity.as_json())
+        response = requests.post(CreEndpoint.url(), headers=headers, json=identity.as_json())
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())
 
 
     def confirm(self, email, confirmation_code):
-        headers = self._auth_headers(self.__AUTH)
+        headers = self._auth_headers()
         payload = {
             'email': email,
             'confirmation': confirmation_code
         }
 
-        response = requests.patch(CreEndpoint.URL, headers=headers, json=payload)
+        response = requests.patch(CreEndpoint.url(), headers=headers, json=payload)
         self._check_response(response)
 
 
@@ -82,7 +82,7 @@ class CognitoUserEditor(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def update(self, token, identity):
-        url = '/'.join((AccEndpoint.URL, 'edit', 'user'))
+        url = '/'.join((AccEndpoint.url(), 'edit', 'user'))
 
         response = requests.patch(url, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
@@ -106,7 +106,7 @@ class CognitoUserDeleter(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def delete(self, token, email):
-        url = '/'.join((AccEndpoint.URL, 'delete', email))
+        url = '/'.join((AccEndpoint.url(), 'delete', email))
 
         response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(response)

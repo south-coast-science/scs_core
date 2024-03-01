@@ -12,15 +12,16 @@ import requests
 
 from scs_core.aws.client.access_key import AccessKey
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('CogDevKeyAPI/CognitoDeviceKey',
-                           'https://a0vjvahph1.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceKey')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('CogDevKeyAPI/CognitoDeviceKey',
+                   'https://a0vjvahph1.execute-api.us-west-2.amazonaws.com/default/CognitoDeviceKey')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ class AccessKeyManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def get(self, token):
-        response = requests.get(Endpoint.URL, headers=self._token_headers(token))
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token))
         self._check_response(response)
 
         for id, secret in json.loads(response.json()).items():

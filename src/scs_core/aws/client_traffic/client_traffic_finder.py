@@ -6,15 +6,16 @@ Created on 8 Aug 2023
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.client_traffic.client_traffic_intercourse import ClientTrafficResponse
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('CliTrfAPI/ClientTraffic',
-                           'https://tduyom430a.execute-api.us-west-2.amazonaws.com/default/ClientTraffic')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('CliTrfAPI/ClientTraffic',
+                   'https://tduyom430a.execute-api.us-west-2.amazonaws.com/default/ClientTraffic')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -33,21 +34,21 @@ class ClientTrafficFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_users(self, token, request):
-        url = '/'.join((Endpoint.URL, 'users'))
+        url = '/'.join((Endpoint.url(), 'users'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
 
 
     def find_for_organisations(self, token, request):
-        url = '/'.join((Endpoint.URL, 'organisations'))
+        url = '/'.join((Endpoint.url(), 'organisations'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
 
 
     def find_for_organisations_users(self, token, request):
-        url = '/'.join((Endpoint.URL, 'organisations-users'))
+        url = '/'.join((Endpoint.url(), 'organisations-users'))
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item

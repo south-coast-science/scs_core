@@ -7,16 +7,17 @@ Created on 24 Nov 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('CogUsrAPI/CognitoUsersFinder',
-                           'https://iw0jza59y1.execute-api.us-west-2.amazonaws.com/default/CognitoUsersFinder')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('CogUsrAPI/CognitoUsersFinder',
+                   'https://iw0jza59y1.execute-api.us-west-2.amazonaws.com/default/CognitoUsersFinder')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ class CognitoUserFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self, token):
-        url = '/'.join((Endpoint.URL, 'all'))
+        url = '/'.join((Endpoint.url(), 'all'))
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -44,7 +45,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_status(self, token, confirmation_status):
-        url = '/'.join((Endpoint.URL, confirmation_status.lower()))
+        url = '/'.join((Endpoint.url(), confirmation_status.lower()))
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -53,7 +54,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_enabled(self, token, enabled):
-        url = '/'.join((Endpoint.URL, 'enabled' if enabled else 'disabled'))
+        url = '/'.join((Endpoint.url(), 'enabled' if enabled else 'disabled'))
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -62,7 +63,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_email(self, token, email):
-        url = '/'.join((Endpoint.URL, 'in'))
+        url = '/'.join((Endpoint.url(), 'in'))
         payload = {"Email": email}
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
@@ -72,10 +73,8 @@ class CognitoUserFinder(APIClient):
 
 
     def get_by_email(self, token, email):
-        url = '/'.join((Endpoint.URL, 'exact'))
+        url = '/'.join((Endpoint.url(), 'exact'))
         payload = {"Email": email}
-
-        print("url: %s" % url)
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
@@ -84,7 +83,7 @@ class CognitoUserFinder(APIClient):
 
 
     def get_self(self, token):
-        url = '/'.join((Endpoint.URL, 'self'))
+        url = '/'.join((Endpoint.url(), 'self'))
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)

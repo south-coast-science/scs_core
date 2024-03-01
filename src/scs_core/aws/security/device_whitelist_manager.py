@@ -10,17 +10,18 @@ document example:
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 
 from scs_core.data.json import JSONable, JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('DevSecAPI/DeviceWhitelist',
-                           'https://i8lwsjuksc.execute-api.us-west-2.amazonaws.com/default/DeviceWhitelist')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('DevSecAPI/DeviceWhitelist',
+                   'https://i8lwsjuksc.execute-api.us-west-2.amazonaws.com/default/DeviceWhitelist')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ class DeviceWhitelistManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self, token):
-        response = requests.get(Endpoint.URL, headers=self._token_headers(token))
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token))
         self._check_response(response)
 
         return sorted([DeviceWhitelistItem.construct_from_jdict(jdict) for jdict in response.json()])
@@ -48,14 +49,14 @@ class DeviceWhitelistManager(APIClient):
     def create(self, token, device_tag):
         payload = DeviceWhitelistItem(device_tag)
 
-        response = requests.post(Endpoint.URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.post(Endpoint.url(), headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
 
     def delete(self, token, device_tag):
         payload = DeviceWhitelistItem(device_tag)
 
-        response = requests.delete(Endpoint.URL, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.delete(Endpoint.url(), headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
 

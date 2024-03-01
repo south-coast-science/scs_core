@@ -7,16 +7,17 @@ Created on 17 Jun 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws import AWS
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.monitor.device.device_monitor_report import DeviceMonitorReport
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(object):
-
-    URL = AWS.endpoint_url('DevMonStatAPI/DeviceMonitorStatus',
-                           'https://0l7fwqkzr8.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus')
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('DevMonStatAPI/DeviceMonitorStatus',
+                   'https://0l7fwqkzr8.execute-api.us-west-2.amazonaws.com/default/DeviceMonitorStatus')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ class DeviceMonitorStatusManager(APIClient):
             'exact': exact
         }
 
-        response = requests.get(Endpoint.URL, headers=self._token_headers(token), json=payload)
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), json=payload)
         self._check_response(response)
 
         return DeviceMonitorReport.construct_from_jdict(response.json())
