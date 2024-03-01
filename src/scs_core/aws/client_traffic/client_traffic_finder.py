@@ -34,21 +34,21 @@ class ClientTrafficFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_for_users(self, token, request):
-        url = '/'.join((Endpoint.url(), 'users'))
+        url = Endpoint.url('users')
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
 
 
     def find_for_organisations(self, token, request):
-        url = '/'.join((Endpoint.url(), 'organisations'))
+        url = Endpoint.url('organisations')
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
 
 
     def find_for_organisations_users(self, token, request):
-        url = '/'.join((Endpoint.url(), 'organisations-users'))
+        url = Endpoint.url('organisations-users')
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item

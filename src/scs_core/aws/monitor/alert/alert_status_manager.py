@@ -45,7 +45,7 @@ class AlertStatusManager(APIClient):
 
 
     def delete(self, token, id):
-        url = '/'.join((Endpoint.url(), str(id)))
+        url = Endpoint.url(id)
 
         http_response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)

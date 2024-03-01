@@ -36,7 +36,7 @@ class CognitoLoginManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def user_login(self, credentials):
-        url = '/'.join((Endpoint.url(), 'user'))
+        url = Endpoint.url('user')
         headers = self._auth_headers()
 
         response = requests.post(url, headers=headers, json=credentials.as_json())
@@ -46,7 +46,7 @@ class CognitoLoginManager(APIClient):
 
 
     def device_login(self, credentials):
-        url = '/'.join((Endpoint.url(), 'device'))
+        url = Endpoint.url('device')
         headers = self._auth_headers()
 
         response = requests.post(url, headers=headers, json=credentials.as_json())

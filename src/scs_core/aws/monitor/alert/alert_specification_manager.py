@@ -49,7 +49,7 @@ class AlertSpecificationManager(APIClient):
 
 
     def retrieve(self, token, id):
-        url = '/'.join((Endpoint.url(), str(id)))
+        url = Endpoint.url(id)
 
         http_response = requests.get(url, headers=self._token_headers(token))
         self._check_response(http_response)
@@ -69,7 +69,7 @@ class AlertSpecificationManager(APIClient):
 
 
     def update(self, token, alert):
-        url = '/'.join((Endpoint.url(), str(alert.id)))
+        url = Endpoint.url(alert.id)
 
         http_response = requests.post(url, headers=self._token_headers(token), data=JSONify.dumps(alert))
         self._check_response(http_response)
@@ -80,7 +80,7 @@ class AlertSpecificationManager(APIClient):
 
 
     def delete(self, token, id):
-        url = '/'.join((Endpoint.url(), str(id)))
+        url = Endpoint.url(id)
 
         http_response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(http_response)

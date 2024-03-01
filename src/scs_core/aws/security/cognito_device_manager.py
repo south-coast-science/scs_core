@@ -38,7 +38,7 @@ class CognitoDeviceManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def update_self(self, token, credentials):
-        url = '/'.join((Endpoint.url(), 'self'))
+        url = Endpoint.url('self')
 
         response = requests.patch(url, headers=self._token_headers(token), data=JSONify.dumps(credentials))
         self._check_response(response)

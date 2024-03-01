@@ -82,7 +82,7 @@ class CognitoUserEditor(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def update(self, token, identity):
-        url = '/'.join((AccEndpoint.url(), 'edit', 'user'))
+        url = AccEndpoint.url('edit', 'user')
 
         response = requests.patch(url, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
@@ -106,7 +106,7 @@ class CognitoUserDeleter(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def delete(self, token, email):
-        url = '/'.join((AccEndpoint.url(), 'delete', email))
+        url = AccEndpoint.url('delete', email)
 
         response = requests.delete(url, headers=self._token_headers(token))
         self._check_response(response)

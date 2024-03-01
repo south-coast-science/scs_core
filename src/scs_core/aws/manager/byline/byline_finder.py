@@ -106,7 +106,7 @@ class DeviceBylineFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_byline_for_topic(self, token, topic):
-        url = '/'.join((Endpoint.url(), 'self'))
+        url = Endpoint.url('self')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)

@@ -36,7 +36,7 @@ class CognitoUserFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self, token):
-        url = '/'.join((Endpoint.url(), 'all'))
+        url = Endpoint.url('all')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -45,7 +45,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_status(self, token, confirmation_status):
-        url = '/'.join((Endpoint.url(), confirmation_status.lower()))
+        url = Endpoint.url(confirmation_status.lower())
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -54,7 +54,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_enabled(self, token, enabled):
-        url = '/'.join((Endpoint.url(), 'enabled' if enabled else 'disabled'))
+        url = Endpoint.url('enabled' if enabled else 'disabled')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -63,7 +63,7 @@ class CognitoUserFinder(APIClient):
 
 
     def find_by_email(self, token, email):
-        url = '/'.join((Endpoint.url(), 'in'))
+        url = Endpoint.url('in')
         payload = {"Email": email}
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
@@ -73,7 +73,7 @@ class CognitoUserFinder(APIClient):
 
 
     def get_by_email(self, token, email):
-        url = '/'.join((Endpoint.url(), 'exact'))
+        url = Endpoint.url('exact')
         payload = {"Email": email}
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
@@ -83,7 +83,7 @@ class CognitoUserFinder(APIClient):
 
 
     def get_self(self, token):
-        url = '/'.join((Endpoint.url(), 'self'))
+        url = Endpoint.url('self')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
