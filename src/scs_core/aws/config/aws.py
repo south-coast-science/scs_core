@@ -43,8 +43,8 @@ class AWS(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def header(cls, auth=None, token=None):
-        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json"}
+    def header(cls, accept='text/json', auth=None, token=None):
+        header = {"Content-type": "application/x-www-form-urlencoded", "Accept": accept}
 
         if auth is not None:
             header["Authorization"] = auth
