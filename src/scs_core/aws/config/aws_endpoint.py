@@ -58,7 +58,7 @@ class AWSEndpoint(ABC):
         pass
 
     @classmethod
-    def url(cls):
+    def url(cls, extension=None):
         return cls.configuration().selected_url()
 
 
@@ -71,11 +71,14 @@ class AWSEndpoint(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def selected_url(self):
-        url = self.raw_url if self.USE_RAW_URLS else 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
-        Logging.getLogger().info('endpoint: %s' % url)
+    def selected_url(self, *paths):
+        Logging.getLogger().info('paths: %s' % paths)
 
-        return url
+        url = self.raw_url if self.USE_RAW_URLS else 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
+        extended_url = '/'.join(paths) if paths else url
+        Logging.getLogger().info('endpoint: %s' % extended_url)
+
+        return extended_url
 
 
     # ----------------------------------------------------------------------------------------------------------------
