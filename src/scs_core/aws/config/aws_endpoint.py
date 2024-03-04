@@ -30,7 +30,7 @@ class AWSEndpoint(ABC):
     classdocs
     """
 
-    USE_RAW_URLS =      False
+    USE_RAW_URLS =      True
 
     API_DOMAIN_NAME =   'api.southcoastscience.com'
     DEFAULT_AUTH =      '@southcoastscience.com'
