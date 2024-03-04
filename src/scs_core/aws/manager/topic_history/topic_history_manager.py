@@ -16,7 +16,7 @@ from scs_core.aws.manager.topic_history.topic_history_intercourse import TopicHi
 class Endpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
-        return cls('HistoryAPI/TopicHistory',
+        return cls('DataAPI/TopicHistory',
                    'https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory')
 
 

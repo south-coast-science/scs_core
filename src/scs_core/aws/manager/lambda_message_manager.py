@@ -4,6 +4,8 @@ Created on 26 Nov 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 This version of MessageManager for AWS lambda function with multipart response.
+
+only used by live.southcoastscience.com
 """
 
 from collections import OrderedDict
@@ -22,6 +24,7 @@ from scs_core.data.timedelta import Timedelta
 from scs_core.sys.logging import Logging
 
 
+# TODO: phase out this class and its dependents
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageManager(object):
