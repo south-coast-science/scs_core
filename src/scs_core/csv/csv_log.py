@@ -120,7 +120,7 @@ class CSVLog(PersistentJSONable, ABC):
     @classmethod
     def rows(cls, manager):
         if not cls.exists(manager):
-            return None
+            return 0                                                # no log, so no errors
 
         dirname, filename = cls.persistence_location()
         abs_filename = manager.abs_filename(dirname, filename)
