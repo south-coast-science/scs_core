@@ -69,7 +69,7 @@ class OPCErrorSummary(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        if jdict is None:
+        if jdict is None:                                       # 0 is a valid jdict
             return None
 
         return cls(jdict)
@@ -86,7 +86,7 @@ class OPCErrorSummary(JSONable):
         """
         Constructor
         """
-        self.__entries = entries                                # int or None
+        self.__entries = int(entries)                           # int
 
 
     def __eq__(self, other):
