@@ -37,7 +37,7 @@ class APIClient(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def _auth_headers(self, auth=AWSEndpoint.STD_AUTH):
+    def _auth_headers(self, auth=AWSEndpoint.DEFAULT_AUTH):
         header = AWSEndpoint.header(auth=auth)
         self.__logger.debug('header: %s' % header)
 

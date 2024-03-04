@@ -30,9 +30,10 @@ class AWSEndpoint(ABC):
     classdocs
     """
 
-    USE_RAW_URLS =      True
+    USE_RAW_URLS =      False
+
     API_DOMAIN_NAME =   'api.southcoastscience.com'
-    STD_AUTH =          '@southcoastscience.com'
+    DEFAULT_AUTH =      '@southcoastscience.com'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -73,12 +74,17 @@ class AWSEndpoint(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def selected_url(self, *path_extensions):
-        url = self.raw_url if self.USE_RAW_URLS else 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
+        url = self.raw_url if self.USE_RAW_URLS else self.production_url
         extended_url = '/'.join([url] + [str(extension) for extension in path_extensions])
 
         Logging.getLogger().info('endpoint: %s' % extended_url)
 
         return extended_url
+
+
+    @property
+    def production_url(self):
+        return 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
 
 
     # ----------------------------------------------------------------------------------------------------------------
