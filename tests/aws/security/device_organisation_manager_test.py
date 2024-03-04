@@ -14,7 +14,7 @@ from scs_core.aws.security.organisation_manager import DeviceOrganisationManager
 # --------------------------------------------------------------------------------------------------------------------
 
 device_tag = 'scs-be2-3'
-shared_secret = 'OB1yevNUrVX0ChLE'
+shared_secret = '5U4jDlG72vWu1xCE'
 credentials = CognitoDeviceCredentials(device_tag, shared_secret)
 
 gatekeeper = CognitoLoginManager()

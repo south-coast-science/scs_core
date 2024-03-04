@@ -4,28 +4,28 @@ Created on 26 Nov 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 This version of MessageManager for AWS lambda function with multipart response.
-
-Equivalent to cURL:
-curl "https://aws.southcoastscience.com/topicMessages?topic=unep/ethiopia/loc/1/climate
-&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
-
-Test endpoint:
-curl "https://hb7aqje541.execute-api.us-west-2.amazonaws.com/default/AWSAggregateTest?topic=unep/ethiopia/loc/1/climate
-&startTime=2018-12-13T07:03:59.712Z&endTime=2018-12-13T15:10:59.712Z"
 """
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.manager.topic_history.topic_history_intercourse import TopicHistoryRequest, TopicHistoryResponse
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('HistoryAPI/TopicHistory',
+                   'https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory')
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class TopicHistoryManager(APIClient):
     """
-    classdocs AWSAggregateTest
+    classdocs
     """
-
-    __URL = "https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -52,5 +52,5 @@ class TopicHistoryManager(APIClient):
                                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
         self._logger.debug(request)
 
-        for item in self._get_blocks(self.__URL, token, TopicHistoryResponse, params=request.params()):
+        for item in self._get_blocks(Endpoint.url(), token, TopicHistoryResponse, params=request.params()):
             yield item

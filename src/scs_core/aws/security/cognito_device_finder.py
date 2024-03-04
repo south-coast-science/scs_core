@@ -27,7 +27,7 @@ class CognitoDeviceFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_all(self, token):
-        url = '/'.join((Endpoint.URL, 'retrieve', 'all'))
+        url = Endpoint.url('retrieve', 'all')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
@@ -36,10 +36,8 @@ class CognitoDeviceFinder(APIClient):
 
 
     def find_by_tag(self, token, tag):
-        url = '/'.join((Endpoint.URL, 'retrieve', 'in'))
+        url = Endpoint.url('retrieve', 'in')
         payload = {"username": tag}
-
-        print("url: %s" % url)
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
         self._check_response(response)
@@ -48,7 +46,7 @@ class CognitoDeviceFinder(APIClient):
 
 
     def get_by_tag(self, token, tag):
-        url = '/'.join((Endpoint.URL, 'retrieve', 'exact'))
+        url = Endpoint.url('retrieve', 'exact')
         payload = {"username": tag}
 
         response = requests.get(url, headers=self._token_headers(token), json=payload)
@@ -73,7 +71,7 @@ class CognitoDeviceIntrospector(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_self(self, token):
-        url = '/'.join((Endpoint.URL, 'self'))
+        url = Endpoint.url('self')
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
