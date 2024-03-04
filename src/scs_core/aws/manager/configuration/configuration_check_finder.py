@@ -2,15 +2,24 @@
 Created on 28 Apr 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-https://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
 """
 
 import requests
 
 from scs_core.aws.client.api_client import APIClient
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
+
 from scs_core.aws.manager.configuration.configuration_check_intercourse import ConfigurationCheckRequest, \
     ConfigurationCheckResponse
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('ConfChkAPI/ConfigurationCheckFinder',
+                   'https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -19,8 +28,6 @@ class ConfigurationCheckFinder(APIClient):
     """
     classdocs
     """
-
-    __URL = "https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder"
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +40,7 @@ class ConfigurationCheckFinder(APIClient):
     def find(self, token, tag_filter, exact_match, response_mode):
         request = ConfigurationCheckRequest(tag_filter, exact_match, response_mode)
 
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=request.params())
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=request.params())
         self._check_response(response)
 
         return ConfigurationCheckResponse.construct_from_jdict(response.json())

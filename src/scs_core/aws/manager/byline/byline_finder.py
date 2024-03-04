@@ -2,18 +2,23 @@
 Created on 1 Aug 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-Equivalent to cURLs:
-curl "https://aws.southcoastscience.com/device-topics?topic=south-coast-science-dev/alphasense/loc/303/gases"
-curl "https://aws.southcoastscience.com/device-topics?device=scs-bgx-303"
 """
 
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-
+from scs_core.aws.config.aws_endpoint import AWSEndpoint
 from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 from scs_core.aws.manager.byline.byline_intercourse import BylineFinderResponse
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class Endpoint(AWSEndpoint):
+    @classmethod
+    def configuration(cls):
+        return cls('BylineAPI/TopicBylines',
+                   'https://k5uz49605m.execute-api.us-west-2.amazonaws.com/default/TopicBylines')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -23,11 +28,8 @@ class BylineFinder(APIClient):
     classdocs
     """
 
-    __URL = 'https://k5uz49605m.execute-api.us-west-2.amazonaws.com/default/TopicBylines'
-
     __DEVICE =      'device'
     __TOPIC =       'topic'
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ class BylineFinder(APIClient):
     def find_latest_byline_for_topic(self, token, topic):
         params = {self.__TOPIC: topic}
 
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         jdict = response.json()
 
         # bylines...
@@ -59,7 +61,7 @@ class BylineFinder(APIClient):
 
 
     def find_bylines(self, token, excluded=None, strict_tags=False):
-        bylines = [item for item in self._get_blocks(self.__URL, token, BylineFinderResponse)]
+        bylines = [item for item in self._get_blocks(Endpoint.url(), token, BylineFinderResponse)]
 
         return TopicBylineGroup.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 
@@ -67,7 +69,7 @@ class BylineFinder(APIClient):
     def find_bylines_for_topic(self, token, topic, excluded=None, strict_tags=False):
         params = {self.__TOPIC: topic}
 
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -79,7 +81,7 @@ class BylineFinder(APIClient):
     def find_bylines_for_device(self, token, device, excluded=None):
         params = {self.__DEVICE: device}
 
-        response = requests.get(self.__URL, headers=self._token_headers(token), params=params)
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         jdict = response.json()
@@ -95,8 +97,6 @@ class DeviceBylineFinder(APIClient):
     classdocs
     """
 
-    __URL = 'https://k5uz49605m.execute-api.us-west-2.amazonaws.com/default/TopicBylines/self'
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
@@ -106,7 +106,9 @@ class DeviceBylineFinder(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find_byline_for_topic(self, token, topic):
-        response = requests.get(self.__URL, headers=self._token_headers(token))
+        url = Endpoint.url('self')
+
+        response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
         jdict = response.json()
