@@ -21,6 +21,7 @@ from scs_core.client.http_exception import HTTPException
 from scs_core.client.http_status import HTTPStatus
 
 
+# TODO: phase out this class and its dependents
 # --------------------------------------------------------------------------------------------------------------------
 
 class RESTClient(object):

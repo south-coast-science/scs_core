@@ -2,6 +2,8 @@
 Created on 25 Dec 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+only used by live.southcoastscience.com
 """
 
 import requests
