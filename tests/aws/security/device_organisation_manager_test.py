@@ -10,8 +10,12 @@ from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
 from scs_core.aws.security.organisation_manager import DeviceOrganisationManager
 
+from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
+
+Logging.config('device_organisation_manager_test', verbose=True)
+
 
 device_tag = 'scs-be2-3'
 shared_secret = '5U4jDlG72vWu1xCE'

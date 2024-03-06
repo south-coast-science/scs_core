@@ -16,7 +16,7 @@ from scs_core.aws.security.cognito_authentication import AuthenticationResult
 class Endpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
-        return cls('CogLogAPI/CognitoLogin',
+        return cls('CogSecAPI/CognitoLogin',
                    'https://lnh2y9ip75.execute-api.us-west-2.amazonaws.com/default/CognitoLogin')
 
 

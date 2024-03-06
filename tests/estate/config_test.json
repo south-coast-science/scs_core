@@ -158,6 +158,7 @@
             "serial": "177780318",
             "firmware": "OPC-N3 Iss1.1 FirmwareVer=1.17a...........................BS"
         },
+        "opc-errors": 0,
         "pmx-model-conf": {
             "uds-path": "pipes/lambda-pmx-model.uds",
             "model-interface": "s2"

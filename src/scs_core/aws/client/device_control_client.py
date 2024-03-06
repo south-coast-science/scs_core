@@ -20,7 +20,7 @@ from scs_core.data.json import JSONify
 class Endpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
-        return cls('DevCtrlAPI/ConfigurationFinder',
+        return cls('DevCtrlAPI/DeviceControl',
                    'https://4fq7dy8f15.execute-api.us-west-2.amazonaws.com/default/DeviceControl')
 
 

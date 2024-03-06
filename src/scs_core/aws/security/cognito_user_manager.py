@@ -28,7 +28,7 @@ class AccEndpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
         return cls('CogUsrAccAPI/CognitoUserAccounts',
-                   'https://fru3uy2z82.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccounts')
+                   'https://58vvigz8ue.execute-api.us-west-2.amazonaws.com/default/CognitoUserAccounts')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class CognitoUserEditor(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def update(self, token, identity):
-        url = AccEndpoint.url('edit', 'user')
+        url = AccEndpoint.url('edit')
 
         response = requests.patch(url, headers=self._token_headers(token), data=JSONify.dumps(identity))
         self._check_response(response)
