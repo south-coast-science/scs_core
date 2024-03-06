@@ -305,9 +305,9 @@ class AlertSpecification(JSONable):
         return self.aggregation_period is not None and self.aggregation_period.is_valid()
 
 
-    def may_update(self, other):
-        if self.id != other.id or self.topic != other.topic or self.field != other.field or \
-                self.creator_email_address != other.creator_email_address:
+    def has_update_compatibility(self, other):
+        if self.id != other.id or self.topic != other.topic or \
+                self.creator_email_address != other.creator_email_address:      # or self.field != other.field
             return False
 
         return True
