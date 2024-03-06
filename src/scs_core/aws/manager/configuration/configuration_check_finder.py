@@ -19,7 +19,7 @@ class Endpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
         return cls('ConfChkAPI/ConfigurationCheckFinder',
-                   'https://p18hyi3w56.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder')
+                   'https://03azvwwip4.execute-api.us-west-2.amazonaws.com/default/ConfigurationCheckFinder')
 
 
 # --------------------------------------------------------------------------------------------------------------------
