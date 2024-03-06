@@ -77,7 +77,7 @@ class AWSEndpoint(ABC):
         url = self.raw_url if self.USE_RAW_URLS else self.production_url
         extended_url = '/'.join([url] + [str(extension) for extension in path_extensions])
 
-        Logging.getLogger().info('endpoint: %s' % extended_url)
+        Logging.getLogger().debug('endpoint: %s' % extended_url)
 
         return extended_url
 
