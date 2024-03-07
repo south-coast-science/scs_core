@@ -46,11 +46,11 @@ class PMxRequest(AbstractPMxRequest):
         self.__sample = sample                                                  # ParticulatesSample
         self.__sht_datum = sht_datum                                            # SHTDatum
 
-        self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=4)                # float or None
-        self.__ext_rh_slope = Datum.float(ext_rh_slope, ndigits=4)              # float or None
+        self.__ext_t_slope = Datum.float(ext_t_slope, ndigits=6)                # float or None
+        self.__ext_rh_slope = Datum.float(ext_rh_slope, ndigits=6)              # float or None
 
-        self.__opc_t_slope = Datum.float(opc_t_slope, ndigits=4)                # float or None
-        self.__opc_rh_slope = Datum.float(opc_rh_slope, ndigits=4)              # float or None
+        self.__opc_t_slope = Datum.float(opc_t_slope, ndigits=6)                # float or None
+        self.__opc_rh_slope = Datum.float(opc_rh_slope, ndigits=6)              # float or None
 
 
     # ----------------------------------------------------------------------------------------------------------------
