@@ -15,7 +15,7 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/stage-variables.htm
 https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-set-stage-variables-aws-console.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/aws-api-gateway-stage-variables-reference.html
 
-Route 53 is unecessary
+Route 53 is unnecessary
 """
 
 from abc import ABC, abstractmethod
@@ -77,7 +77,7 @@ class AWSEndpoint(ABC):
         url = self.raw_url if self.USE_RAW_URLS else self.production_url
         extended_url = '/'.join([url] + [str(extension) for extension in path_extensions])
 
-        Logging.getLogger().debug('endpoint: %s' % extended_url)
+        Logging.getLogger().info('API: %s' % extended_url)
 
         return extended_url
 
