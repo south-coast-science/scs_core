@@ -14,10 +14,10 @@ from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 
 
-# TODO: only called by live.scs.com / AlertHandler and DeviceMonitorHandler lambdas - find another way to do security
+# TODO: DEPRECATED
 # --------------------------------------------------------------------------------------------------------------------
 
-class BylineManager(APIClient):
+class BylineManagerX(APIClient):
     """
     classdocs
     """

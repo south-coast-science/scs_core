@@ -235,6 +235,7 @@ class DynamoManager(object):
         else:
             q = table.scan(**query)
         to_return.extend(q['Items'])
+
         if not limited:
             while 'LastEvaluatedKey' in q:
                 query['ExclusiveStartKey'] = q['LastEvaluatedKey']
@@ -243,6 +244,7 @@ class DynamoManager(object):
                 else:
                     q = table.scan(**query)
                 to_return.extend(q['Items'])
+
         return to_return
 
 
