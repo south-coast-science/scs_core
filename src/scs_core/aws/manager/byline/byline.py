@@ -99,7 +99,7 @@ class Byline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, include_message=True):
+    def as_json(self):
         jdict = OrderedDict()
 
         jdict['device'] = self.device
@@ -108,7 +108,7 @@ class Byline(JSONable):
         jdict['lastSeenTime'] = None if self.pub is None else self.pub.as_iso8601()
         jdict['last_write'] = None if self.rec is None else self.rec.as_iso8601()
 
-        if include_message:
+        if self.message:
             jdict['message'] = self.message
 
         return jdict

@@ -28,8 +28,9 @@ class BylineFinder(APIClient):
     classdocs
     """
 
-    __DEVICE =      'device'
-    __TOPIC =       'topic'
+    DEVICE = 'device'
+    TOPIC = 'topic'
+    INCLUDE_MESSAGES = 'include-messages'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -39,8 +40,8 @@ class BylineFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_latest_byline_for_topic(self, token, topic):
-        params = {self.__TOPIC: topic}
+    def find_latest_byline_for_topic(self, token, topic, include_messages=True):
+        params = {self.TOPIC: topic, self.INCLUDE_MESSAGES: include_messages}
 
         response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         jdict = response.json()
@@ -60,14 +61,16 @@ class BylineFinder(APIClient):
         return latest_byline
 
 
-    def find_bylines(self, token, excluded=None, strict_tags=False):
-        bylines = [item for item in self._get_blocks(Endpoint.url(), token, BylineFinderResponse)]
+    def find_bylines(self, token, excluded=None, strict_tags=False, include_messages=True):
+        params = {self.INCLUDE_MESSAGES: include_messages}
+
+        bylines = [item for item in self._get_blocks(Endpoint.url(), token, BylineFinderResponse, params=params)]
 
         return TopicBylineGroup.construct(bylines, excluded=excluded, strict_tags=strict_tags)
 
 
-    def find_bylines_for_topic(self, token, topic, excluded=None, strict_tags=False):
-        params = {self.__TOPIC: topic}
+    def find_bylines_for_topic(self, token, topic, excluded=None, strict_tags=False, include_messages=True):
+        params = {self.TOPIC: topic, self.INCLUDE_MESSAGES: include_messages}
 
         response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
@@ -78,8 +81,8 @@ class BylineFinder(APIClient):
         return TopicBylineGroup.construct_from_jdict(jdict, excluded=excluded, strict_tags=strict_tags, skeleton=True)
 
 
-    def find_bylines_for_device(self, token, device, excluded=None):
-        params = {self.__DEVICE: device}
+    def find_bylines_for_device(self, token, device, excluded=None, include_messages=True):
+        params = {self.DEVICE: device, self.INCLUDE_MESSAGES: include_messages}
 
         response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
@@ -105,10 +108,11 @@ class DeviceBylineFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_byline_for_topic(self, token, topic):
+    def find_byline_for_topic(self, token, topic, include_messages=True):
         url = Endpoint.url('self')
+        params = {BylineFinder.INCLUDE_MESSAGES: include_messages}
 
-        response = requests.get(url, headers=self._token_headers(token))
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         jdict = response.json()

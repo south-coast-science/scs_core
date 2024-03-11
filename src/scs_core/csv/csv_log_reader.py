@@ -235,7 +235,7 @@ class CSVLogQueueBuilder(object):
                 if not auth.is_ok():
                     self.__logger.error(auth.authentication_status.description)
 
-                byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path)
+                byline = finder.find_byline_for_topic(auth.id_token, self.__topic_path, include_messages=False)
                 break
 
             except ConnectionError as ex:
