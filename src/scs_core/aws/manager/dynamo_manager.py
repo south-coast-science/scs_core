@@ -135,6 +135,7 @@ class DynamoManager(object):
                                IndexName=index_name)
         to_return = []
         to_return.extend(response['Items'])
+
         return to_return
 
 
