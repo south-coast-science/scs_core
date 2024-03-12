@@ -52,3 +52,10 @@ class ClientTrafficFinder(APIClient):
 
         for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
             yield item
+
+
+    def find_for_endpoint(self, token, request):
+        url = Endpoint.url('endpoint')
+
+        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+            yield item
