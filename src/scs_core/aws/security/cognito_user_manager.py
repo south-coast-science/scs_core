@@ -7,7 +7,7 @@ Created on 24 Nov 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
 from scs_core.data.json import JSONify
@@ -15,7 +15,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CreEndpoint(AWSEndpoint):
+class CreEndpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('CogUsrCreAPI/CognitoUserAccountCreator',
@@ -24,7 +24,7 @@ class CreEndpoint(AWSEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AccEndpoint(AWSEndpoint):
+class AccEndpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('CogUsrAccAPI/CognitoUserAccounts',

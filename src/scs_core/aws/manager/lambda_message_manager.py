@@ -29,7 +29,7 @@ from scs_core.sys.logging import Logging
 
 class MessageManager(object):
     """
-    classdocs AWSAggregateTest
+    classdocs
     """
 
     __REQUEST_PATH = '/topicMessages'

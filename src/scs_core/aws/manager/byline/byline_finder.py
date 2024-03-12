@@ -7,14 +7,14 @@ Created on 1 Aug 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.manager.byline.byline import Byline, DeviceBylineGroup, TopicBylineGroup
 from scs_core.aws.manager.byline.byline_intercourse import BylineFinderResponse
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(AWSEndpoint):
+class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('BylineAPI/TopicBylines',
