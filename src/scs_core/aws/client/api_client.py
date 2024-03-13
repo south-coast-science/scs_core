@@ -9,7 +9,7 @@ import requests
 from abc import ABC
 from http import HTTPStatus
 
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 
 from scs_core.client.http_exception import HTTPException
 
@@ -37,15 +37,15 @@ class APIClient(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def _auth_headers(self, auth=AWSEndpoint.DEFAULT_AUTH):
-        header = AWSEndpoint.header(auth=auth)
+    def _auth_headers(self, auth=APIEndpoint.DEFAULT_AUTH):
+        header = APIEndpoint.header(auth=auth)
         self.__logger.debug('header: %s' % header)
 
         return header
 
 
     def _token_headers(self, token):
-        header = AWSEndpoint.header(token=token)
+        header = APIEndpoint.header(token=token)
         self.__logger.debug('header: %s' % header)
 
         return header

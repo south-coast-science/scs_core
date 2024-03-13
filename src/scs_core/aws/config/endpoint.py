@@ -25,16 +25,13 @@ from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSEndpoint(ABC):
+class Endpoint(ABC):
     """
     classdocs
     """
 
     USE_RAW_URLS = False
-
-    API_DOMAIN_NAME =   'api.southcoastscience.com'
-    DEFAULT_AUTH =      '@southcoastscience.com'
-
+    DEFAULT_AUTH = '@southcoastscience.com'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -83,8 +80,9 @@ class AWSEndpoint(ABC):
 
 
     @property
+    @abstractmethod
     def production_url(self):
-        return 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -103,3 +101,35 @@ class AWSEndpoint(ABC):
 
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__ + ":{production_path:%s, raw_url:%s}" % (self.production_path, self.raw_url)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class APIEndpoint(Endpoint, ABC):
+    """
+    classdocs
+    """
+
+    API_DOMAIN_NAME =   'api.southcoastscience.com'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def production_url(self):
+        return 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AWSEndpoint(Endpoint, ABC):
+    """
+    classdocs
+    """
+
+    API_DOMAIN_NAME =   'aws.southcoastscience.com'
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def production_url(self):
+        return 'https://' + self.API_DOMAIN_NAME + '/' + self.production_path
