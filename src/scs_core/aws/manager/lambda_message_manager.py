@@ -24,12 +24,12 @@ from scs_core.data.timedelta import Timedelta
 from scs_core.sys.logging import Logging
 
 
-# TODO: phase out this class and its dependents
+# TODO: DEPRECATED
 # --------------------------------------------------------------------------------------------------------------------
 
 class MessageManager(object):
     """
-    classdocs AWSAggregateTest
+    classdocs
     """
 
     __REQUEST_PATH = '/topicMessages'

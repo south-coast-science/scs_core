@@ -7,7 +7,7 @@ Created on 17 Jun 2023
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 
 from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
     DeviceMonitorSpecificationList
@@ -19,7 +19,7 @@ from scs_core.email.email import EmailRecipient
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(AWSEndpoint):
+class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('DevMonSpecAPI/DeviceMonitorSpecification',

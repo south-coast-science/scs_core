@@ -9,7 +9,7 @@ Enables a device to register itself as a CognitoDevice
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.security.cognito_device import CognitoDeviceIdentity
 
 from scs_core.data.json import JSONify
@@ -17,7 +17,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(AWSEndpoint):
+class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('CogDevCreAPI/CognitoDeviceCreator',

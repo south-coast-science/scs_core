@@ -7,13 +7,13 @@ Created on 23 Nov 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.security.cognito_authentication import AuthenticationResult
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(AWSEndpoint):
+class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('CogSecAPI/CognitoLogin',

@@ -8,7 +8,7 @@ import json
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.security.cognito_user import CognitoUserIdentity
 
 from scs_core.aws.security.organisation import Organisation, OrganisationPathRoot, OrganisationUser, \
@@ -19,7 +19,7 @@ from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DevEndpoint(AWSEndpoint):
+class DevEndpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('OrgDevAPI/DeviceOrganisationManager',
@@ -28,7 +28,7 @@ class DevEndpoint(AWSEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ExecEndpoint(AWSEndpoint):
+class ExecEndpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('OrgExecAPI/OrganisationExecutive',
@@ -37,7 +37,7 @@ class ExecEndpoint(AWSEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MgrEndpoint(AWSEndpoint):
+class MgrEndpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('OrgMgrAPI/OrganisationManager',
