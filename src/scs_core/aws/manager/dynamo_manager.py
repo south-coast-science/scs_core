@@ -169,6 +169,7 @@ class DynamoManager(object):
         query = {}
 
         if not table_name:
+            logger.debug('build_query: no table name')
             return query
 
         if ltsk:
@@ -206,7 +207,7 @@ class DynamoManager(object):
                 query['FilterExpression'] = Attr(sk).contains(sk_val)
 
         else:
-            logger.error('build_query: unrecognised type')
+            logger.debug('build_query: unrecognised type')
 
         if limit:
             query['Limit'] = limit
