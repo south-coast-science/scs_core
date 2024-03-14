@@ -165,7 +165,7 @@ class DynamoManager(object):
 
     @staticmethod
     def build_query(table_name, pk=None, pk_val=None, sk=None, sk_val=None, keys_only=False, exact=False,
-                    limit=None, fosk=False):
+                    limit=None, fosk=False, ltsk=False):
 
         kwargs = {}
 
@@ -182,7 +182,7 @@ class DynamoManager(object):
             return kwargs
 
         # retrieve filtered on pk - retrieve filtered on pk keys only - retrieve filtered on pk batched
-        if pk and pk_val and sk is None and sk_val is None and not fosk:
+        if pk and pk_val and sk is None and sk_val is None and not fosk and not ltsk:
             if exact:
                 kwargs['KeyConditionExpression'] = (Key(pk).eq(pk_val))
             else:
@@ -197,7 +197,7 @@ class DynamoManager(object):
 
         # retrieve double filtered - retrieve double filtered keys only - retrieve double filtered batched
         # basically the same as a get but can also be used with batch, exact and reserved keys
-        if pk and pk_val and sk and sk_val and not fosk:
+        if pk and pk_val and sk and sk_val and not fosk and not ltsk:
             if exact:
                 kwargs['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).eq(sk_val)
             else:
@@ -211,7 +211,7 @@ class DynamoManager(object):
             return kwargs
 
         # Filter on second key - filter on second key keys only - filter on second key batched
-        if pk and sk and sk_val and fosk:
+        if pk and sk and sk_val and fosk and not ltsk:
             if exact:
                 kwargs['FilterExpression'] = Key(sk).eq(sk_val)
             else:
@@ -224,6 +224,16 @@ class DynamoManager(object):
 
             return kwargs
 
+        if pk and pk_val and sk and sk_val and ltsk:
+            kwargs['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).lt(sk_val)
+
+            if limit:
+                kwargs['Limit'] = limit
+            if keys_only:
+                kwargs['ProjectionExpression'] = '#pk'
+                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
+
+            return kwargs
 
     def do_query(self, table_name, query, limited=False):
         exact_match = False
