@@ -13,7 +13,6 @@ https://stackoverflow.com/questions/46616282/dynamodb-query-filterexpression-mul
 A single manager for all required dynamoDB related functions.
 
 """
-from logging import Logger
 
 from boto3.dynamodb.conditions import Key, Attr, And
 from functools import reduce
