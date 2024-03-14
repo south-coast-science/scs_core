@@ -1,17 +1,13 @@
 """
-Created on 08 Mar 2021
-Modified on 16 Aug 2022
+Created on 8 Mar 2021
 
 @author: Jade Page (jade.page@southcoastscience.com)
 
-https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
-
-https://github.com/boto/botocore/issues/1688
-
-https://stackoverflow.com/questions/46616282/dynamodb-query-filterexpression-multiple-condition-chaining-python
-
 A single manager for all required dynamoDB related functions.
 
+https://stackoverflow.com/questions/36780856/complete-scan-of-dynamodb-with-boto3
+https://github.com/boto/botocore/issues/1688
+https://stackoverflow.com/questions/46616282/dynamodb-query-filterexpression-multiple-condition-chaining-python
 """
 
 from boto3.dynamodb.conditions import Key, Attr, And
