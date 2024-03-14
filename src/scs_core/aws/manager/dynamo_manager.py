@@ -13,11 +13,12 @@ https://stackoverflow.com/questions/46616282/dynamodb-query-filterexpression-mul
 A single manager for all required dynamoDB related functions.
 
 """
-
-import logging
+from logging import Logger
 
 from boto3.dynamodb.conditions import Key, Attr, And
 from functools import reduce
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -168,87 +169,58 @@ class DynamoManager(object):
     @staticmethod
     def build_query(table_name, pk=None, pk_val=None, sk=None, sk_val=None, keys_only=False, exact=False,
                     limit=None, fosk=False, ltsk=False):
-        kwargs = {}
+        logger = Logging.getLogger()
+
+        query = {}
 
         if not table_name:
-            return kwargs
+            return query
 
         if ltsk:
             # Filter on less than second key - for expiring data
-            logging.info('build_query: type 1')
+            logger.debug('build_query: type 1')
+            query['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).lt(sk_val)
 
-            kwargs['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).lt(sk_val)
-
-            if limit:
-                kwargs['Limit'] = limit
-            if keys_only:
-                kwargs['ProjectionExpression'] = '#pk'
-                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
-
-            return kwargs
-
-        if pk_val is None and sk is None and sk_val is None:
+        elif pk_val is None and sk is None and sk_val is None:
             # retrieve all - retrieve all batched - retrieve all keys only
-            logging.info('build_query: type 2')
+            logger.debug('build_query: type 2')
 
-            if keys_only:
-                kwargs['ProjectionExpression'] = '#pk'
-                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
-            if limit:
-                kwargs['Limit'] = limit
-            return kwargs
-
-        if pk and pk_val and sk is None and sk_val is None and not fosk and not ltsk:
+        elif pk and pk_val and sk is None and sk_val is None and not fosk:
             # retrieve filtered on pk - retrieve filtered on pk keys only - retrieve filtered on pk batched
-            logging.info('build_query: type 3')
-
+            logger.debug('build_query: type 3')
             if exact:
-                kwargs['KeyConditionExpression'] = (Key(pk).eq(pk_val))
+                query['KeyConditionExpression'] = (Key(pk).eq(pk_val))
             else:
-                kwargs['FilterExpression'] = (Attr(pk).contains(pk_val))
-            if limit:
-                kwargs['Limit'] = limit
-            if keys_only:
-                kwargs['ProjectionExpression'] = '#pk'
-                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
+                query['FilterExpression'] = (Attr(pk).contains(pk_val))
 
-            return kwargs
-
-        if pk and pk_val and sk and sk_val and not fosk and not ltsk:
+        elif pk and pk_val and sk and sk_val and not fosk:
             # retrieve double filtered - retrieve double filtered keys only - retrieve double filtered batched
             # the same as a get but can also be used with batch, exact and reserved keys
-            logging.info('build_query: type 4')
-
+            logger.debug('build_query: type 4')
             if exact:
-                kwargs['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).eq(sk_val)
+                query['KeyConditionExpression'] = Key(pk).eq(pk_val) & Key(sk).eq(sk_val)
             else:
-                kwargs['FilterExpression'] = Attr(pk).contains(pk_val) & Attr(sk).contains(sk_val)
-            if limit:
-                kwargs['Limit'] = limit
-            if keys_only:
-                kwargs['ProjectionExpression'] = '#pk'
-                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
+                query['FilterExpression'] = Attr(pk).contains(pk_val) & Attr(sk).contains(sk_val)
 
-            return kwargs
-
-        if pk and sk and sk_val and fosk and not ltsk:
+        elif pk and sk and sk_val and fosk:
             # Filter on second key - filter on second key keys only - filter on second key batched
-            logging.info('build_query: type 5')
-
+            logger.debug('build_query: type 5')
             if exact:
-                kwargs['FilterExpression'] = Key(sk).eq(sk_val)
+                query['FilterExpression'] = Key(sk).eq(sk_val)
             else:
-                kwargs['FilterExpression'] = Attr(sk).contains(sk_val)
-            if limit:
-                kwargs['Limit'] = limit
-            if keys_only:
-                kwargs['ProjectionExpression'] = '#pk'
-                kwargs['ExpressionAttributeNames'] = {'#pk': pk}
+                query['FilterExpression'] = Attr(sk).contains(sk_val)
 
-            return kwargs
+        else:
+            logger.error('build_query: unrecognised type')
 
-        logging.error('build_query: unrecognised type')
-        return None
+        if limit:
+            query['Limit'] = limit
+
+        if keys_only:
+            query['ProjectionExpression'] = '#pk'
+            query['ExpressionAttributeNames'] = {'#pk': pk}
+
+        return query
 
 
     def do_query(self, table_name, query, limited=False):
