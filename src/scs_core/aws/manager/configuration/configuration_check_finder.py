@@ -7,7 +7,7 @@ Created on 28 Apr 2021
 import requests
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.config.aws_endpoint import AWSEndpoint
+from scs_core.aws.config.endpoint import APIEndpoint
 
 from scs_core.aws.manager.configuration.configuration_check_intercourse import ConfigurationCheckRequest, \
     ConfigurationCheckResponse
@@ -15,7 +15,7 @@ from scs_core.aws.manager.configuration.configuration_check_intercourse import C
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Endpoint(AWSEndpoint):
+class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
         return cls('ConfChkAPI/ConfigurationCheckFinder',
