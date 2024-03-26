@@ -46,7 +46,7 @@ class Project(PersistentJSONable):
     PERMITTED_CHARS = set(string.ascii_letters + string.digits + ' ' + '-' + '_')       # ' ' will be substituted
 
     @classmethod
-    def is_valid_string(cls, chars):
+    def is_valid_path_node(cls, chars):
         if not chars:
             return False
 
