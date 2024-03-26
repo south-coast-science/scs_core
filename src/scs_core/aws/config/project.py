@@ -6,6 +6,7 @@ Created on 7 Oct 2017
 example document:
 {"location-path": "southcoastscience-dev/test/loc/1", "device-path": "southcoastscience-dev/test/device"}
 """
+import string
 
 from collections import OrderedDict
 
@@ -42,12 +43,25 @@ class Project(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    PERMITTED_CHARS = set(string.ascii_letters + string.digits + ' ' + '-' + '_')       # ' ' will be substituted
+
+    @classmethod
+    def is_valid_string(cls, chars):
+        if not chars:
+            return False
+
+        return set(chars) <= cls.PERMITTED_CHARS
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def construct(cls, organisation, group, location):
         std_organisation = organisation.replace(' ', '-').lower()
         std_group = group.replace(' ', '-').lower()
+        std_location = str(location).replace(' ', '-')
 
-        location_path = '/'.join((std_organisation, std_group, 'loc', str(location)))
+        location_path = '/'.join((std_organisation, std_group, 'loc', std_location))
         device_path = '/'.join((std_organisation, std_group, 'device'))
 
         return Project(location_path, device_path)
@@ -72,8 +86,8 @@ class Project(PersistentJSONable):
         """
         super().__init__()
 
-        self.__location_path = location_path          # string
-        self.__device_path = device_path              # string
+        self.__location_path = location_path            # string
+        self.__device_path = device_path                # string
 
 
     def __eq__(self, other):
