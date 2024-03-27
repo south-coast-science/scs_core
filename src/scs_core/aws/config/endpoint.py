@@ -14,7 +14,6 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domai
 https://docs.aws.amazon.com/apigateway/latest/developerguide/stage-variables.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-set-stage-variables-aws-console.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/aws-api-gateway-stage-variables-reference.html
-
 Route 53 is unnecessary
 """
 
