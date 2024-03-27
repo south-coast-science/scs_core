@@ -30,7 +30,9 @@ class Endpoint(ABC):
     classdocs
     """
 
-    USE_RAW_URLS = False
+    __USE_RAW_URLS = False
+    __REPORT_URLS = False
+
     DEFAULT_AUTH = '@southcoastscience.com'
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,10 +73,11 @@ class Endpoint(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def selected_url(self, *path_extensions):
-        url = self.raw_url if self.USE_RAW_URLS else self.production_url
+        url = self.raw_url if self.__USE_RAW_URLS else self.production_url
         extended_url = '/'.join([url] + [str(extension) for extension in path_extensions])
 
-        Logging.getLogger().info('API: %s' % extended_url)
+        if self.__REPORT_URLS:
+            Logging.getLogger().info('API: %s' % extended_url)
 
         return extended_url
 
