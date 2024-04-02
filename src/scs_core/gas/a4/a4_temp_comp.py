@@ -30,6 +30,10 @@ class A4TempComp(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # original: Sensor.CODE_OX: A4TempComp(3, 'kp_t', [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0]),
+    # alternative: Sensor.CODE_OX: A4TempComp(1, 'kp_t', [1.0, 1.2, 1.2, 1.6, 1.7, 2.0, 2.1, 3.4, 4.6]),
+
+
     @classmethod
     def init(cls):          # °C:                  -30   -20   -10    0    10    20    30    40    50
         cls.__COMP = {
@@ -37,7 +41,7 @@ class A4TempComp(object):
             Sensor.CODE_H2S:    A4TempComp(1, 'n_t', [3.0, 3.0, 3.0, 1.0, -1.0, -2.0, -1.5, -1.0, -0.5]),
             Sensor.CODE_NO:     A4TempComp(3, 'kp_t', [0.7, 0.7, 0.7, 0.7, 0.8, 1.0, 1.2, 1.4, 1.6]),
             Sensor.CODE_NO2:    A4TempComp(1, 'n_t', [0.8, 0.8, 1.0, 1.2, 1.6, 1.8, 1.9, 2.5, 3.6]),
-            Sensor.CODE_OX:     A4TempComp(3, 'kp_t', [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0]),
+            Sensor.CODE_OX:     A4TempComp(1, 'kp_t', [1.0, 1.2, 1.2, 1.6, 1.7, 2.0, 2.1, 3.4, 4.6]),
             Sensor.CODE_SO2:    A4TempComp(1, 'kpp_t', [1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.9, 3.0, 5.8]),
 
             Sensor.CODE_VOCe:   A4TempComp(1, 'n_t', [1.0, 1.0, 1.0, 1.0, -0.2, -0.9, -1.5, -1.5, -1.5]),

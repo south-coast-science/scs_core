@@ -177,13 +177,13 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = round(LocalizedDatetime.construct_from_aws(str(res.get('UserCreateDate'))), 3).utc()
         last_updated = round(LocalizedDatetime.construct_from_aws(str(res.get('UserLastModifiedDate'))), 3).utc()
 
-        return cls(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password=password, invoice_number=invoice_number, created=created, last_updated=last_updated)
 
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(None, None, None, None, None) if skeleton else None
+            return cls(None) if skeleton else None
 
         tag = jdict.get('username')
         password = jdict.get('password')
@@ -193,12 +193,12 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
         created = LocalizedDatetime.construct_from_iso8601(jdict.get('created'))
         last_updated = LocalizedDatetime.construct_from_iso8601(jdict.get('last-updated'))
 
-        return cls(tag, password, invoice_number, created, last_updated)
+        return cls(tag, password=password, invoice_number=invoice_number, created=created, last_updated=last_updated)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, password, invoice_number, created, last_updated):
+    def __init__(self, tag, password=None, invoice_number=None, created=None, last_updated=None):
         """
         Constructor
         """
