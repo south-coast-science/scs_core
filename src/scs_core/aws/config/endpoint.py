@@ -54,7 +54,12 @@ class EndpointAccess(PersistentJSONable):
 
     @classmethod
     def config(cls):
-        return cls(False, False) if cls.__CONFIG is None else cls.__CONFIG
+        return cls.default() if cls.__CONFIG is None else cls.__CONFIG
+
+
+    @classmethod
+    def default(cls):
+        return cls(False, False)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,7 +67,7 @@ class EndpointAccess(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return cls(False, False) if skeleton else None
+            return cls.default() if skeleton else None
 
         use_default_urls = jdict.get('use-default-urls', False)
         report_urls = jdict.get('report-urls', False)
