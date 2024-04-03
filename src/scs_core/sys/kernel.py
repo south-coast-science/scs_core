@@ -18,7 +18,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PlatformSummary(JSONable):
+class KernelSummary(JSONable):
     """
     classdocs
     """
@@ -79,4 +79,4 @@ class PlatformSummary(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PlatformSummary:{release:%s}" %  self.release
+        return "KernelSummary:{release:%s}" %  self.release
