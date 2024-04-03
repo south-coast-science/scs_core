@@ -25,7 +25,7 @@ tag = 'scs-test-1'
 shared_secret = '0123456789abcdef'
 invoice_number = 'INV-0000'
 
-credentials = CognitoDeviceIdentity(tag, shared_secret, invoice_number, None, None)
+credentials = CognitoDeviceIdentity(tag, password=shared_secret, invoice_number=invoice_number)
 print(credentials)
 print("-")
 

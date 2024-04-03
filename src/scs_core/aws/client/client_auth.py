@@ -64,7 +64,7 @@ class ClientAuth(PersistentJSONable):
         client_id = jdict.get('client-id')
         cert_id = jdict.get('cert-id')
 
-        return ClientAuth(endpoint, client_id, cert_id)
+        return cls(endpoint, client_id, cert_id)
 
 
     # ----------------------------------------------------------------------------------------------------------------
