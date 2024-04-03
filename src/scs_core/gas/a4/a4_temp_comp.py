@@ -13,7 +13,6 @@ from scs_core.gas.sensor import Sensor
 
 
 # TODO: indicate with "alg" field to identify which equation is being used
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class A4TempComp(object):
@@ -29,6 +28,12 @@ class A4TempComp(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    # original: Sensor.CODE_OX: A4TempComp(3, 'kp_t', [0.1, 0.1, 0.2, 0.3, 0.7, 1.0, 1.7, 3.0, 4.0])
+    # alternative: Sensor.CODE_OX: A4TempComp(1, 'kp_t', [1.0, 1.2, 1.2, 1.6, 1.7, 2.0, 2.1, 3.4, 4.6]) - flatline
+
+    # Recommended, but causes div by zero error if calib.ae_cal_mv is zero...
+    # Sensor.CODE_H2S:    A4TempComp(2, 'k_t', [-1.5, -1.5, -1.5, -0.5, 0.5, 1.0, 0.8, 0.5, 0.3]),
 
     @classmethod
     def init(cls):          # °C:                  -30   -20   -10    0    10    20    30    40    50
@@ -47,9 +52,6 @@ class A4TempComp(object):
             Sensor.CODE_TEST_3: None,
             Sensor.CODE_TEST_4: None
         }
-
-        #   Recommended, but causes div by zero error if calib.ae_cal_mv is zero
-        #   Sensor.CODE_H2S:    A4TempComp(2, 'k_t', [-1.5, -1.5, -1.5, -0.5, 0.5, 1.0, 0.8, 0.5, 0.3]),
 
 
     @classmethod
