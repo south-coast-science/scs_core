@@ -15,11 +15,105 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/stage-variables.htm
 https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-set-stage-variables-aws-console.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/aws-api-gateway-stage-variables-reference.html
 Route 53 is unnecessary
+
+EndpointAccess should be initialised in scs_host.sys.__init__
+
+example document:
+{"use-default-urls": false, "report-urls": true}
 """
 
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 
+from scs_core.data.json import PersistentJSONable
 from scs_core.sys.logging import Logging
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class EndpointAccess(PersistentJSONable):
+    """
+    classdocs
+    """
+
+    __FILENAME = "endpoint_access.json"
+
+    @classmethod
+    def persistence_location(cls):
+        return cls.aws_dir(), cls.__FILENAME
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __CONFIG = None
+
+    @classmethod
+    def init(cls, manager):
+        cls.__CONFIG = cls.load(manager, skeleton=True)
+
+
+    @classmethod
+    def config(cls):
+        return cls.default() if cls.__CONFIG is None else cls.__CONFIG
+
+
+    @classmethod
+    def default(cls):
+        return cls(False, False)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict, skeleton=False):
+        if not jdict:
+            return cls.default() if skeleton else None
+
+        use_default_urls = jdict.get('use-default-urls', False)
+        report_urls = jdict.get('report-urls', False)
+
+        return cls(use_default_urls, report_urls)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, use_default_urls, report_urls):
+        """
+        Constructor
+        """
+        super().__init__()
+
+        self.__use_default_urls = bool(use_default_urls)            # bool
+        self.__report_urls = bool(report_urls)                      # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['use-default-urls'] = self.use_default_urls
+        jdict['report-urls'] = self.report_urls
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def use_default_urls(self):
+        return self.__use_default_urls
+
+
+    @property
+    def report_urls(self):
+        return self.__report_urls
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "EndpointAccess:{use_default_urls:%s, report_urls:%s}" %  (self.use_default_urls, self.report_urls)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,9 +122,6 @@ class Endpoint(ABC):
     """
     classdocs
     """
-
-    __USE_RAW_URLS = False
-    __REPORT_URLS = False
 
     DEFAULT_AUTH = '@southcoastscience.com'
 
@@ -65,17 +156,19 @@ class Endpoint(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, production_path, raw_url):
-        self.__production_path = production_path
-        self.__raw_url = raw_url
+        self.__production_path = production_path                # string
+        self.__raw_url = raw_url                                # string
+
+        self.__access = EndpointAccess.config()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def selected_url(self, *path_extensions):
-        url = self.raw_url if self.__USE_RAW_URLS else self.production_url
+        url = self.raw_url if self.access.use_default_urls else self.production_url
         extended_url = '/'.join([url] + [str(extension) for extension in path_extensions])
 
-        if self.__REPORT_URLS:
+        if self.access.report_urls:
             Logging.getLogger().info('API: %s' % extended_url)
 
         return extended_url
@@ -99,10 +192,16 @@ class Endpoint(ABC):
         return self.__raw_url
 
 
+    @property
+    def access(self):
+        return self.__access
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{production_path:%s, raw_url:%s}" % (self.production_path, self.raw_url)
+        return (self.__class__.__name__ + ":{production_path:%s, raw_url:%s, access:%s}" %
+                (self.production_path, self.raw_url, self.access))
 
 
 # --------------------------------------------------------------------------------------------------------------------
