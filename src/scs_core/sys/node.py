@@ -169,7 +169,7 @@ class IoTNode(Node):
     # version...
 
     @classmethod
-    def os_release(cls) -> SoftwareVersion:
+    def kernel_release(cls) -> SoftwareVersion:
         return SoftwareVersion.construct_from_jdict(platform.uname().release)
 
 
@@ -186,7 +186,7 @@ class IoTNode(Node):
 
     @classmethod
     @abstractmethod
-    def minimum_required_os_release(cls) -> SoftwareVersion:
+    def minimum_required_kernel_release(cls) -> SoftwareVersion:
         pass
 
 
