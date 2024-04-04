@@ -12,7 +12,7 @@ example document:
     "ver": 1.4,
     "val": {
         "hostname": "scs-bbe-003",
-        "kernel": {
+        "platform": {
             "rel": "6.1.77-bone30"
         },
         "packs": {
@@ -261,7 +261,7 @@ from scs_core.sync.schedule import Schedule
 from scs_core.sys.filesystem import FilesystemReport
 from scs_core.sys.modem import Modem, SIM
 from scs_core.sys.network import Networks
-from scs_core.sys.kernel import KernelSummary
+from scs_core.sys.platform import PlatformSummary
 from scs_core.sys.system_id import SystemID
 
 
@@ -300,8 +300,8 @@ class Configuration(JSONable):
 
         hostname = jdict.get('hostname')
 
-        kernel_field = 'kernel' if 'kernel' in jdict else 'os'                      # TODO: 'os' is deprecated
-        kernel = KernelSummary.construct_from_jdict(jdict.get(kernel_field))
+        node = jdict.get('platform') if 'platform' in jdict else {'kernel': jdict.get('os')}
+        platform = PlatformSummary.construct_from_jdict(node)
 
         packs = PackageVersions.construct_from_jdict(jdict.get('packs'))
 
@@ -334,7 +334,7 @@ class Configuration(JSONable):
         system_id = SystemID.construct_from_jdict(jdict.get('system-id'))
         timezone_conf = TimezoneConf.construct_from_jdict(jdict.get('timezone-conf'))
 
-        return cls(hostname, kernel, packs, afe_baseline, afe_id,
+        return cls(hostname, platform, packs, afe_baseline, afe_id,
                    aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
                    gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                    opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
@@ -348,7 +348,7 @@ class Configuration(JSONable):
         csv_logger_conf = CSVLoggerConf.load(manager)
 
         hostname = socket.gethostname()
-        kernel = KernelSummary.construct()
+        platform = PlatformSummary.construct(manager)
         packs = PackageVersions.construct_from_installation(manager.scs_path(), manager)
 
         afe_baseline = AFEBaseline.load(manager)
@@ -380,7 +380,7 @@ class Configuration(JSONable):
         system_id = SystemID.load(manager)
         timezone_conf = TimezoneConf.load(manager)
 
-        return cls(hostname, kernel, packs, afe_baseline, afe_id,
+        return cls(hostname, platform, packs, afe_baseline, afe_id,
                    aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
                    gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                    opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
@@ -391,7 +391,7 @@ class Configuration(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, hostname, kernel, packs, afe_baseline, afe_id,
+    def __init__(self, hostname, platform, packs, afe_baseline, afe_id,
                  aws_group_config, aws_project, data_log, display_conf, vcal_baseline,
                  gas_baseline, gas_model_conf, gps_conf, interface_conf, mpl115a2_calib,
                  opc_conf, opc_version, opc_error_summary, pmx_model_conf, pressure_conf,
@@ -403,7 +403,7 @@ class Configuration(JSONable):
         """
 
         self.__hostname = hostname                                  # string
-        self.__kernel = kernel                                      # KernelSummary
+        self.__platform = platform                                  # PlatformSummary
         self.__packs = packs                                        # PackageVersions
 
         self.__afe_baseline = afe_baseline                          # AFEBaseline
@@ -438,7 +438,7 @@ class Configuration(JSONable):
 
     def __eq__(self, other):
         try:
-            return self.hostname == other.hostname and self.kernel == other.kernel and \
+            return self.hostname == other.hostname and self.platform == other.platform and \
                 self.packs == other.packs and self.afe_baseline == other.afe_baseline and \
                 self.afe_id == other.afe_id and self.aws_project == other.aws_project and \
                 self.data_log == other.data_log and self.display_conf == other.display_conf and \
@@ -470,8 +470,8 @@ class Configuration(JSONable):
         if self.hostname != other.hostname:
             diff.__hostname = self.hostname
 
-        if self.kernel != other.kernel:
-            diff.__kernel = self.kernel
+        if self.platform != other.platform:
+            diff.__platform = self.platform
 
         if self.packs != other.packs:
             diff.__packs = self.packs
@@ -563,8 +563,8 @@ class Configuration(JSONable):
         if self.hostname:
             raise ValueError('hostname may not be set')
 
-        if self.kernel:
-            raise ValueError('kernel may not be set')
+        if self.platform:
+            raise ValueError('platform may not be set')
 
         if self.packs:
             raise ValueError('packs may not be set')
@@ -660,7 +660,7 @@ class Configuration(JSONable):
         jdict = OrderedDict()
 
         jdict['hostname'] = self.hostname
-        jdict['kernel'] = self.kernel
+        jdict['platform'] = self.platform
         jdict['packs'] = self.packs
 
         jdict['afe-baseline'] = self.afe_baseline
@@ -703,8 +703,8 @@ class Configuration(JSONable):
 
 
     @property
-    def kernel(self):
-        return self.__kernel
+    def platform(self):
+        return self.__platform
 
 
     @property
@@ -855,14 +855,14 @@ class Configuration(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Configuration:{hostname:%s, kernel:%s, packs:%s, afe_baseline:%s, afe_id:%s, " \
+        return "Configuration:{hostname:%s, platform:%s, packs:%s, afe_baseline:%s, afe_id:%s, " \
                "aws_group_config:%s, aws_project:%s, data_log:%s, display_conf:%s, vcal_baseline:%s, " \
                "gas_baseline:%s, gas_model_conf:%s, gps_conf:%s, interface_conf:%s, mpl115a2_calib:%s, " \
                "opc_conf:%s, opc_version:%s, opc_error_summary:%s, pmx_model_conf:%s, pressure_conf:%s, " \
                "psu_conf:%s, psu_version:%s, scd30_baseline:%s, scd30_conf:%s, schedule:%s, " \
                "sht_conf:%s, networks:%s, modem:%s, sim:%s, system_id:%s, " \
                "timezone_conf:%s}" % \
-               (self.hostname, self.kernel, self.packs, self.afe_baseline, self.afe_id,
+               (self.hostname, self.platform, self.packs, self.afe_baseline, self.afe_id,
                 self.aws_group_config, self.aws_project, self.data_log, self.display_conf, self.vcal_baseline,
                 self.gas_baseline, self.gas_model_conf, self.gps_conf, self.interface_conf, self.mpl115a2_calib,
                 self.opc_conf, self.opc_version, self.opc_error_summary, self.pmx_model_conf, self.pressure_conf,
