@@ -303,7 +303,8 @@ class Configuration(JSONable):
         if 'platform' in jdict:
             node = jdict.get('platform')
         elif 'os' in jdict:
-            node = {'kernel': jdict.get('os').get('rel')}
+            os_node = jdict.get('os')
+            node = {'kernel': os_node.get('rel')} if os_node else None
         else:
             node = None
 
