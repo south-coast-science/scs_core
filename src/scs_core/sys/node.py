@@ -169,12 +169,25 @@ class IoTNode(Node):
     # version...
 
     @classmethod
-    def kernel_release(cls) -> SoftwareVersion:
+    def os(cls) -> SoftwareVersion:
+        clu = Command()
+        p = clu.o(['cat', '/etc/debian_version'])
+
+        return p.stdout.readline().decode().strip()
+
+
+    @classmethod
+    def os_version(cls) -> SoftwareVersion:
+        return SoftwareVersion.construct_from_jdict(cls.os())
+
+
+    @classmethod
+    def kernel_version(cls) -> SoftwareVersion:
         return SoftwareVersion.construct_from_jdict(platform.uname().release)
 
 
     @classmethod
-    def greengrass_release(cls) -> SoftwareVersion:
+    def greengrass_version(cls) -> SoftwareVersion:         # run as root only
         clu = Command()
         p = clu.o(['/greengrass/ggc/core/greengrassd', '--version'])
 
@@ -186,13 +199,19 @@ class IoTNode(Node):
 
     @classmethod
     @abstractmethod
-    def minimum_required_kernel_release(cls) -> SoftwareVersion:
+    def minimum_required_os_version(cls) -> SoftwareVersion:
         pass
 
 
     @classmethod
     @abstractmethod
-    def minimum_required_greengrass_release(cls) -> SoftwareVersion:
+    def minimum_required_kernel_version(cls) -> SoftwareVersion:
+        pass
+
+
+    @classmethod
+    @abstractmethod
+    def minimum_required_greengrass_version(cls) -> SoftwareVersion:
         pass
 
 

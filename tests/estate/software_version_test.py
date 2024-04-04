@@ -12,6 +12,9 @@ from scs_core.estate.software_version import SoftwareVersion
 
 # --------------------------------------------------------------------------------------------------------------------
 
+x = SoftwareVersion.construct_from_jdict("1.23")
+print("x: %s" % x)
+
 a = SoftwareVersion.construct_from_jdict("1.23.45-text")
 print("a: %s" % a)
 
