@@ -300,7 +300,13 @@ class Configuration(JSONable):
 
         hostname = jdict.get('hostname')
 
-        node = jdict.get('platform') if 'platform' in jdict else {'kernel': jdict.get('os')}
+        if 'platform' in jdict:
+            node = jdict.get('platform')
+        elif 'os' in jdict:
+            node = {'kernel': jdict.get('os').get('rel')}
+        else:
+            node = None
+
         platform = PlatformSummary.construct_from_jdict(node)
 
         packs = PackageVersions.construct_from_jdict(jdict.get('packs'))
