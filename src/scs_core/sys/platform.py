@@ -9,8 +9,6 @@ JSON example:
 https://docs.python.org/3/library/platform.html
 """
 
-import platform
-
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
@@ -38,7 +36,7 @@ class PlatformSummary(JSONable):
 
     @classmethod
     def construct(cls, manager):
-        return cls(manager.os(), platform.uname().release)
+        return cls(manager.os_release(), manager.kernel_release())
 
 
     # ----------------------------------------------------------------------------------------------------------------
