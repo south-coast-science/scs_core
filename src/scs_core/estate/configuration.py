@@ -300,13 +300,11 @@ class Configuration(JSONable):
 
         hostname = jdict.get('hostname')
 
-        if 'platform' in jdict:
+        if 'platform' in jdict:                 # current
             node = jdict.get('platform')
-        elif 'os' in jdict:
+        else:                                   # deprecated
             os_node = jdict.get('os')
             node = {'kernel': os_node.get('rel')} if os_node else None
-        else:
-            node = None
 
         platform = PlatformSummary.construct_from_jdict(node)
 
