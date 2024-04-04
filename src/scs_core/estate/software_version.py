@@ -3,7 +3,8 @@ Created on 28 Nov 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
+examples:
+1.23
 3.2.27
 
 https://en.wikipedia.org/wiki/Software_versioning
@@ -28,12 +29,12 @@ class SoftwareVersion(JSONable):
         if not jdict:
             return None
 
-        match = re.match(r'^(\d+).(\d+).(\d+)', jdict)
+        match = re.match(r'^(\d+)\.(\d+)(?:\.(\d+))?', jdict)
 
         if not match:
             raise ValueError(jdict)
 
-        return cls([int(part) for part in match.groups()])
+        return cls([int(part) for part in match.groups() if part is not None])
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -109,4 +110,4 @@ class SoftwareVersion(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SoftwareVersion:{parts:%s}" % self.parts
+        return "SoftwareVersion:{%s}" % self.parts
