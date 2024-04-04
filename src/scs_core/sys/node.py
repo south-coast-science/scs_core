@@ -169,7 +169,7 @@ class IoTNode(Node):
     # version...
 
     @classmethod
-    def os(cls) -> SoftwareVersion:
+    def os_release(cls):
         clu = Command()
         p = clu.o(['cat', '/etc/debian_version'])
 
@@ -177,13 +177,8 @@ class IoTNode(Node):
 
 
     @classmethod
-    def os_version(cls) -> SoftwareVersion:
-        return SoftwareVersion.construct_from_jdict(cls.os())
-
-
-    @classmethod
-    def kernel_version(cls) -> SoftwareVersion:
-        return SoftwareVersion.construct_from_jdict(platform.uname().release)
+    def kernel_release(cls):
+        return platform.uname().release
 
 
     @classmethod
@@ -199,13 +194,13 @@ class IoTNode(Node):
 
     @classmethod
     @abstractmethod
-    def minimum_required_os_version(cls) -> SoftwareVersion:
+    def has_acceptable_os_release(cls):
         pass
 
 
     @classmethod
     @abstractmethod
-    def minimum_required_kernel_version(cls) -> SoftwareVersion:
+    def has_acceptable_kernel_release(cls):
         pass
 
 
