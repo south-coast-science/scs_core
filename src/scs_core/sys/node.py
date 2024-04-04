@@ -194,13 +194,13 @@ class IoTNode(Node):
 
     @classmethod
     @abstractmethod
-    def is_acceptable_os_release(cls):
+    def has_acceptable_os_release(cls):
         pass
 
 
     @classmethod
     @abstractmethod
-    def is_acceptable_kernel_release(cls):
+    def has_acceptable_kernel_release(cls):
         pass
 
 
