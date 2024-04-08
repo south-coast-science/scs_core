@@ -5,6 +5,7 @@ Created on 17 Jan 2022
 """
 
 import json
+
 import requests
 
 from scs_core.aws.client.api_client import APIClient
