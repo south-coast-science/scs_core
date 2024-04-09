@@ -16,8 +16,8 @@ from scs_core.aws.manager.topic_origin.topic_origin_intercourse import TopicOrig
 class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
-        return cls('DataAPI/TopicHistory',
-                   'https://60rd4rxw81.execute-api.us-west-2.amazonaws.com/default/TopicHistory')
+        return cls('OriginAPI/TopicOrigin',
+                   'https://7qos9nwc7k.execute-api.us-west-2.amazonaws.com/default/TopicOrigin')
 
 
 # --------------------------------------------------------------------------------------------------------------------

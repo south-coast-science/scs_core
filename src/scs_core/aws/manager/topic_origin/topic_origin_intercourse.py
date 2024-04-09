@@ -2,6 +2,9 @@
 Created on 9 Apr 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"topic": "acsoft/uk-urban/loc/960/particulates", "device": "scs-bgx-960", "rec": "2024-03-27T15:51:54Z"}
 """
 
 from collections import OrderedDict
