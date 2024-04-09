@@ -22,7 +22,7 @@ class Endpoint(APIEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicHistoryManager(APIClient):
+class TopicHistoryFinder(APIClient):
     """
     classdocs
     """
