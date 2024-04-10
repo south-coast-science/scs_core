@@ -28,7 +28,7 @@ class TopicOriginFinder(APIClient):
     classdocs
     """
 
-    BLOCK_SIZE = 100                # maximum number of topics per request
+    BLOCK_SIZE = 200                    # maximum number of topics per request
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -42,11 +42,11 @@ class TopicOriginFinder(APIClient):
         if self._reporter:
             self._reporter.reset()
 
-        end = len(topics)
         origins = []
 
-        for index in range(0, end, self.BLOCK_SIZE):
+        for index in range(0, len(topics), self.BLOCK_SIZE):
             request = topics[index:index + self.BLOCK_SIZE]
+
             response = requests.get(Endpoint.url(), headers=self._token_headers(token), data=json.dumps(request))
             self._check_response(response)
 

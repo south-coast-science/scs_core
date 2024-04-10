@@ -41,6 +41,21 @@ class BylineFinder(APIClient):
         return sorted(topics)
 
 
+    def find_topics_for_device(self, token, device):
+        params = {self.DEVICE: device, self.INCLUDE_MESSAGES: False}
+
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
+        self._check_response(response)
+
+        topics = set()
+        for topic in [jdict.get('topic') for jdict in response.json()]:
+            topics.add(topic)
+
+        return sorted(topics)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def find_latest_byline_for_topic(self, token, topic, include_messages=True):
         params = {self.TOPIC: topic, self.INCLUDE_MESSAGES: include_messages}
 
