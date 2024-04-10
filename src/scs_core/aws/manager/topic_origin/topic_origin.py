@@ -15,7 +15,7 @@ from scs_core.data.datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TopicOriginResponse(APIResponse):
+class TopicOrigin(APIResponse):
     """
     classdocs
     """
@@ -112,5 +112,5 @@ class TopicOriginResponse(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicOriginResponse:{topic:%s, device:%s, rec:%s, exipry:%s}" % \
+        return "TopicOrigin:{topic:%s, device:%s, rec:%s, exipry:%s}" % \
                (self.topic, self.device, self.rec, self.exipry)
