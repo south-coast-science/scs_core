@@ -31,6 +31,16 @@ class BylineFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def find_topics(self, token):
+        params = {self.INCLUDE_MESSAGES: False}
+
+        topics = set()
+        for byline in self._get_blocks(Endpoint.url(), token, BylineFinderResponse, params=params):
+            topics.add(byline.topic)
+
+        return sorted(topics)
+
+
     def find_latest_byline_for_topic(self, token, topic, include_messages=True):
         params = {self.TOPIC: topic, self.INCLUDE_MESSAGES: include_messages}
 

@@ -62,6 +62,9 @@ class APIClient(ABC):
     def _get_blocks(self, url, token, block_class, params=None, payload=None):
         self.__logger.debug("url: %s" % url)
 
+        if self._reporter:
+            self._reporter.reset()
+
         while True:
             response = requests.get(url, headers=self._token_headers(token), params=params, data=JSONify.dumps(payload))
             self._check_response(response)
@@ -76,8 +79,8 @@ class APIClient(ABC):
                 yield item
 
             # report...
-            if self.__reporter:
-                self.__reporter.print(len(block), block_start=block.start())
+            if self._reporter:
+                self._reporter.print(len(block), block_start=block.start())
 
             # next request...
             if block.next_url is None:
@@ -101,4 +104,4 @@ class APIClient(ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{reporter:%s}" % self.__reporter
+        return self.__class__.__name__ + ":{reporter:%s}" % self._reporter
