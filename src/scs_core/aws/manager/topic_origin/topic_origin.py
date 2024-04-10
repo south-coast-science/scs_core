@@ -30,21 +30,21 @@ class TopicOrigin(APIResponse):
         topic = jdict.get('topic')
         device = jdict.get('device')
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
-        exipry = LocalizedDatetime.construct_from_iso8601(jdict.get('exipry'))
+        expiry = LocalizedDatetime.construct_from_iso8601(jdict.get('expiry'))
 
-        return cls(topic, device, rec, exipry)
+        return cls(topic, device, rec, expiry)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, topic, device, rec, exipry):
+    def __init__(self, topic, device, rec, expiry):
         """
         Constructor
         """
         self.__topic = topic                            # string
         self.__device = device                          # string
         self.__rec = rec                                # LocalizedDatetime
-        self.__exipry = exipry                          # LocalizedDatetime or None
+        self.__expiry = expiry                          # LocalizedDatetime or None
 
 
     def __lt__(self, other):
@@ -82,7 +82,7 @@ class TopicOrigin(APIResponse):
         jdict['topic'] = self.topic
         jdict['device'] = self.device
         jdict['rec'] = self.rec
-        jdict['exipry'] = self.exipry
+        jdict['expiry'] = self.expiry
 
         return jdict
 
@@ -105,12 +105,12 @@ class TopicOrigin(APIResponse):
 
 
     @property
-    def exipry(self):
-        return self.__exipry
+    def expiry(self):
+        return self.__expiry
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicOrigin:{topic:%s, device:%s, rec:%s, exipry:%s}" % \
-               (self.topic, self.device, self.rec, self.exipry)
+        return "TopicOrigin:{topic:%s, device:%s, rec:%s, expiry:%s}" % \
+               (self.topic, self.device, self.rec, self.expiry)
