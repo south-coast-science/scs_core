@@ -112,5 +112,5 @@ class TopicOrigin(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicOrigin:{topic:%s, device:%s, rec:%s, expiry:%s}" % \
+        return self.__class__.__name__ + ":{topic:%s, device:%s, rec:%s, expiry:%s}" % \
                (self.topic, self.device, self.rec, self.expiry)

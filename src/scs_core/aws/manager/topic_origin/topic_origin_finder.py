@@ -9,7 +9,7 @@ import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.config.endpoint import APIEndpoint
-from scs_core.aws.manager.topic_origin.topic_origin_intercourse import TopicOriginResponse
+from scs_core.aws.manager.topic_origin.topic_origin import TopicOrigin
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ class TopicOriginFinder(APIClient):
             response = requests.get(Endpoint.url(), headers=self._token_headers(token), data=json.dumps(request))
             self._check_response(response)
 
-            block = [TopicOriginResponse.construct_from_jdict(jdict) for jdict in response.json()]
+            block = [TopicOrigin.construct_from_jdict(jdict) for jdict in response.json()]
             origins.extend(block)
 
             if self._reporter:
