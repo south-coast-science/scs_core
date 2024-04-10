@@ -30,7 +30,7 @@ class TopicOriginResponse(APIResponse):
         topic = jdict.get('topic')
         device = jdict.get('device')
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
-        exipry = jdict.get('exipry')
+        exipry = LocalizedDatetime.construct_from_iso8601(jdict.get('exipry'))
 
         return cls(topic, device, rec, exipry)
 
@@ -44,7 +44,7 @@ class TopicOriginResponse(APIResponse):
         self.__topic = topic                            # string
         self.__device = device                          # string
         self.__rec = rec                                # LocalizedDatetime
-        self.__exipry = exipry                          # ???
+        self.__exipry = exipry                          # LocalizedDatetime or None
 
 
     def __lt__(self, other):
