@@ -60,8 +60,8 @@ class LocalizedDatetime(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def now(cls):
-        zone = tzlocal.get_localzone()
+    def now(cls, tz=None):
+        zone = tzlocal.get_localzone() if tz is None else tz
         localized = datetime.now(zone)
 
         return LocalizedDatetime(localized)

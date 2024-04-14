@@ -41,8 +41,8 @@ class Byline(JSONable):
         device = jdict.get('device')
         topic = jdict.get('topic')
 
+        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         pub = LocalizedDatetime.construct_from_iso8601(jdict.get('lastSeenTime'))
-        rec = LocalizedDatetime.construct_from_iso8601(jdict.get('last_write'))
 
         try:
             jdict.get('message').keys()
@@ -51,20 +51,20 @@ class Byline(JSONable):
         except AttributeError:
             message = jdict.get('message')                  # this class - message is a string
 
-        return cls(device, topic, pub, rec, message)
+        return cls(device, topic, rec, pub, message)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, topic, pub, rec, message):
+    def __init__(self, device, topic, rec, pub, message):
         """
         Constructor
         """
         self.__device = device                      # string tag
         self.__topic = topic                        # string path
 
-        self.__pub = pub                            # LocalizedDatetime
         self.__rec = rec                            # LocalizedDatetime
+        self.__pub = pub                            # LocalizedDatetime
 
         self.__message = message                    # string
 
@@ -105,8 +105,8 @@ class Byline(JSONable):
         jdict['device'] = self.device
         jdict['topic'] = self.topic
 
-        jdict['lastSeenTime'] = None if self.pub is None else self.pub.as_iso8601()
-        jdict['last_write'] = None if self.rec is None else self.rec.as_iso8601()
+        jdict['rec'] = self.rec
+        jdict['upload'] = self.pub
 
         if self.message:
             jdict['message'] = self.message
@@ -127,13 +127,13 @@ class Byline(JSONable):
 
 
     @property
-    def pub(self):
-        return self.__pub
+    def rec(self):
+        return self.__rec
 
 
     @property
-    def rec(self):
-        return self.__rec
+    def pub(self):
+        return self.__pub
 
 
     @property
@@ -144,8 +144,8 @@ class Byline(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Byline:{device:%s, topic:%s, pub:%s, rec:%s, message:%s}" %  \
-               (self.device, self.topic, self.pub, self.rec, self.message)
+        return self.__class__.__name__ + ":{device:%s, topic:%s, rec:%s, pub:%s, message:%s}" %  \
+               (self.device, self.topic, self.rec, self.pub, self.message)
 
 
 # --------------------------------------------------------------------------------------------------------------------
