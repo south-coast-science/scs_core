@@ -62,7 +62,9 @@ class MessageManager(object):
 
     def find_for_topic(self, topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                        min_max, exclude_remainder, fetch_last_written_before, backoff_limit):
-        self.__reporter.reset()
+
+        if self.__reporter:
+            self.__reporter.reset()
 
         request = MessageRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                  min_max, exclude_remainder, fetch_last_written_before, backoff_limit)

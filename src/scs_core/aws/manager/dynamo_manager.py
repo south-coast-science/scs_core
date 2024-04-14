@@ -116,6 +116,7 @@ class DynamoManager(object):
 
     def update_item(self, table_name, pk, update_expression, eav):
         table = self.__dynamo_resource.Table(table_name)
+
         response = table.update_item(
             Key=pk,
             UpdateExpression=update_expression,
