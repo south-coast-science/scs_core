@@ -11,7 +11,7 @@ Alert example (recurring):
 "to": "bruno.beloff@southcoastscience.com", "bcc-list": [], "suspended": false}
 
 Alert example (diurnal):
-{"id": 107, "description": "be2-3-nightime-test", "topic": "south-coast-science-dev/development/loc/1/climate",
+{"id": 107, "description": "be2-3-nighttime-test", "topic": "south-coast-science-dev/development/loc/1/climate",
 "field": "val.tmp", "lower-threshold": null, "upper-threshold": 10.0, "alert-on-none": false,
 "aggregation-period": {"type": "diurnal", "start": "20:00:00", "end": "09:50:00", "timezone": "Europe/London"},
 "contiguous-alerts": true, "json-message": false, "creator-email-address": "production@southcoastscience.com",
