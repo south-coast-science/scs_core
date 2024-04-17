@@ -427,6 +427,23 @@ class LocalizedDatetime(JSONable):
         return "%sT%s%s%s:%s" % (d, t, millis, zone_hours, zone_mins)
 
 
+    def as_readable(self):
+        """
+        example: 2016-08-13 00:38:05 (+01:00)
+        """
+        d = self.__datetime.strftime("%Y-%m-%d")
+        t = self.__datetime.strftime("%H:%M:%S")
+
+        # time zone...
+        zone = self.__datetime.strftime("%z")
+
+        # numeric format...
+        zone_hours = zone[:3]
+        zone_mins = zone[3:]
+
+        return "%s %s (%s:%s)" % (d, t, zone_hours, zone_mins)
+
+
     def as_time(self):
         t = self.__datetime.strftime("%H:%M:%S")
 
