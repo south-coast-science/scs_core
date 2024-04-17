@@ -17,19 +17,19 @@ from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Logging.config('aws_aggregate_finder_test', level=logging.DEBUG)
+Logging.config('aws_aggregate_finder_test', level=logging.INFO)
 logger = Logging.getLogger()
 
-topic = 'south-coast-science-production/reference/loc/531/climate'
-start = LocalizedDatetime.construct_from_iso8601('2024-03-12T09:00:00Z')
-end = LocalizedDatetime.construct_from_iso8601('2024-03-12T09:10:00Z')
+topic = 'ealing/ealing-defra-ensors/loc/738/gases'
+start = LocalizedDatetime.construct_from_iso8601('2024-04-13T20:00:00Z')
+end = LocalizedDatetime.construct_from_iso8601('2024-04-14T00:00:00Z')
 path = None
 fetch_last = True
-checkpoint = None
+checkpoint = '**:/01:00'
 include_wrapper = False
 rec_only = False
 min_max = False
-exclude_remainder = False
+exclude_remainder = True
 fetch_last_written_before = False
 backoff_limit = None
 

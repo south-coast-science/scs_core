@@ -41,20 +41,19 @@ class SystemID(PersistentJSONable):
         last_modified = LocalizedDatetime.construct_from_jdict(jdict.get('set-on'))
 
         vendor_id = jdict.get('vendor-id')
-        model_id = jdict.get('model-id')
 
-        model_name = jdict.get('model')
+        model_group = jdict.get('model')
+        model_id = jdict.get('model-id')
         configuration = jdict.get('config')
 
         system_serial_number = jdict.get('system-sn')
 
-        return SystemID(vendor_id, model_id, model_name, configuration, system_serial_number,
-                        last_modified=last_modified)
+        return cls(vendor_id, model_group, model_id, configuration, system_serial_number, last_modified=last_modified)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, vendor_id, model_id, model_name, configuration, system_serial_number,
+    def __init__(self, vendor_id, model_group, model_id, configuration, system_serial_number,
                  last_modified=None):
         """
         Constructor
@@ -62,9 +61,9 @@ class SystemID(PersistentJSONable):
         super().__init__(last_modified=last_modified)
 
         self.__vendor_id = vendor_id                                # string (3 chars)
-        self.__model_id = model_id                                  # string (3 chars)
 
-        self.__model_name = model_name                              # string
+        self.__model_group = model_group                            # string
+        self.__model_id = model_id                                  # string (3 chars)
         self.__configuration = configuration                        # string
 
         self.__system_serial_number = system_serial_number          # string (by convention, int)
@@ -73,8 +72,8 @@ class SystemID(PersistentJSONable):
     def __eq__(self, other):
         try:
             return bool(self.last_modified) == bool(other.last_modified) and \
-                   self.vendor_id == other.vendor_id and self.model_id == other.model_id and \
-                   self.model_name == other.model_name and self.configuration == other.configuration and \
+                   self.vendor_id == other.vendor_id and self.model_group == other.model_group and \
+                   self.model_id == other.model_id and self.configuration == other.configuration and \
                    self.system_serial_number == other.system_serial_number
 
         except (TypeError, AttributeError):
@@ -84,29 +83,29 @@ class SystemID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def type_label(self):
-        if self.model_name is None or self.configuration is None:
+        if self.model_group is None or self.configuration is None:
             return None
 
-        return self.model_name + '/' + self.configuration
+        return '/'.join([self.model_group, self.configuration])
 
 
     def box_label(self):
-        if self.model_name is None or self.configuration is None or self.system_serial_number is None:
+        if self.model_group is None or self.configuration is None or self.system_serial_number is None:
             return None
 
         box_system_serial_number = str(self.system_serial_number).rjust(6, '0')
 
-        return self.model_name + '/' + self.configuration + ' ' + box_system_serial_number
+        return ' '.join([str(self.type_label()), box_system_serial_number])
 
 
     def topic_label(self):
-        if self.model_name is None or self.system_serial_number is None:
+        if self.model_group is None or self.system_serial_number is None:
             return None
 
-        topic_model_name = self.model_name.replace('/', '-').replace(' ', '-').replace('.', '').lower()
+        topic_model_group = self.model_group.replace('/', '-').replace(' ', '-').replace('.', '').lower()
         topic_system_serial_number = str(self.system_serial_number).rjust(6, '0')
 
-        return topic_model_name + '-' + topic_system_serial_number
+        return '-'.join([topic_model_group, topic_system_serial_number])
 
 
     def message_tag(self):
@@ -116,7 +115,7 @@ class SystemID(PersistentJSONable):
         tag_vendor_id = self.vendor_id.lower()
         tag_model_id = self.model_id.lower()
 
-        return tag_vendor_id + '-' + tag_model_id + '-' + str(self.system_serial_number)
+        return '-'.join([tag_vendor_id, tag_model_id, str(self.system_serial_number)])
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -128,9 +127,9 @@ class SystemID(PersistentJSONable):
             jdict['set-on'] = None if self.last_modified is None else self.last_modified.as_iso8601()
 
         jdict['vendor-id'] = self.vendor_id
-        jdict['model-id'] = self.model_id
 
-        jdict['model'] = self.model_name
+        jdict['model'] = self.model_group
+        jdict['model-id'] = self.model_id
         jdict['config'] = self.configuration
 
         jdict['system-sn'] = self.system_serial_number
@@ -146,13 +145,13 @@ class SystemID(PersistentJSONable):
 
 
     @property
-    def model_id(self):
-        return self.__model_id
+    def model_group(self):
+        return self.__model_group
 
 
     @property
-    def model_name(self):
-        return self.__model_name
+    def model_id(self):
+        return self.__model_id
 
 
     @property
@@ -173,5 +172,5 @@ class SystemID(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SystemID:{vendor_id:%s, model_id:%s, model_name:%s, configuration:%s, system_serial_number:%s}" % \
-               (self.vendor_id, self.model_id, self.model_name, self.configuration, self.system_serial_number)
+        return "SystemID:{vendor_id:%s, model_group:%s, model_id:%s, configuration:%s, system_serial_number:%s}" % \
+               (self.vendor_id, self.model_group, self.model_id, self.configuration, self.system_serial_number)
