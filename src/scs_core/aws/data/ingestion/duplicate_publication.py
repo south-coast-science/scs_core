@@ -8,11 +8,8 @@ example:
 "topic": "southtyneside/cube/loc/261/gases", "expire_at": 1745492210}
 """
 
-from scs_core.aws.data.ingestion.ingestible_message import IngestibleMessage
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
-from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,8 +18,6 @@ class DuplicatePublication(JSONable):
     """
     classdocs
     """
-
-    TTL = Timedelta(days=367)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -35,26 +30,14 @@ class DuplicatePublication(JSONable):
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         upload = LocalizedDatetime.construct_from_iso8601(jdict.get('upload'))
         topic = jdict.get('topic')
-        expire_at = jdict.get('expire_at')
+        expiry = jdict.get('expiry')
 
-        return cls(device, rec, upload, topic, expire_at)
-
-
-    @classmethod
-    def construct_from_message(cls, message: IngestibleMessage):
-        device = message.device
-        rec = message.rec_at
-        upload = message.upload
-        topic = message.topic
-
-        expire_at = upload + cls.TTL
-
-        return cls(device, rec, upload, topic, expire_at)
+        return cls(device, rec, upload, topic, expiry)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, rec, upload, topic, expire_at):
+    def __init__(self, device, rec, upload, topic, expiry):
         """
         Constructor
         """
@@ -62,7 +45,7 @@ class DuplicatePublication(JSONable):
         self.__rec = rec                            # LocalizedDatetime
         self.__upload = upload                      # LocalizedDatetime
         self.__topic = topic                        # string path
-        self.__expire_at = expire_at                # LocalizedDatetime
+        self.__expiry = expiry                      # LocalizedDatetime
 
 
     def __lt__(self, other):
@@ -99,7 +82,7 @@ class DuplicatePublication(JSONable):
             'rec': self.rec.as_iso8601(),
             'upload': self.upload.as_iso8601(include_millis=True),
             'topic': self.topic,
-            'expire_at': int(self.expire_at.timestamp())
+            'expiry': self.expiry
         }
 
         return jdict
@@ -128,12 +111,12 @@ class DuplicatePublication(JSONable):
 
 
     @property
-    def expire_at(self):
-        return self.__expire_at
+    def expiry(self):
+        return self.__expiry
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DuplicatePublication:{device:%s, rec:%s, upload:%s, topic:%s, expire_at:%s}" %  \
-               (self.device, self.rec, self.upload, self.topic, self.expire_at)
+        return "DuplicatePublication:{device:%s, rec:%s, upload:%s, topic:%s, expiry:%s}" %  \
+               (self.device, self.rec, self.upload, self.topic, self.expiry)
