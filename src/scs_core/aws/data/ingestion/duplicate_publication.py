@@ -30,14 +30,14 @@ class DuplicatePublication(JSONable):
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         upload = LocalizedDatetime.construct_from_iso8601(jdict.get('upload'))
         topic = jdict.get('topic')
-        expiry = jdict.get('expiry')
+        expiry = LocalizedDatetime.construct_from_iso8601(jdict.get('expiry'))
 
-        return cls(device, rec, upload, topic, expiry)
+        return cls(device, rec, upload, topic, expiry=expiry)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, rec, upload, topic, expiry):
+    def __init__(self, device, rec, upload, topic, expiry=None):
         """
         Constructor
         """
