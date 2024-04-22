@@ -118,5 +118,5 @@ class DuplicatePublication(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DuplicatePublication:{device:%s, rec:%s, upload:%s, topic:%s, expiry:%s}" %  \
+        return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, topic:%s, expiry:%s}" %  \
                (self.device, self.rec, self.upload, self.topic, self.expiry)
