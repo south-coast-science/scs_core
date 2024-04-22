@@ -225,7 +225,7 @@ class AlertSpecification(JSONable):
         self.__creator_email_address = creator_email_address            # string
 
         self.__to = to                                                  # EmailRecipient
-        self.__bcc_dict = bcc_dict                                      # dict of email: DeviceMonitorRecipient
+        self.__bcc_dict = bcc_dict                                      # dict of email: EmailRecipient
         self.__suspended = bool(suspended)                              # bool                  updatable
 
 
@@ -254,10 +254,10 @@ class AlertSpecification(JSONable):
         if self.creator_email_address.lower() > other.creator_email_address.lower():
             return False
 
-        if self.to.lower() < other.to.lower():
+        if self.to < other.to:
             return True
 
-        if self.to.lower() > other.to.lower():
+        if self.to > other.to:
             return False
 
         return False

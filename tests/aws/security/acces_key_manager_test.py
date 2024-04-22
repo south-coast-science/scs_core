@@ -14,11 +14,14 @@ from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
 
 from scs_core.sys.logging import Logging
 
+from scs_host.sys.host import Host                  # required to init endpoints
 
 # --------------------------------------------------------------------------------------------------------------------
 
 Logging.config('acces_key_manager_test', verbose=True)
 logger = Logging.getLogger()
+
+logger.info("host: %s" % Host.__module__)
 
 # credentials...
 tag = 'scs-test-1'

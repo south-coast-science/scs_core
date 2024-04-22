@@ -14,15 +14,19 @@ from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sys.logging import Logging
 
+from scs_host.sys.host import Host                  # required to init endpoints
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-Logging.config('aws_aggregate_finder_test', level=logging.INFO)
+Logging.config('aws_aggregate_finder_test', level=logging.DEBUG)
 logger = Logging.getLogger()
 
+logger.info("host: %s" % Host.__module__)
+
 topic = 'ealing/ealing-defra-ensors/loc/738/gases'
-start = LocalizedDatetime.construct_from_iso8601('2024-04-13T20:00:00Z')
-end = LocalizedDatetime.construct_from_iso8601('2024-04-14T00:00:00Z')
+start = LocalizedDatetime.construct_from_iso8601('2024-04-13T21:38:00Z')
+end = LocalizedDatetime.construct_from_iso8601('2024-04-13T21:43:00Z')
 path = None
 fetch_last = True
 checkpoint = '**:/01:00'

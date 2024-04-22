@@ -1,0 +1,23 @@
+{
+    "payload": {
+        "exg": {
+            "cnc": 24.8,
+            "src": "oE.1"
+        },
+        "val": {
+            "tmp": 19.7,
+            "hmd": 55.3,
+            "vCal": 75.5,
+            "cnc": 28,
+            "weC": 0.04051,
+            "aeV": 0.27751,
+            "weV": 0.30016
+        },
+        "src": "SD1",
+        "ver": 2,
+        "tag": "scs-opc-261",
+        "rec": "2024-04-11T11:12:05Z"
+    },
+    "topic": "southtyneside/cube/loc/261/gases",
+    "client": "scs-cube-261-core-c00"
+}

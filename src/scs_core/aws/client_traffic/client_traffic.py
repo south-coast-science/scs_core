@@ -6,7 +6,14 @@ Created on 7 Aug 2023
 https://stackoverflow.com/questions/403421/how-do-i-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
 
 example document:
-{"endpoint": "test1", "client": "MyOrg", "period": "2023-08-22", "queries": 99, "invocations": 99, "characters": 495}
+{
+    "endpoint": "TopicHistory",
+    "client": "production@southcoastscience.com",
+    "period": "2024",
+    "queries": 855,
+    "invocations": 855,
+    "characters": 266633895
+}
 """
 
 import re
