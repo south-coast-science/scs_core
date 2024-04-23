@@ -120,3 +120,80 @@ class DuplicatePublication(JSONable):
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, topic:%s, expiry:%s}" %  \
                (self.device, self.rec, self.upload, self.topic, self.expiry)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DuplicatePublicationSummary(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        device = jdict.get('device')
+        count = jdict.get('count')
+
+        return cls(device, count)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device, count):
+        """
+        Constructor
+        """
+        self.__device = device                      # string tag
+        self.__count = int(count)                   # int
+
+
+    def __lt__(self, other):
+        # count...
+        if self.__count < other.__count:
+            return True
+
+        if self.__count > other.__count:
+            return False
+
+        # device...
+        return self.__device < other.__device
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def inc(self):
+        self.__count += 1
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = {
+            'device': self.device,
+            'count': self.count
+        }
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def device(self):
+        return self.__device
+
+
+    @property
+    def count(self):
+        return self.__count
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "DuplicatePublicationSummary:{device:%s, count:%s}" %   (self.device, self.count)
