@@ -3,9 +3,13 @@ Created on 22 Apr 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
-{"device": "scs-opc-261", "rec": "2024-04-11T11:12:05Z", "upload": "2024-04-22T10:56:50.073Z",
-"topic": "southtyneside/cube/loc/261/gases", "expire_at": 1745492210}
+example DuplicatePublication:
+{"device": "scs-opc-261", "rec": "2024-04-11T11:12:05Z", "upload": "2024-04-22T14:10:04.982Z",
+"topic": "southtyneside/cube/loc/261/gases", "expiry": "2024-04-12T11:12:05Z"}
+
+
+example DuplicatePublicationSummary:
+{"device": "scs-opc-268", "count": 2}
 """
 
 from scs_core.data.datetime import LocalizedDatetime
