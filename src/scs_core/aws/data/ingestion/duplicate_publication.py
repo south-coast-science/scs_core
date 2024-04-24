@@ -5,8 +5,7 @@ Created on 22 Apr 2024
 
 example DuplicatePublication:
 {"device": "scs-opc-261", "rec": "2024-04-11T11:12:05Z", "upload": "2024-04-22T14:10:04.982Z",
-"topic": "southtyneside/cube/loc/261/gases", "expiry": "2024-04-12T11:12:05Z"}
-
+"expiry": "2024-04-12T11:12:05Z"}
 
 example DuplicatePublicationSummary:
 {"device": "scs-opc-268", "count": 2}
@@ -33,22 +32,20 @@ class DuplicatePublication(JSONable):
         device = jdict.get('device')
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         upload = LocalizedDatetime.construct_from_iso8601(jdict.get('upload'))
-        topic = jdict.get('topic')
         expiry = LocalizedDatetime.construct_from_iso8601(jdict.get('expiry'))
 
-        return cls(device, rec, upload, topic, expiry=expiry)
+        return cls(device, rec, upload, expiry=expiry)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device, rec, upload, topic, expiry=None):
+    def __init__(self, device, rec, upload, expiry=None):
         """
         Constructor
         """
         self.__device = device                      # string tag
         self.__rec = rec                            # LocalizedDatetime
         self.__upload = upload                      # LocalizedDatetime
-        self.__topic = topic                        # string path
         self.__expiry = expiry                      # LocalizedDatetime
 
 
@@ -68,14 +65,7 @@ class DuplicatePublication(JSONable):
             return False
 
         # upload...
-        if self.__upload < other.__upload:
-            return True
-
-        if self.__upload > other.__upload:
-            return False
-
-        # topic...
-        return self.__topic < other.__topic
+        return self.__upload < other.__upload
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -85,7 +75,6 @@ class DuplicatePublication(JSONable):
             'device': self.device,
             'rec': self.rec.as_iso8601(),
             'upload': self.upload.as_iso8601(include_millis=True),
-            'topic': self.topic,
             'expiry': self.expiry
         }
 
@@ -110,11 +99,6 @@ class DuplicatePublication(JSONable):
 
 
     @property
-    def topic(self):
-        return self.__topic
-
-
-    @property
     def expiry(self):
         return self.__expiry
 
@@ -122,8 +106,8 @@ class DuplicatePublication(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, topic:%s, expiry:%s}" %  \
-               (self.device, self.rec, self.upload, self.topic, self.expiry)
+        return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, expiry:%s}" %  \
+               (self.device, self.rec, self.upload, self.expiry)
 
 
 # --------------------------------------------------------------------------------------------------------------------
