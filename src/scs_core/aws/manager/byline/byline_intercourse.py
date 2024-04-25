@@ -64,7 +64,7 @@ class BylineFinderResponse(APIResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         if self.items is not None:

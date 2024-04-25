@@ -44,7 +44,7 @@ class NDIRVersion(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
@@ -111,7 +111,7 @@ class NDIRTag(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return '.'.join((str(self.device), str(self.api), str(self.patch)))
 
 

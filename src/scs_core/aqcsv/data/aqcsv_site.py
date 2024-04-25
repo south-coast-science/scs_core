@@ -69,7 +69,7 @@ class AQCSVSite(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return self.as_code()
 
 

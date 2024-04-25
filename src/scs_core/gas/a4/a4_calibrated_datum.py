@@ -143,7 +143,7 @@ class A4CalibratedDatum(A4Datum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['weV'] = self.we_v

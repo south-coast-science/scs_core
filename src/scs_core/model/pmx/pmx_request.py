@@ -11,7 +11,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PMxRequest(ABC, JSONable):
+class PMxRequest(JSONable, ABC):
     """
     classdocs
     """

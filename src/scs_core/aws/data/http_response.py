@@ -86,7 +86,7 @@ class HTTPResponse(JSONable, ABC):
         return jdict
 
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return self.body
 
 

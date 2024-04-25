@@ -14,7 +14,7 @@ from scs_core.data.json import JSONable, JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class APIResponse(ABC, JSONable):
+class APIResponse(JSONable, ABC):
     """
     classdocs
     """

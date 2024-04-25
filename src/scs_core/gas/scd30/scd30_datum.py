@@ -73,7 +73,7 @@ class SCD30Datum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['co2'] = self.co2
