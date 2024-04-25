@@ -110,7 +110,7 @@ class DuplicatePublication(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, expiry:%s}" %  \
+        return self.__class__.__name__ + ":{device:%s, rec:%s, upload:%s, expiry:%s}" % \
                (self.device, self.rec, self.upload, self.expiry)
 
 
@@ -188,4 +188,4 @@ class DuplicatePublicationSummary(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DuplicatePublicationSummary:{device:%s, count:%s}" %   (self.device, self.count)
+        return "DuplicatePublicationSummary:{device:%s, count:%s}" % (self.device, self.count)
