@@ -123,8 +123,8 @@ class JSONable(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_dynamo_json(self):
-        return JSONify.as_dynamo_json(self)
+    def as_dynamo_json(self, **kwargs):
+        return JSONify.as_dynamo_json(self, **kwargs)
 
 
     @abstractmethod
