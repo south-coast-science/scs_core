@@ -61,7 +61,7 @@ class DuplicatePublication(JSONable):
         if self.__rec < other.__rec:
             return True
 
-        if self.__rec > other.__drec:
+        if self.__rec > other.__rec:
             return False
 
         # upload...
