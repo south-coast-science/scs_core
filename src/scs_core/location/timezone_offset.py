@@ -62,7 +62,7 @@ class TimezoneOffset(JSONable):
         return Timedelta(minutes=minutes)
 
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         sign = '-' if self.sign < 0 else '+'
 
         return "%s%02d:%02d" % (sign, self.hours, self.minutes)

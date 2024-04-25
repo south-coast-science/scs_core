@@ -4,11 +4,25 @@ Created on 2 Feb 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example document:
-{"account": {"username": "scs-bgx-867", "invoice": "INV-0489", "created": "2023-08-30T13:52:28Z",
-"last-updated": "2023-08-30T13:52:29Z"}, "memberships": [
-{"DeviceTag": "scs-bgx-867", "OrgID": 16, "DeploymentLabel": "Development 19",
-"DevicePath": "cirrusresearch/development/device/praxis-000867/", "LocationPath": "cirrusresearch/development/loc/19/",
-"StartDatetime": "1970-01-01T00:00:00Z", "EndDatetime": null}]}
+{
+    "account": {
+        "username": "scs-ph1-8",
+        "invoice": "INV-0000",
+        "created": "2023-04-20T12:25:47Z",
+        "last-updated": "2024-01-29T15:37:21Z"
+    },
+    "memberships": [
+        {
+            "DeviceTag": "scs-ph1-8",
+            "OrgID": 69,
+            "DeploymentLabel": "SCS Dev / Mobile 8",
+            "DevicePath": "south-coast-science-dev/mobile/device/praxis-handheld-000008/",
+            "LocationPath": "south-coast-science-dev/mobile/loc/8/",
+            "StartDatetime": "1970-01-01T00:00:00Z",
+            "EndDatetime": null
+        }
+    ]
+}
 """
 
 from collections import OrderedDict
@@ -49,7 +63,7 @@ class CognitoMembership(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['account'] = self.cognito_account

@@ -192,7 +192,7 @@ class AFECalib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['serial_number'] = self.serial_number

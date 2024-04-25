@@ -281,7 +281,7 @@ class CognitoUserIdentity(DatasetItem, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         if self.username is not None:

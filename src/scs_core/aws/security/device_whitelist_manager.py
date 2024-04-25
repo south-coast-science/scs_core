@@ -92,7 +92,7 @@ class DeviceWhitelistItem(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return {'device-tag': self.device_tag}
 
 
