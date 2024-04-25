@@ -106,7 +106,7 @@ class AlertStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
@@ -364,7 +364,7 @@ class AlertSpecification(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
@@ -529,7 +529,7 @@ class AlertMessage(Email, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['specification'] = self.alert_specification

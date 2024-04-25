@@ -3,6 +3,8 @@ Created on 13 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+JSONify must handle **kw because the standard JSONEncoder does not.
+
 https://stackoverflow.com/questions/42568262/how-to-encrypt-text-with-a-password-in-python
 """
 
@@ -54,25 +56,33 @@ class JSONify(json.JSONEncoder):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def __init__(self, *, skipkeys=False, ensure_ascii=True,
+                 check_circular=True, allow_nan=True, sort_keys=False,
+                 indent=None, separators=None, default=None, **kw):
+        super().__init__(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
+                         check_circular=check_circular, allow_nan=allow_nan, sort_keys=sort_keys,
+                         indent=indent, separators=separators, default=default)
+
+        self.__kw = kw
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def default(self, obj):
         if isinstance(obj, JSONable):
-            return obj.as_json()
+            return obj.as_json(**self.__kw)
 
         if isinstance(obj, Decimal):
             return float(obj) if Datum.is_float(str(obj)) else int(obj)
 
-        return JSONKWEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, obj)
 
 
-# --------------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------------
 
-class JSONKWEncoder(json.JSONEncoder):
-    def __init__(self, *, skipkeys=False, ensure_ascii=True,
-                 check_circular=True, allow_nan=True, sort_keys=False,
-                 indent=None, separators=None, default=None):
-        super().__init__(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
-                         check_circular=check_circular, allow_nan=allow_nan, sort_keys=sort_keys,
-                         indent=indent, separators=separators, default=default)
+    def __str__(self, *args, **kwargs):
+        return "JSONify:{kw:%s}" %  self.__kw
+
 
 # --------------------------------------------------------------------------------------------------------------------
 

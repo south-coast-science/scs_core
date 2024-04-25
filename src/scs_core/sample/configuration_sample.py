@@ -241,7 +241,7 @@ class ConfigurationSampleHistory(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         items = []
 
         for tag in self.tags():
@@ -282,7 +282,7 @@ class ConfigurationReport(ConfigurationSample):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['tag'] = self.tag

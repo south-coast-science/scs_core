@@ -27,7 +27,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClientTrafficLocus(ABC, JSONable):
+class ClientTrafficLocus(JSONable, ABC):
     """
     classdocs
     """
@@ -191,7 +191,7 @@ class ClientTrafficReport(ClientTrafficLocus):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['endpoint'] = self.endpoint

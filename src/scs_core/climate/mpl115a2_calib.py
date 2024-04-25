@@ -76,7 +76,7 @@ class MPL115A2Calib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['calibrated-on'] = self.calibrated_on.as_iso8601(False)

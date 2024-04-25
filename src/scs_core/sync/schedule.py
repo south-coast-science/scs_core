@@ -125,7 +125,7 @@ class Schedule(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.__items
 
 
@@ -211,7 +211,7 @@ class ScheduleItem(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['interval'] = self.interval

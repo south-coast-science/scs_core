@@ -90,7 +90,7 @@ class PSUVersion(JSONReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['id'] = self.id
@@ -175,7 +175,7 @@ class PSUTag(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return '.'.join((self.device, self.api, self.patch))
 
 

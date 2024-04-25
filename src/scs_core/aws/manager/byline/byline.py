@@ -99,7 +99,7 @@ class Byline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['device'] = self.device
@@ -243,7 +243,7 @@ class BylineGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return tuple(byline.as_json() for byline in self.bylines)       # matches the structure of the API response
 
 

@@ -172,7 +172,7 @@ class AQCSVRecord(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['site'] = self.site_code

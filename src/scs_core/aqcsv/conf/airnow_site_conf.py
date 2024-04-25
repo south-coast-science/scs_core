@@ -62,7 +62,7 @@ class AirNowSiteConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['site'] = None if self.site is None else self.site.as_code()

@@ -77,7 +77,7 @@ class OPCVersion(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['serial'] = self.serial_no

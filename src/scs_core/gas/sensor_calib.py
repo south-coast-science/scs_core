@@ -12,7 +12,7 @@ from scs_core.gas.sensor import Sensor
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SensorCalib(ABC, JSONable):
+class SensorCalib(JSONable, ABC):
     """
     classdocs
     """

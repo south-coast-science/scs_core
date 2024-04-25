@@ -100,7 +100,7 @@ class AQCSVDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         if self.reporting_zone is None:
             datetime = self.datetime.astimezone(pytz.timezone('Etc/UTC'))
             return datetime.strftime("%Y%m%dT%H%M")

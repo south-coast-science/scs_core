@@ -18,7 +18,7 @@ from scs_core.sys.logging import Logging
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ModelConf(ABC, PersistentJSONable):
+class ModelConf(PersistentJSONable, ABC):
     """
     classdocs
     """
@@ -110,7 +110,7 @@ class ModelConf(ABC, PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['uds-path'] = self.uds_path

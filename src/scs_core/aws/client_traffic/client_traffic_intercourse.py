@@ -51,7 +51,7 @@ class ClientTrafficRequest(ClientTrafficLocus):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         if self.endpoint is not None:
@@ -126,7 +126,7 @@ class ClientTrafficResponse(APIResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         if self.items is not None:

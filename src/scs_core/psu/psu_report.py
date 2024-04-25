@@ -79,5 +79,5 @@ class PSUReport(JSONReport, ABC):
     # ----------------------------------------------------------------------------------------------------------------
 
     @abstractmethod
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         pass

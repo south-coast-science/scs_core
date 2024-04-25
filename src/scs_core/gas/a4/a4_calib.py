@@ -184,7 +184,7 @@ class A4Calib(SensorCalib):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['serial_number'] = self.serial_number

@@ -55,7 +55,7 @@ class UptimeList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['uptime_list'] = self.__uptime_list

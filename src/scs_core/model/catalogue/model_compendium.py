@@ -292,7 +292,7 @@ class ModelCompendium(JSONCatalogueEntry):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['is-error-model'] = self.is_error_model

@@ -430,7 +430,7 @@ class MessageResponse(APIResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         if self.code is not None:

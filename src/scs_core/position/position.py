@@ -119,7 +119,7 @@ class Position(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jlist = (
             None if self.lat is None else round(self.lat, 8),
             None if self.lng is None else round(self.lng, 8)

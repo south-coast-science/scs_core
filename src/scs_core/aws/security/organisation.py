@@ -178,7 +178,7 @@ class Organisation(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict[self.ORG_ID] = self.org_id
@@ -308,7 +308,7 @@ class OrganisationPathRoot(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict[self.OPR_ID] = self.opr_id
@@ -417,7 +417,7 @@ class OrganisationUser(JSONable):
         return True
 
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict[self.USERNAME] = self.username
@@ -557,7 +557,7 @@ class OrganisationUserPath(JSONable):
         return self.is_valid_path_extension(self.path_extension)
 
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict[self.USERNAME] = self.username
@@ -718,7 +718,7 @@ class OrganisationDevice(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict[self.DEVICE_TAG] = self.device_tag

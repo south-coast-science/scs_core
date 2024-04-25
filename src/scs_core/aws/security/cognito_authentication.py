@@ -60,7 +60,7 @@ class AuthenticationResult(HTTPResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['authentication-status'] = self.authentication_status
@@ -131,7 +131,7 @@ class AuthenticationStatus(JSONable, Enum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.name
 
 
@@ -184,7 +184,7 @@ class Challenge(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['ChallengeName'] = self.challenge_name
@@ -254,7 +254,7 @@ class Session(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['AccessToken'] = self.access_token

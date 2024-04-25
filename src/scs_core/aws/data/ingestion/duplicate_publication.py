@@ -11,6 +11,8 @@ example DuplicatePublicationSummary:
 {"device": "scs-opc-268", "count": 2}
 """
 
+from collections import OrderedDict
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
@@ -70,13 +72,15 @@ class DuplicatePublication(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
-        jdict = {
-            'device': self.device,
-            'rec': self.rec.as_iso8601(),
-            'upload': self.upload.as_iso8601(include_millis=True),
-            'expiry': self.expiry
-        }
+    def as_json(self, include_expiry=True):
+        jdict = OrderedDict()
+
+        jdict['device'] = self.device
+        jdict['rec'] = self.rec.as_iso8601()
+        jdict['upload'] = self.upload.as_iso8601(include_millis=True)
+
+        if include_expiry:
+            jdict['expiry'] = self.expiry
 
         return jdict
 
@@ -160,7 +164,7 @@ class DuplicatePublicationSummary(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = {
             'device': self.device,
             'count': self.count

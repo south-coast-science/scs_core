@@ -94,7 +94,7 @@ class DeviceStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['is-ok'] = self.is_ok
@@ -176,7 +176,7 @@ class DeviceUptime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['period'] = self.period
@@ -244,7 +244,7 @@ class TopicStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.topic_dict
 
 
@@ -330,7 +330,7 @@ class DeviceReport(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['device-tag'] = self.device_tag
@@ -450,7 +450,7 @@ class DeviceMonitorReport(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.device_dict
 
 
@@ -511,7 +511,7 @@ class DeviceStatusChange(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['device-tag'] = self.device_tag
@@ -597,7 +597,7 @@ class DeviceMonitorMessage(Email, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['change'] = self.change

@@ -78,7 +78,7 @@ class ModelDelta(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = PathDict()
 
         jdict.append('domain', self.domain())

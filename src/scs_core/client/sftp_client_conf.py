@@ -7,10 +7,12 @@ Created on 21 Mar 2019
 from abc import ABC
 from collections import OrderedDict
 
+from scs_core.data.json import JSONable
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class SFTPClientConf(ABC):
+class SFTPClientConf(JSONable, ABC):
     """
     classdocs
     """
@@ -52,7 +54,7 @@ class SFTPClientConf(ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['host'] = self.host

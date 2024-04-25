@@ -89,7 +89,7 @@ class EndpointAccess(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['use-default-urls'] = self.use_default_urls

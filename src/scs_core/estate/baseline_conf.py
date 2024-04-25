@@ -152,7 +152,7 @@ class BaselineConf(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['sample-period'] = self.sample_period

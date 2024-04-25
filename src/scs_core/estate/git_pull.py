@@ -130,7 +130,7 @@ class GitPull(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['pulled-on'] = None if self.pulled_on is None else self.pulled_on.as_iso8601()

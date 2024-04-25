@@ -394,7 +394,7 @@ class LocalizedDatetime(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.as_iso8601()
 
 

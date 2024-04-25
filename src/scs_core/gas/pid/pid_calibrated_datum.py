@@ -107,7 +107,7 @@ class PIDCalibratedDatum(PIDDatum):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['weV'] = self.we_v

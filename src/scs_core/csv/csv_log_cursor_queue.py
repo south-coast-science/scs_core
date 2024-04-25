@@ -119,7 +119,7 @@ class CSVLogCursorQueue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['queue'] = [cursor.as_json() for cursor in self.cursors()]
@@ -252,7 +252,7 @@ class CSVLogCursor(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['file-path'] = self.file_path

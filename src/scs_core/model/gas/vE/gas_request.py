@@ -62,7 +62,7 @@ class GasRequest(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['sample'] = self.sample.as_json()

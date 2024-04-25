@@ -41,8 +41,6 @@ class DuplicatePublicationFinder(APIClient):
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
-        print("response: %s" % response.json())
-
         return sorted([DuplicatePublicationSummary.construct_from_jdict(jdict) for jdict in response.json()])
 
 

@@ -70,7 +70,7 @@ class Baseline(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         for gas in sorted(self.__sensor_baselines.keys()):

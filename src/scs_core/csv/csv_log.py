@@ -57,7 +57,7 @@ class LogEntry(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['rec'] = self.rec.as_iso8601()
@@ -228,7 +228,7 @@ class CSVLog(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.__entries
 
 
