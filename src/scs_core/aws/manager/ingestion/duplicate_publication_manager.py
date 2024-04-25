@@ -16,7 +16,7 @@ from scs_core.aws.data.ingestion.duplicate_publication import DuplicatePublicati
 class Endpoint(APIEndpoint):
     @classmethod
     def configuration(cls):
-        return cls('TopMonAPI/DuplicatePublication',
+        return cls('PubMonAPI/DuplicatePublication',
                    'https://nfema83f18.execute-api.us-west-2.amazonaws.com/default/DuplicatePublication')
 
 
