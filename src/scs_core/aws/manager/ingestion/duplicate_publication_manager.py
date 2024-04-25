@@ -22,7 +22,7 @@ class Endpoint(APIEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DuplicatePublicationFinder(APIClient):
+class DuplicatePublicationManager(APIClient):
     """
     classdocs
     """
