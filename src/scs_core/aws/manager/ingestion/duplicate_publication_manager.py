@@ -22,7 +22,7 @@ class Endpoint(APIEndpoint):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DuplicatePublicationFinder(APIClient):
+class DuplicatePublicationManager(APIClient):
     """
     classdocs
     """
@@ -52,3 +52,11 @@ class DuplicatePublicationFinder(APIClient):
         self._check_response(response)
 
         return sorted([DuplicatePublication.construct_from_jdict(jdict) for jdict in response.json()])
+
+
+    def delete_for_device(self, token, device):
+        url = '/'.join([Endpoint.url(), 'device'])
+        params = {'device': device}
+
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
+        self._check_response(response)
