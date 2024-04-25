@@ -94,7 +94,7 @@ class AFEBaseline(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         for i in range(len(self.__sensor_baselines)):

@@ -245,7 +245,7 @@ class Timedelta(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         json = "%02d-%02d:%02d:%02d" % (self.days, self.hours, self.minutes, self.seconds)
 
         if self.milliseconds != 0:

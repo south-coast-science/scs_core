@@ -42,7 +42,7 @@ class Publication(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return {self.topic: self.payload}
 
 
@@ -96,7 +96,7 @@ class ReceivedPublication(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['received'] = self.received

@@ -78,7 +78,7 @@ class Term(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['path'] = self.path

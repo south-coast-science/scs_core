@@ -107,7 +107,7 @@ class PackageVersion(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['repo'] = self.repository
@@ -212,7 +212,7 @@ class PackageVersions(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return self.versions
 
 

@@ -164,7 +164,7 @@ class DuplicatePublicationSummary(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = {
             'device': self.device,
             'count': self.count

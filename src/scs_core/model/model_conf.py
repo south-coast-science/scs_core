@@ -110,7 +110,7 @@ class ModelConf(PersistentJSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['uds-path'] = self.uds_path

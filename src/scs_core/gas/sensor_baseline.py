@@ -70,7 +70,7 @@ class SensorBaseline(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601()
@@ -166,7 +166,7 @@ class SensorBaselineSample(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         if self.rec is not None:

@@ -54,7 +54,7 @@ class BylineList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['byline_list'] = self.__byline_list

@@ -334,7 +334,7 @@ class TopicHistoryResponse(APIResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         if self.fetched_last is not None:

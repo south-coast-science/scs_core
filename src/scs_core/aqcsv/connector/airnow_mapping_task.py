@@ -77,7 +77,7 @@ class AirNowMappingTaskList(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['tasks'] = {str(key): task for key, task in self.__tasks.items()}
@@ -199,7 +199,7 @@ class MappingTask(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['org'] = self.org

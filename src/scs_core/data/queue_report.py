@@ -73,7 +73,7 @@ class QueueReport(JSONReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['length'] = self.length

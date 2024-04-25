@@ -100,7 +100,7 @@ class SHTConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['int'] = SHTConf.__addr_str(self.__int_addr)

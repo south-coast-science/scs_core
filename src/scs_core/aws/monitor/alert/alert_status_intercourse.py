@@ -159,7 +159,7 @@ class AlertStatusFindResponse(HTTPResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['statusCode'] = self.status.value

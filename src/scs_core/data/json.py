@@ -26,15 +26,15 @@ class JSONify(json.JSONEncoder):
     """
 
     @classmethod
-    def as_dynamo_json(cls, obj):
+    def as_dynamo_json(cls, obj, **kwargs):
         if isinstance(obj, JSONable):
-            return cls.as_dynamo_json(obj.as_json())
+            return cls.as_dynamo_json(obj.as_json(**kwargs))
 
         if isinstance(obj, dict):
-            return {key: cls.as_dynamo_json(value) for key, value in obj.items()}
+            return {key: cls.as_dynamo_json(value, **kwargs) for key, value in obj.items()}
 
         if isinstance(obj, list):
-            return tuple(cls.as_dynamo_json(value) for value in obj)
+            return tuple(cls.as_dynamo_json(value, **kwargs) for value in obj)
 
         if Datum.is_numeric(obj):
             return Decimal(str(obj))
@@ -45,32 +45,33 @@ class JSONify(json.JSONEncoder):
     @staticmethod
     def dumps(obj, skipkeys=False, ensure_ascii=False, check_circular=True,
               allow_nan=True, cls=None, indent=None, separators=None,
-              default=None, sort_keys=False, **kw):
+              default=None, sort_keys=False, **kwargs):
 
         handler = JSONify if cls is None else cls
 
         return json.dumps(obj, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular,
                           allow_nan=allow_nan, cls=handler, indent=indent, separators=separators,
-                          default=default, sort_keys=sort_keys, **kw)
+                          default=default, sort_keys=sort_keys, **kwargs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, *, skipkeys=False, ensure_ascii=True,
                  check_circular=True, allow_nan=True, sort_keys=False,
-                 indent=None, separators=None, default=None, **kw):
+                 indent=None, separators=None, default=None, **kwargs):
+
         super().__init__(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
                          check_circular=check_circular, allow_nan=allow_nan, sort_keys=sort_keys,
                          indent=indent, separators=separators, default=default)
 
-        self.__kw = kw
+        self.__kwargs = kwargs
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def default(self, obj):
         if isinstance(obj, JSONable):
-            return obj.as_json(**self.__kw)
+            return obj.as_json(**self.__kwargs)
 
         if isinstance(obj, Decimal):
             return float(obj) if Datum.is_float(str(obj)) else int(obj)
@@ -81,7 +82,7 @@ class JSONify(json.JSONEncoder):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "JSONify:{kw:%s}" %  self.__kw
+        return "JSONify:{kwargs:%s}" %  self.__kwargs
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -127,7 +128,7 @@ class JSONable(object):
 
 
     @abstractmethod
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         pass
 
 

@@ -35,7 +35,7 @@ class PMxDatum(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['rec'] = self.rec.as_iso8601(include_millis=Sample.INCLUDE_MILLIS)

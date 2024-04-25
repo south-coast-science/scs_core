@@ -117,7 +117,7 @@ class CognitoDeviceCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['username'] = self.tag
@@ -235,7 +235,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['username'] = self.tag

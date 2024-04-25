@@ -91,7 +91,7 @@ class TimezoneConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['set-on'] = None if self.set_on is None else self.set_on.as_iso8601()

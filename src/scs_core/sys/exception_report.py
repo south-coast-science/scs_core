@@ -60,7 +60,7 @@ class ExceptionReport(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['cls'] = self.__class__.__name__

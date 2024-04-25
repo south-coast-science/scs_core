@@ -74,7 +74,7 @@ class UploadInterval(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['upload'] = self.upload.as_iso8601(include_millis=self.INCLUDE_MILLIS)

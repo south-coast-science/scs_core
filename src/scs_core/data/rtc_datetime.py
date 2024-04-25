@@ -115,7 +115,7 @@ class RTCDatetime(JSONable):
         return localized
 
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return "%02d-%02d-%02d (%d) %02d:%02d:%02d" % \
                (self.year, self.month, self.day, self.weekday, self.hour, self.minute, self.second)
 

@@ -49,7 +49,7 @@ class PMxRequest(AbstractPMxRequest):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['sample'] = self.sample.as_json()
