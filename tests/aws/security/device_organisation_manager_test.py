@@ -5,6 +5,7 @@ Created on 4 Aug 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
+import logging
 
 from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
 from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
@@ -12,10 +13,12 @@ from scs_core.aws.security.organisation_manager import DeviceOrganisationManager
 
 from scs_core.sys.logging import Logging
 
+from scs_host.sys.host import Host
+
 # --------------------------------------------------------------------------------------------------------------------
 
 Logging.config('device_organisation_manager_test', verbose=True)
-
+logging.warning(Host.__qualname__)
 
 device_tag = 'scs-be2-3'
 shared_secret = '5U4jDlG72vWu1xCE'

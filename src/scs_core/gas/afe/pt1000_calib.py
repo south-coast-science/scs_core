@@ -82,7 +82,7 @@ class Pt1000Calib(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['calibrated-on'] = self.calibrated_on.as_iso8601()

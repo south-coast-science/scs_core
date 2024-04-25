@@ -83,7 +83,7 @@ class MQTTConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['inhibit-publishing'] = self.inhibit_publishing

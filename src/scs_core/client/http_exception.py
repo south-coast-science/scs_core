@@ -75,7 +75,7 @@ class HTTPException(RuntimeError, JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['status'] = self.status

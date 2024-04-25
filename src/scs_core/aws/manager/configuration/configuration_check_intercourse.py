@@ -164,7 +164,7 @@ class ConfigurationCheckResponse(HTTPResponse):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['statusCode'] = self.status.value

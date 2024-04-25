@@ -99,7 +99,7 @@ class OPCErrorSummary(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return self.entries
 
 

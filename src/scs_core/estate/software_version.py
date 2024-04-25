@@ -96,7 +96,7 @@ class SoftwareVersion(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         return '.'.join([str(part) for part in self.__parts])
 
 

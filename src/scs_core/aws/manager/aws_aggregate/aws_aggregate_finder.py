@@ -20,8 +20,8 @@ from scs_core.data.json import JSONify
 class Endpoint(AWSEndpoint):
     @classmethod
     def configuration(cls):
-        # https://xy1eszuu23.execute-api.us-west-2.amazonaws.com/dev/topicMessages  - does not work in this context
-        # https://xef6bspqs5.execute-api.us-west-2.amazonaws.com/default/AWSAggregate
+        # return cls('topicMessages',
+        #            'https://tkt93sk72l.execute-api.us-west-2.amazonaws.com/default/AWSAggregateTest')
 
         return cls('topicMessages',
                    'https://xef6bspqs5.execute-api.us-west-2.amazonaws.com/default/AWSAggregate')
@@ -60,11 +60,11 @@ class AWSAggregateFinder(APIClient):
             response = requests.get(url, headers=self._auth_headers(), params=params, data=JSONify.dumps(payload))
             self._check_response(response)
 
-            self._logger.debug("response: %s" % response.json())
+            # self._logger.debug("response: %s" % response.json())
 
             # messages...
             block = block_class.construct_from_jdict(response.json())
-            self._logger.debug("block: %s" % block)
+            # self._logger.debug("block: %s" % block)
 
             for item in block.items:
                 yield item

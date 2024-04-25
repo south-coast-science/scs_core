@@ -7,8 +7,12 @@ example document (credentials):
 {"username": "scs-opc-1", "password": "########"}
 
 example document (identity):
-{"username": "scs-bgx-401", "password": "########", "invoice": "INV-000123",
-"created": "2023-06-23T10:32:52+01:00", "last-updated": "2023-06-23T10:32:52+01:00"}
+{
+    "username": "scs-ph1-8",
+    "invoice": "INV-0000",
+    "created": "2023-04-20T12:25:47Z",
+    "last-updated": "2024-01-29T15:37:21Z"
+}
 """
 
 import re
@@ -113,7 +117,7 @@ class CognitoDeviceCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['username'] = self.tag
@@ -231,7 +235,7 @@ class CognitoDeviceIdentity(CognitoDeviceCredentials):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['username'] = self.tag

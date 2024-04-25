@@ -80,7 +80,7 @@ class SPSDatum(PMxDatum):
         return Sample(tag, self.rec, self.VERSION, src=self.source, values=jdict)
 
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['src'] = self.source
@@ -171,7 +171,7 @@ class SPSDatumCounts(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['pm0p5'] = self.pm0p5

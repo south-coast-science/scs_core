@@ -73,7 +73,7 @@ class Sample(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['rec'] = None if self.rec is None else self.rec.as_iso8601(include_millis=self.INCLUDE_MILLIS)
