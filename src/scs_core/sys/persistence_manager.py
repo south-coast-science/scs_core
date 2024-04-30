@@ -67,7 +67,7 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
     @classmethod
     def list(cls, container, dirname):
-        abs_dirname = os.path.join(container, dirname)
+        abs_dirname = str(os.path.join(container, dirname))
 
         try:
             return sorted(os.listdir(abs_dirname))
@@ -144,10 +144,10 @@ class FilesystemPersistenceManager(PersistenceManager, ABC):
 
     @classmethod
     def abs_dirname(cls, dirname):
-        return os.path.join(cls.scs_path(), dirname)
+        return str(os.path.join(cls.scs_path(), dirname))
 
 
     @classmethod
     def abs_filename(cls, dirname, filename):
-        return os.path.join(cls.scs_path(), dirname, filename)
+        return str(os.path.join(cls.scs_path(), dirname, filename))
 
