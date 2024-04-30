@@ -146,7 +146,7 @@ class ClientAuth(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __cert_path(self):
-        return os.path.join(self.manager.scs_path(), self.aws_dir(), self.__CERT_DIR)
+        return str(os.path.join(self.manager.scs_path(), self.aws_dir(), self.__CERT_DIR))
 
 
     # ----------------------------------------------------------------------------------------------------------------

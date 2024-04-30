@@ -22,7 +22,7 @@ import setuptools
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
-    with codecs.open(os.path.join(here, rel_path)) as fp:
+    with codecs.open(str(os.path.join(here, rel_path))) as fp:
         return fp.read()
 
 
