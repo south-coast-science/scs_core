@@ -3,9 +3,8 @@ Created on 15 Oct 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example JSON:
+example document:
 {"NO2": {"calibrated-on": "2022-06-23T08:40:06Z", "offset": 134, "env": null}}
-
 """
 
 from scs_core.data.str import Str
