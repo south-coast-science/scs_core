@@ -11,14 +11,9 @@ example JSON:
 "pcb_gain": -0.7, "we_sensitivity_mv_ppb": 0.2, "we_cross_sensitivity_no2_mv_ppb": 0.2}}
 """
 
-import json
-
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.calibration_client import SensorCalibrationClient
 from scs_core.gas.sensor_calib import SensorCalib
-
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -44,22 +39,10 @@ class DSICalib(AFECalib):
 
     @classmethod
     def download(cls, serial_number, parse=True):
-        http_client = HTTPClient()
-        http_client.connect(AFECalib.ALPHASENSE_HOST)
+        client = SensorCalibrationClient.construct()
+        jdict = client.download(serial_number)
 
-        try:
-            path = SensorCalib.ALPHASENSE_PATH + serial_number
-            response = http_client.get(path, None, SensorCalib.ALPHASENSE_HEADER)
-
-            logger = Logging.getLogger()
-            logger.debug("dsi response: %s" % response)
-
-            jdict = json.loads(response)
-
-            return cls.construct_from_jdict(jdict) if parse else jdict
-
-        finally:
-            http_client.close()
+        return cls.construct_from_jdict(jdict) if parse else jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
