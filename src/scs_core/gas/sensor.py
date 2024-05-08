@@ -3,7 +3,7 @@ Created on 30 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://www.alphasense-technology.co.uk/sensor_types
+https://calibration.southcoastscience.com/sensor_types
 """
 
 from abc import ABC, abstractmethod

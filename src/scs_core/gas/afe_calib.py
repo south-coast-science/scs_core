@@ -12,8 +12,6 @@ example JSON:
 "sn4":{"serial_number":"123456789","sensor_type":"IRMA1","ae_total_zero_mv":"313.0","we_total_zero_mv":"305.0", ...}}
 """
 
-import json
-
 from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -22,14 +20,11 @@ from scs_core.data.json import PersistentJSONable
 from scs_core.data.str import Str
 from scs_core.data.timedelta import Timedelta
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.gas.afe.pt1000_calib import Pt1000Calib
+from scs_core.gas.calibration_client import AFECalibrationClient
 
 from scs_core.gas.sensor import Sensor
 from scs_core.gas.sensor_calib import SensorCalib
-
-from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -59,10 +54,6 @@ class AFECalib(PersistentJSONable):
     """
     classdocs
     """
-
-    ALPHASENSE_HOST =       "www.alphasense-technology.co.uk"
-    ALPHASENSE_PATH =       "/api/v1/boards/"
-    ALPHASENSE_HEADER =     {"Accept": "application/json"}
 
     TEST_LOAD = '''
                 {"serial_number": "1", "type": "test-load", "calibrated_on": "2020-01-01", "dispatched_on": null, 
@@ -103,22 +94,10 @@ class AFECalib(PersistentJSONable):
 
     @classmethod
     def download(cls, serial_number, parse=True):
-        http_client = HTTPClient()
-        http_client.connect(cls.ALPHASENSE_HOST)
+        client = AFECalibrationClient.construct()
+        jdict = client.download(serial_number)
 
-        try:
-            path = AFECalib.ALPHASENSE_PATH + serial_number
-            response = http_client.get(path, None, AFECalib.ALPHASENSE_HEADER)
-
-            logger = Logging.getLogger()
-            logger.debug("afe response: %s" % response)
-
-            jdict = json.loads(response)
-
-            return cls.construct_from_jdict(jdict) if parse else jdict
-
-        finally:
-            http_client.close()
+        return cls.construct_from_jdict(jdict) if parse else jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -40,9 +40,9 @@ class CognitoDeviceCreator(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def may_create(self, device_tag):
-        payload = {"DeviceTag": device_tag}
+        params = {"DeviceTag": device_tag}
 
-        response = requests.get(Endpoint.url(), headers=self._auth_headers(), data=JSONify.dumps(payload))
+        response = requests.get(Endpoint.url(), headers=self._auth_headers(), params=params)
         self._check_response(response)
 
         return response.json()

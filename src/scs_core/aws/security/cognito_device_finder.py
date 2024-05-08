@@ -37,9 +37,9 @@ class CognitoDeviceFinder(APIClient):
 
     def find_by_tag(self, token, tag):
         url = Endpoint.url('retrieve', 'in')
-        payload = {"username": tag}
+        params = {"username": tag}
 
-        response = requests.get(url, headers=self._token_headers(token), json=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(CognitoDeviceIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -47,9 +47,9 @@ class CognitoDeviceFinder(APIClient):
 
     def get_by_tag(self, token, tag):
         url = Endpoint.url('retrieve', 'exact')
-        payload = {"username": tag}
+        params = {"username": tag}
 
-        response = requests.get(url, headers=self._token_headers(token), json=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return CognitoDeviceIdentity.construct_from_jdict(response.json())

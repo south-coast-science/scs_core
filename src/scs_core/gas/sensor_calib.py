@@ -17,11 +17,6 @@ class SensorCalib(JSONable, ABC):
     classdocs
     """
 
-    ALPHASENSE_HOST =       "www.alphasense-technology.co.uk"
-    ALPHASENSE_PATH =       "/api/v1/sensors/"
-    ALPHASENSE_HEADER =     {"Accept": "application/json"}
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
