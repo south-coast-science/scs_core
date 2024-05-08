@@ -5,7 +5,7 @@ Created on 8 Aug 2023
 """
 
 from scs_core.aws.client.api_client import APIClient
-from scs_core.aws.client_traffic.client_traffic_intercourse import ClientTrafficResponse
+from scs_core.aws.client_traffic.client_traffic_intercourse import ClientTrafficRequest, ClientTrafficResponse
 from scs_core.aws.config.endpoint import APIEndpoint
 
 
@@ -33,29 +33,29 @@ class ClientTrafficFinder(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_for_users(self, token, request):
+    def find_for_users(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('users')
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=dict(request.as_json())):
             yield item
 
 
-    def find_for_organisations(self, token, request):
+    def find_for_organisations(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('organisations')
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=dict(request.as_json())):
             yield item
 
 
-    def find_for_organisations_users(self, token, request):
+    def find_for_organisations_users(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('organisations-users')
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=dict(request.as_json())):
             yield item
 
 
-    def find_for_endpoint(self, token, request):
+    def find_for_endpoint(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('endpoint')
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, payload=request):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=dict(request.as_json())):
             yield item
