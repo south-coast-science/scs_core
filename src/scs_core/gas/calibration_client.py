@@ -19,8 +19,7 @@ class CalibrationClient(ABC):
     classdocs
     """
 
-    __HOST =       "www.alphasense-technology.co.uk"
-    # _HOST =       "calibration.southcoastscience.com"
+    __HOST =       "calibration.southcoastscience.com"
     __HEADER =     {"Accept": "application/json"}
 
     # ----------------------------------------------------------------------------------------------------------------

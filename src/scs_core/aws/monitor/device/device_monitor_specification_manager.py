@@ -12,8 +12,6 @@ from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
     DeviceMonitorSpecificationList
 
-from scs_core.data.json import JSONify
-
 from scs_core.email.email import EmailRecipient
 
 
