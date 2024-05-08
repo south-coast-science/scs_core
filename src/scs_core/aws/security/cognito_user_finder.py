@@ -64,9 +64,9 @@ class CognitoUserFinder(APIClient):
 
     def find_by_email(self, token, email):
         url = Endpoint.url('in')
-        payload = {"Email": email}
+        params = {"Email": email}
 
-        response = requests.get(url, headers=self._token_headers(token), json=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -74,9 +74,9 @@ class CognitoUserFinder(APIClient):
 
     def get_by_email(self, token, email):
         url = Endpoint.url('exact')
-        payload = {"Email": email}
+        params = {"Email": email}
 
-        response = requests.get(url, headers=self._token_headers(token), json=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return CognitoUserIdentity.construct_from_jdict(response.json())

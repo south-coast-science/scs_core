@@ -63,9 +63,9 @@ class CognitoDeviceManager(APIClient):
 
 
     def delete(self, token, device_tag):
-        payload = {"DeviceTag": device_tag}
+        params = {"DeviceTag": device_tag}
 
-        response = requests.delete(Endpoint.url(), headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.delete(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         # TODO: delete device from organisations?

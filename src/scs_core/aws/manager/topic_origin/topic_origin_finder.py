@@ -46,8 +46,9 @@ class TopicOriginFinder(APIClient):
 
         for index in range(0, len(topics), self.BLOCK_SIZE):
             request = topics[index:index + self.BLOCK_SIZE]
+            params = {"topics": json.dumps(request)}
 
-            response = requests.get(Endpoint.url(), headers=self._token_headers(token), data=json.dumps(request))
+            response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
             self._check_response(response)
 
             block = [TopicOrigin.construct_from_jdict(jdict) for jdict in response.json()]

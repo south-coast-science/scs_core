@@ -13,8 +13,6 @@ from scs_core.aws.config.endpoint import APIEndpoint
 
 from scs_core.client.http_exception import HTTPException
 
-from scs_core.data.json import JSONify
-
 from scs_core.sys.logging import Logging
 
 
@@ -59,14 +57,14 @@ class APIClient(ABC):
             raise HTTPException.construct(status.value, response.reason, response.json())
 
 
-    def _get_blocks(self, url, token, block_class, params=None, payload=None):
+    def _get_blocks(self, url, token, block_class, params=None):
         self.__logger.debug("url: %s" % url)
 
         if self._reporter:
             self._reporter.reset()
 
         while True:
-            response = requests.get(url, headers=self._token_headers(token), params=params, data=JSONify.dumps(payload))
+            response = requests.get(url, headers=self._token_headers(token), params=params)
             self._check_response(response)
 
             self.__logger.debug("response: %s" % response.json())
