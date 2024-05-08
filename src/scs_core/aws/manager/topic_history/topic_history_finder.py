@@ -50,7 +50,7 @@ class TopicHistoryFinder(APIClient):
 
         request = TopicHistoryRequest(topic, start, end, path, fetch_last, checkpoint, include_wrapper, rec_only,
                                       min_max, exclude_remainder, fetch_last_written_before, backoff_limit)
-        self._logger.debug(request)
+        self._logger.info(request.params())
 
         for item in self._get_blocks(Endpoint.url(), token, TopicHistoryResponse, params=request.params()):
             yield item

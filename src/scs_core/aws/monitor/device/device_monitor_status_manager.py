@@ -36,12 +36,12 @@ class DeviceMonitorStatusManager(APIClient):
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, token, device_tag_filter=None, exact=False):
-        payload = {
+        params = {
             'device_tag': device_tag_filter,
             'exact': exact
         }
 
-        response = requests.get(Endpoint.url(), headers=self._token_headers(token), json=payload)
+        response = requests.get(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return DeviceMonitorReport.construct_from_jdict(response.json())
