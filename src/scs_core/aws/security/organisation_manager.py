@@ -72,9 +72,9 @@ class OrganisationManager(APIClient):
 
     def find_child_organisations(self, token, label):
         url = MgrEndpoint.url('organisation')
-        payload = JSONify.dumps({"ParentLabel": label})
+        params = {"ParentLabel": label}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(Organisation.construct_from_jdict(jdict) for jdict in response.json())
@@ -82,9 +82,9 @@ class OrganisationManager(APIClient):
 
     def get_organisation(self, token, id):
         url = MgrEndpoint.url('organisation')
-        payload = JSONify.dumps({"ID": id})
+        params = {"ID": id}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return Organisation.construct_from_jdict(response.json())
@@ -92,9 +92,9 @@ class OrganisationManager(APIClient):
 
     def get_organisation_by_label(self, token, label):
         url = MgrEndpoint.url('organisation')
-        payload = JSONify.dumps({"Label": label})
+        params = {"Label": label}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return Organisation.construct_from_jdict(response.json())
@@ -120,9 +120,9 @@ class OrganisationManager(APIClient):
 
     def delete_organisation(self, token, org_id):
         url = ExecEndpoint.url('organisation')
-        payload = JSONify.dumps({"OrgID": org_id})
+        params = {"OrgID": org_id}
 
-        response = requests.delete(url, headers=self._token_headers(token), data=payload)
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 
@@ -131,12 +131,9 @@ class OrganisationManager(APIClient):
 
     def find_oprs(self, token, org_id=None):
         url = MgrEndpoint.url('opr')
-        payload = {}
+        params = {"OrgID": org_id} if org_id else {}
 
-        if org_id:
-            payload['OrgID'] = org_id
-
-        response = requests.get(url, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationPathRoot.construct_from_jdict(jdict) for jdict in response.json())
@@ -144,9 +141,9 @@ class OrganisationManager(APIClient):
 
     def get_opr_by_path_root(self, token, path_root):
         url = MgrEndpoint.url('opr')
-        payload = JSONify.dumps({"PathRoot": path_root})
+        params = {"PathRoot": path_root}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return OrganisationPathRoot.construct_from_jdict(response.json())
@@ -164,9 +161,9 @@ class OrganisationManager(APIClient):
 
     def delete_opr(self, token, opr_id):
         url = ExecEndpoint.url('opr')
-        payload = JSONify.dumps({"OPRID": opr_id})
+        params = {"OPRID": opr_id}
 
-        response = requests.delete(url, headers=self._token_headers(token), data=payload)
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 
@@ -184,9 +181,9 @@ class OrganisationManager(APIClient):
 
     def find_users_by_organisation(self, token, org_id):
         url = MgrEndpoint.url('user')
-        payload = JSONify.dumps({"OrgID": org_id})
+        params = {"OrgID": org_id}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
@@ -194,9 +191,9 @@ class OrganisationManager(APIClient):
 
     def find_cognito_users_by_organisation(self, token, org_id):
         url = MgrEndpoint.url('cognito-user')
-        payload = JSONify.dumps({"OrgID": org_id})
+        params = {"OrgID": org_id}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(CognitoUserIdentity.construct_from_jdict(jdict) for jdict in response.json())
@@ -204,9 +201,9 @@ class OrganisationManager(APIClient):
 
     def find_users_by_username(self, token, username):
         url = MgrEndpoint.url('user')
-        payload = JSONify.dumps({"Username": username})
+        params = {"Username": username}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationUser.construct_from_jdict(jdict) for jdict in response.json())
@@ -214,9 +211,9 @@ class OrganisationManager(APIClient):
 
     def get_user(self, token, username, org_id):
         url = MgrEndpoint.url('user')
-        payload = JSONify.dumps({"Username": username, "OrgID": org_id})
+        params = {"Username": username, "OrgID": org_id}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return OrganisationUser.construct_from_jdict(response.json())
@@ -232,9 +229,9 @@ class OrganisationManager(APIClient):
 
     def delete_user(self, token, username, org_id):
         url = ExecEndpoint.url('user')
-        payload = JSONify.dumps({"Username": username, "OrgID": org_id})
+        params = {"Username": username, "OrgID": org_id}
 
-        response = requests.delete(url, headers=self._token_headers(token), data=payload)
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 
@@ -243,15 +240,15 @@ class OrganisationManager(APIClient):
 
     def find_oups(self, token, username=None, opr_id=None):
         url = MgrEndpoint.url('oup')
-        payload = {}
+        params = {}
 
         if username:
-            payload['Username'] = username
+            params['Username'] = username
 
         if opr_id:
-            payload['OPRID'] = opr_id
+            params['OPRID'] = opr_id
 
-        response = requests.get(url, headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationUserPath.construct_from_jdict(jdict) for jdict in response.json())
@@ -267,9 +264,9 @@ class OrganisationManager(APIClient):
 
     def delete_oup(self, token, oup):
         url = MgrEndpoint.url('oup')
-        payload = JSONify.dumps(oup)
+        params = {'oup': json.dumps(oup)}
 
-        response = requests.delete(url, headers=self._token_headers(token), data=payload)
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 
@@ -287,9 +284,9 @@ class OrganisationManager(APIClient):
 
     def find_devices_by_tag(self, token, device_tag):
         url = MgrEndpoint.url('device')
-        payload = JSONify.dumps({"DeviceTag": device_tag})
+        params = {"DeviceTag": device_tag}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
@@ -297,9 +294,9 @@ class OrganisationManager(APIClient):
 
     def find_devices_by_organisation(self, token, org_id):
         url = MgrEndpoint.url('device')
-        payload = JSONify.dumps({"OrgID": org_id})
+        params = {"OrgID": org_id}
 
-        response = requests.get(url, headers=self._token_headers(token), data=payload)
+        response = requests.get(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return tuple(OrganisationDevice.construct_from_jdict(jdict) for jdict in response.json())
@@ -315,9 +312,9 @@ class OrganisationManager(APIClient):
 
     def delete_device(self, token, device_tag):
         url = ExecEndpoint.url('device')
-        payload = JSONify.dumps({"DeviceTag": device_tag})
+        params = {"DeviceTag": device_tag}
 
-        response = requests.delete(url, headers=self._token_headers(token), data=payload)
+        response = requests.delete(url, headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 
@@ -338,9 +335,9 @@ class DeviceOrganisationManager(APIClient):
     # OrganisationDevice...
 
     def location_path_in_use(self, token, location_path):
-        payload = JSONify.dumps({"LocationPath": location_path})
+        params = {"LocationPath": location_path}
 
-        response = requests.get(DevEndpoint.url(), headers=self._token_headers(token), data=payload)
+        response = requests.get(DevEndpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
         return json.loads(response.json())

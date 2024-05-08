@@ -54,9 +54,9 @@ class DeviceWhitelistManager(APIClient):
 
 
     def delete(self, token, device_tag):
-        payload = DeviceWhitelistItem(device_tag)
+        params = {"device-tag": device_tag}
 
-        response = requests.delete(Endpoint.url(), headers=self._token_headers(token), data=JSONify.dumps(payload))
+        response = requests.delete(Endpoint.url(), headers=self._token_headers(token), params=params)
         self._check_response(response)
 
 

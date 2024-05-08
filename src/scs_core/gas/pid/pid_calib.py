@@ -3,7 +3,7 @@ Created on 24 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-www.alphasense-technology.co.uk...
+calibration.southcoastscience.com...
 {"serial_number": null, "type": "DSI", "calibrated_on": "2024-01-01", "dispatched_on": null, "pt1000_v20": null,
 "sn1": {"serial_number": "143351067", "sensor_type": "PIDH2", "pid_zero_mv": null, "pid_sensitivity_mv_ppm": 44.9,
 "test-calib": {"sensitivity": 0.786, "calibrated-on": "2024-01-05T13:16:04Z"}}}
