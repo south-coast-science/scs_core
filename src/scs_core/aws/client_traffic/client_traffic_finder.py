@@ -37,31 +37,27 @@ class ClientTrafficFinder(APIClient):
 
     def find_for_users(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('users')
-        params = {"find": JSONify.dumps(request)}
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, params=params):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=request.params()):
             yield item
 
 
     def find_for_organisations(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('organisations')
-        params = {"find": JSONify.dumps(request)}
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, params=params):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=request.params()):
             yield item
 
 
     def find_for_organisations_users(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('organisations-users')
-        params = {"find": JSONify.dumps(request)}
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, params=params):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=request.params()):
             yield item
 
 
     def find_for_endpoint(self, token, request: ClientTrafficRequest):
         url = Endpoint.url('endpoint')
-        params = {"find": JSONify.dumps(request)}
 
-        for item in self._get_blocks(url, token, ClientTrafficResponse, params=params):
+        for item in self._get_blocks(url, token, ClientTrafficResponse, params=request.params()):
             yield item
