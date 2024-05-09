@@ -8,8 +8,6 @@ from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.client_traffic.client_traffic_intercourse import ClientTrafficRequest, ClientTrafficResponse
 from scs_core.aws.config.endpoint import APIEndpoint
 
-from scs_core.data.json import JSONify
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
