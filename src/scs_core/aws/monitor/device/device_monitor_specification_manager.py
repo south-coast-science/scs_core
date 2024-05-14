@@ -12,6 +12,8 @@ from scs_core.aws.config.endpoint import APIEndpoint
 from scs_core.aws.monitor.device.device_monitor_specification import DeviceMonitorSpecification, \
     DeviceMonitorSpecificationList
 
+from scs_core.data.json import JSONify
+
 from scs_core.email.email import EmailRecipient
 
 
@@ -58,7 +60,7 @@ class DeviceMonitorSpecificationManager(APIClient):
             'recipient': recipient
         }
 
-        response = requests.post(Endpoint.url(), headers=self._token_headers(token), json=payload)
+        response = requests.post(Endpoint.url(), headers=self._token_headers(token), data=JSONify.dumps(payload))
         self._check_response(response)
 
         return DeviceMonitorSpecification.construct_from_jdict(response.json())
