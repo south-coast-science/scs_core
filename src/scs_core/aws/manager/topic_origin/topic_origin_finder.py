@@ -28,7 +28,7 @@ class TopicOriginFinder(APIClient):
     classdocs
     """
 
-    BLOCK_SIZE = 200                    # maximum number of topics per request
+    BLOCK_SIZE = 100                    # maximum number of topics per request
 
     # ----------------------------------------------------------------------------------------------------------------
 
