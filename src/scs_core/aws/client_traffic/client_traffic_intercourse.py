@@ -5,7 +5,7 @@ Created on 8 Aug 2023
 
 separated from client to remove dependency on requests package
 """
-
+import json
 from collections import OrderedDict
 from urllib.parse import parse_qs, urlparse
 
@@ -23,6 +23,20 @@ class ClientTrafficRequest(ClientTrafficLocus):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_qsp(cls, qsp):
+        if not qsp:
+            return None
+
+        endpoint = qsp.get('endpoint')
+        clients = json.loads(qsp.get('clients'))
+        period = qsp.get('period')
+
+        aggregate = json.loads(qsp.get('aggregate'))
+
+        return cls(endpoint, clients, period, aggregate)
+
 
     @classmethod
     def construct_from_jdict(cls, jdict):
@@ -50,6 +64,17 @@ class ClientTrafficRequest(ClientTrafficLocus):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def params(self):
+        params = {
+            'endpoint': self.endpoint,
+            'clients': json.dumps(self.client),
+            'period': self.period,
+            'aggregate': json.dumps(self.aggregate)
+        }
+
+        return params
+
 
     def as_json(self, **kwargs):
         jdict = OrderedDict()
