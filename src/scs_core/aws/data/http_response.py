@@ -7,7 +7,6 @@ https://docs.python.org/3/library/http.html
 https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 """
 
-from abc import ABC
 from http import HTTPStatus
 
 from scs_core.client.http_exception import HTTPException
@@ -16,15 +15,22 @@ from scs_core.data.json import JSONable, JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class HTTPResponse(JSONable, ABC):
+class HTTPResponse(JSONable):
     """
     classdocs
     """
 
-    __CORS_HEADERS = {                                  # Cross-Origin Resource Sharing
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': True,
+    __CORS_HEADERS = {
+        'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Token',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Origin': '*'
     }
+
+    __INCLUDE_CORS_HEADERS = False
+
+    @classmethod
+    def include_cors_headers(cls, include):
+        cls.__INCLUDE_CORS_HEADERS = bool(include)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -74,13 +80,13 @@ class HTTPResponse(JSONable, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_http(self, cors=False):
+    def as_http(self):
         jdict = {
             'statusCode': int(self.status),
             'body': JSONify.dumps(self)
         }
 
-        if cors:
+        if self.__INCLUDE_CORS_HEADERS:
             jdict['headers'] = self.__CORS_HEADERS
 
         return jdict
