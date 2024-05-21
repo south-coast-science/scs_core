@@ -9,7 +9,8 @@ separated from client to remove dependency on requests package
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 
-from scs_core.data.json import JSONable, JSONify
+from scs_core.aws.data.http_response import HTTPResponse
+from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -18,11 +19,6 @@ class APIResponse(JSONable, ABC):
     """
     classdocs
     """
-
-    __CORS_HEADERS = {                                      # Cross-Origin Resource Sharing
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': True
-    }
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -35,16 +31,10 @@ class APIResponse(JSONable, ABC):
     # ----------------------------------------------------------------------------------------------------------------
     # server...
 
-    def as_http(self, status=HTTPStatus.OK, cors=False):
-        jdict = {
-            'statusCode': int(status),
-            'body': JSONify.dumps(self)
-        }
+    def as_http(self, status=HTTPStatus.OK):
+        response = HTTPResponse(status, self)
 
-        if cors:
-            jdict['headers'] = self.__CORS_HEADERS
-
-        return jdict
+        return response.as_http()
 
 
     # ----------------------------------------------------------------------------------------------------------------

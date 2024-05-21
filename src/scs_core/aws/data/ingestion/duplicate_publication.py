@@ -144,18 +144,6 @@ class DuplicatePublicationSummary(JSONable):
         self.__count = int(count)                   # int
 
 
-    def __lt__(self, other):
-        # count...
-        if self.__count < other.__count:
-            return True
-
-        if self.__count > other.__count:
-            return False
-
-        # device...
-        return self.__device < other.__device
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def inc(self):
@@ -188,4 +176,60 @@ class DuplicatePublicationSummary(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DuplicatePublicationSummary:{device:%s, count:%s}" % (self.device, self.count)
+        return self.__class__.__name__ + ":{device:%s, count:%s}" % (self.device, self.count)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceSummary(DuplicatePublicationSummary):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device, count):
+        """
+        Constructor
+        """
+        super().__init__(device, count)
+
+
+    def __lt__(self, other):
+        # count...
+        if self.device < other.device:
+            return True
+
+        if self.device > other.device:
+            return False
+
+        # device...
+        return self.count < other.count
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class CountSummary(DuplicatePublicationSummary):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, device, count):
+        """
+        Constructor
+        """
+        super().__init__(device, count)
+
+
+    def __lt__(self, other):
+        # count...
+        if self.count < other.count:
+            return True
+
+        if self.count > other.count:
+            return False
+
+        # device...
+        return self.device < other.device
