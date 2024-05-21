@@ -8,7 +8,7 @@ import requests
 
 from scs_core.aws.client.api_client import APIClient
 from scs_core.aws.config.endpoint import APIEndpoint
-from scs_core.aws.data.ingestion.duplicate_publication import DuplicatePublication, DuplicatePublicationSummary
+from scs_core.aws.data.ingestion.duplicate_publication import DuplicatePublication
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -35,13 +35,13 @@ class DuplicatePublicationManager(APIClient):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_summaries(self, token):
+    def find_summaries(self, token, summary_class):
         url = '/'.join([Endpoint.url(), 'summaries'])
 
         response = requests.get(url, headers=self._token_headers(token))
         self._check_response(response)
 
-        return sorted([DuplicatePublicationSummary.construct_from_jdict(jdict) for jdict in response.json()])
+        return sorted([summary_class.construct_from_jdict(jdict) for jdict in response.json()])
 
 
     def find_for_device(self, token, device):
