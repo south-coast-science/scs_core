@@ -310,11 +310,11 @@ class OrganisationManager(APIClient):
         self._check_response(response)
 
 
-    def delete_device(self, token, device_tag):
+    def delete_device(self, token, device):
         url = ExecEndpoint.url('device')
-        params = {"DeviceTag": device_tag}
+        payload = JSONify.dumps(device)
 
-        response = requests.delete(url, headers=self._token_headers(token), params=params)
+        response = requests.delete(url, headers=self._token_headers(token), data=payload)
         self._check_response(response)
 
 
