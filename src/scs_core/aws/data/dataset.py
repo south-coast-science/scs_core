@@ -80,8 +80,6 @@ class Dataset(object):
 
     def __contains__(self, item):
         for dataset_item in self.__items.values():
-            # print("item: %s" % item)
-            # print("dataset_item: %s" % dataset_item)
             if dataset_item.references(item):
                 return True
 
