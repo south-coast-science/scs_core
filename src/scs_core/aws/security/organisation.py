@@ -772,6 +772,11 @@ class OrganisationDevice(JSONable):
         return self._start_datetime
 
 
+    @start_datetime.setter
+    def start_datetime(self, start_datetime):
+        self._start_datetime = start_datetime
+
+
     @property
     def end_datetime(self):
         return self.__end_datetime
@@ -780,10 +785,6 @@ class OrganisationDevice(JSONable):
     @end_datetime.setter
     def end_datetime(self, end_datetime):
         self.__end_datetime = end_datetime
-
-    @start_datetime.setter
-    def start_datetime(self, start_datetime):
-        self._start_datetime = start_datetime
 
 
     @property
