@@ -22,7 +22,7 @@
         "ResourceDataContainer": {
           "S3MachineLearningModelResourceData": {
             "DestinationPath": "/trained-models/oB.1/pm1",
-            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM1-vB-scs-opc-105-2022-xgboost-2024-05-23.tar.gz"
+            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM1-vB-scs-opc-105-Y22-xgboost-2024-05-28.tar.gz"
           }
         }
       },
@@ -32,7 +32,7 @@
         "ResourceDataContainer": {
           "S3MachineLearningModelResourceData": {
             "DestinationPath": "/trained-models/oB.1/pm2p5",
-            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM2P5-vB-scs-opc-105-2022-xgboost-2024-05-23.tar.gz"
+            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM2P5-vB-scs-opc-105-Y22-xgboost-2024-05-28.tar.gz"
           }
         }
       },
@@ -42,7 +42,7 @@
         "ResourceDataContainer": {
           "S3MachineLearningModelResourceData": {
             "DestinationPath": "/trained-models/oB.1/pm10",
-            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM10-vB-scs-opc-105-2022-xgboost-2024-05-23.tar.gz"
+            "S3Uri": "s3://scs-sagemaker-automl-2/deployable-xgboost-models/PM10-vB-scs-opc-105-Y22-xgboost-2024-05-28.tar.gz"
           }
         }
       },
