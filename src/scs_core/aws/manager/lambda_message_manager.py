@@ -91,11 +91,11 @@ class MessageManager(object):
                     self.__reporter.print(len(block), block_start=block.start())
 
                 # next request...
-                if block.next_url is None:
+                if block.next_request is None:
                     break
 
-                next_url = urlparse(block.next_url)
-                next_params = parse_qs(next_url.query)
+                next_request = urlparse(block.next_request)
+                next_params = parse_qs(next_request.query)
 
                 # noinspection PyTypeChecker
                 params[MessageRequest.START] = next_params[MessageRequest.START][0]
@@ -403,14 +403,14 @@ class MessageResponse(APIResponse):
             item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
             items.append(item)
 
-        next_url = jdict.get('next')
+        next_request = jdict.get('next')
 
-        return cls(code, status, fetched_last, interval, items, next_url)
+        return cls(code, status, fetched_last, interval, items, next_request)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, code, status, fetched_last, interval, items, next_url):
+    def __init__(self, code, status, fetched_last, interval, items, next_request):
         """
         Constructor
         """
@@ -421,7 +421,7 @@ class MessageResponse(APIResponse):
 
         self.__items = items                            # list of Message
 
-        self.__next_url = next_url                      # URL string
+        self.__next_request = next_request              # dict (lambda-to-lambda) or URL string (API gateway)
 
 
     def __len__(self):
@@ -448,8 +448,8 @@ class MessageResponse(APIResponse):
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -513,12 +513,12 @@ class MessageResponse(APIResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, interval:%s, items:%s, next_url:%s}" % \
-               (self.code, self.status, self.fetched_last, self.interval, Str.collection(self.items), self.next_url)
+        return "MessageResponse:{code:%s, status:%s, fetched_last:%s, interval:%s, items:%s, next_request:%s}" % \
+               (self.code, self.status, self.fetched_last, self.interval, Str.collection(self.items), self.next_request)

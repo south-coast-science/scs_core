@@ -81,7 +81,7 @@ class APIClient(ABC):
                 self._reporter.print(len(block), block_start=block.start())
 
             # next request...
-            if block.next_url is None:
+            if block.next_request is None:
                 break
 
             params = block.next_params(params)
