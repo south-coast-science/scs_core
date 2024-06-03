@@ -45,7 +45,12 @@ class JSONPopen(Popen):
     # ----------------------------------------------------------------------------------------------------------------
 
     def json(self):
-        return json.loads(self.stdout.readline().decode())
+        line = self.stdout.readline()
+
+        if line is None:
+            return None
+
+        return json.loads(line.decode())
 
 
     def json_lines(self):
