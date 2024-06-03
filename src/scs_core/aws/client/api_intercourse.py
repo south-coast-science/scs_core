@@ -51,5 +51,5 @@ class APIResponse(JSONable, ABC):
 
     @property
     @abstractmethod
-    def next_url(self):
+    def next_request(self):
         pass

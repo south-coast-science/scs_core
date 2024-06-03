@@ -71,7 +71,7 @@ class TopicOrigin(APIResponse):
 
 
     @property
-    def next_url(self):
+    def next_request(self):
         raise NotImplementedError
 
 

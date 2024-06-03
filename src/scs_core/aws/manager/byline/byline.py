@@ -11,6 +11,7 @@ example:
 """
 
 import json
+import logging
 
 from collections import OrderedDict
 
@@ -173,9 +174,11 @@ class BylineGroup(JSONable):
 
         for byline in bylines:
             if excluded is not None and byline.topic.endswith(excluded):
+                logging.info("excluded: %s" % byline.device)
                 continue
 
             if strict_tags and not CognitoDeviceCredentials.is_valid_tag(byline.device):
+                logging.info("invalid: %s" % byline.device)
                 continue
 
             filtered_bylines.append(byline)
@@ -335,4 +338,3 @@ class TopicBylineGroup(BylineGroup):
     @property
     def devices(self):
         return list(self._device_bylines.keys())
-        # return self._device_bylines.keys()
