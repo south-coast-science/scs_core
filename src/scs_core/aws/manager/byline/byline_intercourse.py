@@ -39,17 +39,17 @@ class BylineFinderResponse(APIResponse):
 
         next_url = jdict.get('next')
 
-        return cls(items, next_url=next_url)
+        return cls(items, next_request=next_url)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, items, next_url=None):
+    def __init__(self, items, next_request=None):
         """
         Constructor
         """
         self.__items = items                                # list of Byline
-        self.__next_url = next_url                          # URL string
+        self.__next_request = next_request                  # dict (lambda-to-lambda) or URL string (API gateway)
 
 
     def __len__(self):
@@ -59,7 +59,7 @@ class BylineFinderResponse(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, _):
-        return parse_qs(urlparse(self.next_url).query)
+        return parse_qs(urlparse(self.next_request).query)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,8 +71,8 @@ class BylineFinderResponse(APIResponse):
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -85,11 +85,11 @@ class BylineFinderResponse(APIResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BylineFinderResponse:{items:%s, next_url:%s}" %  (Str.collection(self.items), self.next_url)
+        return "BylineFinderResponse:{items:%s, next_request:%s}" %  (Str.collection(self.items), self.next_request)

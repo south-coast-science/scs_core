@@ -131,21 +131,21 @@ class AlertSpecificationFindResponse(HTTPResponse):
             for alert_jdict in jdict.get('Items'):
                 alerts.append(AlertSpecification.construct_from_jdict(alert_jdict))
 
-        next_url = jdict.get('next')
+        next_request = jdict.get('next')
 
-        return cls(status, alerts, next_url=next_url)
+        return cls(status, alerts, next_request=next_request)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, alerts, next_url=None):
+    def __init__(self, status, alerts, next_request=None):
         """
         Constructor
         """
         super().__init__(status)
 
         self.__alerts = alerts                  # array of Alert
-        self.__next_url = next_url              # URL string
+        self.__next_request = next_request              # URL string
 
 
     def __len__(self):
@@ -162,8 +162,8 @@ class AlertSpecificationFindResponse(HTTPResponse):
         if self.alerts is not None:
             jdict['Items'] = self.alerts
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -176,12 +176,12 @@ class AlertSpecificationFindResponse(HTTPResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AlertSpecificationFindResponse:{status:%s, alerts:%s, next_url:%s}" % \
-               (self.status, Str.collection(self.alerts), self.next_url)
+        return "AlertSpecificationFindResponse:{status:%s, alerts:%s, next_request:%s}" % \
+               (self.status, Str.collection(self.alerts), self.next_request)

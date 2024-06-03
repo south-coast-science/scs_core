@@ -240,20 +240,20 @@ class ConfigurationResponse(APIResponse):
                     ConfigurationSample.construct_from_jdict(item_jdict)
                 items.append(item)
 
-        next_url = jdict.get('next')
+        next_request = jdict.get('next')
 
-        return cls(mode, items, next_url=next_url)
+        return cls(mode, items, next_request=next_request)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, mode, items, next_url=None):
+    def __init__(self, mode, items, next_request=None):
         """
         Constructor
         """
         self.__mode = mode                                  # ConfigurationRequest.Mode member
         self.__items = items                                # list of ConfigurationSample or string
-        self.__next_url = next_url                          # URL string
+        self.__next_request = next_request                  # dict (lambda-to-lambda) or URL string (API gateway)
 
 
     def __len__(self):
@@ -263,7 +263,7 @@ class ConfigurationResponse(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, _):
-        return parse_qs(urlparse(self.next_url).query)
+        return parse_qs(urlparse(self.next_request).query)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -278,8 +278,8 @@ class ConfigurationResponse(APIResponse):
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -297,12 +297,12 @@ class ConfigurationResponse(APIResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationResponse:{mode:%s, items:%s, next_url:%s}" % \
-               (self.mode, Str.collection(self.items), self.next_url)
+        return "ConfigurationResponse:{mode:%s, items:%s, next_request:%s}" % \
+               (self.mode, Str.collection(self.items), self.next_request)
