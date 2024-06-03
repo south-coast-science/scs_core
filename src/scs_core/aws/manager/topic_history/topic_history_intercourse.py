@@ -303,14 +303,14 @@ class TopicHistoryResponse(APIResponse):
             item = Message.construct_from_jdict(msg_jdict) if 'payload' in msg_jdict else msg_jdict
             items.append(item)
 
-        next_url = jdict.get('next')
+        next_request = jdict.get('next')
 
-        return cls(fetched_last, interval, items, next_url)
+        return cls(fetched_last, interval, items, next_request)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, fetched_last, interval, items, next_url):
+    def __init__(self, fetched_last, interval, items, next_request):
         """
         Constructor
         """
@@ -318,8 +318,7 @@ class TopicHistoryResponse(APIResponse):
         self.__interval = interval                              # int
 
         self.__items = items                                    # list of Message
-
-        self.__next_url = next_url                              # URL string
+        self.__next_request = next_request                      # dict (lambda-to-lambda) or URL string (API gateway)
 
 
     def __len__(self):
@@ -329,7 +328,7 @@ class TopicHistoryResponse(APIResponse):
     # ----------------------------------------------------------------------------------------------------------------
 
     def next_params(self, params):
-        return parse_qs(urlparse(self.next_url).query)
+        return parse_qs(urlparse(self.next_request).query)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -346,8 +345,8 @@ class TopicHistoryResponse(APIResponse):
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -396,12 +395,12 @@ class TopicHistoryResponse(APIResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "TopicHistoryResponse:{fetched_last:%s, interval:%s, items:%s, next_url:%s}" % \
-               (self.fetched_last, self.interval, Str.collection(self.items), self.next_url)
+        return "TopicHistoryResponse:{fetched_last:%s, interval:%s, items:%s, next_request:%s}" % \
+               (self.fetched_last, self.interval, Str.collection(self.items), self.next_request)

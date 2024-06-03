@@ -140,14 +140,14 @@ class ConfigurationCheckResponse(HTTPResponse):
                     ConfigurationCheck.construct_from_jdict(item_jdict)
                 items.append(item)
 
-        next_url = jdict.get('next')
+        next_request = jdict.get('next')
 
-        return cls(status, mode, items, next_url=next_url)
+        return cls(status, mode, items, next_request=next_request)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, status, mode, items, next_url=None):
+    def __init__(self, status, mode, items, next_request=None):
         """
         Constructor
         """
@@ -155,7 +155,7 @@ class ConfigurationCheckResponse(HTTPResponse):
 
         self.__mode = mode                              # ConfigurationCheckRequest.Mode member
         self.__items = items                            # list of ConfigurationCheck or string
-        self.__next_url = next_url                      # URL string
+        self.__next_request = next_request                      # URL string
 
 
     def __len__(self):
@@ -176,8 +176,8 @@ class ConfigurationCheckResponse(HTTPResponse):
             jdict['Items'] = self.items
             jdict['itemCount'] = len(self.items)
 
-        if self.next_url is not None:
-            jdict['next'] = self.next_url
+        if self.next_request is not None:
+            jdict['next'] = self.next_request
 
         return jdict
 
@@ -195,12 +195,12 @@ class ConfigurationCheckResponse(HTTPResponse):
 
 
     @property
-    def next_url(self):
-        return self.__next_url
+    def next_request(self):
+        return self.__next_request
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ConfigurationCheckResponse:{status:%s, mode:%s, items:%s, next_url:%s}" % \
-               (self.status, self.mode, Str.collection(self.items), self.next_url)
+        return "ConfigurationCheckResponse:{status:%s, mode:%s, items:%s, next_request:%s}" % \
+               (self.status, self.mode, Str.collection(self.items), self.next_request)
