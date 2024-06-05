@@ -78,7 +78,7 @@ class APIClient(ABC):
 
             # report...
             if self._reporter:
-                self._reporter.print(len(block), block_start=block.start())
+                self._reporter.print(len(block), block_start=block.start(), interval=block.interval)
 
             # next request...
             if block.next_request is None:

@@ -53,3 +53,8 @@ class APIResponse(JSONable, ABC):
     @abstractmethod
     def next_request(self):
         pass
+
+
+    @property
+    def interval(self):
+        return None
