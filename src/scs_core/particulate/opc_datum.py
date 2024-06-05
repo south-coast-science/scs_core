@@ -77,11 +77,11 @@ class OPCDatum(PMxDatum):
         """
         PMxDatum.__init__(self, rec, pm1, pm2p5, None, pm10)
 
-        self.__source = source                                      # string
+        self.__source = source                                     # string
 
         self.__period = Datum.float(period, 1)              # seconds
 
-        self.__bins = [round(count, 1) for count in bins]           # array of count
+        self.__bins = [round(count, 1) for count in bins]           # array of count (precision 1 for aggregate values)
 
         self.__bin_1_mtof = Datum.int(bin_1_mtof)                   # float time
         self.__bin_3_mtof = Datum.int(bin_3_mtof)                   # float time
