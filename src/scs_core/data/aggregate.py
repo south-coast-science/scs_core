@@ -37,7 +37,7 @@ class Aggregate(object):
 
         self.__paths = []                               # array of string
         self.__precisions = {}                          # dict of path: Precision
-        self.__regressions = {}                         # dict of path: LinearRegression
+        self.__regressions = {}                         # dict of path: Regression
 
         self.__initialised = False                      # bool
         self.__block_sample_count = 0                   # int

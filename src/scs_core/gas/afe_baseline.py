@@ -106,7 +106,7 @@ class AFEBaseline(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def sensor_baseline(self, i):
-        return self.__sensor_baselines[i]
+        return None if i is None else self.__sensor_baselines[i]
 
 
     def set_sensor_baseline(self, i, sensor_baseline):

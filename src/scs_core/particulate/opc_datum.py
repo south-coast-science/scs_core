@@ -77,20 +77,20 @@ class OPCDatum(PMxDatum):
         """
         PMxDatum.__init__(self, rec, pm1, pm2p5, None, pm10)
 
-        self.__source = source                              # string
+        self.__source = source                                     # string
 
         self.__period = Datum.float(period, 1)              # seconds
 
-        self.__bins = [int(count) for count in bins]        # array of count
+        self.__bins = [round(count, 1) for count in bins]           # array of count (precision 1 for aggregate values)
 
-        self.__bin_1_mtof = Datum.int(bin_1_mtof)           # float time
-        self.__bin_3_mtof = Datum.int(bin_3_mtof)           # float time
-        self.__bin_5_mtof = Datum.int(bin_5_mtof)           # float time
-        self.__bin_7_mtof = Datum.int(bin_7_mtof)           # float time
+        self.__bin_1_mtof = Datum.int(bin_1_mtof)                   # float time
+        self.__bin_3_mtof = Datum.int(bin_3_mtof)                   # float time
+        self.__bin_5_mtof = Datum.int(bin_5_mtof)                   # float time
+        self.__bin_7_mtof = Datum.int(bin_7_mtof)                   # float time
 
         self.__sfr = Datum.float(sfr, 3)                    # float sample flow rate
 
-        self.__sht = sht                                    # SHTDatum
+        self.__sht = sht                                            # SHTDatum
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ class OPCDatum(PMxDatum):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%0.1f, bins:%s, " \
+        return self.__class__.__name__ + ":{source:%s, rec:%s, pm1:%s, pm2p5:%s, pm10:%s, period:%s, bins:%s, " \
                "bin_1_mtof:%s, bin_3_mtof:%s, bin_5_mtof:%s, bin_7_mtof:%s, sfr:%s, sht:%s}" % \
                (self.source, self.rec, self.pm1, self.pm2p5, self.pm10, self.period, self.bins,
                 self.bin_1_mtof, self.bin_3_mtof, self.bin_5_mtof, self.bin_7_mtof, self.sfr, self.sht)
