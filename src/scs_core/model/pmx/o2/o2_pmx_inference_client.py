@@ -93,7 +93,21 @@ class O2PMxInferenceClient(PMxInferenceClient):
         pmx_request = PMxRequest(opc_sample, ext_sht_datum, meteo_t_slope, meteo_rh_slope, opc_t_slope, opc_rh_slope)
         # self.__logger.info("pmx_request: %s" % pmx_request)
 
-        self._uds_client.request(JSONify.dumps(pmx_request.as_json()))
+        # print(JSONify.dumps(pmx_request), file=sys.stderr)
+        # sys.stderr.flush()
+
+        self._uds_client.request(JSONify.dumps(pmx_request))
+        response = self._uds_client.wait_for_response()
+
+        return json.loads(response)
+
+
+    def infer_from_prepared(self, opc_sample, ext_sht_datum, meteo_t_slope, meteo_rh_slope, opc_t_slope, opc_rh_slope):
+        # request...
+        pmx_request = PMxRequest(opc_sample, ext_sht_datum, meteo_t_slope, meteo_rh_slope, opc_t_slope, opc_rh_slope)
+        # self.__logger.info("pmx_request: %s" % pmx_request)
+
+        self._uds_client.request(JSONify.dumps(pmx_request))
         response = self._uds_client.wait_for_response()
 
         return json.loads(response)
