@@ -63,7 +63,7 @@
                         }
                     ],
                     "Variables": {
-                            "MODEL_NAME": "oB.1"
+                            "MODEL_NAME": "oB.2"
                     }
                 },
                 "Executable": "lambda_function.lambda_handler",
