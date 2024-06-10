@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Created on 22 Sep 2021
+Created on 7 June 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,7 +9,8 @@ Created on 22 Sep 2021
 import json
 
 from scs_core.data.json import JSONify
-from scs_core.model.catalogue.model_compendium import ModelCompendium
+
+from scs_core.model.pmx.catalogue.model_compendium import ModelCompendium
 
 
 # --------------------------------------------------------------------------------------------------------------------

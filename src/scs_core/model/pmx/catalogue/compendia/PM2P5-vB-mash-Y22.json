@@ -1,0 +1,230 @@
+{
+    "is-error-model": false,
+    "data-set": "ref-scs-opc-mash-meteo-pmx-Y22-15min-slope-pm2p5-clean",
+    "period": {
+        "start": "2022-01-01T00:30:00Z",
+        "end": "2023-01-01T00:00:00Z"
+    },
+    "primaries": {
+        "val.bin:0": {
+            "path": "src.praxis.pmx.val.bin:0",
+            "min": 13.9,
+            "avg": 460.681,
+            "max": 4214.7
+        },
+        "val.bin:1": {
+            "path": "src.praxis.pmx.val.bin:1",
+            "min": 2.7,
+            "avg": 97.003,
+            "max": 1804.4
+        },
+        "val.bin:2": {
+            "path": "src.praxis.pmx.val.bin:2",
+            "min": 0.6,
+            "avg": 23.011,
+            "max": 783.5
+        },
+        "val.bin:3": {
+            "path": "src.praxis.pmx.val.bin:3",
+            "min": 0.2,
+            "avg": 5.402,
+            "max": 221.2
+        },
+        "val.bin:4": {
+            "path": "src.praxis.pmx.val.bin:4",
+            "min": 0.3,
+            "avg": 8.19,
+            "max": 286.3
+        },
+        "val.bin:5": {
+            "path": "src.praxis.pmx.val.bin:5",
+            "min": 0.2,
+            "avg": 6.326,
+            "max": 218.9
+        },
+        "val.bin:6": {
+            "path": "src.praxis.pmx.val.bin:6",
+            "min": 0.1,
+            "avg": 2.723,
+            "max": 175.9
+        },
+        "val.bin:7": {
+            "path": "src.praxis.pmx.val.bin:7",
+            "min": 0.0,
+            "avg": 0.794,
+            "max": 43.8
+        },
+        "val.bin:8": {
+            "path": "src.praxis.pmx.val.bin:8",
+            "min": 0.0,
+            "avg": 0.635,
+            "max": 49.5
+        },
+        "val.bin:9": {
+            "path": "src.praxis.pmx.val.bin:9",
+            "min": 0.0,
+            "avg": 0.271,
+            "max": 47.8
+        },
+        "val.bin:10": {
+            "path": "src.praxis.pmx.val.bin:10",
+            "min": 0.0,
+            "avg": 0.137,
+            "max": 48.7
+        },
+        "val.bin:11": {
+            "path": "src.praxis.pmx.val.bin:11",
+            "min": 0.0,
+            "avg": 0.125,
+            "max": 94.0
+        },
+        "val.bin:12": {
+            "path": "src.praxis.pmx.val.bin:12",
+            "min": 0.0,
+            "avg": 0.069,
+            "max": 63.0
+        },
+        "val.bin:13": {
+            "path": "src.praxis.pmx.val.bin:13",
+            "min": 0.0,
+            "avg": 0.053,
+            "max": 63.4
+        },
+        "val.bin:14": {
+            "path": "src.praxis.pmx.val.bin:14",
+            "min": 0.0,
+            "avg": 0.04,
+            "max": 57.3
+        },
+        "val.bin:15": {
+            "path": "src.praxis.pmx.val.bin:15",
+            "min": 0.0,
+            "avg": 0.035,
+            "max": 53.7
+        },
+        "val.bin:16": {
+            "path": "src.praxis.pmx.val.bin:16",
+            "min": 0.0,
+            "avg": 0.03,
+            "max": 49.2
+        },
+        "val.bin:17": {
+            "path": "src.praxis.pmx.val.bin:17",
+            "min": 0.0,
+            "avg": 0.025,
+            "max": 41.8
+        },
+        "val.bin:18": {
+            "path": "src.praxis.pmx.val.bin:18",
+            "min": 0.0,
+            "avg": 0.029,
+            "max": 52.4
+        },
+        "val.bin:19": {
+            "path": "src.praxis.pmx.val.bin:19",
+            "min": 0.0,
+            "avg": 0.02,
+            "max": 39.0
+        },
+        "val.bin:20": {
+            "path": "src.praxis.pmx.val.bin:20",
+            "min": 0.0,
+            "avg": 0.013,
+            "max": 28.5
+        },
+        "val.bin:21": {
+            "path": "src.praxis.pmx.val.bin:21",
+            "min": 0.0,
+            "avg": 0.008,
+            "max": 19.0
+        },
+        "val.bin:22": {
+            "path": "src.praxis.pmx.val.bin:22",
+            "min": 0.0,
+            "avg": 0.005,
+            "max": 12.9
+        },
+        "val.bin:23": {
+            "path": "src.praxis.pmx.val.bin:23",
+            "min": 0.0,
+            "avg": 0.011,
+            "max": 28.8
+        }
+    },
+    "secondaries": {
+        "hmd.cur": {
+            "path": "src.praxis.pmx.val.sht.hmd.cur",
+            "min": 6.3,
+            "avg": 35.955,
+            "max": 70.0
+        },
+        "hmd.slp15min": {
+            "path": "src.praxis.pmx.val.sht.hmd.slp15min",
+            "min": -0.015,
+            "avg": -0.0,
+            "max": 0.01
+        },
+        "tmp.cur": {
+            "path": "src.praxis.pmx.val.sht.tmp.cur",
+            "min": 7.6,
+            "avg": 24.213,
+            "max": 52.1
+        },
+        "tmp.slp15min": {
+            "path": "src.praxis.pmx.val.sht.tmp.slp15min",
+            "min": -0.003,
+            "avg": 0.0,
+            "max": 0.005
+        },
+        "val.mtf1": {
+            "path": "src.praxis.pmx.val.mtf1",
+            "min": 21.5,
+            "avg": 25.083,
+            "max": 31.7
+        },
+        "val.mtf5": {
+            "path": "src.praxis.pmx.val.mtf5",
+            "min": 4.7,
+            "avg": 30.992,
+            "max": 42.5
+        },
+        "val.mtf3": {
+            "path": "src.praxis.pmx.val.mtf3",
+            "min": 5.1,
+            "avg": 27.651,
+            "max": 41.5
+        },
+        "val.mtf7": {
+            "path": "src.praxis.pmx.val.mtf7",
+            "min": 0.4,
+            "avg": 19.088,
+            "max": 49.8
+        },
+        "val.sfr": {
+            "path": "src.praxis.pmx.val.sfr",
+            "min": 2.39,
+            "avg": 3.866,
+            "max": 4.97
+        }
+    },
+    "reference": {
+        "path": "src.ref.PM2.5",
+        "min": 0.4,
+        "avg": 9.2,
+        "max": 86.3
+    },
+    "output": {
+        "path": "exg.PM2P5.vB.mash.Y22",
+        "min": 0.4,
+        "avg": 9.1,
+        "max": 86.2
+    },
+    "performance": {
+        "count": 33212,
+        "slope": 0.991,
+        "intercept": 0.073,
+        "r2": 0.996,
+        "p": 0.0,
+        "std-err": 0.0
+    }
+}

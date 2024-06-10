@@ -20,7 +20,7 @@ from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.model.gas.baseline import Baseline
-from scs_core.model.catalogue.model_compendium import ModelCompendium
+from scs_core.model.gas.catalogue.model_compendium import ModelCompendium
 
 from scs_core.sys.logging import Logging
 
