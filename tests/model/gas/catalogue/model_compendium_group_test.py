@@ -8,8 +8,8 @@ Created on 22 Sep 2021
 
 from scs_core.data.json import JSONify
 
-from scs_core.model.catalogue.model_compendium import ModelCompendium
-from scs_core.model.catalogue.model_compendium_group import ModelCompendiumGroup
+from scs_core.model.gas.catalogue.model_compendium import ModelCompendium
+from scs_core.model.gas.catalogue.model_compendium_group import ModelCompendiumGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------

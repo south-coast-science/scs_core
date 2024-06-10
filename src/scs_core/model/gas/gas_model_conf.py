@@ -11,7 +11,7 @@ example JSON:
 
 from scs_core.gas.afe_calib import AFECalib
 
-from scs_core.model.catalogue.model_compendium_group import ModelCompendiumGroup
+from scs_core.model.gas.catalogue.model_compendium_group import ModelCompendiumGroup
 from scs_core.model.gas.gas_baseline import GasBaseline
 from scs_core.model.gas.gas_inference_client import GasInferenceClient
 from scs_core.model.gas.vcal_baseline import VCalBaseline
