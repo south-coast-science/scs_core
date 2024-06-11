@@ -16,6 +16,11 @@ class Term(JSONable):
     classdocs
     """
 
+    @staticmethod
+    def suffix(prefix, path):
+        return path[len(prefix) + 1:]
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
