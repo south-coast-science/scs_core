@@ -153,8 +153,6 @@ class ModelCompendium(JSONCatalogueEntry):
         'pmx.val.bin:23'
     ]
 
-    # src.praxis.meteo.val.tmp.slp15min
-
     DEVICE_VB_SECONDARIES = [
         'meteo.val.hmd.cur',
         'meteo.val.hmd.slp15min',
@@ -171,14 +169,35 @@ class ModelCompendium(JSONCatalogueEntry):
         'pmx.val.sht.tmp.slp15min'
     ]
 
+    DEVICE_VE_SECONDARIES = [
+        'meteo.exg.val.hmd.cur',
+        'meteo.exg.val.hmd.slp15min',
+        'meteo.val.tmp.cur',
+        'meteo.val.tmp.slp15min',
+        'pmx.val.mtf1',
+        'pmx.val.mtf3',
+        'pmx.val.mtf5',
+        'pmx.val.mtf7',
+        'pmx.val.sfr',
+        'pmx.val.sht.hmd.cur',
+        'pmx.val.sht.hmd.slp15min',
+        'pmx.val.sht.tmp.cur',
+        'pmx.val.sht.tmp.slp15min'
+    ]
+
+    DEVICE_SECONDARIES = {
+        'vB': DEVICE_VB_SECONDARIES,
+        'vE': DEVICE_VE_SECONDARIES
+    }
+
     @classmethod
     def is_primary(cls, prefix, path):
         return cls.__is_term(prefix, path, cls.DEVICE_PRIMARIES)
 
 
     @classmethod
-    def is_secondary(cls, prefix, path):
-        return cls.__is_term(prefix, path, cls.DEVICE_VB_SECONDARIES)
+    def is_secondary(cls, prefix, path, model_interface):
+        return cls.__is_term(prefix, path, cls.DEVICE_SECONDARIES[model_interface])
 
 
     @classmethod
