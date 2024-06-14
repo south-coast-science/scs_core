@@ -47,7 +47,7 @@ class JSONPopen(Popen):
     def json(self):
         line = self.stdout.readline()
 
-        if line is None:
+        if line is None or line == b'':
             return None
 
         return json.loads(line.decode())
