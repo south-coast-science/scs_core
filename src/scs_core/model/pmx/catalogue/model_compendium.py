@@ -6,22 +6,117 @@ Created on 7 June 2024
 A catalogue entry for a machine learning model, for a specific PM size and model
 
 document example:
-
+<see scs_core.aws.model.pmx.compendia>
 """
 
 import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONCatalogueEntry
+from scs_core.data.json import JSONable, JSONCatalogueEntry
 from scs_core.data.lin_regress import LinRegress
 from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
-from scs_core.model.catalogue.term import Term, PrimaryTerm, SecondaryTerm
+from scs_core.model.catalogue.term import PrimaryTerm, SecondaryTerm, Term
 from scs_core.model.catalogue.training_period import TrainingPeriod
 
 from scs_core.sys.logging import Logging
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ReferenceCompendium(JSONable):
+    """
+    classdocs
+    """
+
+    REFERENCE_ENVIRONMENT = [
+        'temp',
+        'rh',
+        'pres'
+    ]
+
+    @classmethod
+    def is_target(cls, prefix, path, target):
+        return cls.__is_term(prefix, path, [target.lower()])
+
+
+    @classmethod
+    def is_environment(cls, prefix, path):
+        return cls.__is_term(prefix, path, cls.REFERENCE_ENVIRONMENT)
+
+
+    @classmethod
+    def __is_term(cls, prefix, path, term_set):
+        if not path.startswith(prefix):
+            return False
+
+        return Term.suffix(prefix, path).lower() in term_set
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct(cls, prefix, target_path, reference_targets, reference_environments):
+        target = Term.construct(target_path, reference_targets, prec=1)
+
+        environment = {Term.suffix(prefix, path): Term.construct(path, values, prec=3)
+                       for path, values in reference_environments.items()}
+
+        return cls(target, environment)
+
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        target = jdict.get('target')
+
+        environment = {path: SecondaryTerm.construct_from_jdict(term_jdict)
+                       for path, term_jdict in jdict.get('environment').items()}
+
+        return cls(target, environment)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, target, environment):
+        """
+        Constructor
+        """
+        self.__target = target                          # Term
+        self.__environment = environment                # dict of path: Term
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def target(self):
+        return self.__target
+
+
+    @property
+    def environment(self):
+        return self.__environment
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self, **kwargs):
+        jdict = OrderedDict()
+
+        jdict['target'] = self.target
+        jdict['environment'] = self.environment
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ReferenceCompendium:{target:%s, environment:%s}" % (self.target, self.environment)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -31,7 +126,7 @@ class ModelCompendium(JSONCatalogueEntry):
     classdocs
     """
 
-    PRIMARIES = [
+    DEVICE_PRIMARIES = [
         'pmx.val.bin:0',
         'pmx.val.bin:1',
         'pmx.val.bin:2',
@@ -58,7 +153,7 @@ class ModelCompendium(JSONCatalogueEntry):
         'pmx.val.bin:23'
     ]
 
-    VB_SECONDARIES = [
+    DEVICE_VB_SECONDARIES = [
         'meteo.val.hmd.cur',
         'meteo.val.hmd.slp15min',
         'meteo.val.tmp.cur',
@@ -74,14 +169,35 @@ class ModelCompendium(JSONCatalogueEntry):
         'pmx.val.sht.tmp.slp15min'
     ]
 
+    DEVICE_VE_SECONDARIES = [
+        'meteo.exg.val.hmd.cur',
+        'meteo.exg.val.hmd.slp15min',
+        'meteo.val.tmp.cur',
+        'meteo.val.tmp.slp15min',
+        'pmx.val.mtf1',
+        'pmx.val.mtf3',
+        'pmx.val.mtf5',
+        'pmx.val.mtf7',
+        'pmx.val.sfr',
+        'pmx.val.sht.hmd.cur',
+        'pmx.val.sht.hmd.slp15min',
+        'pmx.val.sht.tmp.cur',
+        'pmx.val.sht.tmp.slp15min'
+    ]
+
+    DEVICE_SECONDARIES = {
+        'vB': DEVICE_VB_SECONDARIES,
+        'vE': DEVICE_VE_SECONDARIES
+    }
+
     @classmethod
     def is_primary(cls, prefix, path):
-        return cls.__is_term(prefix, path, cls.PRIMARIES)
+        return cls.__is_term(prefix, path, cls.DEVICE_PRIMARIES)
 
 
     @classmethod
-    def is_secondary(cls, prefix, path):
-        return cls.__is_term(prefix, path, cls.VB_SECONDARIES)
+    def is_secondary(cls, prefix, path, model_interface):
+        return cls.__is_term(prefix, path, cls.DEVICE_SECONDARIES[model_interface])
 
 
     @classmethod
@@ -89,7 +205,7 @@ class ModelCompendium(JSONCatalogueEntry):
         if not path.startswith(prefix):
             return False
 
-        return path[len(prefix) + 1:] in term_set
+        return Term.suffix(prefix, path) in term_set
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -104,27 +220,22 @@ class ModelCompendium(JSONCatalogueEntry):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def __term_path(cls, path):
-        return '.'.join(path.split('.')[-2:])
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def construct(cls, is_error_model, data_set, recs, primary_values, secondary_values, output_path, outputs,
-                  reference_path, references):
+    def construct(cls, is_error_model, data_set, recs, device_prefix, primary_values, secondary_values, output_path,
+                  outputs, reference_prefix, target_path, reference_targets, reference_environments):
         period = TrainingPeriod.construct(recs)
 
-        primaries = {cls.__term_path(path): PrimaryTerm.construct(path, values, prec=3)
+        primaries = {Term.suffix(device_prefix, path): PrimaryTerm.construct(path, values, prec=3)
                      for path, values in primary_values.items()}
 
-        secondaries = {cls.__term_path(path): SecondaryTerm.construct(path, values, prec=3)
+        secondaries = {Term.suffix(device_prefix, path): SecondaryTerm.construct(path, values, prec=3)
                        for path, values in secondary_values.items()}
 
-        reference = Term.construct(reference_path, references, prec=1)
+        reference = ReferenceCompendium.construct(reference_prefix, target_path, reference_targets,
+                                                  reference_environments)
+
         output = Term.construct(output_path, outputs, prec=1)
 
-        performance = LinRegress.construct(references, outputs, prec=3)
+        performance = LinRegress.construct(reference_targets, outputs, prec=3)
 
         return cls(is_error_model, data_set, period, primaries, secondaries, reference, output, performance)
 
@@ -145,6 +256,7 @@ class ModelCompendium(JSONCatalogueEntry):
                        for path, term_jdict in jdict.get('secondaries').items()}
 
         reference = Term.construct_from_jdict(jdict.get('reference'))
+
         output = Term.construct_from_jdict(jdict.get('output'))
 
         performance = LinRegress.construct_from_jdict(jdict.get('performance'))
@@ -164,7 +276,7 @@ class ModelCompendium(JSONCatalogueEntry):
 
         self.__primaries = primaries                        # dict of path: PrimaryTerm
         self.__secondaries = secondaries                    # dict of path: SecondaryTerm
-        self.__reference = reference                        # Term
+        self.__reference = reference                        # ReferenceCompendium
         self.__output = output                              # Term
 
         self.__performance = performance                    # LinRegress
@@ -180,10 +292,8 @@ class ModelCompendium(JSONCatalogueEntry):
 
     def is_in_bounds(self, datum: PathDict):
         for datum_path in datum.paths():
-            term_path = self.__term_path(datum_path)
-
-            if term_path in self.secondaries:
-                if not self.secondaries[term_path].is_in_bounds(datum.node(datum_path)):
+            if datum_path in self.secondaries:
+                if not self.secondaries[datum_path].is_in_bounds(datum.node(datum_path)):
                     return False
 
         return True
@@ -206,7 +316,7 @@ class ModelCompendium(JSONCatalogueEntry):
 
     def primary_term(self, path):
         try:
-            return self.primaries[self.__term_path(path)]
+            return self.primaries[path]
         except KeyError:
             return None
 
@@ -217,7 +327,7 @@ class ModelCompendium(JSONCatalogueEntry):
 
     def secondary_term(self, path):
         try:
-            return self.secondaries[self.__term_path(path)]
+            return self.secondaries[path]
         except KeyError:
             return None
 
