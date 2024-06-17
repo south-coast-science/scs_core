@@ -337,7 +337,7 @@ class DeviceOrganisationManager(APIClient):
     def location_path_in_use(self, token, location_path):
         params = {"LocationPath": location_path}
 
-        response = requests.get(DevEndpoint.url(), headers=self._token_headers(token), params=params)
+        response = requests.get(DevEndpoint.url(), headers=self._token_headers(token), json=params)
         self._check_response(response)
 
         return json.loads(response.json())
