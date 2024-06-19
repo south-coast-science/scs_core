@@ -71,7 +71,10 @@ class PathDict(JSONable):
 
 
     def __len__(self):
-        return len(self.__dictionary)
+        try:
+            return len(self.__dictionary)
+        except TypeError:
+            return 1                                # self.__dictionary is a scalar value
 
 
     def __lt__(self, other):
