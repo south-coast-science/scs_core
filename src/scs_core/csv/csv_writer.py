@@ -106,7 +106,10 @@ class CSVWriter(object):
         file = sys.stdin if self.__filename is None else open(self.__filename)
         reader = csv.reader(file)
 
-        paths = next(reader)
+        try:
+            paths = next(reader)
+        except StopIteration:
+            paths = []                  # no header cells present
 
         file.close()
 
@@ -132,7 +135,7 @@ class CSVWriter(object):
     def __is_sub_path(candidate, paths):
         for path in paths:
             if candidate == path:
-                return False            # exit here because paths are assumed to be unique
+                return False            # return here because paths are assumed to be unique
 
             if PathDict.sub_path_includes_path(candidate, path):
                 return True
