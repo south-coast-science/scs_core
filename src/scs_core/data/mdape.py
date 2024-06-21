@@ -25,8 +25,8 @@ class MdAPE(object):
         """
         Constructor
         """
-        self.__precision = precision
-        self.__apes = []
+        self.__precision = int(precision)                       # int
+        self.__apes = []                                        # array of float
 
 
     def __len__(self):
@@ -58,4 +58,4 @@ class MdAPE(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MdAPE:{precision:%s, items:%s}" % (self.__precision, len(self))
+        return "MdAPE:{precision:%s, apes:%s}" % (self.__precision, len(self))
