@@ -11,7 +11,7 @@ from scs_core.data.queue_report import QueueReport, ClientStatus
 
 # --------------------------------------------------------------------------------------------------------------------
 
-filename = '/tmp/southcoastscience/queue_report.json'
+filename = '/dev/shm/southcoastscience/queue_report.json'
 
 report = QueueReport(23, ClientStatus.CONNECTED, True)
 print(report)

@@ -4,7 +4,7 @@ Created on 17 May 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"inhibit-publishing": false, "report-file": "/tmp/southcoastscience/mqtt_queue_report.json", "debug": true}
+{"inhibit-publishing": false, "report-file": "/dev/shm/southcoastscience/mqtt_queue_report.json", "debug": true}
 """
 
 from collections import OrderedDict

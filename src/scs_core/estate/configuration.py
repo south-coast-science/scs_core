@@ -125,7 +125,7 @@ example document:
             "model": "SAM8Q",
             "sample-interval": 10,
             "tally": 60,
-            "report-file": "/tmp/southcoastscience/gps_report.json",
+            "report-file": "/dev/shm/southcoastscience/gps_report.json",
             "debug": false
         },
         "interface-conf": {
@@ -154,7 +154,7 @@ example document:
             "batt-model": null,
             "ignore-threshold": false,
             "reporting-interval": 10,
-            "report-file": "/tmp/southcoastscience/psu_status_report.json"
+            "report-file": "/dev/shm/southcoastscience/psu_status_report.json"
         },
         "psu-version": {
             "id": "South Coast Science PSU Oslo",

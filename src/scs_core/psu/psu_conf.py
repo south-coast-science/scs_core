@@ -7,7 +7,7 @@ specifies which PSU is present, if any
 
 example JSON:
 {"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10,
-"report-file": "/tmp/southcoastscience/psu_status_report.json"}
+"report-file": "/dev/shm/southcoastscience/psu_status_report.json"}
 """
 
 from collections import OrderedDict
