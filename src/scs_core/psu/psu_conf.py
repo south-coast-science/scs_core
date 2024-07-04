@@ -24,6 +24,16 @@ class PSUConf(PersistentJSONable):
 
     __DEFAULT_REPORTING_INTERVAL = 10               # seconds
 
+    __REPORT_FILENAME = "psu_status_report.json"
+
+    @classmethod
+    def report_file(cls, manager):
+        return manager.tmp_file(cls.__REPORT_FILENAME)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+
     __FILENAME = "psu_conf.json"
 
     @classmethod
@@ -43,14 +53,13 @@ class PSUConf(PersistentJSONable):
         ignore_threshold = jdict.get('ignore-threshold', False)
 
         reporting_interval = jdict.get('reporting-interval', cls.__DEFAULT_REPORTING_INTERVAL)
-        report_file = jdict.get('report-file')
 
-        return cls(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
+        return cls(psu_model, batt_model, ignore_threshold, reporting_interval)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, psu_model, batt_model, ignore_threshold, reporting_interval, report_file):
+    def __init__(self, psu_model, batt_model, ignore_threshold, reporting_interval):
         """
         Constructor
         """
@@ -61,7 +70,6 @@ class PSUConf(PersistentJSONable):
         self.__ignore_threshold = ignore_threshold                          # bool
 
         self.__reporting_interval = int(reporting_interval)                 # int
-        self.__report_file = report_file                                    # string
 
 
     def __eq__(self, other):
@@ -69,8 +77,7 @@ class PSUConf(PersistentJSONable):
             return self.psu_model == other.psu_model and \
                    self.batt_model == other.batt_model and \
                    self.ignore_threshold == other.ignore_threshold and \
-                   self.reporting_interval == other.reporting_interval and \
-                   self.report_file == other.report_file
+                   self.reporting_interval == other.reporting_interval
 
         except (TypeError, AttributeError):
             return False
@@ -116,11 +123,6 @@ class PSUConf(PersistentJSONable):
 
 
     @property
-    def report_file(self):
-        return self.__report_file
-
-
-    @property
     def reporting_interval(self):
         return self.__reporting_interval
 
@@ -135,7 +137,6 @@ class PSUConf(PersistentJSONable):
         jdict['ignore-threshold'] = self.__ignore_threshold
 
         jdict['reporting-interval'] = self.__reporting_interval
-        jdict['report-file'] = self.__report_file
 
         return jdict
 
@@ -143,7 +144,5 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf(core):{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s, " \
-               "report_file:%s}" % \
-               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval,
-                self.report_file)
+        return "PSUConf(core):{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s}" % \
+               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval)

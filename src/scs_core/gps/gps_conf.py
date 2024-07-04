@@ -25,6 +25,16 @@ class GPSConf(PersistentJSONable):
     DEFAULT_SAMPLE_INTERVAL =       10          # seconds
     DEFAULT_TALLY =                 60          # 10 minutes
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    __REPORT_FILENAME = "gps_report.json"
+
+    @classmethod
+    def report_file(cls, manager):
+        return manager.tmp_file(cls.__REPORT_FILENAME)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     __FILENAME = "gps_conf.json"
 
@@ -44,15 +54,14 @@ class GPSConf(PersistentJSONable):
 
         sample_interval = jdict.get('sample-interval', cls.DEFAULT_SAMPLE_INTERVAL)
         tally = jdict.get('tally', cls.DEFAULT_TALLY)
-        report_file = jdict.get('report-file')
         debug = jdict.get('debug', False)
 
-        return cls(model, sample_interval, tally, report_file, debug)
+        return cls(model, sample_interval, tally, debug)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, sample_interval, tally, report_file, debug):
+    def __init__(self, model, sample_interval, tally, debug):
         """
         Constructor
         """
@@ -62,15 +71,13 @@ class GPSConf(PersistentJSONable):
 
         self.__sample_interval = int(sample_interval)               # int seconds
         self.__tally = int(tally)                                   # int count
-        self.__report_file = report_file                            # string tmp file to store current GPS report
         self.__debug = bool(debug)                                  # bool
 
 
     def __eq__(self, other):
         try:
             return self.model == other.model and self.sample_interval == other.sample_interval and \
-                   self.tally == other.tally and self.report_file == other.report_file and \
-                   self.debug == other.debug
+                   self.tally == other.tally and self.debug == other.debug
 
         except (TypeError, AttributeError):
             return False
@@ -106,11 +113,6 @@ class GPSConf(PersistentJSONable):
 
 
     @property
-    def report_file(self):
-        return self.__report_file
-
-
-    @property
     def debug(self):
         return self.__debug
 
@@ -124,7 +126,6 @@ class GPSConf(PersistentJSONable):
 
         jdict['sample-interval'] = self.sample_interval
         jdict['tally'] = self.tally
-        jdict['report-file'] = self.report_file
         jdict['debug'] = self.debug
 
         return jdict
@@ -133,5 +134,5 @@ class GPSConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GPSConf(core):{model:%s, sample_interval:%s, tally:%s, report_file:%s, debug:%s}" % \
-               (self.model, self.sample_interval, self.tally, self.report_file, self.debug)
+        return "GPSConf(core):{model:%s, sample_interval:%s, tally:%s, debug:%s}" % \
+               (self.model, self.sample_interval, self.tally, self.debug)

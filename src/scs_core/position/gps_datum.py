@@ -66,10 +66,10 @@ class GPSDatum(JSONReport):
         """
         Constructor
         """
-        self.__pos = pos                            # Position
-        self.__elv = Datum.float(elv, 1)            # metres above mean sea level
+        self.__pos = pos                                    # Position
+        self.__elv = Datum.float(elv, 1)             # metres above mean sea level
 
-        self.__quality = quality                    # number or None
+        self.__quality = quality                            # number or None
 
 
     # ----------------------------------------------------------------------------------------------------------------

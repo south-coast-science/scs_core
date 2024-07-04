@@ -4,7 +4,7 @@ Created on 17 May 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 example JSON:
-{"inhibit-publishing": false, "report-file": "/dev/shm/southcoastscience/mqtt_queue_report.json", "debug": true}
+{"inhibit-publishing": false, "debug": true}
 """
 
 from collections import OrderedDict
@@ -21,6 +21,15 @@ class MQTTConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    __REPORT_FILENAME = "mqtt_queue_report.json"
+
+    @classmethod
+    def report_file(cls, manager):
+        return manager.tmp_file(cls.__REPORT_FILENAME)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     __FILENAME = "mqtt_conf.json"
 
     @classmethod
@@ -33,32 +42,29 @@ class MQTTConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return MQTTConf(False, None, False) if skeleton else None
+            return MQTTConf(False, None) if skeleton else None
 
         inhibit_publishing = jdict.get('inhibit-publishing', False)
-        report_file = jdict.get('report-file', None)
         debug = jdict.get('debug', False)
 
-        return MQTTConf(inhibit_publishing, report_file, debug)
+        return MQTTConf(inhibit_publishing, debug)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, inhibit_publishing, report_file, debug):
+    def __init__(self, inhibit_publishing, debug):
         """
         Constructor
         """
         super().__init__()
 
         self.__inhibit_publishing = bool(inhibit_publishing)                # do not attempt to publish
-        self.__report_file = report_file                                    # tmp file to store current queue length
         self.__debug = bool(debug)                                          # DEBUG log level
 
 
     def __eq__(self, other):
         try:
-            return self.inhibit_publishing == other.inhibit_publishing and self.report_file == other.report_file and \
-                   self.debug == other.debug
+            return self.inhibit_publishing == other.inhibit_publishing and self.debug == other.debug
 
         except (TypeError, AttributeError):
             return False
@@ -72,11 +78,6 @@ class MQTTConf(PersistentJSONable):
 
 
     @property
-    def report_file(self):
-        return self.__report_file
-
-
-    @property
     def debug(self):
         return self.__debug
 
@@ -87,7 +88,6 @@ class MQTTConf(PersistentJSONable):
         jdict = OrderedDict()
 
         jdict['inhibit-publishing'] = self.inhibit_publishing
-        jdict['report-file'] = self.report_file
         jdict['debug'] = self.debug
 
         return jdict
@@ -96,5 +96,5 @@ class MQTTConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MQTTConf:{inhibit_publishing:%s, report_file:%s, debug:%s}" %  \
-               (self.inhibit_publishing, self.report_file, self.debug)
+        return "MQTTConf:{inhibit_publishing:%s, debug:%s}" %  \
+               (self.inhibit_publishing, self.debug)

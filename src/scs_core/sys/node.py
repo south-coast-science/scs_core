@@ -284,6 +284,11 @@ class IoTNode(Node):
         pass
 
 
+    @abstractmethod
+    def tmp_file(self, filename):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
     # filesystem paths...
 
