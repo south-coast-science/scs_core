@@ -142,6 +142,14 @@ class IoTNode(Node):
     """
 
     # ----------------------------------------------------------------------------------------------------------------
+    # init...
+
+    @abstractmethod
+    def init(self):
+        pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
     # identity...
 
     @abstractmethod
@@ -281,6 +289,11 @@ class IoTNode(Node):
 
     @abstractmethod
     def tmp_dir(self):
+        pass
+
+
+    @abstractmethod
+    def tmp_file(self, filename):
         pass
 
 
