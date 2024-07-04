@@ -6,8 +6,7 @@ Created on 16 Jul 2017
 specifies which GPS receiver is present, if any, plus sample interval, tally and verbosity
 
 example JSON:
-{"model": "PAM7Q", "sample-interval": 10, "tally": 1, "report-file": "/dev/shm/southcoastscience/gps_report.json",
-"debug": false}
+{"model": "PAM7Q", "sample-interval": 10, "tally": 1, "debug": false}
 """
 
 from collections import OrderedDict

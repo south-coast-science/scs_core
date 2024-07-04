@@ -6,8 +6,7 @@ Created on 21 Jun 2017
 specifies which PSU is present, if any
 
 example JSON:
-{"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10,
-"report-file": "/dev/shm/southcoastscience/psu_status_report.json"}
+{"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10}
 """
 
 from collections import OrderedDict
