@@ -20,7 +20,7 @@ from scs_core.data.str import Str
 class TopicPath(JSONable):
     """
     classdocs
-   """
+    """
 
     @classmethod
     def is_valid(cls, path_pieces):
@@ -38,6 +38,11 @@ class TopicPath(JSONable):
             return False
 
         return True
+
+
+    @staticmethod
+    def from_prefix(topic_prefix, leaf):
+        return str('/'.join((topic_prefix.strip('/'), leaf)))
 
 
     # ----------------------------------------------------------------------------------------------------------------
