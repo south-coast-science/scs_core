@@ -8,8 +8,6 @@ Created on 22 Oct 2020
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.aws.manager.byline.byline import Byline
 
@@ -34,7 +32,7 @@ message = byline.message
 print("message: %s" % message)
 print("-")
 
-jdict = json.loads(message, object_hook=OrderedDict)
+jdict = json.loads(message)
 print("message jdict: %s" % jdict)
 print("=")
 
@@ -42,7 +40,7 @@ jstr = JSONify.dumps(byline)
 print("byline jstr: %s" % jstr)
 print("-")
 
-jdict = json.loads(jstr, object_hook=OrderedDict)
+jdict = json.loads(jstr)
 print("byline jdict: %s" % jdict)
 print("-")
 
@@ -54,6 +52,6 @@ message = byline.message
 print("message: %s" % message)
 print("-")
 
-jdict = json.loads(message, object_hook=OrderedDict)
+jdict = json.loads(message)
 print("message jdict: %s" % jdict)
 print("=")
