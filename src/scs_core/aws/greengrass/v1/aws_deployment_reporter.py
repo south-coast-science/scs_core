@@ -5,7 +5,7 @@ Created on 21 Jan 2021
 """
 
 from scs_core.aws.data.deployment import Deployment
-from scs_core.aws.greengrass.aws_group import AWSGroup
+from scs_core.aws.greengrass.v1.aws_group import AWSGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------

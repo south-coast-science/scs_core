@@ -17,8 +17,8 @@ import os
 from collections import OrderedDict
 
 from scs_core.aws.config.project import Project
-from scs_core.aws.greengrass.aws_group import AWSGroup
-from scs_core.aws.greengrass.gg_errors import ProjectMissingError
+from scs_core.aws.greengrass.v1.aws_group import AWSGroup
+from scs_core.aws.greengrass.v1.gg_errors import ProjectMissingError
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import PersistentJSONable
