@@ -216,7 +216,7 @@ import socket
 from collections import OrderedDict
 
 from scs_core.aws.config.project import Project
-from scs_core.aws.greengrass.aws_group_configuration import AWSGroupConfiguration
+from scs_core.aws.greengrass.v1.aws_group_configuration import AWSGroupConfiguration
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 from scs_core.climate.pressure_conf import PressureConf

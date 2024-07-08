@@ -1,0 +1,346 @@
+{
+  "$Schema": null,
+  "Arn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/versions/785b52ee-1b0f-4d9c-ad48-54954334a3c0",
+  "Version": null,
+  "Region": "us-west-2",
+  "Cores": [
+    {
+      "thingArn": "arn:aws:iot:us-west-2:696437392763:thing/scs-bbe-003-core",
+      "certArn": "arn:aws:iot:us-west-2:696437392763:cert/d679839b3d0208267df9b8619e3535ce01854d6815b04409439e4e2e474b7cc4"
+    }
+  ],
+  "Devices": [],
+  "GroupDefinitions": {
+    "Resources": {
+      "ref": null,
+      "Content": [
+        {
+          "Id": "3-data-volume",
+          "Type": "LOCAL_VOLUME",
+          "Data": {
+            "type": "LocalVolumeResourceData",
+            "SourcePath": "/home/scs/SCS",
+            "DestinationPath": "/SCS",
+            "GroupOwnerSetting": {
+              "AutoAddGroupOwner": false,
+              "GroupOwner": "scs"
+            }
+          }
+        },
+        {
+          "Id": "3-ml-no",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:deployable-xgboost-models/NO-vE-Urban-20H1-xgboost-2022-05-04.tar.gz",
+            "DestinationPath": "/trained-models/uE.1/NO",
+            "S3Metadata": {
+              "LastModifiedTime": 1651660688000,
+              "ContentMD5": null,
+              "ContentLength": 803645
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/02d55b01-409a-40fe-b837-87115b207d2a"
+        },
+        {
+          "Id": "3-ml-no2",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:deployable-xgboost-models/NO2-vE-Urban-20HB-xgboost-2021-11-08.tar.gz",
+            "DestinationPath": "/trained-models/uE.1/NO2",
+            "S3Metadata": {
+              "LastModifiedTime": 1636378066000,
+              "ContentMD5": null,
+              "ContentLength": 1436223
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/48850830-f2c3-46dc-ad16-3856912916d4"
+        },
+        {
+          "Id": "3-ml-o3",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:deployable-xgboost-models/O3-vE-Urban-20H1-xgboost-2022-09-20.tar.gz",
+            "DestinationPath": "/trained-models/uE.1/O3",
+            "S3Metadata": {
+              "LastModifiedTime": 1663664145000,
+              "ContentMD5": null,
+              "ContentLength": 3594532
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/ec9a72f4-47f8-42f6-bd79-71a56cd66c92"
+        },
+        {
+          "Id": "3-ml-pm1",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:xgboost-models/PMs/Ricardo-NPL/pm1/single-xgboost/rnpl-pm1-xgboost-regression-2021-02-02-12-46-07/output/model.tar.gz",
+            "DestinationPath": "/trained-models/rn20/pm1",
+            "S3Metadata": {
+              "LastModifiedTime": 1612270153000,
+              "ContentMD5": null,
+              "ContentLength": 2517831
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/1928f7cb-28cd-412c-a923-7d4c55c4bdf0"
+        },
+        {
+          "Id": "3-ml-pm10",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:xgboost-models/PMs/Ricardo-NPL/pm10/single-xgboost/rnpl-pm10-xgboost-regression-2021-02-02-15-13-42/output/model.tar.gz",
+            "DestinationPath": "/trained-models/rn20/pm10",
+            "S3Metadata": {
+              "LastModifiedTime": 1612279011000,
+              "ContentMD5": null,
+              "ContentLength": 5299202
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/619444e1-e21d-4019-b419-ee9a43cdaaf7"
+        },
+        {
+          "Id": "3-ml-pm2p5",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:xgboost-models/PMs/Ricardo-NPL/pm2p5/single-xgboost/rnpl-pm2p5-xgboost-regression-2021-02-02-14-39-27/output/model.tar.gz",
+            "DestinationPath": "/trained-models/rn20/pm2p5",
+            "S3Metadata": {
+              "LastModifiedTime": 1612276959000,
+              "ContentMD5": null,
+              "ContentLength": 2594949
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/d76e51a8-80ae-4703-8546-8ccbbbe4631f"
+        },
+        {
+          "Id": "3-ml-so2",
+          "Type": "ML_MODEL_S3_OBJECT",
+          "Data": {
+            "type": "S3ObjectResourceData",
+            "S3Arn": "arn:aws:s3:::scs-sagemaker-automl-2:deployable-xgboost-models/SO2-vE-Urban-22Q1-xgboost-2022-03-07.tar.gz",
+            "DestinationPath": "/trained-models/uE.1/SO2",
+            "S3Metadata": {
+              "LastModifiedTime": 1646672449000,
+              "ContentMD5": null,
+              "ContentLength": 4409233
+            }
+          },
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/resource/868a3bb8-52eb-4b9d-965f-c0125ba318d1"
+        }
+      ]
+    },
+    "Lambdas": {
+      "ref": null,
+      "DefaultConfig": null,
+      "Content": [
+        {
+          "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGControlSubscriber:19",
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/lambda/da09e127-a900-44c1-b828-ea1a393086c4",
+          "DeploymentConfiguration": {
+            "Priority": 1,
+            "Pinned": true,
+            "Executable": "lambda_function.lambda_handler",
+            "ExecArgs": [],
+            "CodeSha256": "2kL1YTCeDXAYf5Lu51xQ/cKLI7X1H3zDUCaXXhBiYps=",
+            "CodeSize": 33814,
+            "Description": "Upgraded JSONify",
+            "Handler": "lambda_function.lambda_handler",
+            "MemorySize": 16384,
+            "Timeout": 180,
+            "Runtime": "python3.7",
+            "Environment": {
+              "ResourceAccessPolicies": [
+                {
+                  "ResourceId": "3-data-volume",
+                  "Permission": "rw"
+                }
+              ],
+              "AccessSysfs": true
+            }
+          }
+        },
+        {
+          "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGGasInferenceServer:110",
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/lambda/d131ce88-fe11-4de4-8be8-4a206fcc9c91",
+          "DeploymentConfiguration": {
+            "Priority": 1,
+            "Pinned": true,
+            "Executable": "lambda_function.lambda_handler",
+            "ExecArgs": [],
+            "CodeSha256": "wyLJ+TQexYFLchSV/aHdAiyFZk+BL7F5U0kxXGErbVA=",
+            "CodeSize": 34227,
+            "Description": "Upgraded error reporting",
+            "Handler": "lambda_function.lambda_handler",
+            "MemorySize": 131072,
+            "Timeout": 180,
+            "Runtime": "python3.7",
+            "Environment": {
+              "Variables": {
+                "MODEL_NAME": "uE.1"
+              },
+              "ResourceAccessPolicies": [
+                {
+                  "ResourceId": "3-data-volume",
+                  "Permission": "rw"
+                },
+                {
+                  "ResourceId": "3-ml-no2",
+                  "Permission": "ro"
+                },
+                {
+                  "ResourceId": "3-ml-no",
+                  "Permission": "ro"
+                },
+                {
+                  "ResourceId": "3-ml-o3",
+                  "Permission": "ro"
+                },
+                {
+                  "ResourceId": "3-ml-so2",
+                  "Permission": "ro"
+                }
+              ],
+              "AccessSysfs": true
+            }
+          }
+        },
+        {
+          "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGPMxInferenceServer:88",
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/lambda/afb78e34-4216-4a98-9d8d-82094109333f",
+          "DeploymentConfiguration": {
+            "Priority": 1,
+            "Pinned": true,
+            "Executable": "lambda_function.lambda_handler",
+            "ExecArgs": [],
+            "CodeSha256": "De7Gmw0SWpdoOSAsnSitUTUBIgeBt8nMf1F3RLTsBpw=",
+            "CodeSize": 34161,
+            "Description": "Removed debugging",
+            "Handler": "lambda_function.lambda_handler",
+            "MemorySize": 196608,
+            "Timeout": 180,
+            "Runtime": "python3.7",
+            "Environment": {
+              "Variables": {
+                "MODEL_NAME": "rn20"
+              },
+              "ResourceAccessPolicies": [
+                {
+                  "ResourceId": "3-data-volume",
+                  "Permission": "rw"
+                },
+                {
+                  "ResourceId": "3-ml-pm1",
+                  "Permission": "ro"
+                },
+                {
+                  "ResourceId": "3-ml-pm2p5",
+                  "Permission": "ro"
+                },
+                {
+                  "ResourceId": "3-ml-pm10",
+                  "Permission": "ro"
+                }
+              ],
+              "AccessSysfs": true
+            }
+          }
+        },
+        {
+          "FunctionArn": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "ArtifactArn": "arn:aws:greengrass:us-west-2:696437392763:/greengrass/groups/0252683e-f620-488b-b5b9-a252d247dbcf/deployments/9b559123-b9aa-46cc-a889-ff2fc930be78/artifacts/lambda/e78df206-a4eb-445a-a359-807de92e5918",
+          "DeploymentConfiguration": {
+            "Priority": 1,
+            "Pinned": true,
+            "Executable": "lambda_function.lambda_handler",
+            "ExecArgs": [],
+            "CodeSha256": "bCnIr/aE0FrSL/AtaFGRdT89lEQOKm70OAosFHPiikE=",
+            "CodeSize": 78799,
+            "Description": "Upgraded error reporting",
+            "Handler": "lambda_function.lambda_handler",
+            "MemorySize": 16384,
+            "Timeout": 180,
+            "Runtime": "python3.7",
+            "Environment": {
+              "ResourceAccessPolicies": [
+                {
+                  "ResourceId": "3-data-volume",
+                  "Permission": "rw"
+                }
+              ],
+              "AccessSysfs": true
+            }
+          }
+        }
+      ]
+    },
+    "Subscriptions": {
+      "ref": null,
+      "Content": [
+        {
+          "Id": "3-climate-subscription",
+          "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "Subject": "south-coast-science-dev/development/loc/1/climate",
+          "Target": "cloud"
+        },
+        {
+          "Id": "3-control-from-cloud-subscription",
+          "Source": "cloud",
+          "Subject": "south-coast-science-dev/development/device/alpha-bb-eng-000003/control",
+          "Target": "arn:aws:lambda:us-west-2:696437392763:function:GGControlSubscriber:19"
+        },
+        {
+          "Id": "3-control-to-cloud-subscription",
+          "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "Subject": "south-coast-science-dev/development/device/alpha-bb-eng-000003/control",
+          "Target": "cloud"
+        },
+        {
+          "Id": "3-gases-subscription",
+          "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "Subject": "south-coast-science-dev/development/loc/1/gases",
+          "Target": "cloud"
+        },
+        {
+          "Id": "3-particulates-subscription",
+          "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "Subject": "south-coast-science-dev/development/loc/1/particulates",
+          "Target": "cloud"
+        },
+        {
+          "Id": "3-status-subscription",
+          "Source": "arn:aws:lambda:us-west-2:696437392763:function:GGTopicPublisher:53",
+          "Subject": "south-coast-science-dev/development/device/alpha-bb-eng-000003/status",
+          "Target": "cloud"
+        }
+      ]
+    },
+    "Logging": {
+      "Content": [
+        {
+          "Type": "FileSystem",
+          "Component": "GreengrassSystem",
+          "Level": "WARN",
+          "Space": 128
+        },
+        {
+          "Type": "FileSystem",
+          "Component": "Lambda",
+          "Level": "WARN",
+          "Space": 128
+        }
+      ]
+    },
+    "ShadowSync": {
+      "ref": null,
+      "Content": []
+    },
+    "ClientCertFingerprints": {
+      "Content": []
+    }
+  }
+}
