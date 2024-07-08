@@ -4,7 +4,7 @@ Created on 11 Jan 2021
 @author: Jade Page (jade.page@southcoastscience.com)
 """
 
-from scs_core.aws.greengrass.aws_group import AWSGroup
+from scs_core.aws.greengrass.v1.aws_group import AWSGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -23,6 +23,9 @@ class AWSIdentity(PersistentJSONable):
     classdocs
     """
 
+    __LOG_LEVEL = 'WARN'
+    __LOG_SPACE = 1280
+
     __KEEP_ALIVE = 60               # seconds
 
     __CERTS_PATH = "/greengrass/certs/"
@@ -88,12 +91,11 @@ class AWSIdentity(PersistentJSONable):
         """
         super().__init__()
 
-        self.__logger = Logging.getLogger()
-
         self.__iot_client = iot_client
         self.__gg_client = gg_client
         self.__core_name = core_name
         self.__group_name = group_name
+
         self.__thing_arn = None
         self.__thing_id = None
         self.__certificate = None
@@ -101,6 +103,8 @@ class AWSIdentity(PersistentJSONable):
         self.__latest_logger_version_arn = None
         self.__latest_group_version_arn = None
         self.__hash = None
+
+        self.__logger = Logging.getLogger()
 
 
     def __eq__(self, other):
@@ -119,6 +123,7 @@ class AWSIdentity(PersistentJSONable):
         self.create_core()
         self.create_group()
         self.persist_certs()
+
         self.update_config_file()
 
 
@@ -212,15 +217,15 @@ class AWSIdentity(PersistentJSONable):
                     {
                         'Component': 'GreengrassSystem',
                         'Id': 'Logger_definition_to_greengrass_system_' + self.__group_name,
-                        'Level': 'INFO',
-                        'Space': 1280,
+                        'Level': self.__LOG_LEVEL,
+                        'Space': self.__LOG_SPACE,
                         'Type': 'FileSystem',
                     },
                     {
                         'Component': 'Lambda',
                         'Id': 'Logger_definition_to_lambda_' + self.__group_name,
-                        'Level': 'INFO',
-                        'Space': 1280,
+                        'Level': self.__LOG_LEVEL,
+                        'Space': self.__LOG_SPACE,
                         'Type': 'FileSystem',
                     },
                 ]
