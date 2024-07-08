@@ -8,7 +8,7 @@ Created on 11 Nov 2021
 
 import json
 
-from scs_core.aws.greengrass.aws_group_configuration import AWSGroupConfiguration
+from scs_core.aws.greengrass.v1.aws_group_configuration import AWSGroupConfiguration
 
 
 # --------------------------------------------------------------------------------------------------------------------
