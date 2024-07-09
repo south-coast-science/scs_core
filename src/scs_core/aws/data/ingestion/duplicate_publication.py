@@ -72,7 +72,7 @@ class DuplicatePublication(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, include_expiry=True):
+    def as_json(self, include_expiry=True, **kwargs):
         jdict = OrderedDict()
 
         jdict['device'] = self.device
