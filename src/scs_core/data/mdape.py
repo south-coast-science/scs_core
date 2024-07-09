@@ -7,6 +7,8 @@ Median Absolute Percent Error (MdAPE)
 
 https://www.geeksforgeeks.org/how-to-calculate-mape-in-python/ (MAPE)
 https://stackoverflow.com/questions/24101524/finding-median-of-list-in-python (MdAPE)
+
+https://www.isobudgets.com/7-steps-to-calculate-measurement-uncertainty/
 """
 
 import statistics

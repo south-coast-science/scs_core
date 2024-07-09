@@ -33,4 +33,4 @@ print("a == str: %s" % str(a == c))
 c = 1
 print("a == int: %s" % str(a == c))
 
-print(JSONify.dumps(a))
+print(JSONify.dumps(a, sortable=True))
