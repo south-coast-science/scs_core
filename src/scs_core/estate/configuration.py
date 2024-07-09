@@ -3,7 +3,7 @@ Created on 27 Jan 2021
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-    VERSION = 1.3
+    VERSION = 1.5
 
 example document:
 {
@@ -269,7 +269,7 @@ class Configuration(JSONable):
     classdocs
     """
 
-    VERSION = 1.4
+    VERSION = 1.5
 
     # ----------------------------------------------------------------------------------------------------------------
 
