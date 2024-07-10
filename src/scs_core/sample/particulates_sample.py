@@ -16,6 +16,8 @@ from collections import OrderedDict
 
 from scs_core.data.str import Str
 
+from scs_core.estate.device_tag import DeviceTag
+
 from scs_core.particulate.opc_datum import OPCDatum
 
 from scs_core.sample.sample import Sample
@@ -38,7 +40,7 @@ class ParticulatesSample(Sample):
             return None
 
         # Sample...
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
 
         try:
             version = round(float(jdict.get('ver')), 1)

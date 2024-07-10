@@ -15,6 +15,8 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
+from scs_core.estate.device_tag import DeviceTag
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -67,7 +69,7 @@ class ConfigurationCheck(JSONable):
         if not jdict:
             return None
 
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_iso8601(jdict.get('rec'))
         message_rec = LocalizedDatetime.construct_from_iso8601(jdict.get('message-rec'))
         result = jdict.get('result')
@@ -82,7 +84,7 @@ class ConfigurationCheck(JSONable):
         """
         Constructor
         """
-        self.__tag = tag                        # string
+        self.__tag = tag                        # DeviceTag
         self.__rec = rec                        # LocalizedDatetime - when this record was created
         self.__message_rec = message_rec        # LocalizedDatetime - the rec of the ControlReceipt
         self.__result = result                  # string

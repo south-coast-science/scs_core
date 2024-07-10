@@ -18,6 +18,8 @@ from scs_core.climate.sht_datum import SHTDatum
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.str import Str
 
+from scs_core.estate.device_tag import DeviceTag
+
 from scs_core.gas.a4.a4_calibrated_datum import A4CalibratedDatum
 from scs_core.gas.afe.afe_datum import AFEDatum
 from scs_core.gas.afe.pt1000_datum import Pt1000Datum
@@ -47,7 +49,7 @@ class GasesSample(Sample):
             return None
 
         # Sample...
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:

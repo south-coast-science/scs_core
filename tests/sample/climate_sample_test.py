@@ -25,5 +25,5 @@ sample = ClimateSample.construct_from_jdict(jdict)
 print(sample)
 print("-")
 
-print(JSONify.dumps(sample))
+print(JSONify.dumps(sample, sortable=True))
 
