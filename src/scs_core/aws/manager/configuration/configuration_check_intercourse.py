@@ -15,7 +15,9 @@ from scs_core.aws.data.http_response import HTTPResponse
 from scs_core.client.http_exception import HTTPException
 from scs_core.data.str import Str
 from scs_core.data.datum import Datum
+
 from scs_core.estate.configuration_check import ConfigurationCheck
+from scs_core.estate.device_tag import DeviceTag
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -136,8 +138,11 @@ class ConfigurationCheckResponse(HTTPResponse):
         items = []
         if jdict.get('Items'):
             for item_jdict in jdict.get('Items'):
-                item = item_jdict.get('tag') if mode == ConfigurationCheckRequest.Mode.TAGS_ONLY else \
-                    ConfigurationCheck.construct_from_jdict(item_jdict)
+                if mode == ConfigurationCheckRequest.Mode.TAGS_ONLY:
+                    item = DeviceTag.construct_from_jdict(item_jdict.get('tag'))
+                else:
+                    item = ConfigurationCheck.construct_from_jdict(item_jdict)
+
                 items.append(item)
 
         next_request = jdict.get('next')
@@ -155,7 +160,7 @@ class ConfigurationCheckResponse(HTTPResponse):
 
         self.__mode = mode                              # ConfigurationCheckRequest.Mode member
         self.__items = items                            # list of ConfigurationCheck or string
-        self.__next_request = next_request                      # URL string
+        self.__next_request = next_request              # URL string
 
 
     def __len__(self):

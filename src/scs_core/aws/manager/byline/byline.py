@@ -14,12 +14,12 @@ import json
 
 from collections import OrderedDict
 
-from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
-
 from scs_core.data.array_dict import ArrayDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.topic_path import TopicPath
+
+from scs_core.estate.device_tag import DeviceTag
 
 from scs_core.sys.logging import Logging
 
@@ -176,7 +176,7 @@ class BylineGroup(JSONable):
                 # logging.info("excluded: %s" % byline.device)
                 continue
 
-            if strict_tags and not CognitoDeviceCredentials.is_valid_tag(byline.device):
+            if strict_tags and not DeviceTag.is_valid(byline.device):
                 # logging.info("invalid: %s" % byline.device)
                 continue
 

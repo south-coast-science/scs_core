@@ -21,6 +21,8 @@ from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
 
 from scs_core.data.datetime import LocalizedDatetime
 
+from scs_core.estate.device_tag import DeviceTag
+
 from scs_core.location.timezone import Timezone
 
 from scs_core.position.gps_datum import GPSDatum
@@ -52,7 +54,7 @@ class StatusSample(Sample):
             return None
 
         # Sample...
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:

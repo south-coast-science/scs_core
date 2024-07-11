@@ -32,13 +32,13 @@ class Str(object):
     @classmethod
     def collection(cls, value):
         if isinstance(value, list):
-            return '[' + str(', '.join(cls.collection(item)) for item in value) + ']'
+            return '[' + ', '.join(cls.collection(item) for item in value) + ']'
 
         if isinstance(value, tuple):
-            return '(' + str(', '.join(cls.collection(item)) for item in value) + ')'
+            return '(' + ', '.join(cls.collection(item) for item in value) + ')'
 
         try:
-            return '{' + str(', '.join(str(key) + ': ' + cls.collection(value[key])) for key in value) + '}'
+            return '{' + ', '.join(str(key) + ': ' + cls.collection(value[key]) for key in value) + '}'
 
         except TypeError:
             return str(value)
