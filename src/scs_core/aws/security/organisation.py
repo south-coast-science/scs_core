@@ -29,12 +29,12 @@ import re
 
 from collections import OrderedDict
 
-from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
+
+from scs_core.estate.device_tag import DeviceTag
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -707,9 +707,8 @@ class OrganisationDevice(JSONable):
         if self.device_tag is None or self.org_id is None:
             return False
 
-        return CognitoDeviceCredentials.is_valid_tag(self.device_tag) and \
-            self.is_valid_deployment_label(self.deployment_label) and self.is_valid_path(self.device_path) and \
-            self.is_valid_path(self.location_path)
+        return (DeviceTag.is_valid(self.device_tag) and self.is_valid_deployment_label(self.deployment_label) and
+                self.is_valid_path(self.device_path) and self.is_valid_path(self.location_path))
 
 
     def has_unix_era_start(self):

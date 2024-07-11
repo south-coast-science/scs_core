@@ -15,6 +15,8 @@ from scs_core.climate.pressure_datum import PressureDatum
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.str import Str
 
+from scs_core.estate.device_tag import DeviceTag
+
 from scs_core.sample.sample import Sample
 
 
@@ -34,7 +36,7 @@ class PressureSample(Sample):
         if not jdict:
             return None
 
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:

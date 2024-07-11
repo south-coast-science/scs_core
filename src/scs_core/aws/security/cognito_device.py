@@ -22,6 +22,8 @@ from collections import OrderedDict
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 
+from scs_core.estate.device_tag import DeviceTag
+
 from scs_core.sys.logging import Logging
 from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
@@ -66,19 +68,6 @@ class CognitoDeviceCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def is_valid_tag(cls, tag):
-        try:
-            if len(tag) > 255:
-                return False
-
-            return bool(re.fullmatch(r'[a-z]+\d*-[a-z]+\d*-\d+', tag))
-
-        except TypeError:
-            return False
-
-
-
-    @classmethod
     def is_valid_password(cls, password):
         if not isinstance(password, str):
             return False
@@ -88,7 +77,7 @@ class CognitoDeviceCredentials(JSONable):
 
     @classmethod
     def multiple_tags(cls, prototype_tag, number):
-        if not cls.is_valid_tag(prototype_tag):
+        if not DeviceTag.is_valid(prototype_tag):
             raise ValueError(prototype_tag)
 
         pieces = prototype_tag.split('-')

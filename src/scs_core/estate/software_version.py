@@ -6,6 +6,7 @@ Created on 28 Nov 2023
 examples:
 1.23
 3.2.27
+03.02.27
 
 https://en.wikipedia.org/wiki/Software_versioning
 """
@@ -52,46 +53,18 @@ class SoftwareVersion(JSONable):
 
     def __eq__(self, other):
         try:
-            if len(self) != len(other):
-                return False
-
-            for i in range(len(self)):
-                if self.__parts[i] != other.__parts[i]:
-                    return False
-
-            return True
+            return self.as_json(sortable=True) == other.as_json(sortable=True)
 
         except (TypeError, AttributeError):
             return False
 
 
     def __gt__(self, other):
-        if len(self) != len(other):
-            raise ValueError(other)
-
-        for i in range(len(self)):
-            if self.__parts[i] > other.__parts[i]:
-                return True
-
-            if self.__parts[i] < other.__parts[i]:
-                return False
-
-        return False
+        return self.as_json(sortable=True) > other.as_json(sortable=True)
 
 
     def __lt__(self, other):
-        if len(self) != len(other):
-            raise ValueError(other)
-
-        for i in range(len(self)):
-            if self.__parts[i] < other.__parts[i]:
-                return True
-
-            if self.__parts[i] > other.__parts[i]:
-                return False
-
-
-        return False
+        return self.as_json(sortable=True) < other.as_json(sortable=True)
 
 
     # ----------------------------------------------------------------------------------------------------------------
