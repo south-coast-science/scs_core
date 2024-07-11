@@ -39,3 +39,10 @@ print("is_valid: %s" % is_valid)
 
 d = {device_tag_1: 'a'}
 print(d)
+print("-")
+
+device_tag_3 = DeviceTag.construct_from_jdict('bruno')
+print("device_tag_2: %s" % device_tag_3)
+
+d = {device_tag_3: 'a'}
+print(d)

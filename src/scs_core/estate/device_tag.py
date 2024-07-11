@@ -3,19 +3,75 @@ Created on 10 Jun 2024
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-examples:
-scs-opc-1
-scs-opc-0001
+Used to convert compact device tag representations (scs-opc-1) to text-sortable representations (scs-opc-0001).
 """
 
 import re
+
+from abc import ABC
 
 from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeviceTag(JSONable):
+class SortableTag(JSONable, ABC):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __eq__(self, other):
+        try:
+            return self.as_json(sortable=True) == other.as_json(sortable=True)
+
+        except (TypeError, AttributeError):
+            return False
+
+
+    def __gt__(self, other):
+        return self.as_json(sortable=True) > other.as_json(sortable=True)
+
+
+    def __lt__(self, other):
+        return self.as_json(sortable=True) < other.as_json(sortable=True)
+
+
+    def __hash__(self):
+        return hash(self.as_json())
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class UnstructuredTag(SortableTag):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, name):
+        """
+        Constructor
+        """
+        self.__name = name                              # string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self, **kwargs):
+        return self.__name
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "UnstructuredTag:{name:%s}" % self.__name
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeviceTag(SortableTag):
     """
     classdocs
     """
@@ -40,7 +96,7 @@ class DeviceTag(JSONable):
         match = re.match(r'([a-z\d]+)-([a-z\d]+)-(\d+)', jdict)
 
         if not match:
-            return None             # TODO: consider returning the string (and handling EQ cases, etc.)
+            return UnstructuredTag(jdict)
 
         groups = match.groups()
 
@@ -58,51 +114,14 @@ class DeviceTag(JSONable):
         self.__serial = int(serial)                     # int
 
 
-    def __eq__(self, other):
-        try:
-            return self.as_json(sortable=True) == other.as_json(sortable=True)
-
-        except (TypeError, AttributeError):
-            return False
-
-
-    def __gt__(self, other):
-        return self.as_json(sortable=True) > other.as_json(sortable=True)
-
-
-    def __lt__(self, other):
-        return self.as_json(sortable=True) < other.as_json(sortable=True)
-
-
-    def __hash__(self):
-        return hash(self.as_json())
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self, sortable=False, **kwargs):
-        serial = "%04d" % self.serial if sortable else "%d" % self.serial
-        return str('-'.join((self.vendor, self.model, serial)))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def vendor(self):
-        return self.__vendor
-
-
-    @property
-    def model(self):
-        return self.__model
-
-
-    @property
-    def serial(self):
-        return self.__serial
+        serial = "%04d" % self.__serial if sortable else "%d" % self.__serial
+        return str('-'.join((self.__vendor, self.__model, serial)))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeviceTag:{vendor:%s, model:%s, serial:%s}" % (self.vendor, self.model, self.serial)
+        return "DeviceTag:{vendor:%s, model:%s, serial:%s}" % (self.__vendor, self.__model, self.__serial)
