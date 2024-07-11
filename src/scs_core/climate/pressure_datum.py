@@ -82,3 +82,10 @@ class PressureDatum(JSONable):
     @property
     def temp(self):
         return self.__temp
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "PressureDatum:{actual_press:%s, sl_press:%s, temp:%s}" % \
+            (self.actual_press, self.sl_press, self.temp)

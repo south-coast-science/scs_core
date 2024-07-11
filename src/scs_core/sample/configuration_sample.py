@@ -58,6 +58,7 @@ from scs_core.data.path_dict import PathDict
 from scs_core.data.str import Str
 
 from scs_core.estate.configuration import Configuration
+from scs_core.estate.device_tag import DeviceTag
 
 from scs_core.sample.sample import Sample
 
@@ -83,7 +84,7 @@ class ConfigurationSample(Sample):
             return None
 
         # Sample...
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:

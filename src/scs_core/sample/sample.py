@@ -10,6 +10,8 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONable
 from scs_core.data.str import Str
 
+from scs_core.estate.device_tag import DeviceTag
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +32,7 @@ class Sample(JSONable):
         if not jdict:
             return None
 
-        tag = jdict.get('tag')
+        tag = DeviceTag.construct_from_jdict(jdict.get('tag'))
         rec = LocalizedDatetime.construct_from_jdict(jdict.get('rec'))
 
         try:
@@ -51,7 +53,7 @@ class Sample(JSONable):
         """
         Constructor
         """
-        self.__tag = tag                                # string
+        self.__tag = tag                                # DeviceTag
         self.__rec = rec                                # LocalizedDatetime
 
         self.__version = float(version)                 # float
@@ -99,7 +101,11 @@ class Sample(JSONable):
     @property
     def tag(self):
         return self.__tag
-
+        #
+        # try:
+        #     return self.__tag.as_json()
+        # except AttributeError:
+        #     return self.__tag
 
     @property
     def rec(self):
